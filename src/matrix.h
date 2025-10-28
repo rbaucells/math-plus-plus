@@ -224,14 +224,27 @@ struct Matrix {
      */
     template<IsConvertableTo<T> OTHER_T>
     [[nodiscard]] bool compare(const Matrix<ROWS, COLUMNS, OTHER_T>& other) const {
-        for (int c = 0; c < COLUMNS; c++) {
-            for (int r = 0; r < ROWS; r++) {
-                if (std::abs(other.data[c][r] - data[c][r]) > FLT_EPSILON)
-                    return false;
+        if constexpr (std::is_floating_point_v<T>) {
+            T epsilon = std::numeric_limits<T>::epsilon();
+            for (int c = 0; c < COLUMNS; c++) {
+                for (int r = 0; r < ROWS; r++) {
+                    if (std::abs(static_cast<T>(other.data[c][r]) - data[c][r]) > epsilon)
+                        return false;
+                }
             }
-        }
 
-        return true;
+            return true;
+        }
+        else {
+            for (int c = 0; c < COLUMNS; c++) {
+                for (int r = 0; r < ROWS; r++) {
+                    if (static_cast<T>(other.data[c][r]) == data[c][r])
+                        return false;
+                }
+            }
+
+            return false;
+        }
     }
 
     /**
@@ -240,14 +253,27 @@ struct Matrix {
      * @return Weather or not the two matrices have the same data
      */
     [[nodiscard]] bool compare(const Matrix<ROWS, COLUMNS, T>& other) const {
-        for (int c = 0; c < COLUMNS; c++) {
-            for (int r = 0; r < ROWS; r++) {
-                if (std::abs(other.data[c][r] - data[c][r]) > FLT_EPSILON)
-                    return false;
+        if constexpr (std::is_floating_point_v<T>) {
+            T epsilon = std::numeric_limits<T>::epsilon();
+            for (int c = 0; c < COLUMNS; c++) {
+                for (int r = 0; r < ROWS; r++) {
+                    if (std::abs(other.data[c][r] - data[c][r]) > epsilon)
+                        return false;
+                }
             }
-        }
 
-        return true;
+            return true;
+        }
+        else {
+            for (int c = 0; c < COLUMNS; c++) {
+                for (int r = 0; r < ROWS; r++) {
+                    if (other.data[c][r] == data[c][r])
+                        return false;
+                }
+            }
+
+            return false;
+        }
     }
 
     template<IsConvertableTo<T> OTHER_T>
@@ -668,11 +694,11 @@ struct Matrix {
         return m;
     }
 
-    operator const T*() const {
+    explicit operator const T*() const {
         return &data[0][0];
     }
 
-    operator T*() {
+    explicit operator T*() {
         return &data[0][0];
     }
 };

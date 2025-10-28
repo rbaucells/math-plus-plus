@@ -19,35 +19,65 @@ struct Vector {
         }
     }
 
-    template<int OTHER_N, IsConvertableTo<T> OTHER_T>
-    explicit Vector(const Vector<OTHER_N, OTHER_T>& other) {
-        static_assert(OTHER_N < N, "Cannot construct Vector from Vector with bigger size");
-
-        for (int i = 0; i < OTHER_N; i++) {
+    template<IsConvertableTo<T> OTHER_T>
+    Vector(const Vector<N, OTHER_T>& other) {
+        for (int i = 0; i < N; i++) {
             data[i] = other.data[i];
+        }
+    }
+
+    Vector(const Vector<N, T>& other) {
+        memcpy(data, other.data, sizeof(T) * N);
+    }
+
+    template<IsConvertableTo<T> OTHER_T>
+    bool compare(const Vector<N, OTHER_T>& other) const {
+        if constexpr (std::is_floating_point_v<T>) {
+            T epsilon = std::numeric_limits<T>::epsilon();
+            for (int i = 0; i < N; i++) {
+                if (std::abs(static_cast<T>(other.data[i]) - data[i]) > epsilon)
+                    return false;
+            }
+
+            return true;
+        }
+        else {
+            for (int i = 0; i < N; i++) {
+                if (static_cast<T>(other.data[i]) == data[i])
+                    return false;
+            }
+
+            return false;
+        }
+    }
+
+    bool compare(const Vector<N, T>& other) const {
+        if constexpr (std::is_floating_point_v<T>) {
+            T epsilon = std::numeric_limits<T>::epsilon();
+            for (int i = 0; i < N; i++) {
+                if (std::abs(other.data[i] - data[i]) > epsilon)
+                    return false;
+            }
+
+            return true;
+        }
+        else {
+            for (int i = 0; i < N; i++) {
+                if (other.data[i] == data[i])
+                    return false;
+            }
+
+            return false;
         }
     }
 
     template<IsConvertableTo<T> OTHER_T>
     bool operator==(const Vector<N, OTHER_T>& other) const {
-        if (other.n != n)
-            return false;
-
-        for (int i = 0; i < N; i++) {
-            if (std::abs(other[i] - data[i]) > FLT_EPSILON)
-                return false;
-        }
-
-        return true;
+        return compare(other);
     }
 
-    template<typename OTHER_T>
-    bool operator!=(const Vector& other) const {
-        if constexpr (!std::is_convertible_v<OTHER_T, T>) {
-            return false;
-        }
-
-        return !(other == *this);
+    bool operator==(const Vector<N, T>& other) const {
+        return compare(other);
     }
 
     template<IsConvertableTo<T> OTHER_T>
@@ -126,7 +156,7 @@ struct Vector {
     operator Matrix<1, N>() const {
         Matrix<1, N> result;
 
-        for (int i = 0 ; i < N; i++) {
+        for (int i = 0; i < N; i++) {
             result[0][i] = data[i];
         }
 

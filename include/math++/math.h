@@ -6,3 +6,4 @@
 #include "../../src/vector3.h"
 #include "../../src/vector4.h"
 #include "../../src/vertex.h"
+#include "../../src/vector.h"

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(math-tests++)
+project(math-tests)
 
 # using cpp 20
 set(CMAKE_CXX_STANDARD 20)
@@ -17,9 +17,12 @@ FetchContent_Declare(
 # make it available for use in this CMakeLists.txt
 FetchContent_MakeAvailable(googletest)
 
-# get the .cpp files in here
-file(GLOB TEST_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
-add_executable(math-tests ${TEST_SOURCES})
+# math-tests executable
+add_executable(math-tests
+        main.cpp
+        matrix.test.cpp
+        vector.test.cpp
+)
 
 # link with the math lib
 target_link_libraries(math-tests PRIVATE math++ GTest::gtest_main)
