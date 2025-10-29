@@ -322,7 +322,7 @@ struct Matrix {
         // its a one by one, we can just return 1 / value
         if constexpr (ROWS == 1) {
             if (data[0][0] == 0) {
-                throw std::runtime_error("Determinant cannot be zero");
+                throw std::runtime_error("Cannot find inverse of singular matrix");
             }
 
             Matrix<1, 1, T> result;
@@ -330,13 +330,12 @@ struct Matrix {
             result[0][0] = 1 / data[0][0];
             return result;
         }
-
         // its a two by two, we can do the special fast thing
-        if constexpr (ROWS == 2) {
+        else if constexpr (ROWS == 2) {
             T det = determinant();
 
             if (det == 0) {
-                throw std::runtime_error("Determinant cannot be zero");
+                throw std::runtime_error("Cannot find inverse of singular matrix");
             }
 
             Matrix<2, 2, T> result;
@@ -375,7 +374,7 @@ struct Matrix {
                     }
 
                     if (rowIndex == -1) {
-                        throw std::runtime_error("Determinant cannot be zero");
+                        throw std::runtime_error("Cannot find inverse of singular matrix");
                     }
 
                     // since c (column) = r (row), the dest row is at temp[row (aka, c}] the src row is the memory address of the start of the biggest row so &temp[c][biggestRow]

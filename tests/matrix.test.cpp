@@ -1018,8 +1018,26 @@ TEST(Matrix, should_const_cast_d) {
     ASSERT_DOUBLE_EQ(ptr[3], 4);
 }
 
-TEST(Matrix, should_to_stirng) {
+TEST(Matrix, should_to_string) {
     // arrange
     Matrix<2, 2> a = {{1, 2}, {3, 4}};
-    std::cout << a.toLaTex();
+    // act
+    const std::string string = a.toString();
+    constexpr std::string_view expected = "[[1, 2], [3, 4]]";
+    // assert
+    for (unsigned long i = 0; i < string.length(); i++) {
+        ASSERT_TRUE(string[i] == expected[i]);
+    }
+}
+
+TEST(Matrix, should_to_LaTex) {
+    // arrange
+    Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    // act
+    const std::string string = a.toLaTex();
+    constexpr std::string_view expected = "\\begin{bmatrix}1 & 2\\\\3 & 4\\end{bmatrix}";
+    // assert
+    for (unsigned long i = 0; i < string.length(); i++) {
+        ASSERT_TRUE(string[i] == expected[i]);
+    }
 }
