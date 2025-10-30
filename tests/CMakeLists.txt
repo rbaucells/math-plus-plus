@@ -22,6 +22,7 @@ add_executable(math-tests
         main.cpp
         matrix.test.cpp
         vector.test.cpp
+        rotation.test.cpp
 )
 
 # link with the math lib

@@ -1,4 +1,5 @@
 #pragma once
+#include "rotation.h"
 
 template<typename T, typename U>
 concept IsConvertableTo = std::convertible_to<U, T>;
@@ -178,6 +179,31 @@ struct Vector {
             data[i] -= other[i];
         }
 
+        return *this;
+    }
+
+    Vector<N, T> multiply(const T scalar) const {
+        Vector<N, T> v;
+
+        for (int i = 0; i < N; i++) {
+            v[i] = data[i] * scalar;
+        }
+
+        return v;
+    }
+
+    Vector operator*(const T scalar) const {
+        return multiply(scalar);
+    }
+
+    void multiplyEquals(const T scalar) {
+        for (int i = 0; i < N; i++) {
+            data[i] *= scalar;
+        }
+    }
+
+    Vector& operator*=(const T scalar) {
+        multiplyEquals(scalar);
         return *this;
     }
 

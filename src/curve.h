@@ -1,17 +1,18 @@
 #pragma once
 #include <vector>
-#include "vector2.h"
+
+#include "vector.h"
 
 class Curve {
 public:
     Curve() = default;
     Curve(const Curve& other);
-    Curve(std::initializer_list<Vector2> points);
+    Curve(std::initializer_list<Vector<2>> points);
 
     [[nodiscard]] float evaluate(double t) const;
 
-    void addPoint(const Vector2& point);
-    std::vector<Vector2> getPoints();
+    void addPoint(const Vector<2>& point);
+    std::vector<Vector<2>> getPoints();
 
     // static curves
     static Curve linear;
@@ -52,7 +53,7 @@ public:
     static Curve smootherStep;
 
 private:
-    std::vector<Vector2> points_;
+    std::vector<Vector<2>> points_;
 
-    static Vector2 lerpPoint(const Vector2& start, const Vector2& end, float t);
+    static Vector<2> lerpPoint(const Vector<2>& start, const Vector<2>& end, float t);
 };

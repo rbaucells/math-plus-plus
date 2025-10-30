@@ -1,22 +1,21 @@
 #include "curve.h"
-#include "vector2.h"
 
 Curve::Curve(const Curve& other) {
     points_ = other.points_;
 }
 
-Curve::Curve(const std::initializer_list<Vector2> points) {
+Curve::Curve(const std::initializer_list<Vector<2>> points) {
     points_.reserve(points.size());
 
-    for (auto element : points) {
+    for (const auto element : points) {
         points_.push_back(element);
     }
 }
 
 float Curve::evaluate(const double t) const {
-    std::vector<Vector2> result = points_;
+    std::vector<Vector<2>> result = points_;
     while (result.size() > 1) {
-        std::vector<Vector2> thePoints(result.size() - 1);
+        std::vector<Vector<2>> thePoints(result.size() - 1);
         for (int i = 0; i < result.size() - 1; i++) {
             thePoints.at(i) = lerpPoint(result[i], result[i + 1], t);
         }
@@ -24,14 +23,14 @@ float Curve::evaluate(const double t) const {
         result = thePoints;
     }
 
-    return result[0].y;
+    return result[0][1];
 }
 
-void Curve::addPoint(const Vector2& point) {
+void Curve::addPoint(const Vector<2>& point) {
     points_.push_back(point);
 }
 
-std::vector<Vector2> Curve::getPoints() {
+std::vector<Vector<2>> Curve::getPoints() {
     return points_;
 }
 
@@ -72,6 +71,7 @@ Curve Curve::bounceInOut = {{0, 0}, {0.42, 0}, {0.58, 1}, {1, 1}};
 Curve Curve::smoothStep = {{0, 0}, {0.5, 0}, {0.5, 1}, {1, 1}};
 
 Curve Curve::smootherStep = {{0, 0}, {0.445, 0}, {0.555, 1}, {1, 1}};
-Vector2 Curve::lerpPoint(const Vector2& start, const Vector2& end, const float t) {
+
+Vector<2> Curve::lerpPoint(const Vector<2>& start, const Vector<2>& end, const float t) {
     return start + (end - start) * t;
 }
