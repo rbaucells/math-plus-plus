@@ -1,5 +1,7 @@
 #pragma once
-#include "matrix.h"
+
+template<typename T, typename U>
+concept IsConvertableTo = std::convertible_to<U, T>;
 
 template<int N, typename T = float>
 struct Vector {
@@ -179,7 +181,7 @@ struct Vector {
         return *this;
     }
 
-    T angle(const Vector<N, T>& other, const RotationType type) const {
+    T angle(const Vector<N, T>& other, const RotationType type = RotationType::degrees) const {
         T radians = {};
 
         radians = std::acos(componentDot(other) / (magnitude() * other.magnitude()));
@@ -188,7 +190,7 @@ struct Vector {
     }
 
     template<IsConvertableTo<T> OTHER_T>
-    T angle(const Vector<N, OTHER_T>& other, const RotationType type) const {
+    T angle(const Vector<N, OTHER_T>& other, const RotationType type = RotationType::degrees) const {
         T radians = {};
 
         radians = std::acos(componentDot(other) / (magnitude() * other.magnitude()));
@@ -210,7 +212,7 @@ struct Vector {
         T result = {};
 
         for (int i = 0; i < N; i++) {
-            result += data[i] + other[i];
+            result += data[i] * other[i];
         }
 
         return result;
@@ -221,7 +223,7 @@ struct Vector {
         T result = {};
 
         for (int i = 0; i < N; i++) {
-            result += data[i] + other[i];
+            result += data[i] * other[i];
         }
 
         return result;
@@ -230,7 +232,7 @@ struct Vector {
     T geometricDot(const Vector<N, T>& other) const {
         T result = {};
 
-        result = (magnitude() * other.magnitude() * std::cos(angle(other)));
+        result = (magnitude() * other.magnitude() * std::cos(angle(other, RotationType::radians)));
 
         return result;
     }
@@ -239,7 +241,7 @@ struct Vector {
     T geometricDot(const Vector<N, OTHER_T>& other) const {
         T result = {};
 
-        result = (magnitude() * other.magnitude() * std::cos(angle(other)));
+        result = (magnitude() * other.magnitude() * std::cos(angle(other, RotationType::radians)));
 
         return result;
     }
@@ -258,15 +260,5 @@ struct Vector {
 
     const T& operator[](const int index) const {
         return data[index];
-    }
-
-    operator Matrix<1, N>() const {
-        Matrix<1, N> result;
-
-        for (int i = 0; i < N; i++) {
-            result[0][i] = data[i];
-        }
-
-        return result;
     }
 };

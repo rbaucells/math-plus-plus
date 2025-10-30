@@ -4,9 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include "rotation.h"
-
-template<typename T, typename U>
-concept IsConvertableTo = std::convertible_to<U, T>;
+#include "vector.h"
 
 template<int COLUMNS, int ROWS, typename T = float>
 struct Matrix {
@@ -55,59 +53,16 @@ struct Matrix {
         }
     }
 
+#pragma region Same Type Operators
     // copy assignment operator with same type
     Matrix<COLUMNS, ROWS, T>& operator=(const Matrix<COLUMNS, ROWS, T>& other) {
-        if (*this != other) {
+        if (this != &other) {
             memcpy(data, other.data, sizeof(T) * COLUMNS * ROWS);
         }
 
         return *this;
     }
 
-    // copy assignment operator with different type
-    template<IsConvertableTo<T> OTHER_T>
-    Matrix<COLUMNS, ROWS, T>& operator=(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
-        if (*this != other) {
-            for (int c = 0; c < COLUMNS; c++) {
-                for (int r = 0; r < ROWS; r++) {
-                    data[c][r] = other.data[c][r];
-                }
-            }
-        }
-
-        return *this;
-    }
-
-    /**
-     * @brief Adds this matrix plus other (this + other)
-     * @note this rows MUST equal other rows and this columns MUST equal other columns
-     * @param other The matrix to add to this one
-     * @return Matrix with each element in this one added to the corresponding element in the other one
-     */
-    template<IsConvertableTo<T> OTHER_T>
-    [[nodiscard]] Matrix<COLUMNS, ROWS, T> add(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
-        Matrix<COLUMNS, ROWS, T> result;
-
-        for (int c = 0; c < COLUMNS; c++) {
-            for (int r = 0; r < ROWS; r++) {
-                result[c][r] = data[c][r] + other.data[c][r];
-            }
-        }
-
-        return result;
-    }
-
-    template<IsConvertableTo<T> OTHER_T>
-    Matrix<COLUMNS, ROWS, T> operator+(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
-        return add(other);
-    }
-
-    /**
-     * @brief Adds this matrix plus other (this + other)
-     * @note this rows MUST equal other rows and this columns MUST equal other columns
-     * @param other The matrix to add to this one
-     * @return Matrix with each element in this one added to the corresponding element in the other one
-     */
     [[nodiscard]] Matrix<COLUMNS, ROWS, T> add(const Matrix<COLUMNS, ROWS, T>& other) const {
         Matrix<COLUMNS, ROWS, T> result;
 
@@ -124,36 +79,18 @@ struct Matrix {
         return add(other);
     }
 
-    /**
-     *@brief Subtracts other from this (this - other)
-     * @note this rows MUST equal other rows and this columns MUST equal other columns
-     * @param other The matrix to subtract from this one
-     * @return Matrix with each element in other one subtracted from the corresponding element in the this one
-     */
-    template<IsConvertableTo<T> OTHER_T>
-    [[nodiscard]] Matrix<COLUMNS, ROWS, T> subtract(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
-        Matrix<COLUMNS, ROWS, T> result;
-
+    void addEquals(const Matrix<COLUMNS, ROWS, T>& other) {
         for (int c = 0; c < COLUMNS; c++) {
             for (int r = 0; r < ROWS; r++) {
-                result[c][r] = data[c][r] - other.data[c][r];
+                data[c][r] += other.data[c][r];
             }
         }
-
-        return result;
     }
 
-    template<IsConvertableTo<T> OTHER_T>
-    Matrix<COLUMNS, ROWS, T> operator-(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
-        return subtract(other);
+    Matrix<COLUMNS, ROWS, T>& operator+=(const Matrix<COLUMNS, ROWS, T>& other) {
+        addEquals(other);
+        return *this;
     }
-
-    /**
-     *@brief Subtracts other from this (this - other)
-     * @note this rows MUST equal other rows and this columns MUST equal other columns
-     * @param other The matrix to subtract from this one
-     * @return Matrix with each element in other one subtracted from the corresponding element in the this one
-     */
     [[nodiscard]] Matrix<COLUMNS, ROWS, T> subtract(const Matrix<COLUMNS, ROWS, T>& other) const {
         Matrix<COLUMNS, ROWS, T> result;
 
@@ -170,29 +107,17 @@ struct Matrix {
         return subtract(other);
     }
 
-    /**
-   * @brief Multiplies this matrix by other. (this x other)
-   * @param other Matrix to multiply this * other
-   * @return The product of the two matrix. Having Number of rows as this, and number of columns as other
-   */
-    template<int OTHER_COLUMNS, IsConvertableTo<T> OTHER_T>
-    Matrix<OTHER_COLUMNS, ROWS, T> multiply(const Matrix<OTHER_COLUMNS, COLUMNS, OTHER_T>& other) const {
-        Matrix<OTHER_COLUMNS, ROWS, T> result;
-
+    void subtractEquals(const Matrix<COLUMNS, ROWS, T>& other) {
         for (int c = 0; c < COLUMNS; c++) {
             for (int r = 0; r < ROWS; r++) {
-                for (int x = 0; x < COLUMNS; x++) {
-                    result[c][r] += data[x][r] * other.data[c][x];
-                }
+                data[c][r] -= other.data[c][r];
             }
         }
-
-        return result;
     }
 
-    template<int OTHER_COLUMNS, IsConvertableTo<T> OTHER_T>
-    Matrix<OTHER_COLUMNS, ROWS, T> operator*(const Matrix<OTHER_COLUMNS, COLUMNS, OTHER_T>& other) const {
-        return multiply(other);
+    Matrix<COLUMNS, ROWS, T> operator-=(const Matrix<COLUMNS, ROWS, T>& other) {
+        subtractEquals(other);
+        return *this;
     }
 
     /**
@@ -217,6 +142,146 @@ struct Matrix {
 
     template<int OTHER_COLUMNS>
     Matrix<OTHER_COLUMNS, ROWS, T> operator*(const Matrix<OTHER_COLUMNS, COLUMNS, T>& other) const {
+        return multiply(other);
+    }
+
+    /**
+     * @brief Compares this matrix with the other (this == other)
+     * @param other The Matrix to compare against
+     * @return Weather or not the two matrices have the same data
+     */
+    [[nodiscard]] bool compare(const Matrix<COLUMNS, ROWS, T>& other) const {
+        if constexpr (std::is_floating_point_v<T>) {
+            T epsilon = std::numeric_limits<T>::epsilon();
+            for (int c = 0; c < COLUMNS; c++) {
+                for (int r = 0; r < ROWS; r++) {
+                    if (std::abs(other.data[c][r] - data[c][r]) > epsilon)
+                        return false;
+                }
+            }
+
+            return true;
+        }
+        else {
+            for (int c = 0; c < COLUMNS; c++) {
+                for (int r = 0; r < ROWS; r++) {
+                    if (other.data[c][r] == data[c][r])
+                        return false;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    bool operator==(const Matrix<COLUMNS, ROWS, T>& other) const {
+        return compare(other);
+    }
+
+#pragma endregion
+#pragma region Different Type Operators
+    // copy assignment operator with different type
+    template<IsConvertableTo<T> OTHER_T>
+    Matrix<COLUMNS, ROWS, T>& operator=(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
+        if (*this != other) {
+            for (int c = 0; c < COLUMNS; c++) {
+                for (int r = 0; r < ROWS; r++) {
+                    data[c][r] = other.data[c][r];
+                }
+            }
+        }
+
+        return *this;
+    }
+
+    template<IsConvertableTo<T> OTHER_T>
+    [[nodiscard]] Matrix<COLUMNS, ROWS, T> add(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
+        Matrix<COLUMNS, ROWS, T> result;
+
+        for (int c = 0; c < COLUMNS; c++) {
+            for (int r = 0; r < ROWS; r++) {
+                result[c][r] = data[c][r] + other.data[c][r];
+            }
+        }
+
+        return result;
+    }
+
+    template<IsConvertableTo<T> OTHER_T>
+    Matrix<COLUMNS, ROWS, T> operator+(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
+        return add(other);
+    }
+
+    template<IsConvertableTo<T> OTHER_T>
+    void addEquals(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
+        for (int c = 0; c < COLUMNS; c++) {
+            for (int r = 0; r < ROWS; r++) {
+                data[c][r] += other.data[c][r];
+            }
+        }
+    }
+
+    template<IsConvertableTo<T> OTHER_T>
+    Matrix<COLUMNS, ROWS, T>& operator+=(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
+        addEquals(other);
+        return *this;
+    }
+
+    template<IsConvertableTo<T> OTHER_T>
+    [[nodiscard]] Matrix<COLUMNS, ROWS, T> subtract(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
+        Matrix<COLUMNS, ROWS, T> result;
+
+        for (int c = 0; c < COLUMNS; c++) {
+            for (int r = 0; r < ROWS; r++) {
+                result[c][r] = data[c][r] - other.data[c][r];
+            }
+        }
+
+        return result;
+    }
+
+    template<IsConvertableTo<T> OTHER_T>
+    Matrix<COLUMNS, ROWS, T> operator-(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
+        return subtract(other);
+    }
+
+    template<IsConvertableTo<T> OTHER_T>
+    void subtractEquals(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
+        for (int c = 0; c < COLUMNS; c++) {
+            for (int r = 0; r < ROWS; r++) {
+                data[c][r] -= other.data[c][r];
+            }
+        }
+    }
+
+    template<IsConvertableTo<T> OTHER_T>
+    Matrix<COLUMNS, ROWS, T>& operator-=(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
+        subtractEquals(other);
+        return *this;
+    }
+
+    /**
+   * @brief Multiplies this matrix by other. (this x other)
+   * @param other Matrix to multiply this * other
+   * @return The product of the two matrix. Having Number of rows as this, and number of columns as other
+   */
+    template<int OTHER_COLUMNS, IsConvertableTo<T> OTHER_T>
+    Matrix<OTHER_COLUMNS, ROWS, T> multiply(const Matrix<OTHER_COLUMNS, COLUMNS, OTHER_T>& other) const {
+        Matrix<OTHER_COLUMNS, ROWS, T> result;
+
+        for (int c = 0; c < COLUMNS; c++) {
+            for (int r = 0; r < ROWS; r++) {
+                for (int x = 0; x < COLUMNS; x++) {
+                    result[c][r] += data[x][r] * other.data[c][x];
+                }
+            }
+        }
+
+        return result;
+    }
+
+    template<int OTHER_COLUMNS, IsConvertableTo<T> OTHER_T>
+    Matrix<OTHER_COLUMNS, ROWS, T> operator*(const Matrix<OTHER_COLUMNS, COLUMNS, OTHER_T>& other) const {
         return multiply(other);
     }
 
@@ -250,48 +315,19 @@ struct Matrix {
         }
     }
 
-    /**
-     * @brief Compares this matrix with the other (this == other)
-     * @param other The Matrix to compare against
-     * @return Weather or not the two matrices have the same data
-     */
-    [[nodiscard]] bool compare(const Matrix<COLUMNS, ROWS, T>& other) const {
-        if constexpr (std::is_floating_point_v<T>) {
-            T epsilon = std::numeric_limits<T>::epsilon();
-            for (int c = 0; c < COLUMNS; c++) {
-                for (int r = 0; r < ROWS; r++) {
-                    if (std::abs(other.data[c][r] - data[c][r]) > epsilon)
-                        return false;
-                }
-            }
-
-            return true;
-        }
-        else {
-            for (int c = 0; c < COLUMNS; c++) {
-                for (int r = 0; r < ROWS; r++) {
-                    if (other.data[c][r] == data[c][r])
-                        return false;
-                }
-            }
-
-            return false;
-        }
-    }
-
     template<IsConvertableTo<T> OTHER_T>
     bool operator==(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
         return compare(other);
     }
 
-    bool operator==(const Matrix<COLUMNS, ROWS, T>& other) const {
-        return compare(other);
-    }
+#pragma endregion
 
+    // subscript
     T* operator[](const int index) {
         return &data[index][0];
     }
 
+    // const subscript
     const T* operator[](const int index) const {
         return &data[index][0];
     }
@@ -419,7 +455,6 @@ struct Matrix {
      * @warning if zero do not attempt to find inverse of this matrix
      * @return The determinant of this matrix
      */
-
     [[nodiscard]] T determinant() const requires (square) {
         if constexpr (ROWS == 1) {
             return data[0][0];
@@ -578,9 +613,6 @@ struct Matrix {
 
 #pragma endregion
 
-    /**
-     * @return The column-major matrix as a string for printing
-     */
     [[nodiscard]] std::string toString() const {
         std::stringstream ss;
         ss.precision(2);
@@ -606,9 +638,6 @@ struct Matrix {
         return ss.str();
     }
 
-    /**
-     * @return The column-major matrix as a string for printing
-     */
     [[nodiscard]] std::string toLaTex() const {
         std::stringstream ss;
         ss.precision(2);
@@ -632,7 +661,7 @@ struct Matrix {
     }
 
     /**
-     * @brief Makes a matrix made OTHER_Tp of this matrix without rowToRemove and without columnToRemove
+     * @brief Makes a matrix made up of this matrix without rowToRemove and without columnToRemove
      * @param rowToRemove What row shouldnt be included
      * @param columnToRemove What column shouldnt be included
      * @return A matrix of <ROWS - 1, COLUMNS - 1> without the rowToRemove and columnToRemove
@@ -658,22 +687,12 @@ struct Matrix {
         return subMatrix;
     }
 
-    // static methods
-
     /**
-     * @brief Generates the identity matrix of size this Rows x this Rows
-     * @return Matrix with 1s on main diagonal, 0s everywhere else
+     * @brief swap row a with row b
+     * @param rowA The index of the first row
+     * @param rowB The index of the second row
+     * @return This with row a and row b swapped
      */
-    static Matrix<COLUMNS, ROWS, T> identity() requires (square) {
-        Matrix<COLUMNS, ROWS, T> result;
-
-        for (int i = 0; i < COLUMNS; i++) {
-            result[i][i] = 1;
-        }
-
-        return result;
-    }
-
     Matrix<COLUMNS, ROWS, T> swapRows(const int rowA, const int rowB) {
         Matrix<COLUMNS, ROWS, T> m = *this;
 
@@ -694,11 +713,51 @@ struct Matrix {
         return m;
     }
 
+    /**
+     * @brief swap column a with column b
+     * @param columnA The index of the first column
+     * @param columnB The index of the second column
+     * @return This with column a and column b swapped
+     */
+    Matrix<COLUMNS, ROWS, T> swapColumns(const int columnA, const int columnB) {
+        Matrix<COLUMNS, ROWS, T> m = *this;
+
+        T temp[ROWS] = {};
+
+        for (int r = 0; r < ROWS; r++) {
+            temp[r] = m[columnA][r];
+        }
+
+        for (int r = 0; r < COLUMNS; r++) {
+            m[columnA][r] = m[columnB][r];
+        }
+
+        for (int r = 0; r < COLUMNS; r++) {
+            m[columnB][r] = temp[r];
+        }
+
+        return m;
+    }
+
     explicit operator const T*() const {
         return &data[0][0];
     }
 
     explicit operator T*() {
         return &data[0][0];
+    }
+
+    /**
+     * @brief Generates the identity matrix of size this Rows x this Rows
+     * @return Matrix with 1s on main diagonal, 0s everywhere else
+     */
+    static Matrix<COLUMNS, ROWS, T> identity() requires (square) {
+        Matrix<COLUMNS, ROWS, T> result;
+
+        for (int i = 0; i < COLUMNS; i++) {
+            result[i][i] = 1;
+        }
+
+        return result;
     }
 };

@@ -425,6 +425,7 @@ TEST(Matrix, should_multiply_d_by_f_same_size) {
         {5, 2},
         {4, 3}
     };
+
     // act
     Matrix<2, 2, double> c = a * b;
     // assert
@@ -950,7 +951,7 @@ TEST(Matrix, should_rotate_z_radians) {
 
 TEST(Matrix, should_ortho) {
     // arrange
-    Matrix<4, 4> a = Matrix<4,4>::ortho(1, 2, 3, 4, 5, 6);
+    Matrix<4, 4> a = Matrix<4, 4>::ortho(1, 2, 3, 4, 5, 6);
     // assert
     ASSERT_FLOAT_EQ(a[0][0], 2);
     ASSERT_FLOAT_EQ(a[1][0], 0);
@@ -1035,9 +1036,125 @@ TEST(Matrix, should_to_LaTex) {
     Matrix<2, 2> a = {{1, 2}, {3, 4}};
     // act
     const std::string string = a.toLaTex();
-    constexpr std::string_view expected = "\\begin{bmatrix}1 & 2\\\\3 & 4\\end{bmatrix}";
+    constexpr std::string_view expected = R"(\begin{bmatrix}1 & 2\\3 & 4\end{bmatrix})";
     // assert
     for (unsigned long i = 0; i < string.length(); i++) {
         ASSERT_TRUE(string[i] == expected[i]);
     }
+}
+
+TEST(Matrix, should_swap_columns) {
+    // arrange
+    Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    // act
+    Matrix<2, 2> b = a.swapColumns(0, 1);
+    // assert
+    ASSERT_FLOAT_EQ(b[0][0], 2);
+    ASSERT_FLOAT_EQ(b[1][0], 1);
+    ASSERT_FLOAT_EQ(b[0][1], 4);
+    ASSERT_FLOAT_EQ(b[1][1], 3);
+}
+
+TEST(Matrix, should_add_equals_f_to_f) {
+    // arrange
+    Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    Matrix<2, 2> b = {{1, 2}, {3, 4}};
+    // act
+    a += b;
+    // assert
+    ASSERT_FLOAT_EQ(a[0][0], 2);
+    ASSERT_FLOAT_EQ(a[1][0], 4);
+    ASSERT_FLOAT_EQ(a[0][1], 6);
+    ASSERT_FLOAT_EQ(a[1][1], 8);
+}
+
+TEST(Matrix, should_add_equals_d_to_d) {
+    // arrange
+    Matrix<2, 2, double> a = {{1, 2}, {3, 4}};
+    Matrix<2, 2, double> b = {{1, 2}, {3, 4}};
+    // act
+    a += b;
+    // assert
+    ASSERT_DOUBLE_EQ(a[0][0], 2);
+    ASSERT_DOUBLE_EQ(a[1][0], 4);
+    ASSERT_DOUBLE_EQ(a[0][1], 6);
+    ASSERT_DOUBLE_EQ(a[1][1], 8);
+}
+
+TEST(Matrix, should_f_plus_equals_d) {
+    // arrange
+    Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    Matrix<2, 2, double> b = {{1, 2}, {3, 4}};
+    // act
+    a += b;
+    // assert
+    ASSERT_FLOAT_EQ(a[0][0], 2);
+    ASSERT_FLOAT_EQ(a[1][0], 4);
+    ASSERT_FLOAT_EQ(a[0][1], 6);
+    ASSERT_FLOAT_EQ(a[1][1], 8);
+}
+
+TEST(Matrix, should_d_plus_equals_f) {
+    // arrange
+    Matrix<2, 2, double> a = {{1, 2}, {3, 4}};
+    Matrix<2, 2> b = {{1, 2}, {3, 4}};
+    // act
+    a += b;
+    // assert
+    ASSERT_DOUBLE_EQ(a[0][0], 2);
+    ASSERT_DOUBLE_EQ(a[1][0], 4);
+    ASSERT_DOUBLE_EQ(a[0][1], 6);
+    ASSERT_DOUBLE_EQ(a[1][1], 8);
+}
+
+TEST(Matrix, should_f_minus_equals_f) {
+    // arrange
+    Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    Matrix<2, 2> b = {{4, 3}, {2, 1}};
+    // act
+    a -= b;
+    // assert
+    ASSERT_FLOAT_EQ(a[0][0], -3);
+    ASSERT_FLOAT_EQ(a[1][0], -1);
+    ASSERT_FLOAT_EQ(a[0][1], 1);
+    ASSERT_FLOAT_EQ(a[1][1], 3);
+}
+
+TEST(Matrix, should_d_minus_equals_d) {
+    // arrange
+    Matrix<2, 2, double> a = {{1, 2}, {3, 4}};
+    Matrix<2, 2, double> b = {{4, 3}, {2, 1}};
+    // act
+    a -= b;
+    // assert
+    ASSERT_DOUBLE_EQ(a[0][0], -3);
+    ASSERT_DOUBLE_EQ(a[1][0], -1);
+    ASSERT_DOUBLE_EQ(a[0][1], 1);
+    ASSERT_DOUBLE_EQ(a[1][1], 3);
+}
+
+TEST(Matrix, should_f_minus_equals_d) {
+    // arrange
+    Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    Matrix<2, 2, double> b = {{4, 3}, {2, 1}};
+    // act
+    a -= b;
+    // assert
+    ASSERT_FLOAT_EQ(a[0][0], -3);
+    ASSERT_FLOAT_EQ(a[1][0], -1);
+    ASSERT_FLOAT_EQ(a[0][1], 1);
+    ASSERT_FLOAT_EQ(a[1][1], 3);
+}
+
+TEST(Matrix, should_d_minus_equals_f) {
+    // arrange
+    Matrix<2, 2, double> a = {{1, 2}, {3, 4}};
+    Matrix<2, 2> b = {{4, 3}, {2, 1}};
+    // act
+    a -= b;
+    // assert
+    ASSERT_DOUBLE_EQ(a[0][0], -3);
+    ASSERT_DOUBLE_EQ(a[1][0], -1);
+    ASSERT_DOUBLE_EQ(a[0][1], 1);
+    ASSERT_DOUBLE_EQ(a[1][1], 3);
 }
