@@ -1,13 +1,9 @@
 #include "curve.h"
 
-Curve::Curve(const Curve& other) {
-    points_ = other.points_;
-}
-
 Curve::Curve(const std::initializer_list<Vector<2>> points) {
     points_.reserve(points.size());
 
-    for (const auto element : points) {
+    for (const auto& element : points) {
         points_.push_back(element);
     }
 }
@@ -24,14 +20,6 @@ float Curve::evaluate(const double t) const {
     }
 
     return result[0][1];
-}
-
-void Curve::addPoint(const Vector<2>& point) {
-    points_.push_back(point);
-}
-
-std::vector<Vector<2>> Curve::getPoints() {
-    return points_;
 }
 
 Curve Curve::linear = {{0, 0}, {1, 1}};

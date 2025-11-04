@@ -1159,13 +1159,46 @@ TEST(Matrix, should_d_minus_equals_f) {
     ASSERT_DOUBLE_EQ(a[1][1], 3);
 }
 
-TEST(Matrix, should_lu_decomposition) {
+TEST(Matrix, should_lup_decomposition) {
     // arrange
     Matrix<3, 3> a = {{0, 0, 1}, {6, 1, 1}, {-3, 1, 0}};
     // act
-    auto lup = a.lupDecomposition();
-    // print
-    for (const auto& m : lup) {
-        std::cout << m.toString() << std::endl;
-    }
+    auto [l, u, p] = a.lupDecomposition();
+    // assert
+    ASSERT_FLOAT_EQ(l[0][0], 1);
+    ASSERT_FLOAT_EQ(l[1][0], 0);
+    ASSERT_FLOAT_EQ(l[2][0], 0);
+    ASSERT_FLOAT_EQ(l[0][1], -0.5);
+    ASSERT_FLOAT_EQ(l[1][1], 1);
+    ASSERT_FLOAT_EQ(l[2][1], 0);
+    ASSERT_FLOAT_EQ(l[0][2], 0);
+    ASSERT_FLOAT_EQ(l[1][2], 0);
+    ASSERT_FLOAT_EQ(l[2][2], 1);
+
+    ASSERT_FLOAT_EQ(u[0][0], 6);
+    ASSERT_FLOAT_EQ(u[1][0], 1);
+    ASSERT_FLOAT_EQ(u[2][0], 1);
+    ASSERT_FLOAT_EQ(u[0][1], 0);
+    ASSERT_FLOAT_EQ(u[1][1], 1.5);
+    ASSERT_FLOAT_EQ(u[2][1], 0.5);
+    ASSERT_FLOAT_EQ(u[0][2], 0);
+    ASSERT_FLOAT_EQ(u[1][2], 0);
+    ASSERT_FLOAT_EQ(u[2][2], 1);
+
+    ASSERT_FLOAT_EQ(p[0][0], 0);
+    ASSERT_FLOAT_EQ(p[1][0], 1);
+    ASSERT_FLOAT_EQ(p[2][0], 0);
+    ASSERT_FLOAT_EQ(p[0][1], 0);
+    ASSERT_FLOAT_EQ(p[1][1], 0);
+    ASSERT_FLOAT_EQ(p[2][1], 1);
+    ASSERT_FLOAT_EQ(p[0][2], 1);
+    ASSERT_FLOAT_EQ(p[1][2], 0);
+    ASSERT_FLOAT_EQ(p[2][2], 0);
+}
+
+TEST(Matrix, should_not_lup_decomposition) {
+    // arrange
+    Matrix<3, 3> a = {{0, 0, 1}, {0, 5, 1}, {0, 1, -3}};
+    // act/assert
+    ASSERT_ANY_THROW(a.lupDecomposition());
 }

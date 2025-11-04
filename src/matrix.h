@@ -865,6 +865,21 @@ struct Matrix {
 
                 u = u.swapRows(c, rowIndex);
                 p = p.swapRows(c, rowIndex);
+
+                // we need to swap the row of L but only the ones that have been modified
+                T temp[COLUMNS] = {};
+
+                for (int i = 0; i < c; i++) {
+                    temp[i] = l[i][c];
+                }
+
+                for (int i = 0; i < c; i++) {
+                    l[i][c] = l[i][rowIndex];
+                }
+
+                for (int i = 0; i < c; i++) {
+                    l[i][rowIndex] = temp[c];
+                }
             }
 
             T pivot = u[c][c];
@@ -873,12 +888,12 @@ struct Matrix {
             for (int r = c + 1; r < ROWS; r++) {
                 T val = u[c][r];
 
-                T multiplierToPivotRow = -(val / pivot);
+                T multiplierToPivotRow = val / pivot;
 
-                l[c][r] = -multiplierToPivotRow;
+                l[c][r] = multiplierToPivotRow;
 
                 for (int i = 0; i < COLUMNS; i++) {
-                    u[i][r] += multiplierToPivotRow * u[i][c];
+                    u[i][r] += -multiplierToPivotRow * u[i][c];
                 }
             }
         }

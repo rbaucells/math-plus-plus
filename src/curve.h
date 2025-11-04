@@ -1,19 +1,15 @@
 #pragma once
 #include <vector>
-
-#include "matrix.h"
 #include "vector.h"
 
 class Curve {
 public:
     Curve() = default;
-    Curve(const Curve& other);
     Curve(std::initializer_list<Vector<2>> points);
 
     [[nodiscard]] float evaluate(double t) const;
 
-    void addPoint(const Vector<2>& point);
-    std::vector<Vector<2>> getPoints();
+    std::vector<Vector<2>> points_;
 
     // static curves
     static Curve linear;
@@ -54,7 +50,5 @@ public:
     static Curve smootherStep;
 
 private:
-    std::vector<Vector<2>> points_;
-
     static Vector<2> lerpPoint(const Vector<2>& start, const Vector<2>& end, float t);
 };
