@@ -844,7 +844,7 @@ struct Matrix {
         return result;
     }
 
-    std::array<Matrix<COLUMNS, ROWS, T>, 3> lupDecomposition() requires (square) {
+    std::array<Matrix<COLUMNS, ROWS, T>, 3> lupDecomposition() const requires (square) {
         Matrix<COLUMNS, ROWS, T> l = Matrix<COLUMNS, ROWS, T>::identity();
         Matrix<COLUMNS, ROWS, T> u = *this;
         Matrix<COLUMNS, ROWS, T> p = Matrix<COLUMNS, ROWS, T>::identity();
@@ -899,5 +899,34 @@ struct Matrix {
         }
 
         return {l, u, p};
+    }
+
+    std::array<Matrix<COLUMNS, ROWS, T>, 2> qrDecomposition() const requires (square) {
+        Matrix<COLUMNS, ROWS, T> q;
+        Matrix<COLUMNS, ROWS, T> r;
+
+        std::array<Vector<ROWS>, COLUMNS> vectorsInData = {};
+
+        for (int c = 0; c < COLUMNS; c++) {
+            Vector<ROWS> v;
+
+            for (int i = 0; i < ROWS; i++) {
+                v[i] = data[c][i];
+            }
+
+            vectorsInData[c] = v;
+        }
+
+        std::array<Vector<ROWS>, COLUMNS> orthoVectorsInData = Vector<ROWS>::orthonormalize(vectorsInData);
+
+        for (int i = 0; i < COLUMNS; i++) {
+            for (int j = 0; j < ROWS; j++) {
+                q[i][j] = orthoVectorsInData[i][j];
+            }
+        }
+
+        r = q.transpose() * *this;
+
+        return {q, r};
     }
 };

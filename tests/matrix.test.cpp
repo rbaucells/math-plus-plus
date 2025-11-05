@@ -1202,3 +1202,30 @@ TEST(Matrix, should_not_lup_decomposition) {
     // act/assert
     ASSERT_ANY_THROW(a.lupDecomposition());
 }
+
+TEST(Matrix, should_qr_decomposition) {
+    // arrange
+    Matrix<3, 3> a = {{1, 1, 0}, {1, -1, 0}, {0, 0, 1}};
+    // act
+    auto [q, r] = a.qrDecomposition();
+    // assert
+    ASSERT_FLOAT_EQ(q[0][0], M_SQRT1_2);
+    ASSERT_FLOAT_EQ(q[1][0], M_SQRT1_2);
+    ASSERT_FLOAT_EQ(q[2][0], 0);
+    ASSERT_FLOAT_EQ(q[0][1], M_SQRT1_2);
+    ASSERT_FLOAT_EQ(q[1][1], -M_SQRT1_2);
+    ASSERT_FLOAT_EQ(q[2][1], 0);
+    ASSERT_FLOAT_EQ(q[0][2], 0);
+    ASSERT_FLOAT_EQ(q[1][2], 0);
+    ASSERT_FLOAT_EQ(q[2][2], 1);
+
+    ASSERT_FLOAT_EQ(r[0][0], M_SQRT2);
+    ASSERT_FLOAT_EQ(r[1][0], 0);
+    ASSERT_FLOAT_EQ(r[2][0], 0);
+    ASSERT_FLOAT_EQ(r[0][1], 0);
+    ASSERT_FLOAT_EQ(r[1][1], M_SQRT2);
+    ASSERT_FLOAT_EQ(r[2][1], 0);
+    ASSERT_FLOAT_EQ(r[0][2], 0);
+    ASSERT_FLOAT_EQ(r[1][2], 0);
+    ASSERT_FLOAT_EQ(r[2][2], 1);
+}
