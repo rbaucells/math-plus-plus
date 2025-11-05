@@ -844,39 +844,76 @@ struct Matrix {
         return result;
     }
 
-    Matrix<COLUMNS, ROWS, T> rowEchelonForm() const {
-
-    }
-
-    bool isRowEchelon() const {
-        int last1Collumn = -1;
+    bool isRowEchelon(bool pivotMustBeOne = false) const {
+        int lastPivotColumn = -1;
 
         for (int r = 0; r < ROWS; r++) {
             bool foundNonZero = false;
 
             for (int c = 0; c < COLUMNS; c++) {
-                if (data[c][r] == 1) {
-                    // we found a 1 after another number | or | we found a 1 to the right of the last one
-                    if (foundNonZero || c > last1Collumn)
+                // this is a pivot
+                if (!foundNonZero && data[c][r] != 0) {
+                    // this is to the left of the last pivot
+                    if (c < lastPivotColumn)
                         return false;
 
-                    last1Collumn = c;
+                    // the pivot must be one and it isn't
+                    if (data[c][r] != 1 && pivotMustBeOne)
+                        return false;
+
+                    lastPivotColumn = c;
                 }
 
                 if (data[c][r] != 0)
                     foundNonZero = true;
             }
 
-            // this entire row had all zeros
-            if (!foundNonZero) {
-                if (r == ROWS - 1)
-                    return false;
+            // this entire row was zeros, and this wasn't the last row
+            if (!foundNonZero || r != ROWS - 1) {
+                return false;
             }
         }
+
+        return true;
     }
 
     bool isReducedRowEchelon() const {
+        int lastPivotColumn = -1;
 
+        for (int r = 0; r < ROWS; r++) {
+            bool foundNonZero = false;
+
+            for (int c = 0; c < COLUMNS; c++) {
+                // this is a pivot
+                if (!foundNonZero && data[c][r] != 0) {
+                    // this is to the left of the last pivot
+                    if (c < lastPivotColumn)
+                        return false;
+
+                    // the pivot isn't 1
+                    if (data[c][r] != 1)
+                        return false;
+
+                    // check that no other number in that column is a nonzero value
+                    for (int i = 0; i < ROWS; i++) {
+                        if (data[c][i] != 0 && data[c][i] != data[c][r])
+                            return false;
+                    }
+
+                    lastPivotColumn = c;
+                }
+
+                if (data[c][r] != 0)
+                    foundNonZero = true;
+            }
+
+            // this entire row was zeros, and this wasn't the last row
+            if (!foundNonZero || r != ROWS - 1) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 #pragma region Decomposiitons
