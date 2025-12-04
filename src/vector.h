@@ -1,6 +1,8 @@
 #pragma once
+#include <array>
 #include <complex>
 #include <random>
+#include <cstring>
 
 #include "helper.h"
 #include "rotation.h"
@@ -91,7 +93,6 @@ struct Vector {
         return v;
     }
 
-#pragma region same type operators
     // v = v
     Vector<N, T>& operator=(const Vector<N, T>& other) {
         if (this != &other) {
@@ -244,8 +245,6 @@ struct Vector {
         return divideEquals(scalar);
     }
 
-#pragma endregion
-#pragma region different type operators
     // v = v
     template<is_convertable_to<T> OTHER_T>
     Vector<N, T>& operator=(const Vector<N, OTHER_T>& other) {
@@ -418,8 +417,6 @@ struct Vector {
     Vector<N, T>& operator/=(const OTHER_T scalar) {
         return divideEquals(scalar);
     }
-
-#pragma endregion
 
     T angle(const Vector<N, T>& other, const RotationType type = RotationType::degrees) const {
         T radians = std::acos(componentDot(other) / (magnitude() * other.magnitude()));

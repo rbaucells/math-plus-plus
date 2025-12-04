@@ -64,7 +64,6 @@ struct Matrix {
         }
     }
 
-#pragma region Same Type Operators
     // m = m
     Matrix<COLUMNS, ROWS, T>& operator=(const Matrix<COLUMNS, ROWS, T>& other) {
         if (this != &other) {
@@ -256,8 +255,6 @@ struct Matrix {
         return divideEquals(scalar);
     }
 
-#pragma endregion
-#pragma region Different Type Operators
     // m = m
     template<is_convertable_to<T> OTHER_T>
     Matrix<COLUMNS, ROWS, T>& operator=(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
@@ -473,7 +470,6 @@ struct Matrix {
     Matrix<COLUMNS, ROWS, T>& operator/=(const OTHER_T scalar) {
         return divideEquals(scalar);
     }
-#pragma endregion
 
     template<int N>
     Vector<N, T> applyHomogeneousTransformation(const Vector<N, T>& point) const requires (isSquare) {
@@ -687,7 +683,6 @@ private:
     }
 
 public:
-#pragma region transformations
     static Matrix<COLUMNS, ROWS, T> scalingMatrix(const Vector<COLUMNS, T>& factors) requires (isSquare) {
         Matrix<COLUMNS, ROWS, T> matrix;
 
@@ -715,7 +710,6 @@ public:
         return matrix;
     }
 
-#pragma region rotations
     static Matrix<COLUMNS, ROWS, T> rotationMatrixAboutOrigin(const T rot, const RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 2) {
         T asRadians = convert(rotationType, RotationType::radians, rot);
 
@@ -823,7 +817,6 @@ public:
 
         return result;
     }
-#pragma endregion
 
     static Matrix<COLUMNS, ROWS, T> reflectionMatrixAlongAxisThroughOrigin(const Vector<COLUMNS, T>& axis) requires (isSquare) {
         return 2 * axis.outerProduct(axis) - identity();
@@ -857,8 +850,6 @@ public:
 
         return matrix;
     }
-
-#pragma endregion
 
     static Matrix<COLUMNS, ROWS, T> orthoMatrix(const T left, const T right, const T bottom, const T top, const T near, const T far) requires (isSquare && COLUMNS == 4) {
         // identity
@@ -1518,7 +1509,6 @@ public:
         return true;
     }
 
-#pragma region Decomposiitons
     template<typename L_TYPE, typename U_TYPE, typename P_TYPE>
     struct LUPDecomposition {
         L_TYPE l;
@@ -1893,8 +1883,6 @@ public:
         return {q, r};
     }
 
-#pragma endregion
-
     T minorOfElement(const int c, const int r) const requires (isSquare) {
         return removeColumnsAndRows({c}, {r}).determinant();
     }
@@ -2008,7 +1996,6 @@ public:
         return true;
     }
 
-#pragma region eigen stuffs
     template<typename T_TYPE, typename Q_TYPE>
     struct LanczosAlgorithm {
         T_TYPE t;
@@ -2084,7 +2071,6 @@ public:
 
         return {vec, val};
     }
-#pragma endregion
 };
 
 template<int COLUMNS, int ROWS, is_scalar_v T>
