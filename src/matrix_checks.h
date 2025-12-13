@@ -5,32 +5,37 @@
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isRowEchelon(bool pivotMustBeOne) const {
+    bool foundZeroRows = false;
     int lastPivotColumn = -1;
-
     for (int r = 0; r < ROWS; r++) {
         bool foundNonZero = false;
-
         for (int c = 0; c < COLUMNS; c++) {
-            // this is a pivot
-            if (!foundNonZero && !compare(data[c][r], 0)) {
-                // this is to the left of the last pivot
-                if (c < lastPivotColumn)
-                    return false;
+            // found non-zero
+            if (!compare(data[c][r], 0)) {
+                // pivot
+                if (!foundNonZero) {
+                    // we are to the left or at same level as last pivot.
+                    if (c <= lastPivotColumn)
+                        return false;
 
-                // the pivot must be one and it isn't
-                if (!compare(data[c][r], 1) && pivotMustBeOne)
-                    return false;
+                    // pivot needed to be 1, it wasn't
+                    if (!compare(data[c][r], 1) && pivotMustBeOne)
+                        return false;
 
-                lastPivotColumn = c;
-            }
+                    lastPivotColumn = c;
+                }
 
-            if (!compare(data[c][r], 0))
                 foundNonZero = true;
+            }
         }
 
-        // this entire row was zeros, and this wasn't the last row
-        if (!foundNonZero || r != ROWS - 1) {
+        // non zero row when supposed to
+        if (foundNonZero && foundZeroRows)
             return false;
+
+        // zero row
+        if (!foundNonZero) {
+            foundZeroRows = true;
         }
     }
 
@@ -38,44 +43,7 @@ bool Matrix<COLUMNS, ROWS, T>::isRowEchelon(bool pivotMustBeOne) const {
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isReducedRowEchelon() const {
-    int lastPivotColumn = -1;
-
-    for (int r = 0; r < ROWS; r++) {
-        bool foundNonZero = false;
-
-        for (int c = 0; c < COLUMNS; c++) {
-            // this is a pivot
-            if (!foundNonZero && !compare(data[c][r], 0)) {
-                // this is to the left of the last pivot
-                if (c < lastPivotColumn)
-                    return false;
-
-                // the pivot isn't 1
-                if (!compare(data[c][r], 1))
-                    return false;
-
-                // check that no other number in that column is a nonzero value
-                for (int i = 0; i < ROWS; i++) {
-                    if (!compare(data[c][i], 0) && !compare(data[c][i], data[c][r]))
-                        return false;
-                }
-
-                lastPivotColumn = c;
-            }
-
-            if (!compare(data[c][r], 0))
-                foundNonZero = true;
-        }
-
-        // this entire row was zeros, and this wasn't the last row
-        if (!foundNonZero || r != ROWS - 1) {
-            return false;
-        }
-    }
-
-    return true;
-}
+bool Matrix<COLUMNS, ROWS, T>::isReducedRowEchelon() const {}
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isSymmetrical() const requires (isSquare) {
@@ -136,54 +104,22 @@ bool Matrix<COLUMNS, ROWS, T>::isSkewHermitian() const requires (isSquare) {
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isPositiveDefinite() const {
-    Matrix<COLUMNS, ROWS, T> ref = toRowEchelon();
 
-    // pivots of ref are signs of eigenvalues
-    for (int c = 0; c < COLUMNS; c++) {
-        if (ref[c][c] <= 0)
-            return false;
-    }
-
-    return true;
 }
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite() const {
-    Matrix<COLUMNS, ROWS, T> ref = toRowEchelon();
 
-    // pivots of ref are signs of eigenvalues
-    for (int c = 0; c < COLUMNS; c++) {
-        if (ref[c][c] < 0)
-            return false;
-    }
-
-    return true;
 }
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isNegativeDefinite() const {
-    Matrix<COLUMNS, ROWS, T> ref = toRowEchelon();
 
-    // pivots of ref are signs of eigenvalues
-    for (int c = 0; c < COLUMNS; c++) {
-        if (ref[c][c] >= 0)
-            return false;
-    }
-
-    return true;
 }
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isNegativeSemiDefinite() const {
-    Matrix<COLUMNS, ROWS, T> ref = toRowEchelon();
 
-    // pivots of ref are signs of eigenvalues
-    for (int c = 0; c < COLUMNS; c++) {
-        if (ref[c][c] > 0)
-            return false;
-    }
-
-    return true;
 }
 
 template<int COLUMNS, int ROWS, scalar T>

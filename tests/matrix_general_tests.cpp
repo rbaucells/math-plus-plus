@@ -1,6 +1,26 @@
 #include <gtest/gtest.h>
 #include "math++/math.h"
 
+TEST(MatrixGeneral, swap_row) {
+    // arrange
+    constexpr Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<3, 3> expected = {{7, 8, 9}, {4, 5, 6}, {1, 2, 3}};
+    // act
+    const Matrix<3, 3> swapped = m.swapRows(0, 2);
+    // assert
+    ASSERT_TRUE(swapped == expected);
+}
+
+TEST(MatrixGeneral, swap_column) {
+    // arrange
+    constexpr Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<3, 3> expected = {{3, 2, 1}, {6, 5, 4}, {9, 8, 7}};
+    // act
+    const Matrix<3, 3> swapped = m.swapColumns(0, 2);
+    // assert
+    ASSERT_TRUE(swapped == expected);
+}
+
 TEST(MatrixGeneral, determinant_1x1) {
     // arrange
     constexpr Matrix<1, 1> a = {{5}};
@@ -41,16 +61,16 @@ TEST(MatrixGeneral, determinant_4x4_lu) {
     // arrange
     constexpr Matrix<4, 4> a = {{1, 2, 2, 1}, {1, 9, 8, 12}, {1, 2, 3, 4}, {7, 3, 2, 1}};
     // act
-    const float det = a.determinant(Matrix<4, 4>::lu);
+    const float det = a.determinant(Matrix<4, 4>::DeterminantAlgorithm::lu);
     // assert
     ASSERT_FLOAT_EQ(det, 133);
 }
 
 TEST(MatrixGeneral, determinant_4x4_triangular) {
     // arrange
-    constexpr Matrix<4, 4> a = {{1, 4, 5, 2}, {0, 2, 5, 7}, {0, 0, 1, 5}, {0, 0,0, 4}};
+    constexpr Matrix<4, 4> a = {{1, 4, 5, 2}, {0, 2, 5, 7}, {0, 0, 1, 5}, {0, 0, 0, 4}};
     // act
-    const float det = a.determinant(Matrix<4, 4>::triangular);
+    const float det = a.determinant(Matrix<4, 4>::DeterminantAlgorithm::triangular);
     // assert
     ASSERT_FLOAT_EQ(det, 8);
 }
@@ -108,6 +128,26 @@ TEST(MatrixGeneral, inverse_random) {
     }
 }
 
+TEST(MatrixGeneral, row_echelon_form) {
+    // arrange
+    constexpr Matrix<4, 3> m = {{2, 1, -1, 8}, {-3, -1, 2, -11}, {-2, 1, 2, -3}};
+    constexpr Matrix<4, 3> expected = {{2, 1, -1, 8}, {0, 0.5, 0.5, 1}, {0, 0, -1, 1}};
+    // act
+    const Matrix<4, 3> ref = m.toRowEchelon();
+    // assert
+    ASSERT_TRUE(ref.isRowEchelon());
+}
+
+TEST(MatrixGeneral, reduced_row_echelon_form) {
+    // arrange
+    constexpr Matrix<4, 3> m = {{2, 1, -1, 8}, {-3, -1, 2, -11}, {-2, 1, 2, -3}};
+    constexpr Matrix<4, 3> expected = {{1, 0, 0, 2}, {0, 1, 0, 3}, {0, 0, 1, -1}};
+    // act
+    const Matrix<4, 3> rref = m.toReducedRowEchelon();
+    // assert
+    ASSERT_TRUE(rref == expected);
+}
+
 TEST(MatrixGeneral, forward_substitution) {
     // arrange
     constexpr Matrix<2, 2> l = {{1, 0}, {2, 3}};
@@ -148,6 +188,17 @@ TEST(MatrixGeneral, solve_linear_system_lu) {
     constexpr Vector<3> expected = {5, 3, -2};
     // act
     const Vector<3> x = a.solveLinearSystem(b, Matrix<3, 3>::LinearSystemAlgorithm::lu_factorization);
+    // assert
+    ASSERT_TRUE(x == expected);
+}
+
+TEST(MatrixGeneral, solve_linear_system_rr) {
+    // arrange
+    constexpr Matrix<3, 3> a = {{1, 1, 1}, {0, 2, 5}, {2, 5, -1}};
+    constexpr Vector<3> b = {6, -4, 27};
+    constexpr Vector<3> expected = {5, 3, -2};
+    // act
+    const Vector<3> x = a.solveLinearSystem(b, Matrix<3, 3>::LinearSystemAlgorithm::row_reduction);
     // assert
     ASSERT_TRUE(x == expected);
 }

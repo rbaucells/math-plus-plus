@@ -164,14 +164,14 @@ struct Matrix {
 
     Matrix<COLUMNS, ROWS, T> inverse() const requires (isSquare);
 
-    enum DeterminantAlgorithm {
+    enum class DeterminantAlgorithm {
         laplace,
         triangular,
         tridiagonal,
         lu
     };
 
-    T determinant(DeterminantAlgorithm algorithm = laplace) const requires (isSquare);
+    T determinant(DeterminantAlgorithm algorithm = DeterminantAlgorithm::laplace) const requires (isSquare);
 
 private:
     T laplaceDeterminant() const requires (isSquare);
@@ -278,7 +278,8 @@ public:
 
     enum class LinearSystemAlgorithm {
         inverse,
-        lu_factorization
+        lu_factorization,
+        row_reduction
     };
 
     Vector<COLUMNS, T> solveLinearSystem(const Vector<ROWS, T>& b, LinearSystemAlgorithm algorithm) const;
@@ -286,6 +287,7 @@ public:
 private:
     Vector<COLUMNS, T> solveLinearSystemThroughInverse(const Vector<ROWS, T>& b) const requires (isSquare);
     Vector<COLUMNS, T> solveLinearSystemThroughLu(const Vector<ROWS, T>& b) const requires (isSquare);
+    Vector<COLUMNS, T> solveLinearSystemThroughRowReduction(const Vector<ROWS, T>& b) const requires (isSquare);
 
 public:
     Matrix<COLUMNS, ROWS, T> hadamardProduct(const Matrix<COLUMNS, ROWS, T>& other) const;
