@@ -24,7 +24,7 @@
 		}
 	},
 
-	"postCreateCommand": "cmake -B build -S . && cmake --build build",
+	"postCreateCommand": "bash .devcontainer/setup-lldb.sh && cmake -B build -S . && cmake --build build",
 
 	"forwardPorts": [],
 

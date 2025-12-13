@@ -1,0 +1,11 @@
+# LLDB Initialization File for math++ Project
+# 
+# Note: You may see Python/SWIG errors during LLDB startup.
+# These come from system LLDB scripts and are harmless.
+
+# Import custom formatters for Matrix and other math++ types
+command script import mathpp_lldb_formatters.py
+
+# Register only the summary (one-line display)
+# The native structure will be expandable
+type summary add -x "^Matrix<[^>]+>$" --python-function mathpp_lldb_formatters.matrix_summary --expand

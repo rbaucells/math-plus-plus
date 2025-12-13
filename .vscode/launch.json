@@ -1,0 +1,62 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "LLDB: Debug Tests",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/tests/math-tests",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "build",
+            "initCommands": [
+                "command script import ${workspaceFolder}/mathpp_lldb_formatters.py"
+            ],
+            "postRunCommands": [],
+            "sourceMap": {},
+            "env": {},
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
+        {
+            "name": "LLDB: Debug Tests (with .lldbinit)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/tests/math-tests",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "build",
+            "sourceMap": {},
+            "env": {
+                "HOME": "${workspaceFolder}"
+            },
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
+        {
+            "name": "GDB: Debug Tests",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/tests/math-tests",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "build",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
