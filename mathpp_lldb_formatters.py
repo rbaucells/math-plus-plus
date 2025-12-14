@@ -24,7 +24,7 @@ def _unwrap_swig(obj):
 
 
 def _format_matrix_grid(columns: int, rows: int, value_type: str, data: list[str]) -> str:
-    string = f"Matrix<{columns}, {rows}, {value_type}> = ["
+    string = f"= ["
 
     for r in range(rows):
         string += "["
@@ -43,7 +43,7 @@ def _format_matrix_grid(columns: int, rows: int, value_type: str, data: list[str
     return string
 
 
-use_data = True
+use_data = False
 
 def matrix_summary(matrix_obj: Any, internal_dict: Dict[str, Any]) -> str:
     """
@@ -89,7 +89,7 @@ def matrix_summary(matrix_obj: Any, internal_dict: Dict[str, Any]) -> str:
 
         # matrix too big to inline, return blank
         if COLUMNS > 6 or ROWS > 6:
-            return f"Matrix<{COLUMNS}, {ROWS}, {T}>"
+            return ""
 
         # access the .data field
         data_member: Any = actual_val.GetChildMemberWithName('data')
@@ -104,7 +104,7 @@ def matrix_summary(matrix_obj: Any, internal_dict: Dict[str, Any]) -> str:
 
                 # invalid column, return blank
                 if not col_array or not col_array.IsValid():
-                    return f"Matrix<{COLUMNS}, {ROWS}, {T}>"
+                    return ""
 
                 # iterate rows
                 for r in range(ROWS):
@@ -123,7 +123,7 @@ def matrix_summary(matrix_obj: Any, internal_dict: Dict[str, Any]) -> str:
                 return _format_matrix_grid(COLUMNS, ROWS, T, values)
 
         if 'lldb' not in globals():
-            return f"Matrix<{COLUMNS}, {ROWS}, {T}>"
+            return ""
 
         # else we need to try via the raw memory
         try:
@@ -132,7 +132,7 @@ def matrix_summary(matrix_obj: Any, internal_dict: Dict[str, Any]) -> str:
 
             # make sure its legit
             if lldb and addr == lldb.LLDB_INVALID_ADDRESS:
-                return f"Matrix<?, ?, ?> (error: invalid memory address)"
+                return "(error: invalid memory address)"
 
             # get the element type (not string like T) via template parameters
             elem_type: Any = matrix_obj.GetType().GetTemplateArgumentType(2)
@@ -164,13 +164,12 @@ def matrix_summary(matrix_obj: Any, internal_dict: Dict[str, Any]) -> str:
                 return _format_matrix_grid(COLUMNS, ROWS, T, values)
 
         except Exception as e:
-            return f"Matrix<?, ?, ?> (error: {str(e)})"
+            return f"(error: {str(e)})"
 
     except Exception as e:
-        return f"Matrix<?, ?, ?> (error: {str(e)})"
+        return f"(error: {str(e)})"
 
-    # no matter what return something at least
-    return f"Matrix<?, ?, ?>"
+    return ""
 
 
 def format_scalar(element, precision: int = 3) -> str:
@@ -212,21 +211,20 @@ def format_scalar(element, precision: int = 3) -> str:
     elem_type = element.GetType()
     type_name = elem_type.GetName()
 
-    print(f"Formatting {element} of type {type_name}")
-
     # std::complex<T>
-    if "complex" in type_name and "std" in type_name:
-        print("its an std::complex")
+    if "complex" in type_name:
         # sometimes we need to access it through the private members
-        real_str = element.GetChildMemberWithName("__re_")
-        imag_str = element.GetChildMemberWithName("__im_")
+        real_val = element.GetChildMemberWithName("__re_")
+        imag_val = element.GetChildMemberWithName("__im_")
 
         # we might have to access it via _M_value
-        if not real_str or not real_str.IsValid() or not imag_str or not imag_str.IsValid():
+        if not real_val or not real_val.IsValid() or not imag_val or not imag_val.IsValid():
             val = element.GetChildMemberWithName("_M_value")
-            real_str = val.GetChildAtIndex(0)
-            imag_str = val.GetChildAtIndex(1)
+            real_val = val.GetChildAtIndex(0)
+            imag_val = val.GetChildAtIndex(1)
 
+        real_str = real_val.GetValue()
+        imag_str = imag_val.GetValue()
         # handle negative image nicely (1 - 4i) instead of (1 + -4i)
         if imag_str.startswith('-'):
             imag_str_without_minus = imag_str.rstrip('-')
@@ -269,7 +267,7 @@ class MatrixSyntheticProvider:
         try:
             # extract template parameters from name
             type_name = self.valobj.GetTypeName()
-            match = re.match(r'Matrix<(\d+),\s*(\d+),\s*(.+)>', type_name)
+            match = re.match(r'Matrix<(\d+),\s*(\d+),\s*([^>]+)>', type_name)
 
             # we got stuff, set it
             if match:
@@ -282,7 +280,7 @@ class MatrixSyntheticProvider:
                 self.internal_dict["value_type"] = "unknown"
 
         except Exception as e:
-            self.internal_dict["columns]"] = 0
+            self.internal_dict["columns"] = 0
             self.internal_dict["rows"] = 0
             self.internal_dict["value_type"] = "error"
 
@@ -341,7 +339,7 @@ class MatrixSyntheticProvider:
                     element = col_array.GetChildAtIndex(row)
 
                     if element and element.IsValid():
-                        return element.CreateChildAtOffset(f"[{col},{row}]", 0, element.GetType())
+                        return element
 
             # if that didn't work, get it by memory
             try:
