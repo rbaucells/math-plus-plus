@@ -205,6 +205,7 @@ def format_scalar(element, precision: int = 3) -> str:
         - std::complex<long double> (25.26 + 27.28i)
     """
 
+    print(f"formatting {element}")
     if not element or not element.IsValid():
         return "?"
 
@@ -212,7 +213,7 @@ def format_scalar(element, precision: int = 3) -> str:
     type_name = elem_type.GetName()
 
     # std::complex<T>
-    if "complex" in type_name:
+    if "complex" in type_name and "value_type" not in type_name:
         # sometimes we need to access it through the private members
         real_val = element.GetChildMemberWithName("__re_")
         imag_val = element.GetChildMemberWithName("__im_")
@@ -223,8 +224,9 @@ def format_scalar(element, precision: int = 3) -> str:
             real_val = val.GetChildAtIndex(0)
             imag_val = val.GetChildAtIndex(1)
 
-        real_str = real_val.GetValue()
-        imag_str = imag_val.GetValue()
+        real_str = format_scalar(real_val)
+        imag_str = format_scalar(imag_val)
+
         # handle negative image nicely (1 - 4i) instead of (1 + -4i)
         if imag_str.startswith('-'):
             imag_str_without_minus = imag_str.rstrip('-')
