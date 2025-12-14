@@ -1,6 +1,95 @@
 #include <gtest/gtest.h>
 #include "math++/math.h"
 
+TEST(MatrixChecks, debugger_tests) {
+    // Integer types
+    constexpr Matrix<3, 3, short> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<3, 3, unsigned short> b = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+
+    constexpr Matrix<3, 3, int> c = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<3, 3, unsigned int> d = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+
+    constexpr Matrix<3, 3, long> e = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<3, 3, unsigned long> f = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+
+    constexpr Matrix<3, 3, long long> g = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<3, 3, unsigned long long> h = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+
+    // Floating-point types
+    constexpr Matrix<3, 3, float> i = {{1.1, 2.2, 3.3}, {4.4, 5.5, 6.6}, {7.7, 8.8, 9.9}};
+    constexpr Matrix<3, 3, double> j = {{1.1, 2.2, 3.3}, {4.4, 5.5, 6.6}, {7.7, 8.8, 9.9}};
+    constexpr Matrix<3, 3, long double> k = {{1.1, 2.2, 3.3}, {4.4, 5.5, 6.6}, {7.7, 8.8, 9.9}};
+
+    // Complex of floating types
+    constexpr Matrix<3, 3, std::complex<float>> l = {
+        {{1, 0}, {2, 0}, {3, 0}},
+        {{4, 0}, {5, 0}, {6, 0}},
+        {{7, 0}, {8, 0}, {9, 0}}
+    };
+
+    constexpr Matrix<3, 3, std::complex<double>> m = {
+        {{1, 0}, {2, 0}, {3, 0}},
+        {{4, 0}, {5, 0}, {6, 0}},
+        {{7, 0}, {8, 0}, {9, 0}}
+    };
+
+    constexpr Matrix<3, 3, std::complex<long double>> n = {
+        {{1, 0}, {2, 0}, {3, 0}},
+        {{4, 0}, {5, 0}, {6, 0}},
+        {{7, 0}, {8, 0}, {9, 0}}
+    };
+
+    // Complex of integer types
+    constexpr Matrix<3, 3, std::complex<short>> o = {
+        {{1, 0}, {2, 0}, {3, 0}},
+        {{4, 0}, {5, 0}, {6, 0}},
+        {{7, 0}, {8, 0}, {9, 0}}
+    };
+
+    constexpr Matrix<3, 3, std::complex<unsigned short>> p = {
+        {{1, 0}, {2, 0}, {3, 0}},
+        {{4, 0}, {5, 0}, {6, 0}},
+        {{7, 0}, {8, 0}, {9, 0}}
+    };
+
+    constexpr Matrix<3, 3, std::complex<int>> q = {
+        {{1, 0}, {2, 0}, {3, 0}},
+        {{4, 0}, {5, 0}, {6, 0}},
+        {{7, 0}, {8, 0}, {9, 0}}
+    };
+
+    constexpr Matrix<3, 3, std::complex<unsigned int>> r = {
+        {{1, 0}, {2, 0}, {3, 0}},
+        {{4, 0}, {5, 0}, {6, 0}},
+        {{7, 0}, {8, 0}, {9, 0}}
+    };
+
+    constexpr Matrix<3, 3, std::complex<long>> s = {
+        {{1, 0}, {2, 0}, {3, 0}},
+        {{4, 0}, {5, 0}, {6, 0}},
+        {{7, 0}, {8, 0}, {9, 0}}
+    };
+
+    constexpr Matrix<3, 3, std::complex<unsigned long>> t = {
+        {{1, 0}, {2, 0}, {3, 0}},
+        {{4, 0}, {5, 0}, {6, 0}},
+        {{7, 0}, {8, 0}, {9, 0}}
+    };
+
+    constexpr Matrix<3, 3, std::complex<long long>> u = {
+        {{1, 0}, {2, 0}, {3, 0}},
+        {{4, 0}, {5, 0}, {6, 0}},
+        {{7, 0}, {8, 0}, {9, 0}}
+    };
+
+    constexpr Matrix<3, 3, std::complex<unsigned long long>> v = {
+        {{1, 0}, {2, 0}, {3, 0}},
+        {{4, 0}, {5, 0}, {6, 0}},
+        {{7, 0}, {8, 0}, {9, 0}}
+    };
+
+}
+
 TEST(MatrixChecks, row_echelon_square) {
     // arrange
     constexpr Matrix<3, 3> a = {{4, 3, 1}, {0, 0, 5}, {0, 0, 0}};
