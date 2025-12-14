@@ -8,6 +8,8 @@ except ImportError:
 
 from typing import Any, Dict
 import re
+
+
 def _unwrap_swig(obj):
     """Get the actual c++ object"""
 
@@ -42,8 +44,6 @@ def _format_matrix_grid(columns: int, rows: int, value_type: str, data: list[str
     string += "]"
     return string
 
-
-use_data = False
 
 def matrix_summary(matrix_obj: Any, internal_dict: Dict[str, Any]) -> str:
     """
@@ -95,7 +95,7 @@ def matrix_summary(matrix_obj: Any, internal_dict: Dict[str, Any]) -> str:
         data_member: Any = actual_val.GetChildMemberWithName('data')
 
         # if we can access the .data member
-        if data_member and data_member.IsValid() and use_data:
+        if data_member and data_member.IsValid():
             values: list[str] = []
 
             # iterate columns
@@ -232,7 +232,6 @@ def format_scalar(element, precision: int = 3) -> str:
         else:
             return f"{real_str} + {imag_str}i"
 
-
     # floating point
     if lldb and elem_type.GetTypeClass() == lldb.eTypeClassBuiltin and ("float" in type_name or "double" in type_name):
         # get it as a double
@@ -246,130 +245,130 @@ def format_scalar(element, precision: int = 3) -> str:
     return element.GetValue()
 
 
+def print_matrix(debugger, input_matrix, result, internal_dict):
+    try:
+        # get the SBValue from the incoming matrix variable
+        target = debugger.GetSelectedTarget()
+        frame = target.GetProcess().GetSelectedThread().GetSelectedFrame()
+        matrix_obj = frame.FindVariable(input_matrix.strip())
 
-class MatrixSyntheticProvider:
-    def __init__(self, valobj, internal_dict):
-        """
-        Initialize the synthetic provider.
+        if not matrix_obj.IsValid():
+            result.PutCString(f"Variable '{input_matrix}' not found")
+            return
 
-        Args:
-            valobj: LLDB SBValue object representing the Matrix
-            internal_dict: Internal dictionary for caching
-        """
+        # get the actual matrix object
+        val: Any = matrix_obj
 
-        # get reference to real c++ object
-        self.valobj = _unwrap_swig(valobj)
-        self.internal_dict = internal_dict
+        if callable(matrix_obj):
+            val = matrix_obj()
 
-        self.set_columns_rows_and_value_type()
+        if not hasattr(val, 'GetTypeName') and '_unwrap_swig' in globals():
+            val = _unwrap_swig(matrix_obj)
 
-    def set_columns_rows_and_value_type(self):
-        try:
-            # extract template parameters from name
-            type_name = self.valobj.GetTypeName()
-            match = re.match(r'Matrix<(\d+),\s*(\d+),\s*([^>]+)>', type_name)
-
-            # we got stuff, set it
-            if match:
-                self.internal_dict["columns"] = int(match.group(1))
-                self.internal_dict["rows"] = int(match.group(2))
-                self.internal_dict["value_type"] = match.group(3).strip()
-            else:
-                self.internal_dict["columns"] = 0
-                self.internal_dict["rows"] = 0
-                self.internal_dict["value_type"] = "unknown"
-
-        except Exception as e:
-            self.internal_dict["columns"] = 0
-            self.internal_dict["rows"] = 0
-            self.internal_dict["value_type"] = "error"
-
-    def num_children(self):
-        return self.internal_dict["columns"] * self.internal_dict["rows"]
-
-    def has_children(self):
-        return self.internal_dict["columns"] > 0 and self.internal_dict["rows"] > 0
-
-    def get_child_index(self, name):
-        """Get a childs index from a name ("[0,0]", "[1,2]"""
-
-        try:
-            # find the child by the name and extract the col and row index
-            match = re.match(r'\[(\d+),(\d+)]', name)
-
-            # if we found something
-            if match:
-                col = int(match.group(1))
-                row = int(match.group(2))
-
-                # if its within range
-                if 0 <= col < self.internal_dict["columns"] and 0 <= row < self.internal_dict["rows"]:
-                    return col * self.internal_dict["rows"] + row
-        except:
-            pass
-
-        # we didn't find something or had an error, -1 is error
-        return -1
-
-    def get_child_at_index(self, index):
-        """get the child element at the linear index 'index'"""
-
-        # invalid index
-        if index < 0 or index >= self.num_children():
-            return None
-
-        # get real col and row index
-        col = index // self.internal_dict["rows"]
-        row = index % self.internal_dict["rows"]
-
-        # try to dereference the matrix and access it via the data array
-        try:
-            # dereference matrix pointer/reference
-            actual_val = self.valobj.GetNonSyntheticValue() if hasattr(self.valobj, 'GetNonSyntheticValue') else self.valobj
-            if actual_val.GetType().IsReferenceType():
-                actual_val = actual_val.Dereference()
-
-            # get the data field, and read from it
-            data_member = actual_val.GetChildMemberWithName('data')
-
-            if data_member and data_member.IsValid():
-                col_array = data_member.GetChildAtIndex(col)
-
-                if col_array and col_array.IsValid():
-                    element = col_array.GetChildAtIndex(row)
-
-                    if element and element.IsValid():
-                        return element
-
-            # if that didn't work, get it by memory
+        if not hasattr(val, 'GetTypeName'):
             try:
-                # get the mem address of the matrix
-                addr = actual_val.GetLoadAddress()
-
-                # if its legit
-                if lldb and addr != lldb.LLDB_INVALID_ADDRESS:
-                    # calculate the offset
-                    offset = (col * self.internal_dict["rows"] + row) * self.element_size()
-
-                    # return
-                    return actual_val.CreateChildAtOffset(f"[{col},{row}]", offset, self.element_type())
-            except:
+                if str(type(matrix_obj)) == "<class 'SwigPyObject'>":
+                    result.PutCString("Could not get actual matrix object")
+                    return
+            except Exception:
                 pass
-        except:
-            pass
 
-        # error
-        return None
+        # parse the Matrix<COLUMNS, ROWS, T> for COLUMNS, ROWS, and T
+        type_name: str = val.GetTypeName()
+        match = re.match(r'Matrix<(\d+),\s*(\d+),\s*(.+)>', type_name)
 
-    def element_type(self):
-        return self.valobj.GetTemplateArgumentType(2)
+        if not match:
+            result.PutCString(f"Could not read matrix type to extract COLUMNS, ROWS, and T")
+            return
 
-    def element_size(self):
-        return self.element_type().GetByteSize()
+        COLUMNS: int = int(match.group(1))
+        ROWS: int = int(match.group(2))
+        T: str = match.group(3).strip()
 
-    def update(self):
-        ...
+        # get the real deal stuff, dereference if needed
+        actual_val: Any = val.GetNonSyntheticValue() if hasattr(val, 'GetNonSyntheticValue') else val
 
+        if actual_val.GetType().IsReferenceType():
+            actual_val = actual_val.Dereference()
+
+        # access the .data field
+        data_member: Any = actual_val.GetChildMemberWithName('data')
+
+        # if we can access the .data member
+        if data_member and data_member.IsValid():
+            ss = f"Matrix<{COLUMNS}, {ROWS}, {T}>\n"
+
+            for r in range(ROWS):
+                ss += "["
+                for c in range(COLUMNS):
+                    col_array: Any = data_member.GetChildAtIndex(c)
+
+                    # invalid column, return blank
+                    if not col_array or not col_array.IsValid():
+                        result.PutCString(f"Invalid column a index {c}")
+                        return
+
+                    element_val: Any = col_array.GetChildAtIndex(r)
+
+                    # invalid element, append ?
+                    if not element_val or not element_val.IsValid():
+                        ss += "?"
+                        continue
+
+                    ss += format_scalar(element_val, 3)
+
+                    if c < COLUMNS - 1:
+                        ss += ", "
+
+                ss += "]\n"
+
+            ss += ""
+            result.PutCString(ss)
+            return
+
+        # get the matrix's memory address
+        addr: int = actual_val.GetLoadAddress()
+
+        # make sure its legit
+        if lldb and addr == lldb.LLDB_INVALID_ADDRESS:
+            result.PutCString("(error: invalid memory address)")
+            return
+
+        # get the element type (not string like T) via template parameters
+        elem_type: Any = matrix_obj.GetType().GetTemplateArgumentType(2)
+
+        # calculate byte size
+        elem_byte_size: int = elem_type.GetByteSize()
+
+        ss = f"Matrix<{COLUMNS}, {ROWS}, {T}>\n"
+        # iterate rows
+        for r in range(ROWS):
+            ss += "["
+            # iterate columns
+            for c in range(COLUMNS):
+                # calculate memory offset
+                offset: int = (c * ROWS + r) * elem_byte_size
+
+                # get the value at that address using the proper type
+                element_val: Any = matrix_obj.CreateValueFromAddress(f"[{c}, {r}]", addr + offset, elem_type)
+
+                # invalid element, append ?
+                if not element_val or not element_val.IsValid():
+                    ss += "?"
+                    continue
+
+                ss += format_scalar(element_val, 3)
+
+                if c < COLUMNS - 1:
+                    ss += ", "
+
+            ss += "]\n"
+
+        result.PutCString(ss)
+        return
+
+    except Exception as e:
+        result.PutCString(f"Error: {e}")
 
 # if running the script itself
 if __name__ == "__main__":

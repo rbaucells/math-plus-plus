@@ -4,4 +4,4 @@ command script import mathpp_lldb_formatters.py
 # Register only the summary (one-line display)
 # The native structure will be expandable
 type summary add -x "^Matrix<.*>$" --python-function mathpp_lldb_formatters.matrix_summary --expand
-type synthetic add -x "^Matrix<.*>$" --python-class mathpp_lldb_formatters.MatrixSyntheticProvider
+command script add -f mathpp_lldb_formatters.print_matrix print_matrix
