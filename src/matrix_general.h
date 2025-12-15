@@ -461,7 +461,7 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::toRowEchelon() const {
     Matrix<COLUMNS, ROWS, T> a = *this;
 
     int pivotRow = 0;
-    for (int c = 0; c < COLUMNS; c++) {
+    for (int c = 0; c < std::min(COLUMNS, ROWS); c++) {
         int rowIndex = -1;
         UnderlyingType value = std::norm(a[c][pivotRow]);
 
@@ -486,9 +486,11 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::toRowEchelon() const {
         const T pivot = a[c][pivotRow];
         for (int r = pivotRow + 1; r < ROWS; r++) {
             T multiplier = a[c][r] / pivot;
-            for (int i = c; i < COLUMNS; i++) {
+            for (int i = c + 1; i < COLUMNS; i++) {
                 a[i][r] -= multiplier * a[i][pivotRow];
             }
+            // avoid floating point arithmetic
+            a[c][r] = 0;
         }
 
         pivotRow++;
@@ -501,8 +503,49 @@ template<int COLUMNS, int ROWS, scalar T>
 Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::toReducedRowEchelon() const {
     Matrix<COLUMNS, ROWS, T> a = *this;
 
-    for (int c = 0; c < COLUMNS; c++) {
+    int pivotRow = 0;
+    for (int c = 0; c < std::min(COLUMNS, ROWS); c++) {
+        UnderlyingType rowValue = std::norm(a[c][pivotRow]);
+        int rowIndex = -1;
 
+        for (int r = pivotRow + 1; r < ROWS; r++) {
+            UnderlyingType curValue = std::norm(a[c][r]);
+
+            if (curValue > rowValue) {
+                rowIndex = r;
+                rowValue = curValue;
+            }
+        }
+
+        if (rowIndex == -1 && compare(rowValue, 0)) {
+            continue;
+        }
+
+        if (rowIndex != -1) {
+            a = a.swapRows(pivotRow, rowIndex);
+        }
+
+        const T pivotPreNormalize = a[c][pivotRow];
+        for (int cc = c + 1; cc < COLUMNS; cc++) {
+            a[cc][pivotRow] /= pivotPreNormalize;
+        }
+
+        // avoid floating point arithmetic
+        a[c][pivotRow] = 1;
+
+        for (int r = 0; r < ROWS; r++) {
+            if (r == pivotRow)
+                continue;
+
+            T multiplier = a[c][r];
+            for (int i = c + 1; i < COLUMNS; i++) {
+                a[i][r] -= multiplier * a[i][pivotRow];
+            }
+            // avoid floating point arithmetic
+            a[c][r] = 0;
+        }
+
+        pivotRow++;
     }
 
     return a;

@@ -205,7 +205,6 @@ def format_scalar(element, precision: int = 3) -> str:
         - std::complex<long double> (25.26 + 27.28i)
     """
 
-    print(f"formatting {element}")
     if not element or not element.IsValid():
         return "?"
 

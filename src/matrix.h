@@ -227,6 +227,8 @@ public:
     [[nodiscard]] bool isReducedRowEchelon() const;
     Matrix<COLUMNS, ROWS, T> toReducedRowEchelon() const;
 
+    [[nodiscard]] bool isRowEchelonOfThis(const Matrix<COLUMNS, ROWS, T>& ref, Matrix<COLUMNS, ROWS, T>::UnderlyingType precision = 0.01) const;
+
     [[nodiscard]] int rank() const;
 
     [[nodiscard]] bool isSymmetrical() const requires (isSquare);

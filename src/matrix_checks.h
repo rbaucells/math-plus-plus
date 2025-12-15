@@ -43,7 +43,56 @@ bool Matrix<COLUMNS, ROWS, T>::isRowEchelon(bool pivotMustBeOne) const {
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isReducedRowEchelon() const {}
+bool Matrix<COLUMNS, ROWS, T>::isReducedRowEchelon() const {
+    bool foundZeroRows = false;
+    int lastPivotColumn = -1;
+
+    for (int r = 0; r < ROWS; r++) {
+        bool foundNonZero = false;
+
+        for (int c = 0; c < COLUMNS; c++) {
+            T curValue = data[c][r];
+            if (!compare(curValue, 0)) {
+                // if we havent found nonzero, this is a pivot
+                if (!foundNonZero) {
+                    // pivot is to left of last pivot
+                    if (c <= lastPivotColumn)
+                        return false;
+
+                    // pivots need to be 1
+                    if (!compare(curValue, 1)) {
+                        return false;
+                    }
+
+                    // check that this column doesnt have any other non zero numbers
+                    for (int rr = 0; rr < ROWS; rr++) {
+                        if (rr == r)
+                            continue;
+
+                        if (!compare(data[c][rr], 0))
+                            return false;
+                    }
+
+                    foundNonZero = true;
+                    lastPivotColumn = c;
+                }
+
+                foundNonZero = true;
+            }
+        }
+
+        // non zero row when supposed to
+        if (foundNonZero && foundZeroRows)
+            return false;
+
+        // zero row
+        if (!foundNonZero) {
+            foundZeroRows = true;
+        }
+    }
+
+    return true;
+}
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isSymmetrical() const requires (isSquare) {
@@ -358,4 +407,15 @@ bool Matrix<COLUMNS, ROWS, T>::isTridiagonal() const requires (isSquare) {
     }
 
     return true;
+}
+
+template<int COLUMNS, int ROWS, scalar T>
+bool Matrix<COLUMNS, ROWS, T>::isRowEchelonOfThis(const Matrix<COLUMNS, ROWS, T>& ref, const Matrix<COLUMNS, ROWS, T>::UnderlyingType precision) const {
+    if (!ref.isRowEchelon())
+        return false;
+
+    Matrix<COLUMNS, ROWS, T> rrefOfRef = ref.toReducedRowEchelon();
+    Matrix<COLUMNS, ROWS, T> rrefOfThis = toReducedRowEchelon();
+
+    return rrefOfRef.equals(rrefOfThis, precision);
 }

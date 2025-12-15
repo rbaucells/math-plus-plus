@@ -135,7 +135,7 @@ TEST(MatrixGeneral, row_echelon_form) {
     // act
     const Matrix<4, 3> ref = m.toRowEchelon();
     // assert
-    ASSERT_TRUE(ref.isRowEchelon());
+    ASSERT_TRUE(m.isRowEchelonOfThis(ref));
 }
 
 TEST(MatrixGeneral, reduced_row_echelon_form) {
@@ -145,7 +145,7 @@ TEST(MatrixGeneral, reduced_row_echelon_form) {
     // act
     const Matrix<4, 3> rref = m.toReducedRowEchelon();
     // assert
-    ASSERT_TRUE(rref == expected);
+    ASSERT_TRUE(rref.equals(expected, 0.01));
 }
 
 TEST(MatrixGeneral, forward_substitution) {
