@@ -152,22 +152,38 @@ bool Matrix<COLUMNS, ROWS, T>::isSkewHermitian() const requires (isSquare) {
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveDefinite() const {
+bool Matrix<COLUMNS, ROWS, T>::isPositiveDefinite(const PositiveDefiniteAlgorithm algorithm) const requires (isSquare) {
+    switch (algorithm) {
+        case PositiveDefiniteAlgorithm::sylvesters:
+        default:
+            return isPositiveDefiniteSylvesters();
+    }
+}
+
+template<int COLUMNS, int ROWS, scalar T>
+template<int K>
+bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteSylvesters() const requires (isSquare) {
+    if constexpr (K > COLUMNS)
+        return true;
+    else {
+        T upperLeftSubMatrixDeterminant = upperLeftSubMatrix<K>().determinant(Matrix<K, K, T>::DeterminantAlgorithm::lu);
+        bool isPositiveDefiniteK1 = isPositiveDefiniteSylvesters<K + 1>();
+        return upperLeftSubMatrixDeterminant > 0 && isPositiveDefiniteK1;
+    }
+}
+
+template<int COLUMNS, int ROWS, scalar T>
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite() const requires (isSquare){
 
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite() const {
+bool Matrix<COLUMNS, ROWS, T>::isNegativeDefinite() const requires (isSquare){
 
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isNegativeDefinite() const {
-
-}
-
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isNegativeSemiDefinite() const {
+bool Matrix<COLUMNS, ROWS, T>::isNegativeSemiDefinite() const requires (isSquare){
 
 }
 

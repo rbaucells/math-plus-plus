@@ -237,10 +237,23 @@ public:
     [[nodiscard]] bool isHermitian() const requires (isSquare);
     [[nodiscard]] bool isSkewHermitian() const requires (isSquare);
 
-    [[nodiscard]] bool isPositiveDefinite() const;
-    [[nodiscard]] bool isPositiveSemiDefinite() const;
-    [[nodiscard]] bool isNegativeDefinite() const;
-    [[nodiscard]] bool isNegativeSemiDefinite() const;
+    template<int K>
+    Matrix<K, K, T> upperLeftSubMatrix() const requires (isSquare);
+
+    enum class PositiveDefiniteAlgorithm {
+        cholesky,
+        ldl,
+        sylvesters
+    };
+
+    [[nodiscard]] bool isPositiveDefinite(PositiveDefiniteAlgorithm algorithm = PositiveDefiniteAlgorithm::sylvesters) const requires (isSquare);
+private:
+    template<int K = 1>
+    [[nodiscard]] bool isPositiveDefiniteSylvesters() const requires (isSquare);
+public:
+    [[nodiscard]] bool isPositiveSemiDefinite() const requires (isSquare);
+    [[nodiscard]] bool isNegativeDefinite() const requires (isSquare);
+    [[nodiscard]] bool isNegativeSemiDefinite() const requires (isSquare);
 
     Vector<ROWS, T> getColumnVector(int i) const;
     std::array<Vector<ROWS>, COLUMNS> getColumnVectors() const;

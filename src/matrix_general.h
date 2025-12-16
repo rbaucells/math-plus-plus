@@ -856,3 +856,17 @@ Vector<COLUMNS, T> Matrix<COLUMNS, ROWS, T>::solveLinearSystemThroughRowReductio
     Vector<ROWS, T> x = a.getColumnVector(COLUMNS);
     return x;
 }
+
+template<int COLUMNS, int ROWS, scalar T>
+template<int K>
+Matrix<K, K, T> Matrix<COLUMNS, ROWS, T>::upperLeftSubMatrix() const requires (isSquare) {
+    Matrix<K, K, T> result;
+
+    for (int c = 0; c < K; c++) {
+        for (int r = 0; r < K; r++) {
+            result[c][r] = data[c][r];
+        }
+    }
+
+    return result;
+}

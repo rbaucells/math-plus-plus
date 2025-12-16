@@ -1,14 +1,11 @@
 # Pretty printer for math++ types
 
 # it doesnt matter if we cant import lldb because LLDB injects its own python stuff
-try:
-    import lldb
-except ImportError:
-    pass
+import lldb
 
 from typing import Any, Dict
 import re
-
+import shlex
 
 def _unwrap_swig(obj):
     """Get the actual c++ object"""
@@ -73,7 +70,8 @@ def matrix_summary(matrix_obj: Any, internal_dict: Dict[str, Any]) -> str:
 
         # parse the Matrix<COLUMNS, ROWS, T> for COLUMNS, ROWS, and T
         type_name: str = val.GetTypeName()
-        match = re.match(r'Matrix<(\d+),\s*(\d+),\s*(.+)>', type_name)
+        match = re.search(r'(?:const\s+)?Matrix<\s*(\d+)\s*,\s*(\d+)\s*,\s*([^>]+)\s*>(?:\s*[*&]+)?',type_name)
+
         if not match:
             return type_name
 
@@ -246,8 +244,34 @@ def format_scalar(element, precision: int = 3) -> str:
     return element.GetValue()
 
 
-def print_matrix(debugger, input_matrix, result, internal_dict):
+
+def print_matrix(debugger, command, result, internal_dict):
     try:
+        # split matrix name from precision thing
+        args = shlex.split(command)
+
+        if not args:
+            result.PutCString("Usage: print_matrix <variable> [-p PRECISION]")
+            return
+
+        input_matrix = args[0]
+
+        # default
+        precision = 3
+
+        # get the precision argument
+        i = 1
+        while i < len(args):
+            if args[i] == "-p" and i + 1 < len(args):
+                try:
+                    precision = int(args[i + 1])
+                except ValueError:
+                    result.PutCString("invalid precision number: " + args[i + 1])
+                    return
+                i += 2
+            else:
+                i += 1
+
         # get the SBValue from the incoming matrix variable
         target = debugger.GetSelectedTarget()
         frame = target.GetProcess().GetSelectedThread().GetSelectedFrame()
@@ -276,7 +300,7 @@ def print_matrix(debugger, input_matrix, result, internal_dict):
 
         # parse the Matrix<COLUMNS, ROWS, T> for COLUMNS, ROWS, and T
         type_name: str = val.GetTypeName()
-        match = re.match(r'Matrix<(\d+),\s*(\d+),\s*(.+)>', type_name)
+        match = re.search(r'(?:const\s+)?Matrix<\s*(\d+)\s*,\s*(\d+)\s*,\s*([^>]+)\s*>(?:\s*[*&]+)?',type_name)
 
         if not match:
             result.PutCString(f"Could not read matrix type to extract COLUMNS, ROWS, and T")
@@ -370,6 +394,7 @@ def print_matrix(debugger, input_matrix, result, internal_dict):
 
     except Exception as e:
         result.PutCString(f"Error: {e}")
+
 
 # if running the script itself
 if __name__ == "__main__":
