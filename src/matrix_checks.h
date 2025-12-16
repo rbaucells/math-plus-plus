@@ -154,38 +154,39 @@ bool Matrix<COLUMNS, ROWS, T>::isSkewHermitian() const requires (isSquare) {
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isPositiveDefinite(const PositiveDefiniteAlgorithm algorithm) const requires (isSquare) {
     switch (algorithm) {
-        case PositiveDefiniteAlgorithm::sylvesters:
+        case PositiveDefiniteAlgorithm::ldl:
+            return isPositiveDefiniteLdl();
+        case PositiveDefiniteAlgorithm::sylvester:
         default:
-            return isPositiveDefiniteSylvesters();
+            return isPositiveDefiniteSylvester();
     }
 }
 
 template<int COLUMNS, int ROWS, scalar T>
 template<int K>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteSylvesters() const requires (isSquare) {
+bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteSylvester() const requires (isSquare) {
     if constexpr (K > COLUMNS)
         return true;
     else {
         T upperLeftSubMatrixDeterminant = upperLeftSubMatrix<K>().determinant(Matrix<K, K, T>::DeterminantAlgorithm::lu);
-        bool isPositiveDefiniteK1 = isPositiveDefiniteSylvesters<K + 1>();
+        bool isPositiveDefiniteK1 = isPositiveDefiniteSylvester<K + 1>();
         return upperLeftSubMatrixDeterminant > 0 && isPositiveDefiniteK1;
     }
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite() const requires (isSquare){
+bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteLdl() const requires (isSquare) {
 
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isNegativeDefinite() const requires (isSquare){
-
-}
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite() const requires (isSquare) {}
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isNegativeSemiDefinite() const requires (isSquare){
+bool Matrix<COLUMNS, ROWS, T>::isNegativeDefinite() const requires (isSquare) {}
 
-}
+template<int COLUMNS, int ROWS, scalar T>
+bool Matrix<COLUMNS, ROWS, T>::isNegativeSemiDefinite() const requires (isSquare) {}
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isUnitary() const requires (isSquare) {
@@ -430,8 +431,8 @@ bool Matrix<COLUMNS, ROWS, T>::isRowEchelonOfThis(const Matrix<COLUMNS, ROWS, T>
     if (!ref.isRowEchelon())
         return false;
 
-    Matrix<COLUMNS, ROWS, T> rrefOfRef = ref.toReducedRowEchelon();
-    Matrix<COLUMNS, ROWS, T> rrefOfThis = toReducedRowEchelon();
+    const Matrix<COLUMNS, ROWS, T> rrefOfRef = ref.toReducedRowEchelon();
+    const Matrix<COLUMNS, ROWS, T> rrefOfThis = toReducedRowEchelon();
 
     return rrefOfRef.equals(rrefOfThis, precision);
 }

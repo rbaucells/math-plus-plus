@@ -288,8 +288,7 @@ Matrix<COLUMNS, ROWS, T>::template LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Ma
         }
     }
 
-    return
-        {l, d, l.conjugateTranspose()};
+    return {l, d, l.conjugateTranspose()};
 }
 
 template<int COLUMNS, int ROWS, scalar T>

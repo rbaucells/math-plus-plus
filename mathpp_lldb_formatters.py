@@ -340,7 +340,7 @@ def print_matrix(debugger, command, result, internal_dict):
                         ss += "?"
                         continue
 
-                    ss += format_scalar(element_val, 3)
+                    ss += format_scalar(element_val, precision)
 
                     if c < COLUMNS - 1:
                         ss += ", "

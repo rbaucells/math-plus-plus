@@ -243,13 +243,15 @@ public:
     enum class PositiveDefiniteAlgorithm {
         cholesky,
         ldl,
-        sylvesters
+        sylvester
     };
 
-    [[nodiscard]] bool isPositiveDefinite(PositiveDefiniteAlgorithm algorithm = PositiveDefiniteAlgorithm::sylvesters) const requires (isSquare);
+    [[nodiscard]] bool isPositiveDefinite(PositiveDefiniteAlgorithm algorithm = PositiveDefiniteAlgorithm::sylvester) const requires (isSquare);
 private:
     template<int K = 1>
-    [[nodiscard]] bool isPositiveDefiniteSylvesters() const requires (isSquare);
+    [[nodiscard]] bool isPositiveDefiniteSylvester() const requires (isSquare);
+
+    [[nodiscard]] bool isPositiveDefiniteLdl() const requires (isSquare);
 public:
     [[nodiscard]] bool isPositiveSemiDefinite() const requires (isSquare);
     [[nodiscard]] bool isNegativeDefinite() const requires (isSquare);
