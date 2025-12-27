@@ -6,6 +6,7 @@
 #include "../../src/matrix_checks.h"
 #include "../../src/matrix_decompositions.h"
 #include "../../src/matrix_eigen.h"
+#include "../../src/matrix_exceptions.h"
 #include "../../src/matrix_general.h"
 #include "../../src/matrix_operators.h"
 #include "../../src/matrix_transformations.h"

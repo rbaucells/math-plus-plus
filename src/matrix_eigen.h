@@ -1,11 +1,12 @@
 #pragma once
 #include "matrix.h"
+#include "matrix_exceptions.h"
 
 template<int COLUMNS, int ROWS, scalar T>
 template<int ITER>
 Matrix<COLUMNS, ROWS, T>::template LanczosAlgorithm<Matrix<ITER, ITER, T>, Matrix<ITER + 1, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::lanczosAlgorithm() const requires (isSquare) {
     if (!isHermitian())
-        throw std::runtime_error("Cannot do Lanczos algorithm on non hermitian matrix");
+        throw NonHermitian("Cannot do Lanczos algorithm on non hermitian matrix");
 
     std::array<Vector<COLUMNS, T>, ITER + 1> q;
 

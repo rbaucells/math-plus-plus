@@ -3,11 +3,12 @@
 #include <cstring>
 #include "matrix.h"
 #include "vector.h"
+#include "matrix_exceptions.h"
 
 template<int N, scalar T>
 constexpr Vector<N, T>::Vector(std::initializer_list<T> list) {
     if (list.size() != N) {
-        throw std::runtime_error("Incorrect number of elements in initializer list");
+        throw InvalidDimension("Incorrect number of elements in initializer list");
     }
 
     int i = 0;
