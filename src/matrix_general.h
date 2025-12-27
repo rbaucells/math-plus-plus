@@ -238,7 +238,7 @@ T Matrix<COLUMNS, ROWS, T>::triangularDeterminant() const requires (isSquare) {
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-T Matrix<COLUMNS, ROWS, T>::tridiagonalDeterminant() const requires (isSquare) {}
+T Matrix<COLUMNS, ROWS, T>::tridiagonalDeterminant() const requires (isSquare) { return T(); }
 
 template<int COLUMNS, int ROWS, scalar T>
 T Matrix<COLUMNS, ROWS, T>::luDeterminant() const requires (isSquare) {
