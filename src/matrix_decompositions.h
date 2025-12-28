@@ -1,6 +1,7 @@
 #pragma once
 #include <complex>
 #include "matrix.h"
+#include "matrix_exceptions.h"
 
 template<int COLUMNS, int ROWS, scalar T>
 Matrix<COLUMNS, ROWS, T>::template LUPDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::lupDecomposition(int* numRowSwaps) const {
@@ -27,7 +28,7 @@ Matrix<COLUMNS, ROWS, T>::template LUPDecomposition<Matrix<ROWS, ROWS, T>, Matri
 
             // we found nothing but we needed to find something
             if (rowIndex == -1 && compare(rowValue, 0)) {
-                throw std::runtime_error("Cannot LUP decompose singular matrix");
+                throw SingularMatrixException("Cannot LUP decompose singular matrix");
             }
 
             if (rowIndex != -1) {
@@ -98,7 +99,7 @@ Matrix<COLUMNS, ROWS, T>::template LUPQDecomposition<Matrix<ROWS, ROWS, T>, Matr
             }
 
             if (rowIndex == -1 && columnIndex == -1 && compare(pivot, 0)) {
-                throw std::runtime_error("Cannot LUPQ decompose singular matrix");
+                throw SingularMatrixException("Cannot LUPQ decompose singular matrix");
             }
 
             if (rowIndex != c) {
@@ -154,7 +155,7 @@ Matrix<COLUMNS, ROWS, T>::template LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix
         T pivot = u[c][c];
 
         if (compare(pivot, 0))
-            throw std::runtime_error("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
+            throw ZeroPivotException("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
 
         // iterate through things beneath that pivot in the matrix
         for (int r = c + 1; r < ROWS; r++) {
@@ -185,7 +186,7 @@ Matrix<COLUMNS, ROWS, T>::template LDUDecomposition<Matrix<ROWS, ROWS, T>, Matri
         T pivot = u[c][c];
 
         if (compare(pivot, 0))
-            throw std::runtime_error("Cannot LDU decompose matrix due to zero pivot");
+            throw ZeroPivotException("Cannot LDU decompose matrix due to zero pivot");
 
         // iterate through things beneath that pivot in the matrix
         for (int r = c + 1; r < ROWS; r++) {
@@ -216,7 +217,7 @@ Matrix<COLUMNS, ROWS, T>::template LDUDecomposition<Matrix<ROWS, ROWS, T>, Matri
 template<int COLUMNS, int ROWS, scalar T>
 Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::choleskyDecomposition(const bool allowPositiveSemiDefinite) const requires (isSquare) {
     if (!isHermitian()) {
-        throw std::runtime_error("Cannot find Cholesky Decomposition of non hermitian/symmetric matrix");
+        throw NonHermitianException("Cannot find Cholesky Decomposition of non hermitian/symmetric matrix");
     }
 
     Matrix<COLUMNS, ROWS, T> l;
@@ -231,11 +232,11 @@ Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T
                 }
 
                 if (value < 0) {
-                    throw std::runtime_error("Cannot cholesky decompose non positive definite matrix");
+                    throw NotPositiveDefiniteException("Cannot cholesky decompose non positive definite matrix");
                 }
 
                 if (compare(value, 0) && !allowPositiveSemiDefinite) {
-                    throw std::runtime_error("Cannot cholesky decompose non semi-positive definite matrix");
+                    throw NotPositiveSemiDefiniteException("Cannot cholesky decompose non semi-positive definite matrix");
                 }
 
                 l[c][c] = std::sqrt(value);

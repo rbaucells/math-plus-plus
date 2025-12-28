@@ -232,13 +232,13 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveDefinitePivots() const requires (isSqua
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite() const requires (isSquare) {}
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite() const requires (isSquare) { return false; }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isNegativeDefinite() const requires (isSquare) {}
+bool Matrix<COLUMNS, ROWS, T>::isNegativeDefinite() const requires (isSquare) { return false; }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isNegativeSemiDefinite() const requires (isSquare) {}
+bool Matrix<COLUMNS, ROWS, T>::isNegativeSemiDefinite() const requires (isSquare) { return false; }
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isUnitary() const requires (isSquare) {
