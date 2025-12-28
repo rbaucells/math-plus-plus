@@ -1,19 +1,22 @@
 #pragma once
 #include <complex>
 #include <cstring>
+#include "exceptions.h"
 #include "matrix.h"
 #include "vector.h"
 
 template<int N, scalar T>
 constexpr Vector<N, T>::Vector(std::initializer_list<T> list) {
-    if (list.size() != N) {
-        throw std::runtime_error("Incorrect number of elements in initializer list");
-    }
-
+    // check correct number of elements
+    if (list.size() != N)
+        throw InvalidDimensionException("Incorrect number of elements in initializer list");
+    // index
     int i = 0;
-
+    // loop over each value
     for (const auto value : list) {
+        // store value
         data[i] = value;
+        // advance index
         i++;
     }
 }

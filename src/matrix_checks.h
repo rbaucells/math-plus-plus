@@ -256,24 +256,22 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite(PositiveSemiDefiniteAlgori
 
 template<int COLUMNS, int ROWS, scalar T>
 template<int K>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteSylvester() const requires (isSquare) {}
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteSylvester() const requires (isSquare) { return false; }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteLdl() const requires (isSquare) {
-
-}
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteLdl() const requires (isSquare) { return false; }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteCholesky() const requires (isSquare) {}
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteCholesky() const requires (isSquare) { return false; }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinitePivots() const requires (isSquare) {}
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinitePivots() const requires (isSquare) { return false; }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isNegativeDefinite() const requires (isSquare) {}
+bool Matrix<COLUMNS, ROWS, T>::isNegativeDefinite() const requires (isSquare) { return false; }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isNegativeSemiDefinite() const requires (isSquare) {}
+bool Matrix<COLUMNS, ROWS, T>::isNegativeSemiDefinite() const requires (isSquare) { return false; }
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isUnitary() const requires (isSquare) {
