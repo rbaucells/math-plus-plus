@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../src/curve.h"
+#include "../../src/exceptions.h"
 #include "../../src/helper.h"
 #include "../../src/matrix.h"
 #include "../../src/matrix_checks.h"

@@ -1,19 +1,31 @@
 #pragma once
 #include "matrix.h"
 #include <cstring>
+#include "exceptions.h"
 #include "matrix_exceptions.h"
 
 template<int COLUMNS, int ROWS, scalar T>
 constexpr Matrix<COLUMNS, ROWS, T>::Matrix(std::initializer_list<std::initializer_list<T>> initializerList) {
+    // number of rows in initializer list
+    if (initializerList.size() != ROWS)
+        throw InvalidDimensionException("Incorrect number of rows in initializer list");
+    // row-major order in initializer list
     int r = 0;
+    // loop over each row
     for (const auto& row : initializerList) {
+        // check correct number of elements in row
+        if (row.size() != COLUMNS)
+            throw InvalidDimensionException("Incorrect number of columns in initializer list");
+        // column index
         int c = 0;
-
+        // loop over each element in the row
         for (const auto element : row) {
+            // store in column-major order
             data[c][r] = element;
+            // advance column
             c++;
         }
-
+        // advance row
         r++;
     }
 }

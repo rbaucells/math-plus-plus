@@ -1,5 +1,5 @@
 #pragma once
-#include "matrix.h"
+#include <stdexcept>
 
 class MatrixException : public std::runtime_error
 {
@@ -29,9 +29,4 @@ class NotPositiveDefiniteException : public MatrixException
 class NotPositiveSemiDefiniteException : public MatrixException
 {
     using MatrixException::MatrixException;
-};
-
-class InvalidDimensionException : public std::invalid_argument
-{
-    using std::invalid_argument::invalid_argument;
 };
