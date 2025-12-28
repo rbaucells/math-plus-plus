@@ -256,7 +256,7 @@ T Matrix<COLUMNS, ROWS, T>::tridiagonalDeterminant() const requires (isSquare) {
 template<int COLUMNS, int ROWS, scalar T>
 T Matrix<COLUMNS, ROWS, T>::luDeterminant() const requires (isSquare) {
     int numRowSwaps = 0;
-    auto [l, u, p] = lupDecomposition(&numRowSwaps);
+    auto [l, u, p] = fullLupDecomposition({.numRowSwaps = &numRowSwaps});
 
     if (numRowSwaps % 2 == 0)
         return u.determinant(DeterminantAlgorithm::triangular);
@@ -850,7 +850,7 @@ Vector<COLUMNS, T> Matrix<COLUMNS, ROWS, T>::solveLinearSystemThroughInverse(con
 
 template<int COLUMNS, int ROWS, scalar T>
 Vector<COLUMNS, T> Matrix<COLUMNS, ROWS, T>::solveLinearSystemThroughLu(const Vector<ROWS, T>& b) const requires (isSquare) {
-    auto [l,u, p] = lupDecomposition();
+    auto [l,u, p] = fullLupDecomposition();
 
     Vector<ROWS, T> y = l.forwardSubstitution(p * b);
     Vector<ROWS, T> x = u.backwardsSubstitution(y);

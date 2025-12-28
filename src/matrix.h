@@ -339,13 +339,32 @@ private:
 
 public:
     Matrix<COLUMNS, ROWS, T> hadamardProduct(const Matrix<COLUMNS, ROWS, T>& other) const;
+
     template<typename OTHER_T> requires HasCommonType<OTHER_T, T>
     Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> hadamardProduct(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const;
 
     template<int OTHER_COLUMNS, int OTHER_ROWS>
     Matrix<COLUMNS * OTHER_COLUMNS, ROWS * OTHER_ROWS, T> kroneckerProduct(const Matrix<OTHER_COLUMNS, OTHER_ROWS, T>& other) const;
+
     template<int OTHER_COLUMNS, int OTHER_ROWS, typename OTHER_T> requires HasCommonType<OTHER_T, T>
     Matrix<COLUMNS * OTHER_COLUMNS, ROWS * OTHER_ROWS, std::common_type_t<T, OTHER_T>> kroneckerProduct(const Matrix<OTHER_COLUMNS, OTHER_ROWS, OTHER_T>& other) const;
+
+    template<typename L_TYPE, typename U_TYPE>
+    struct LUDecomposition {
+        L_TYPE l;
+        U_TYPE u;
+    };
+
+    LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> fullLuDecomposition(bool skipZeroColumns = false) const;
+
+    template<typename L_TYPE, typename D_TYPE, typename U_TYPE>
+    struct LDUDecomposition {
+        L_TYPE l;
+        D_TYPE d;
+        U_TYPE u;
+    };
+
+    LDUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> fullLduDecomposition() const;
 
     template<typename L_TYPE, typename U_TYPE, typename P_TYPE>
     struct LUPDecomposition {
@@ -354,7 +373,12 @@ public:
         P_TYPE p;
     };
 
-    LUPDecomposition<Matrix<std::min(ROWS, COLUMNS), ROWS, T>, Matrix<COLUMNS, std::min(ROWS, COLUMNS), T>, Matrix<ROWS, ROWS, T>> lupDecomposition(int* numRowSwaps = nullptr) const;
+    struct LUPDecompositionParams {
+        bool skipZeroColumns = false;
+        int* numRowSwaps = nullptr;
+    };
+
+    LUPDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>> fullLupDecomposition(const LUPDecompositionParams& params = {}) const;
 
     template<typename L_TYPE, typename U_TYPE, typename P_TYPE, typename Q_TYPE>
     struct LUPQDecomposition {
@@ -364,24 +388,14 @@ public:
         Q_TYPE q;
     };
 
-    LUPQDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, COLUMNS, T>> lupqDecomposition(int* numRowSwaps = nullptr, int* numColumnSwaps = nullptr) const;
-
-    template<typename L_TYPE, typename U_TYPE>
-    struct LUDecomposition {
-        L_TYPE l;
-        U_TYPE u;
+    struct LUPQDecompositionParams {
+        bool skipZeroSections = false;
+        int* numRowSwaps = nullptr;
+        int* numColumnSwaps = nullptr;
     };
 
-    LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> luDecomposition(bool allowSingularU = false) const;
-
-    template<typename L_TYPE, typename D_TYPE, typename U_TYPE>
-    struct LDUDecomposition {
-        L_TYPE l;
-        D_TYPE d;
-        U_TYPE u;
-    };
-
-    LDUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> lduDecomposition() const;
+    // not unique
+    LUPQDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, COLUMNS, T>> fullLupqDecomposition(const LUPQDecompositionParams& params = {}) const;
 
     template<typename L_TYPE, typename L_TRANSPOSE_TYPE>
     struct CholeskyDecomposition {
