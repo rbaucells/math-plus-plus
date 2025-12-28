@@ -243,6 +243,8 @@ public:
     Matrix<COLUMNS, ROWS, T> symmetricPart() const requires (isSquare);
     Matrix<COLUMNS, ROWS, T> antiSymmetricPart() const requires (isSquare);
 
+    Matrix<COLUMNS, ROWS, T> hermitianPart() const requires (isSquare);
+
     enum class PositiveDefiniteAlgorithm {
         cholesky,
         cholesky_non_symmetric,
@@ -255,6 +257,7 @@ public:
     };
 
     [[nodiscard]] bool isPositiveDefinite(PositiveDefiniteAlgorithm algorithm = PositiveDefiniteAlgorithm::sylvester) const requires (isSquare);
+
 private:
     template<int K = 1>
     [[nodiscard]] bool isPositiveDefiniteSylvester() const requires (isSquare);
@@ -262,7 +265,26 @@ private:
     [[nodiscard]] bool isPositiveDefiniteCholesky() const requires (isSquare);
     [[nodiscard]] bool isPositiveDefinitePivots() const requires (isSquare);
 public:
-    [[nodiscard]] bool isPositiveSemiDefinite() const requires (isSquare);
+
+    enum class PositiveSemiDefiniteAlgorithm {
+        sylvester,
+        sylvester_non_symmetric,
+        ldl,
+        ldl_non_symmetric,
+        cholesky,
+        cholesky_non_symmetric
+    };
+
+    [[nodiscard]] bool isPositiveSemiDefinite(PositiveSemiDefiniteAlgorithm algorithm = PositiveSemiDefiniteAlgorithm::sylvester) const requires (isSquare);
+
+private:
+    template<int K = 1>
+    [[nodiscard]] bool isPositiveSemiDefiniteSylvester() const requires (isSquare);
+    [[nodiscard]] bool isPositiveSemiDefiniteLdl() const requires (isSquare);
+    [[nodiscard]] bool isPositiveSemiDefiniteCholesky() const requires (isSquare);
+    [[nodiscard]] bool isPositiveSemiDefinitePivots() const requires (isSquare);
+public:
+
     [[nodiscard]] bool isNegativeDefinite() const requires (isSquare);
     [[nodiscard]] bool isNegativeSemiDefinite() const requires (isSquare);
 
@@ -332,7 +354,7 @@ public:
         P_TYPE p;
     };
 
-    LUPDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>> lupDecomposition(int* numRowSwaps = nullptr) const;
+    LUPDecomposition<Matrix<std::min(ROWS, COLUMNS), ROWS, T>, Matrix<COLUMNS, std::min(ROWS, COLUMNS), T>, Matrix<ROWS, ROWS, T>> lupDecomposition(int* numRowSwaps = nullptr) const;
 
     template<typename L_TYPE, typename U_TYPE, typename P_TYPE, typename Q_TYPE>
     struct LUPQDecomposition {
@@ -350,7 +372,7 @@ public:
         U_TYPE u;
     };
 
-    LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> luDecomposition() const;
+    LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> luDecomposition(bool allowSingularU = false) const;
 
     template<typename L_TYPE, typename D_TYPE, typename U_TYPE>
     struct LDUDecomposition {

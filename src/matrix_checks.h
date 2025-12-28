@@ -232,7 +232,42 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveDefinitePivots() const requires (isSqua
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite() const requires (isSquare) {}
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite(PositiveSemiDefiniteAlgorithm algorithm) const requires (isSquare) {
+    switch (algorithm) {
+        case PositiveDefiniteAlgorithm::cholesky:
+            return isPositiveSemiDefiniteCholesky();
+        case PositiveDefiniteAlgorithm::cholesky_non_symmetric:
+            return symmetricPart().isPositiveSemiDefiniteCholesky();
+        case PositiveDefiniteAlgorithm::ldl:
+            return isPositiveSemiDefiniteLdl();
+        case PositiveDefiniteAlgorithm::ldl_non_symmetric:
+            return symmetricPart().isPositiveSemiDefiniteLdl();
+        case PositiveDefiniteAlgorithm::pivots:
+            return isPositiveSemiDefinitePivots();
+        case PositiveDefiniteAlgorithm::pivots_non_symmetric:
+            return symmetricPart().isPositiveSemiDefinitePivots();
+        case PositiveDefiniteAlgorithm::sylvester_non_symmetric:
+            return symmetricPart().isPositiveSemiDefiniteSylvester();
+        case PositiveDefiniteAlgorithm::sylvester:
+        default:
+            return isPositiveSemiDefiniteSylvester();
+    }
+}
+
+template<int COLUMNS, int ROWS, scalar T>
+template<int K>
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteSylvester() const requires (isSquare) {}
+
+template<int COLUMNS, int ROWS, scalar T>
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteLdl() const requires (isSquare) {
+
+}
+
+template<int COLUMNS, int ROWS, scalar T>
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteCholesky() const requires (isSquare) {}
+
+template<int COLUMNS, int ROWS, scalar T>
+bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinitePivots() const requires (isSquare) {}
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isNegativeDefinite() const requires (isSquare) {}

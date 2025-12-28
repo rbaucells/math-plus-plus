@@ -3,68 +3,68 @@
 #include "matrix.h"
 
 template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template LUPDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::lupDecomposition(int* numRowSwaps) const {
-    Matrix<ROWS, ROWS, T> l = Matrix<ROWS, ROWS, T>::identity();
-    Matrix<COLUMNS, ROWS, T> u = *this;
-    Matrix<ROWS, ROWS, T> p = Matrix<ROWS, ROWS, T>::identity();
-
-    // use std::min so we never access the pivot that's out of the matrix
-    for (int c = 0; c < std::min(ROWS, COLUMNS); c++) {
-        // handle row swaps
-        {
-            int rowIndex = -1;
-            UnderlyingType rowValue = std::norm(u[c][c]);
-
-            // iterate through rows of this column. Looking for the biggest boi
-            for (int r = c + 1; r < ROWS; r++) {
-                UnderlyingType curValue = std::norm(u[c][r]);
-
-                if (curValue > rowValue) {
-                    rowIndex = r;
-                    rowValue = curValue;
-                }
-            }
-
-            // we found nothing but we needed to find something
-            if (rowIndex == -1 && compare(rowValue, 0)) {
-                throw std::runtime_error("Cannot LUP decompose singular matrix");
-            }
-
-            if (rowIndex != -1) {
-                // swap u and p rows like normal
-                u = u.swapRows(c, rowIndex);
-                p = p.swapRows(c, rowIndex);
-
-                // swap rows of l before column c
-                for (int i = 0; i < c; ++i) {
-                    T temp = l[i][c];
-                    l[i][c] = l[i][rowIndex];
-                    l[i][rowIndex] = temp;
-                }
-
-                if (numRowSwaps != nullptr)
-                    (*numRowSwaps)++;
-            }
-        }
-
-        T pivot = u[c][c];
-
-        // iterate through things beneath that pivot in the matrix
-        for (int r = c + 1; r < ROWS; r++) {
-            T val = u[c][r];
-
-            T multiplierToPivotRow = val / pivot;
-
-            l[c][r] = multiplierToPivotRow;
-
-            // do this row minus other row times multiplier
-            for (int i = c; i < COLUMNS; i++) {
-                u[i][r] += -multiplierToPivotRow * u[i][c];
-            }
-        }
-    }
-
-    return {l, u, p};
+Matrix<COLUMNS, ROWS, T>::template LUPDecomposition<Matrix<std::min(ROWS, COLUMNS), ROWS, T>, Matrix<COLUMNS, std::min(ROWS, COLUMNS), T>, Matrix<ROWS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::lupDecomposition(int* numRowSwaps) const {
+    // Matrix<COLUMNS, ROWS, T> l = Matrix<ROWS, ROWS, T>::identity();
+    // Matrix<COLUMNS, ROWS, T> u = *this;
+    // Matrix<ROWS, ROWS, T> p = Matrix<ROWS, ROWS, T>::identity();
+    //
+    // // use std::min so we never access the pivot that's out of the matrix
+    // for (int c = 0; c < std::min(ROWS, COLUMNS); c++) {
+    //     // handle row swaps
+    //     {
+    //         int rowIndex = -1;
+    //         UnderlyingType rowValue = std::norm(u[c][c]);
+    //
+    //         // iterate through rows of this column. Looking for the biggest boi
+    //         for (int r = c + 1; r < ROWS; r++) {
+    //             UnderlyingType curValue = std::norm(u[c][r]);
+    //
+    //             if (curValue > rowValue) {
+    //                 rowIndex = r;
+    //                 rowValue = curValue;
+    //             }
+    //         }
+    //
+    //         // we found nothing but we needed to find something
+    //         if (rowIndex == -1 && compare(rowValue, 0)) {
+    //             throw std::runtime_error("Cannot LUP decompose singular matrix");
+    //         }
+    //
+    //         if (rowIndex != -1) {
+    //             // swap u and p rows like normal
+    //             u = u.swapRows(c, rowIndex);
+    //             p = p.swapRows(c, rowIndex);
+    //
+    //             // swap rows of l before column c
+    //             for (int i = 0; i < c; ++i) {
+    //                 T temp = l[i][c];
+    //                 l[i][c] = l[i][rowIndex];
+    //                 l[i][rowIndex] = temp;
+    //             }
+    //
+    //             if (numRowSwaps != nullptr)
+    //                 (*numRowSwaps)++;
+    //         }
+    //     }
+    //
+    //     T pivot = u[c][c];
+    //
+    //     // iterate through things beneath that pivot in the matrix
+    //     for (int r = c + 1; r < ROWS; r++) {
+    //         T val = u[c][r];
+    //
+    //         T multiplierToPivotRow = val / pivot;
+    //
+    //         l[c][r] = multiplierToPivotRow;
+    //
+    //         // do this row minus other row times multiplier
+    //         for (int i = c; i < COLUMNS; i++) {
+    //             u[i][r] += -multiplierToPivotRow * u[i][c];
+    //         }
+    //     }
+    // }
+    //
+    // return {l, u, p};
 }
 
 template<int COLUMNS, int ROWS, scalar T>
@@ -145,7 +145,7 @@ Matrix<COLUMNS, ROWS, T>::template LUPQDecomposition<Matrix<ROWS, ROWS, T>, Matr
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::luDecomposition() const {
+Matrix<COLUMNS, ROWS, T>::template LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::luDecomposition(bool allowSingularU) const {
     Matrix<ROWS, ROWS, T> l = Matrix<ROWS, ROWS, T>::identity();
     Matrix<COLUMNS, ROWS, T> u = *this;
 
@@ -153,8 +153,18 @@ Matrix<COLUMNS, ROWS, T>::template LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix
     for (int c = 0; c < std::min(ROWS, COLUMNS); c++) {
         T pivot = u[c][c];
 
-        if (compare(pivot, 0))
-            throw std::runtime_error("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
+        if (compare(pivot, 0)) {
+            if (!allowSingularU)
+                throw std::runtime_error("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
+
+            for (int r = c + 1; r < ROWS; r++) {
+                if (!compare(u[c][r], 0))
+                    throw std::runtime_error("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
+            }
+
+            // skip this entire column
+            continue;
+        }
 
         // iterate through things beneath that pivot in the matrix
         for (int r = c + 1; r < ROWS; r++) {
@@ -257,38 +267,7 @@ Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T
 
 template<int COLUMNS, int ROWS, scalar T>
 Matrix<COLUMNS, ROWS, T>::template LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::ldlDecomposition() const requires (isSquare) {
-    Matrix<COLUMNS, ROWS, T> l;
-    Matrix<COLUMNS, ROWS, T> d;
 
-    for (int c = 0; c < COLUMNS; c++) {
-        for (int r = 0; r <= c; r++) {
-            if (r == c) {
-                T value = data[c][c];
-
-                for (int k = 0; k < c; k++) {
-                    value -= std::norm(l[k][c]) * d[k][k];
-                }
-
-                d[c][c] = value;
-            }
-            else if (r > c) {
-                T value = data[c][r];
-
-                for (int k = 0; k < c; k++) {
-                    if constexpr (!isComplex) {
-                        value -= l[k][r] * l[k][c] * d[k][k];
-                    }
-                    else {
-                        value -= l[k][r] * std::conj(l[k][c]) * d[k][k];
-                    }
-
-                    l[c][r] = (1 / d[c][c]) * value;
-                }
-            }
-        }
-    }
-
-    return {l, d, l.conjugateTranspose()};
 }
 
 template<int COLUMNS, int ROWS, scalar T>

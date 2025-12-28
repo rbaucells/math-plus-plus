@@ -24,8 +24,9 @@ add_executable(math-tests
         main.cpp
         matrix.operators.test.cpp
         matrix.checks.tests.cpp
-        matrix_general_tests.cpp
+        matrix.general.tests.cpp
         helper.tests.cpp
+        matrix.decompositions.tests.cpp
 )
 
 # link with the math lib
