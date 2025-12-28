@@ -28,7 +28,7 @@ Matrix<COLUMNS, ROWS, T>::template LUPDecomposition<Matrix<ROWS, ROWS, T>, Matri
 
             // we found nothing but we needed to find something
             if (rowIndex == -1 && compare(rowValue, 0)) {
-                throw SingularMatrix("Cannot LUP decompose singular matrix");
+                throw SingularMatrixException("Cannot LUP decompose singular matrix");
             }
 
             if (rowIndex != -1) {
@@ -99,7 +99,7 @@ Matrix<COLUMNS, ROWS, T>::template LUPQDecomposition<Matrix<ROWS, ROWS, T>, Matr
             }
 
             if (rowIndex == -1 && columnIndex == -1 && compare(pivot, 0)) {
-                throw SingularMatrix("Cannot LUPQ decompose singular matrix");
+                throw SingularMatrixException("Cannot LUPQ decompose singular matrix");
             }
 
             if (rowIndex != c) {
@@ -155,7 +155,7 @@ Matrix<COLUMNS, ROWS, T>::template LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix
         T pivot = u[c][c];
 
         if (compare(pivot, 0))
-            throw ZeroPivot("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
+            throw ZeroPivotException("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
 
         // iterate through things beneath that pivot in the matrix
         for (int r = c + 1; r < ROWS; r++) {
@@ -186,7 +186,7 @@ Matrix<COLUMNS, ROWS, T>::template LDUDecomposition<Matrix<ROWS, ROWS, T>, Matri
         T pivot = u[c][c];
 
         if (compare(pivot, 0))
-            throw ZeroPivot("Cannot LDU decompose matrix due to zero pivot");
+            throw ZeroPivotException("Cannot LDU decompose matrix due to zero pivot");
 
         // iterate through things beneath that pivot in the matrix
         for (int r = c + 1; r < ROWS; r++) {
@@ -217,7 +217,7 @@ Matrix<COLUMNS, ROWS, T>::template LDUDecomposition<Matrix<ROWS, ROWS, T>, Matri
 template<int COLUMNS, int ROWS, scalar T>
 Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::choleskyDecomposition(const bool allowPositiveSemiDefinite) const requires (isSquare) {
     if (!isHermitian()) {
-        throw NonHermitian("Cannot find Cholesky Decomposition of non hermitian/symmetric matrix");
+        throw NonHermitianException("Cannot find Cholesky Decomposition of non hermitian/symmetric matrix");
     }
 
     Matrix<COLUMNS, ROWS, T> l;
@@ -232,11 +232,11 @@ Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T
                 }
 
                 if (value < 0) {
-                    throw NotPositiveDefinite("Cannot cholesky decompose non positive definite matrix");
+                    throw NotPositiveDefiniteException("Cannot cholesky decompose non positive definite matrix");
                 }
 
                 if (compare(value, 0) && !allowPositiveSemiDefinite) {
-                    throw NotPositiveSemiDefinite("Cannot cholesky decompose non semi-positive definite matrix");
+                    throw NotPositiveSemiDefiniteException("Cannot cholesky decompose non semi-positive definite matrix");
                 }
 
                 l[c][c] = std::sqrt(value);

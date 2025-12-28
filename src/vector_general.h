@@ -8,7 +8,7 @@
 template<int N, scalar T>
 constexpr Vector<N, T>::Vector(std::initializer_list<T> list) {
     if (list.size() != N) {
-        throw InvalidDimension("Incorrect number of elements in initializer list");
+        throw InvalidDimensionException("Incorrect number of elements in initializer list");
     }
 
     int i = 0;

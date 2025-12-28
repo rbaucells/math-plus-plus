@@ -107,7 +107,7 @@ template<int COLUMNS, int ROWS, scalar T>
 Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::inverse() const requires (isSquare) {
     if constexpr (ROWS == 1) { // its a one by one, we can just return 1 / value
         if (compare(data[0][0], 0)) {
-            throw SingularMatrix("Cannot find inverse of singular matrix");
+            throw SingularMatrixException("Cannot find inverse of singular matrix");
         }
 
         Matrix<1, 1, T> result;
@@ -119,7 +119,7 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::inverse() const requires (isS
         T det = determinant();
 
         if (compare(det, 0)) {
-            throw SingularMatrix("Cannot find inverse of singular matrix");
+            throw SingularMatrixException("Cannot find inverse of singular matrix");
         }
 
         Matrix<2, 2, T> result;
@@ -151,7 +151,7 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::inverse() const requires (isS
 
             // if we didn't swap, but needed to have
             if (rowIndex == -1 && compare(value, 0))
-                throw SingularMatrix("Cannot find inverse of singular matrix");
+                throw SingularMatrixException("Cannot find inverse of singular matrix");
 
             // swap if we can
             if (rowIndex != -1) {
@@ -487,7 +487,7 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::toRowEchelon(const bool doRow
         }
 
         if (!doRowSwaps && compare(a[c][pivotRow], 0)) {
-            throw ZeroPivot("Could not reduce matrix to row echelon form without the use of row swaps");
+            throw ZeroPivotException("Could not reduce matrix to row echelon form without the use of row swaps");
         }
 
         const T pivot = a[c][pivotRow];
