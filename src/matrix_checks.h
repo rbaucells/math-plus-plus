@@ -203,7 +203,7 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteLdl() const requires (isSquare)
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteCholesky() const requires (isSquare) {
     try {
-        choleskyDecomposition(false);
+        choleskyDecomposition();
         return true;
     }
     catch ([[maybe_unused]] std::exception& e) {
@@ -234,10 +234,6 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveDefinitePivots() const requires (isSqua
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite(PositiveSemiDefiniteAlgorithm algorithm) const requires (isSquare) {
     switch (algorithm) {
-        case PositiveDefiniteAlgorithm::cholesky:
-            return isPositiveSemiDefiniteCholesky();
-        case PositiveDefiniteAlgorithm::cholesky_non_symmetric:
-            return symmetricPart().isPositiveSemiDefiniteCholesky();
         case PositiveDefiniteAlgorithm::ldl:
             return isPositiveSemiDefiniteLdl();
         case PositiveDefiniteAlgorithm::ldl_non_symmetric:
@@ -260,9 +256,6 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteSylvester() const requires 
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteLdl() const requires (isSquare) { return false; }
-
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteCholesky() const requires (isSquare) { return false; }
 
 template<int COLUMNS, int ROWS, scalar T>
 bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinitePivots() const requires (isSquare) { return false; }

@@ -270,9 +270,7 @@ public:
         sylvester,
         sylvester_non_symmetric,
         ldl,
-        ldl_non_symmetric,
-        cholesky,
-        cholesky_non_symmetric
+        ldl_non_symmetric
     };
 
     [[nodiscard]] bool isPositiveSemiDefinite(PositiveSemiDefiniteAlgorithm algorithm = PositiveSemiDefiniteAlgorithm::sylvester) const requires (isSquare);
@@ -281,7 +279,6 @@ private:
     template<int K = 1>
     [[nodiscard]] bool isPositiveSemiDefiniteSylvester() const requires (isSquare);
     [[nodiscard]] bool isPositiveSemiDefiniteLdl() const requires (isSquare);
-    [[nodiscard]] bool isPositiveSemiDefiniteCholesky() const requires (isSquare);
     [[nodiscard]] bool isPositiveSemiDefinitePivots() const requires (isSquare);
 public:
 
@@ -403,7 +400,8 @@ public:
         L_TRANSPOSE_TYPE lTranspose;
     };
 
-    CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> choleskyDecomposition(bool allowPositiveSemiDefinite = false) const requires (isSquare);
+    // uses Cholesky–Banachiewicz and Cholesky–Crout algorithms
+    CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> choleskyDecomposition() const requires (isSquare);
 
     template<typename L_TYPE, typename D_TYPE, typename L_TRANSPOSE_TYPE>
     struct LDLDecomposition {

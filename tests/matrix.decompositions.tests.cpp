@@ -430,3 +430,55 @@ TEST(MatrixDecompositions, fail_lupq_decomp_wide_zero_section) {
     // act / assert
     ASSERT_ANY_THROW(a.fullLupqDecomposition());
 }
+
+TEST(MatrixDecompositions, cholesky_real) {
+    // arrange
+    constexpr Matrix<3, 3> a = {{4, 12, -16}, {12, 37, -43}, {-16, -43, 98}};
+    constexpr Matrix<3, 3> expectedL = {{2, 0, 0}, {6, 1, 0}, {-8, 5, 3}};
+    constexpr Matrix<3, 3> expectedLt = {{2, 6, -8}, {0, 1, 5}, {0, 0, 3}};
+    // act
+    auto [l, lt] = a.choleskyDecomposition();
+    // assert
+    ASSERT_TRUE(l.equals(expectedL, 0.001f));
+    ASSERT_TRUE(lt.equals(expectedLt, 0.001f));
+}
+
+TEST(MatrixDecompositions, fail_cholesky_real_psd) {
+    // arrange
+    constexpr Matrix<3, 3> a = {{3, 1, 2}, {1, 3, 2}, {2, 2, 2}};
+    // act / assert
+    ASSERT_THROW(a.choleskyDecomposition(), NotPositiveDefinite);
+}
+
+TEST(MatrixDecompositions, fail_cholesky_real_not_symmetric) {
+    // arrange
+    constexpr Matrix<3, 3> a = {{4, 12, -16}, {12, 37, -43}, {-15, -43, 98}};
+    // act / assert
+    ASSERT_THROW(a.choleskyDecomposition(), NotSymmetricOrHermitian);
+}
+
+TEST(MatrixDecompositions, cholesky_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{4, 0}, {2, 2}, {1, 0}}, {{2, -2}, {9, 0}, {1, -1}}, {{1, 0}, {1, 1}, {5, 0}}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedL = {{{2, 0}, {0, 0}, {0, 0}}, {{1, -1}, {2.64575f, 0}, {0, 0}}, {{0.5f, 0}, {0.18898f, 0.18898f}, {2.163f, 0}}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedLt = {{{2, 0}, {1, 1}, {0.5f, 0}}, {{0, 0}, {2.64575f, 0}, {0.18898f, -0.18898f}}, {{0, 0}, {0, 0}, {2.163f, 0}}};
+    // act
+    auto [l, lt] = a.choleskyDecomposition();
+    // assert
+    ASSERT_TRUE(l.equals(expectedL, 0.001f));
+    ASSERT_TRUE(lt.equals(expectedLt, 0.001f));
+}
+
+TEST(MatrixDecompositions, fail_cholesky_complex_psd) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{2, 0}, {1, 1}, {0, 0}}, {{1, -1}, {2, 0}, {0, 1}}, {{0, 0}, {0, -1}, {1, 0}}};
+    // act / assert
+    ASSERT_THROW(a.choleskyDecomposition(), NotPositiveDefinite);
+}
+
+TEST(MatrixDecompositions, fail_cholesky_complex_not_hermitian) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{4, 0}, {2, 3}, {1, 0}}, {{2, -2}, {9, 0}, {1, -1}}, {{1, 0}, {1, 1}, {5, 0}}};
+    // act / assert
+    ASSERT_THROW(a.choleskyDecomposition(), NotSymmetricOrHermitian);
+}

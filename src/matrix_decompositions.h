@@ -232,45 +232,55 @@ Matrix<COLUMNS, ROWS, T>::template LUPQDecomposition<Matrix<ROWS, ROWS, T>, Matr
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::choleskyDecomposition(const bool allowPositiveSemiDefinite) const requires (isSquare) {
-    if (!isHermitian()) {
-        throw NonHermitianException("Cannot find Cholesky Decomposition of non hermitian/symmetric matrix");
-    }
+Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::choleskyDecomposition() const requires (isSquare) {
+    if (!isHermitian())
+        throw NotSymmetricOrHermitian("Cholesky decomposition is not valid for non symmetric / hermitian matrices");
 
     Matrix<COLUMNS, ROWS, T> l;
+    Matrix<ROWS, COLUMNS, T> lt;
 
     for (int c = 0; c < COLUMNS; c++) {
-        for (int r = 0; r <= c; r++) {
-            if (r == c) {
-                T value = data[c][c];
+        for (int r = c; r < ROWS; r++) {
+            if (c == r) {
+                // data[c][c] is guaranteed to be real since matrix is hermitian, so just take real part
+                UnderlyingType sum = std::real(data[c][c]);
 
                 for (int k = 0; k < c; k++) {
-                    value -= std::norm(l[k][c]);
+                    sum -= std::norm(l[k][r]);
                 }
 
-                if (value < 0) {
-                    throw NotPositiveDefiniteException("Cannot cholesky decompose non positive definite matrix");
-                }
+                if (sum < 0 || compare(sum, 0, 0.001f))
+                    throw NotPositiveDefinite("Cannot cholesky decompose matrix if not positive definite");
 
-                if (compare(value, 0) && !allowPositiveSemiDefinite) {
-                    throw NotPositiveSemiDefiniteException("Cannot cholesky decompose non semi-positive definite matrix");
-                }
+                T sqrt = std::sqrt(sum);
 
-                l[c][c] = std::sqrt(value);
+                l[c][c] = sqrt;
+                lt[c][c] = sqrt;
             }
-            else if (r > c) {
-                T value = data[c][r];
+            else {
+                T sum = data[c][r];
 
                 for (int k = 0; k < c; k++) {
-                    value -= l[k][r] * l[k][c];
+                    if constexpr (isComplex) {
+                        sum -= std::conj(l[k][c]) * l[k][r];
+                    }
+                    else {
+                        sum -= l[k][c] * l[k][r];
+                    }
                 }
 
-                l[c][r] = value / l[c][c];
+                T val = sum / l[c][c];
+                l[c][r] = val;
+
+                if constexpr (isComplex)
+                    lt[r][c] = std::conj(val);
+                else
+                    lt[r][c] = val;
             }
         }
     }
 
-    return {l, l.conjugateTranspose()};
+    return {l, lt};
 }
 
 template<int COLUMNS, int ROWS, scalar T>

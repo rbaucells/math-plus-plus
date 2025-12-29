@@ -1,32 +1,26 @@
 #pragma once
 #include <stdexcept>
 
-class MatrixException : public std::runtime_error
-{
+class MatrixException : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
-class SingularMatrixException : public MatrixException
-{
+class SingularMatrixException : public MatrixException {
     using MatrixException::MatrixException;
 };
 
-class ZeroPivotException : public MatrixException
-{
+class ZeroPivotException : public MatrixException {
     using MatrixException::MatrixException;
 };
 
-class NonHermitianException : public MatrixException
-{
+class NonHermitianException : public MatrixException {
     using MatrixException::MatrixException;
 };
 
-class NotPositiveDefiniteException : public MatrixException
-{
+class NotPositiveDefinite : public MatrixException {
     using MatrixException::MatrixException;
 };
 
-class NotPositiveSemiDefiniteException : public MatrixException
-{
+class NotSymmetricOrHermitian : public MatrixException {
     using MatrixException::MatrixException;
 };
