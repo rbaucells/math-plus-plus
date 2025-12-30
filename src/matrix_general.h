@@ -797,7 +797,7 @@ Matrix<COLUMNS * OTHER_COLUMNS, ROWS * OTHER_ROWS, std::common_type_t<T, OTHER_T
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-Vector<ROWS, T> Matrix<COLUMNS, ROWS, T>::backwardsSubstitution(const Vector<ROWS, T>& b) const requires (isSquare) {
+Vector<ROWS, T> Matrix<COLUMNS, ROWS, T>::backwardSubstitution(const Vector<ROWS, T>& b) const requires (isSquare) {
     Vector<ROWS, T> result;
 
     for (int r = ROWS - 1; r >= 0; --r) {
@@ -853,7 +853,7 @@ Vector<COLUMNS, T> Matrix<COLUMNS, ROWS, T>::solveLinearSystemThroughLu(const Ve
     auto [l,u, p] = fullLupDecomposition();
 
     Vector<ROWS, T> y = l.forwardSubstitution(p * b);
-    Vector<ROWS, T> x = u.backwardsSubstitution(y);
+    Vector<ROWS, T> x = u.backwardSubstitution(y);
 
     return x;
 }

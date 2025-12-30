@@ -191,7 +191,7 @@ TEST(MatrixGeneral, backward_substitution) {
     constexpr Vector<3> b = {4, -1, 2};
     constexpr Vector<3> expected = {-24, -13, 2};
     // act
-    const Vector<3> x = u.backwardsSubstitution(b);
+    const Vector<3> x = u.backwardSubstitution(b);
     // assert
     ASSERT_TRUE(x == expected);
 }

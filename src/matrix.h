@@ -264,8 +264,8 @@ private:
     [[nodiscard]] bool isPositiveDefiniteLdl() const requires (isSquare);
     [[nodiscard]] bool isPositiveDefiniteCholesky() const requires (isSquare);
     [[nodiscard]] bool isPositiveDefinitePivots() const requires (isSquare);
-public:
 
+public:
     enum class PositiveSemiDefiniteAlgorithm {
         sylvester,
         sylvester_non_symmetric,
@@ -280,8 +280,8 @@ private:
     [[nodiscard]] bool isPositiveSemiDefiniteSylvester() const requires (isSquare);
     [[nodiscard]] bool isPositiveSemiDefiniteLdl() const requires (isSquare);
     [[nodiscard]] bool isPositiveSemiDefinitePivots() const requires (isSquare);
-public:
 
+public:
     [[nodiscard]] bool isNegativeDefinite() const requires (isSquare);
     [[nodiscard]] bool isNegativeSemiDefinite() const requires (isSquare);
 
@@ -319,7 +319,7 @@ public:
     [[nodiscard]] bool isFrobeniusMatrix() const requires (isSquare);
 
     Vector<ROWS, T> forwardSubstitution(const Vector<ROWS, T>& b) const requires (isSquare);
-    Vector<ROWS, T> backwardsSubstitution(const Vector<ROWS, T>& b) const requires (isSquare);
+    Vector<ROWS, T> backwardSubstitution(const Vector<ROWS, T>& b) const requires (isSquare);
 
     enum class LinearSystemAlgorithm {
         inverse,
@@ -352,6 +352,24 @@ public:
         U_TYPE u;
     };
 
+    /**
+     * @brief Uses gaussian elimination to produce 2 unique matrices: l and u, that multiplied together give the original matrix.\n
+     * The algorithm has a time complexity of O(n^3) and 2/3 n^3 FLOPS.
+     *
+     * The l matrix is a ROWS x ROWS, lower unitriangular matrix that contains the multipliers used in gaussian elimination. \n
+     * The u matrix is a COLUMNS x ROWS, upper triangular matrix.
+     *
+     * This algorithm can be used to solve Ax = b, by factoring A into l and u, then using y =  l.@a forwardSubstitution(b) and then doing x = u.@a backwardSubstitution(y). See @a solveLinearSystem()
+     *
+     * @param skipZeroColumns Allows the algorithm to skip a column of only zeroes
+     *
+     * @returns A templated struct the contains the l and u matrices
+     *
+     * @throws ZeroPivotException If a zero pivot is found. If @a skipZeroColumns is true, will only throw if a zero pivot is found and the column is not a zero column
+     * @warning If @a skipZeroColumns is set to true, the resulting u matrix may be singular and the decomposition may not be unique
+     *
+     * @note This algorithm is not numerically stable. See @a fullLupDecomposition() or @a fullLupqDecomposition()
+     */
     LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> fullLuDecomposition(bool skipZeroColumns = false) const;
 
     template<typename L_TYPE, typename D_TYPE, typename U_TYPE>
@@ -361,6 +379,23 @@ public:
         U_TYPE u;
     };
 
+    /**
+     * @brief Uses gaussian elimination to produce 3 unique matrices, l, d, and u, that multiplied together give the original matrix. \n
+     * Very similar to the @fullLuDecomposition(). \n
+     * The algorithm has a time complexity of O(n^3) and 2/3 n^3 FLOPS.
+     *
+     * The l matrix is a ROWS x ROWS, lower unitriangular matrix that contains the multipliers used in gaussian elimination. \n
+     * The d matrix is a ROWS x ROWS, diagonal matrix that stores the elements on the main diagonal of the u matrix. \n
+     * The u matrix is a COLUMNS x ROWS, upper unitriangular matrix.
+     *
+     * The algorithm can be used to solve Ax = b by getting y = l.@a forwardSubstitution(b), dividing each element of y by the corresponding diagonal element of d, then solving x = u.@a backwardSubstitution(y).
+     *
+     * @returns A templated struct the contains the l, d, and u matrices
+     *
+     * @throws ZeroPivotException If a zero pivot is found.
+     *
+     * @note This algorithm is not numerically stable. See @a fullLupDecomposition() or @a fullLupqDecomposition()
+     */
     LDUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> fullLduDecomposition() const;
 
     template<typename L_TYPE, typename U_TYPE, typename P_TYPE>
@@ -410,7 +445,7 @@ public:
         L_TRANSPOSE_TYPE lTranspose;
     };
 
-    LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> ldlDecomposition() const requires (isSquare);
+    LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> ldlDecomposition(bool allowSemidefinite = false) const requires (isSquare);
 
     template<typename Q_TYPE, typename R_TYPE>
     struct QRDecomposition {

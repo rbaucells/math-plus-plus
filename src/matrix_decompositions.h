@@ -14,11 +14,11 @@ Matrix<COLUMNS, ROWS, T>::template LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix
 
         if (compare(pivot, 0)) {
             if (!skipZeroColumns)
-                throw std::runtime_error("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
+                throw ZeroPivotException("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
 
             for (int r = c + 1; r < ROWS; r++) {
                 if (!compare(u[c][r], 0))
-                    throw std::runtime_error("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
+                    throw ZeroPivotException("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
             }
 
             // skip this entire column
@@ -54,7 +54,7 @@ Matrix<COLUMNS, ROWS, T>::template LDUDecomposition<Matrix<ROWS, ROWS, T>, Matri
         T pivot = u[c][c];
 
         if (compare(pivot, 0)) {
-            throw std::runtime_error("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
+            throw ZeroPivotException("Cannot LU decompose matrix due to zero pivot, try LUP or LUPQ");
         }
 
         // iterate through things beneath that pivot in the matrix
@@ -284,7 +284,54 @@ Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::ldlDecomposition() const requires (isSquare) {}
+Matrix<COLUMNS, ROWS, T>::template LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::ldlDecomposition(bool allowSemidefinite) const requires (isSquare) {
+    if (!isHermitian())
+        throw NotSymmetricOrHermitian("Cholesky decomposition is not valid for non symmetric / hermitian matrices");
+
+    Matrix<COLUMNS, ROWS, T> l;
+    Matrix<ROWS, ROWS, T> d;
+    Matrix<ROWS, COLUMNS, T> lt;
+
+    for (int c = 0; c < COLUMNS; c++) {
+        d[c][c] = data[c][c];
+
+        for (int k = 0; k < c; k++) {
+            d[c][c] -= std::norm(l[k][c]);
+        }
+
+        for (int r = c; r < ROWS; r++) {
+            T sum = data[c][r];
+
+            for (int k = 0; k < c; k++) {
+                if constexpr (isComplex) {
+                    sum -= l[k][r] * std::conj(l[k][c]) * d[k][k];
+                }
+                else {
+                    sum -= l[k][r] * l[k][c] * d[k][k];
+                }
+            }
+
+            if (compare(d[c][c], 0)) {
+                if (!allowSemidefinite)
+                    throw NotPositiveDefinite("Could not LDL decompose non positive definite matrix");
+
+                l[c][r] = 0;
+                lt[r][c] = 0;
+            }
+            else {
+                T val = sum / d[c][c];
+                l[c][r] = val;
+
+                if constexpr (isComplex)
+                    lt[r][c] = std::conj(val);
+                else
+                    lt[r][c] = val;
+            }
+        }
+    }
+
+    return {l, d, lt};
+}
 
 template<int COLUMNS, int ROWS, scalar T>
 Matrix<COLUMNS, ROWS, T>::template QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::qrDecomposition() const requires (isSquare) {
