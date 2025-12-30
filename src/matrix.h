@@ -436,7 +436,17 @@ public:
     };
 
     // uses Cholesky–Banachiewicz and Cholesky–Crout algorithms
-    CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> choleskyDecomposition() const requires (isSquare);
+    CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> choleskyDecomposition() const requires (isSquare);
+
+    template<typename L_TYPE, typename L_TRANSPOSE_TYPE, typename P_TYPE, typename P_TRANSPOSE_TYPE>
+    struct PivotedCholeskyDecomposition {
+        L_TYPE l;
+        L_TRANSPOSE_TYPE lTranspose;
+        P_TYPE p;
+        P_TRANSPOSE_TYPE pTranspose;
+    };
+
+    PivotedCholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> pivotedCholeskyDecomposition() const requires (isSquare);
 
     template<typename L_TYPE, typename D_TYPE, typename L_TRANSPOSE_TYPE>
     struct LDLDecomposition {

@@ -232,12 +232,12 @@ Matrix<COLUMNS, ROWS, T>::template LUPQDecomposition<Matrix<ROWS, ROWS, T>, Matr
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::choleskyDecomposition() const requires (isSquare) {
+Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::choleskyDecomposition() const requires (isSquare) {
     if (!isHermitian())
         throw NotSymmetricOrHermitian("Cholesky decomposition is not valid for non symmetric / hermitian matrices");
 
     Matrix<COLUMNS, ROWS, T> l;
-    Matrix<ROWS, COLUMNS, T> lt;
+    Matrix<COLUMNS, ROWS, T> lt;
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = c; r < ROWS; r++) {
@@ -281,6 +281,109 @@ Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T
     }
 
     return {l, lt};
+}
+
+template<int COLUMNS, int ROWS, scalar T>
+Matrix<COLUMNS, ROWS, T>::template PivotedCholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::pivotedCholeskyDecomposition() const requires (isSquare) {
+    if (!isHermitian())
+        throw NotSymmetricOrHermitian("Cholesky decomposition is not valid for non symmetric / hermitian matrices");
+
+    Matrix<COLUMNS, ROWS, T> l;
+    Matrix<COLUMNS, ROWS, T> lt;
+    Matrix<COLUMNS, ROWS, T> p = Matrix<COLUMNS, ROWS, T>::identity();
+    Matrix<COLUMNS, ROWS, T> pt = Matrix<COLUMNS, ROWS, T>::identity();
+
+    Matrix<COLUMNS, ROWS, T> a = *this;
+
+    for (int c = 0; c < COLUMNS; c++) {
+        UnderlyingType value = std::norm(a[c][c]);
+        int index = -1;
+
+        for (int i = c + 1; i < COLUMNS; i++) {
+            UnderlyingType curValue = std::norm(a[i][i]);
+
+            if (curValue > value) {
+                index = i;
+                value = curValue;
+            }
+        }
+
+        if (index == -1) {
+            if (value < 0)
+                throw NotPositiveDefinite("Cannot pivoted cholesky decompose matrix if not positive definite");
+
+            if (compare(value, 0, 0.001f)) {
+                break;
+            }
+        }
+
+        if (index != -1) {
+            p = p.swapColumns(c, index);
+
+            pt = pt.swapRows(c, index);
+
+            a = a.swapColumns(c, index);
+            a = a.swapRows(c, index);
+
+            // swap rows of l before column c
+            for (int i = 0; i < c; i++) {
+                T temp = l[i][c];
+                l[i][c] = l[i][index];
+                l[i][index] = temp;
+            }
+
+            // swap columns of lt before row c
+            for (int i = 0; i < c; i++) {
+                T temp = l[c][i];
+                l[c][i] = l[index][i];
+                l[index][i] = temp;
+            }
+        }
+
+        for (int r = c; r < ROWS; r++) {
+            if (c == r) {
+                // a[c][c] is guaranteed to be real since matrix is hermitian, so just take real part
+                UnderlyingType sum = std::real(a[c][c]);
+
+                for (int k = 0; k < c; k++) {
+                    sum -= std::norm(l[k][r]);
+                }
+
+                if (sum < 0)
+                    throw NotPositiveDefiniteOrPositiveSemiDefinite("Cannot pivoted cholesky decompose matrix if not positive/semi definite");
+
+                if (compare(sum, 0, 0.001f))
+                    return {l, lt, p, pt};
+
+                UnderlyingType sqrt = std::sqrt(sum);
+
+                l[c][c] = sqrt;
+                lt[c][c] = sqrt;
+            }
+            else {
+                T sum = a[c][r];
+
+                for (int k = 0; k < c; k++) {
+                    if constexpr (isComplex) {
+                        sum -= std::conj(l[k][c]) * l[k][r];
+                    }
+                    else {
+                        sum -= l[k][c] * l[k][r];
+                    }
+                }
+
+                T val = sum / l[c][c];
+                l[c][r] = val;
+
+                if constexpr (isComplex)
+                    lt[r][c] = std::conj(val);
+                else
+                    lt[r][c] = val;
+            }
+        }
+    }
+
+    return {l, lt, p, pt};
 }
 
 template<int COLUMNS, int ROWS, scalar T>

@@ -13,14 +13,14 @@ class ZeroPivotException : public MatrixException {
     using MatrixException::MatrixException;
 };
 
-class NonHermitianException : public MatrixException {
-    using MatrixException::MatrixException;
-};
-
 class NotPositiveDefinite : public MatrixException {
     using MatrixException::MatrixException;
 };
 
 class NotSymmetricOrHermitian : public MatrixException {
+    using MatrixException::MatrixException;
+};
+
+class NotPositiveDefiniteOrPositiveSemiDefinite : public MatrixException {
     using MatrixException::MatrixException;
 };
