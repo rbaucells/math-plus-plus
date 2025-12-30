@@ -284,53 +284,43 @@ Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::ldlDecomposition(bool allowSemidefinite) const requires (isSquare) {
+Matrix<COLUMNS, ROWS, T>::template LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::ldlDecomposition(const bool allowSemidefinite, const UnderlyingType precision) const requires (isSquare) {
     if (!isHermitian())
         throw NotSymmetricOrHermitian("Cholesky decomposition is not valid for non symmetric / hermitian matrices");
 
     Matrix<COLUMNS, ROWS, T> l;
-    Matrix<ROWS, ROWS, T> d;
-    Matrix<ROWS, COLUMNS, T> lt;
+    Matrix<COLUMNS, ROWS, T> d;
 
     for (int c = 0; c < COLUMNS; c++) {
         d[c][c] = data[c][c];
 
         for (int k = 0; k < c; k++) {
-            d[c][c] -= std::norm(l[k][c]);
+            d[c][c] -= std::norm(l[k][c]) * d[k][k];
         }
 
         for (int r = c; r < ROWS; r++) {
-            T sum = data[c][r];
-
-            for (int k = 0; k < c; k++) {
-                if constexpr (isComplex) {
-                    sum -= l[k][r] * std::conj(l[k][c]) * d[k][k];
-                }
-                else {
-                    sum -= l[k][r] * l[k][c] * d[k][k];
-                }
-            }
-
-            if (compare(d[c][c], 0)) {
+            if (compare(d[c][c], 0, precision)) {
                 if (!allowSemidefinite)
-                    throw NotPositiveDefinite("Could not LDL decompose non positive definite matrix");
+                    throw NotPositiveDefinite("Could not LDL' decompose matrix if not PD");
 
                 l[c][r] = 0;
-                lt[r][c] = 0;
             }
             else {
-                T val = sum / d[c][c];
-                l[c][r] = val;
+                T sum = data[c][r];
 
-                if constexpr (isComplex)
-                    lt[r][c] = std::conj(val);
-                else
-                    lt[r][c] = val;
+                for (int k = 0; k < c; k++) {
+                    if constexpr (isComplex)
+                        sum -= l[k][r] * std::conj(l[k][c]) * d[k][k];
+                    else
+                        sum -= l[k][r] * l[k][c] * d[k][k];
+                }
+
+                l[c][r] = sum / d[c][c];
             }
         }
     }
 
-    return {l, d, lt};
+    return {l, d, l.conjugateTranspose()};
 }
 
 template<int COLUMNS, int ROWS, scalar T>

@@ -445,7 +445,7 @@ public:
         L_TRANSPOSE_TYPE lTranspose;
     };
 
-    LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> ldlDecomposition(bool allowSemidefinite = false) const requires (isSquare);
+    LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> ldlDecomposition(bool allowSemidefinite = false, UnderlyingType precision = 0.001) const requires (isSquare);
 
     template<typename Q_TYPE, typename R_TYPE>
     struct QRDecomposition {

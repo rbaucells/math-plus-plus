@@ -487,9 +487,9 @@ TEST(MatrixDecompositions, fail_cholesky_complex_not_hermitian) {
 TEST(MatrixDecompositions, ldl_real_pd) {
     // arrange
     constexpr Matrix<3, 3> a = {{4, 12, -16}, {12, 37, -43}, {-16, -43, 98}};
-    constexpr Matrix<3, 3> expectedL = {};
-    constexpr Matrix<3, 3> expectedD = {};
-    constexpr Matrix<3, 3> expectedLt = {};
+    constexpr Matrix<3, 3> expectedL = {{1, 0, 0}, {3, 1, 0}, {-4, 5, 1}};
+    constexpr Matrix<3, 3> expectedD = {{4, 0, 0}, {0, 1, 0}, {0, 0, 9}};
+    constexpr Matrix<3, 3> expectedLt = {{1, 3, -4}, {0, 1, 5}, {0, 0, 1}};
     // act
     auto [l,d, lt] = a.ldlDecomposition();
     // assert
@@ -525,9 +525,9 @@ TEST(MatrixDecompositions, fail_ldl_real_not_symmetric) {
 TEST(MatrixDecompositions, ldl_complex_pd) {
     // arrange
     constexpr Matrix<3, 3, std::complex<float>> a = {{{4, 0}, {2, 2}, {1, 0}}, {{2, -2}, {9, 0}, {1, -1}}, {{1, 0}, {1, 1}, {5, 0}}};
-    constexpr Matrix<3, 3, std::complex<float>> expectedL = {};
-    constexpr Matrix<3, 3, std::complex<float>> expectedD = {};
-    constexpr Matrix<3, 3, std::complex<float>> expectedLt = {};
+    constexpr Matrix<3, 3, std::complex<float>> expectedL = {{{1, 0}, {0, 0}, {0, 0}}, {{0.5f, -0.5f}, {1, 0}, {0, 0}}, {{0.25f, 0}, {0.0714f, 0.0714f}, {1, 0}}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedD = {{4, 0, 0}, {0, 7, 0}, {0, 0, 4.6786f}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedLt = {{{1, 0}, {0.5f, 0.5f}, {0.25f, 0}}, {{0, 0}, {1, 0}, {0.0714f, -0.0714f}}, {{0, 0}, {0, 0}, {1, 0}}};
     // act
     auto [l,d, lt] = a.ldlDecomposition();
     // assert
