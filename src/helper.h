@@ -20,14 +20,14 @@ template<typename T>
 concept scalar = std::is_arithmetic_v<T> || complex<T>;
 
 // is_matrix - is_matrix_v - IsMatrix
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 struct Matrix;
 
 template<typename T>
 struct is_matrix : std::false_type {};
 
-template<int COLUMNS, int ROWS, scalar T>
-struct is_matrix<Matrix<COLUMNS, ROWS, T>> : std::true_type {};
+template< int ROWS, int COLUMNS, scalar T>
+struct is_matrix<Matrix<ROWS, COLUMNS, T>> : std::true_type {};
 
 template<typename T>
 inline constexpr bool is_matrix_v = is_matrix<T>::value;

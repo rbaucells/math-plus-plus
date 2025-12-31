@@ -112,42 +112,42 @@ TEST(MatrixChecks, not_row_echelon_square_pivots) {
 
 TEST(MatrixChecks, row_echelon_wide) {
     // arrange
-    constexpr Matrix<5, 4> a = {{1, 6, 7, 7, 1}, {0, 9, 2, 1, 1}, {0, 0, 0, 2, 2}, {0, 0, 0, 0, 1}};
+    constexpr Matrix<4, 5> a = {{1, 6, 7, 7, 1}, {0, 9, 2, 1, 1}, {0, 0, 0, 2, 2}, {0, 0, 0, 0, 1}};
     // act / assert
     ASSERT_TRUE(a.isRowEchelon());
 }
 
 TEST(MatrixChecks, not_row_echelon_wide_zero_row) {
     // arrange
-    constexpr Matrix<5, 4> a = {{1, 6, 7, 7, 1}, {0, 9, 2, 1, 1}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 1}};
+    constexpr Matrix<4, 5> a = {{1, 6, 7, 7, 1}, {0, 9, 2, 1, 1}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 1}};
     // act / assert
     ASSERT_FALSE(a.isRowEchelon());
 }
 
 TEST(MatrixChecks, not_row_echelon_wide_pivots) {
     // arrange
-    constexpr Matrix<5, 4> a = {{1, 6, 7, 7, 1}, {0, 0, 2, 1, 1}, {4, 2, 0, 0, 0}, {0, 0, 0, 0, 1}};
+    constexpr Matrix<4, 5> a = {{1, 6, 7, 7, 1}, {0, 0, 2, 1, 1}, {4, 2, 0, 0, 0}, {0, 0, 0, 0, 1}};
     // act / assert
     ASSERT_FALSE(a.isRowEchelon());
 }
 
 TEST(MatrixChecks, row_echelon_tall) {
     // arrange
-    constexpr Matrix<2, 3> a = {{3, 4}, {0, 1}, {0, 0}};
+    constexpr Matrix<3, 2> a = {{3, 4}, {0, 1}, {0, 0}};
     // act / assert
     ASSERT_TRUE(a.isRowEchelon());
 }
 
 TEST(MatrixChecks, not_row_echelon_tall_zero_row) {
     // arrange
-    constexpr Matrix<2, 3> a = {{3, 4}, {0, 0}, {1, 2}};
+    constexpr Matrix<3, 2> a = {{3, 4}, {0, 0}, {1, 2}};
     // act / assert
     ASSERT_FALSE(a.isRowEchelon());
 }
 
 TEST(MatrixChecks, not_row_echelon_tall_pivots) {
     // arrange
-    constexpr Matrix<2, 3> a = {{0, 4}, {0, 3}, {0, 0}};
+    constexpr Matrix<3, 2> a = {{0, 4}, {0, 3}, {0, 0}};
     // act / assert
     ASSERT_FALSE(a.isRowEchelon());
 }
@@ -189,70 +189,70 @@ TEST(MatrixChecks, not_reduced_row_echelon_square_zero_row) {
 
 TEST(MatrixChecks, reduced_row_echelon_tall) {
     // arrange
-    constexpr Matrix<3, 4> a = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {0, 0, 0}};
+    constexpr Matrix<4, 3> a = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {0, 0, 0}};
     // act / assert
     ASSERT_TRUE(a.isReducedRowEchelon());
 }
 
 TEST(MatrixChecks, not_reduced_row_echelon_tall_one) {
     // arrange
-    constexpr Matrix<3, 4> a = {{4, 0, 0}, {0, 6, 0}, {0, 0, 5}, {0, 0, 0}};
+    constexpr Matrix<4, 3> a = {{4, 0, 0}, {0, 6, 0}, {0, 0, 5}, {0, 0, 0}};
     // act / assert
     ASSERT_FALSE(a.isReducedRowEchelon());
 }
 
 TEST(MatrixChecks, not_reduced_row_echelon_tall_pivots) {
     // arrange
-    constexpr Matrix<3, 4> a = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {0, 0, 1}};
+    constexpr Matrix<4, 3> a = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {0, 0, 1}};
     // act / assert
     ASSERT_FALSE(a.isReducedRowEchelon());
 }
 
 TEST(MatrixChecks, not_reduced_row_echelon_tall_columns) {
     // arrange
-    constexpr Matrix<3, 4> a = {{1, 4, 0}, {2, 1, 0}, {0, 0, 1}, {0, 7, 0}};
+    constexpr Matrix<4, 3> a = {{1, 4, 0}, {2, 1, 0}, {0, 0, 1}, {0, 7, 0}};
     // act / assert
     ASSERT_FALSE(a.isReducedRowEchelon());
 }
 
 TEST(MatrixChecks, not_reduced_row_echelon_tall_zero_row) {
     // arrange
-    constexpr Matrix<3, 4> a = {{1, 0, 0}, {0, 0, 0}, {0, 0, 1}, {0, 0, 0}};
+    constexpr Matrix<4, 3> a = {{1, 0, 0}, {0, 0, 0}, {0, 0, 1}, {0, 0, 0}};
     // act / assert
     ASSERT_FALSE(a.isReducedRowEchelon());
 }
 
 TEST(MatrixChecks, reduced_row_echelon_wide) {
     // arrange
-    constexpr Matrix<4, 3> a = {{1, 0, 0, 0}, {0, 1, 0, 1}, {0, 0, 0, 0}};
+    constexpr Matrix<3, 4> a = {{1, 0, 0, 0}, {0, 1, 0, 1}, {0, 0, 0, 0}};
     // act / assert
     ASSERT_TRUE(a.isReducedRowEchelon());
 }
 
 TEST(MatrixChecks, not_reduced_row_echelon_wide_one) {
     // arrange
-    constexpr Matrix<4, 3> a = {{4, 0, 0, 0}, {0, 6, 0, 0}, {0, 0, 5, 0}};
+    constexpr Matrix<3, 4> a = {{4, 0, 0, 0}, {0, 6, 0, 0}, {0, 0, 5, 0}};
     // act / assert
     ASSERT_FALSE(a.isReducedRowEchelon());
 }
 
 TEST(MatrixChecks, not_reduced_row_echelon_wide_pivots) {
     // arrange
-    constexpr Matrix<4, 3> a = {{1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}};
+    constexpr Matrix<3, 4> a = {{1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}};
     // act / assert
     ASSERT_FALSE(a.isReducedRowEchelon());
 }
 
 TEST(MatrixChecks, not_reduced_row_echelon_wide_columns) {
     // arrange
-    constexpr Matrix<4, 3> a = {{1, 0, 2, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}};
+    constexpr Matrix<3, 4> a = {{1, 0, 2, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}};
     // act / assert
     ASSERT_FALSE(a.isReducedRowEchelon());
 }
 
 TEST(MatrixChecks, not_reduced_row_echelon_wide_zero_row) {
     // arrange
-    constexpr Matrix<4, 3> a = {{1, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}};
+    constexpr Matrix<3, 4> a = {{1, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}};
     // act / assert
     ASSERT_FALSE(a.isReducedRowEchelon());
 }

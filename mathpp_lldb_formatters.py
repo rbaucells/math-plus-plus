@@ -68,7 +68,7 @@ def matrix_summary(matrix_obj: Any, internal_dict: Dict[str, Any]) -> str:
             except Exception:
                 pass
 
-        # parse the Matrix<COLUMNS, ROWS, T> for COLUMNS, ROWS, and T
+        # parse the Matrix<ROWS, COLUMNS, T> for COLUMNS, ROWS, and T
         type_name: str = val.GetTypeName()
         match = re.search(r'(?:const\s+)?Matrix<\s*(\d+)\s*,\s*(\d+)\s*,\s*([^>]+)\s*>(?:\s*[*&]+)?',type_name)
 
@@ -298,7 +298,7 @@ def print_matrix(debugger, command, result, internal_dict):
             except Exception:
                 pass
 
-        # parse the Matrix<COLUMNS, ROWS, T> for COLUMNS, ROWS, and T
+        # parse the Matrix<ROWS, COLUMNS, T> for COLUMNS, ROWS, and T
         type_name: str = val.GetTypeName()
         match = re.search(r'(?:const\s+)?Matrix<\s*(\d+)\s*,\s*(\d+)\s*,\s*([^>]+)\s*>(?:\s*[*&]+)?',type_name)
 

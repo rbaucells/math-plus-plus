@@ -2,8 +2,8 @@
 #include "matrix.h"
 
 // m = m
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::operator=(const Matrix<COLUMNS, ROWS, T>& other) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::operator=(const Matrix<ROWS, COLUMNS, T>& other) {
     if (this != &other) {
         memcpy(data, other.data, sizeof(T) * COLUMNS * ROWS);
     }
@@ -12,8 +12,8 @@ Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::operator=(const Matrix<COLUM
 }
 
 // m == m
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::equals(const Matrix<COLUMNS, ROWS, T>& other, const underlying_type_t<T> precision) const {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::equals(const Matrix<ROWS, COLUMNS, T>& other, const underlying_type_t<T> precision) const {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             if (!compare(data[c][r], other.data[c][r], precision))
@@ -24,15 +24,15 @@ bool Matrix<COLUMNS, ROWS, T>::equals(const Matrix<COLUMNS, ROWS, T>& other, con
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::operator==(const Matrix<COLUMNS, ROWS, T>& other) const {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::operator==(const Matrix<ROWS, COLUMNS, T>& other) const {
     return equals(other);
 }
 
 // m + m
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::add(const Matrix<COLUMNS, ROWS, T>& other) const {
-    Matrix<COLUMNS, ROWS, T> result;
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::add(const Matrix<ROWS, COLUMNS, T>& other) const {
+    Matrix<ROWS, COLUMNS, T> result;
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -43,15 +43,15 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::add(const Matrix<COLUMNS, ROW
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::operator+(const Matrix<COLUMNS, ROWS, T>& other) const {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::operator+(const Matrix<ROWS, COLUMNS, T>& other) const {
     return add(other);
 }
 
 // m - m
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::subtract(const Matrix<COLUMNS, ROWS, T>& other) const {
-    Matrix<COLUMNS, ROWS, T> result;
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::subtract(const Matrix<ROWS, COLUMNS, T>& other) const {
+    Matrix<ROWS, COLUMNS, T> result;
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -62,16 +62,16 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::subtract(const Matrix<COLUMNS
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::operator-(const Matrix<COLUMNS, ROWS, T>& other) const {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::operator-(const Matrix<ROWS, COLUMNS, T>& other) const {
     return subtract(other);
 }
 
 // m * m
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<int OTHER_COLUMNS>
-Matrix<OTHER_COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::multiply(const Matrix<OTHER_COLUMNS, COLUMNS, T>& other) const {
-    Matrix<OTHER_COLUMNS, ROWS, T> result;
+Matrix<ROWS, OTHER_COLUMNS, T> Matrix<ROWS, COLUMNS, T>::multiply(const Matrix<COLUMNS, OTHER_COLUMNS, T>& other) const {
+    Matrix<ROWS, OTHER_COLUMNS, T> result;
 
     for (int c = 0; c < OTHER_COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -84,15 +84,15 @@ Matrix<OTHER_COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::multiply(const Matrix<O
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<int OTHER_COLUMNS>
-Matrix<OTHER_COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::operator*(const Matrix<OTHER_COLUMNS, COLUMNS, T>& other) const {
+Matrix<ROWS, OTHER_COLUMNS, T> Matrix<ROWS, COLUMNS, T>::operator*(const Matrix<COLUMNS, OTHER_COLUMNS, T>& other) const {
     return multiply(other);
 }
 
 // m * v
-template<int COLUMNS, int ROWS, scalar T>
-Vector<COLUMNS, T> Matrix<COLUMNS, ROWS, T>::multiply(const Vector<COLUMNS, T>& other) const {
+template< int ROWS, int COLUMNS, scalar T>
+Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::multiply(const Vector<COLUMNS, T>& other) const {
     Vector<COLUMNS, T> result;
 
     for (int c = 0; c < COLUMNS; c++) {
@@ -104,15 +104,15 @@ Vector<COLUMNS, T> Matrix<COLUMNS, ROWS, T>::multiply(const Vector<COLUMNS, T>& 
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Vector<COLUMNS, T> Matrix<COLUMNS, ROWS, T>::operator*(const Vector<COLUMNS, T>& other) const {
+template< int ROWS, int COLUMNS, scalar T>
+Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::operator*(const Vector<COLUMNS, T>& other) const {
     return multiply(other);
 }
 
 // m * #
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::multiply(const T val) const {
-    Matrix<COLUMNS, ROWS, T> result;
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::multiply(const T val) const {
+    Matrix<ROWS, COLUMNS, T> result;
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -123,15 +123,15 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::multiply(const T val) const {
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::operator*(const T val) const {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::operator*(const T val) const {
     return multiply(val);
 }
 
 // m / #
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::divide(const T scalar) const {
-    Matrix<COLUMNS, ROWS, T> result;
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::divide(const T scalar) const {
+    Matrix<ROWS, COLUMNS, T> result;
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -142,14 +142,14 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::divide(const T scalar) const 
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::operator/(const T scalar) const {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::operator/(const T scalar) const {
     return divide(scalar);
 }
 
 // m += m
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::addEquals(const Matrix<COLUMNS, ROWS, T>& other) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::addEquals(const Matrix<ROWS, COLUMNS, T>& other) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             data[c][r] += other.data[c][r];
@@ -159,14 +159,14 @@ Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::addEquals(const Matrix<COLUM
     return *this;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::operator+=(const Matrix<COLUMNS, ROWS, T>& other) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::operator+=(const Matrix<ROWS, COLUMNS, T>& other) {
     return addEquals(other);
 }
 
 // m -= m
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::subtractEquals(const Matrix<COLUMNS, ROWS, T>& other) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::subtractEquals(const Matrix<ROWS, COLUMNS, T>& other) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             data[c][r] -= other.data[c][r];
@@ -176,14 +176,14 @@ Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::subtractEquals(const Matrix<
     return *this;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::operator-=(const Matrix<COLUMNS, ROWS, T>& other) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::operator-=(const Matrix<ROWS, COLUMNS, T>& other) {
     return subtractEquals(other);
 }
 
 // m *= #
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::multiplyEquals(const T val) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::multiplyEquals(const T val) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             data[c][r] *= val;
@@ -193,14 +193,14 @@ Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::multiplyEquals(const T val) 
     return *this;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::operator*=(const T val) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::operator*=(const T val) {
     return multiplyEquals(val);
 }
 
 // m /= #
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::divideEquals(const T scalar) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::divideEquals(const T scalar) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             data[c][r] /= scalar;
@@ -210,18 +210,18 @@ Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::divideEquals(const T scalar)
     return *this;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::operator/=(const T scalar) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::operator/=(const T scalar) {
     return divideEquals(scalar);
 }
 
 // Operators for different types
 
 // m = m
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires std::convertible_to<OTHER_T, T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::operator=(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::operator=(const Matrix<ROWS, COLUMNS, OTHER_T>& other) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             data[c][r] = other.data[c][r];
@@ -232,10 +232,10 @@ Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::operator=(const Matrix<COLUM
 }
 
 // m == m
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires std::equality_comparable_with<OTHER_T, T>
-bool Matrix<COLUMNS, ROWS, T>::equals(const Matrix<COLUMNS, ROWS, OTHER_T>& other, const std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHER_T>> precision) const {
+bool Matrix<ROWS, COLUMNS, T>::equals(const Matrix<ROWS, COLUMNS, OTHER_T>& other, const std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHER_T>> precision) const {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             if (!compare(data[c][r], other.data[c][r], precision))
@@ -246,19 +246,19 @@ bool Matrix<COLUMNS, ROWS, T>::equals(const Matrix<COLUMNS, ROWS, OTHER_T>& othe
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires std::equality_comparable_with<OTHER_T, T>
-bool Matrix<COLUMNS, ROWS, T>::operator==(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
+bool Matrix<ROWS, COLUMNS, T>::operator==(const Matrix<ROWS, COLUMNS, OTHER_T>& other) const {
     return equals(other);
 }
 
 // m + m
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires HasCommonType<OTHER_T, T>
-Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::add(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
-    Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> result;
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::add(const Matrix<ROWS, COLUMNS, OTHER_T>& other) const {
+    Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> result;
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -269,19 +269,19 @@ Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires HasCommonType<OTHER_T, T>
-Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::operator+(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::operator+(const Matrix<ROWS, COLUMNS, OTHER_T>& other) const {
     return add(other);
 }
 
 // m - m
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires HasCommonType<OTHER_T, T>
-Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::subtract(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
-    Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> result;
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::subtract(const Matrix<ROWS, COLUMNS, OTHER_T>& other) const {
+    Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> result;
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -292,18 +292,18 @@ Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires HasCommonType<OTHER_T, T>
-Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::operator-(const Matrix<COLUMNS, ROWS, OTHER_T>& other) const {
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::operator-(const Matrix<ROWS, COLUMNS, OTHER_T>& other) const {
     return subtract(other);
 }
 
 // m * m
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<int OTHER_COLUMNS, typename OTHER_T> requires HasCommonType<OTHER_T, T>
-Matrix<OTHER_COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::multiply(const Matrix<OTHER_COLUMNS, COLUMNS, OTHER_T>& other) const {
-    Matrix<OTHER_COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> result;
+Matrix<ROWS, OTHER_COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::multiply(const Matrix<COLUMNS, OTHER_COLUMNS, OTHER_T>& other) const {
+    Matrix<ROWS, OTHER_COLUMNS, std::common_type_t<T, OTHER_T>> result;
 
     for (int c = 0; c < OTHER_COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -316,17 +316,17 @@ Matrix<OTHER_COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<int OTHER_COLUMNS, typename OTHER_T> requires HasCommonType<OTHER_T, T>
-Matrix<OTHER_COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::operator*(const Matrix<OTHER_COLUMNS, COLUMNS, OTHER_T>& other) const {
+Matrix<ROWS, OTHER_COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::operator*(const Matrix<COLUMNS, OTHER_COLUMNS, OTHER_T>& other) const {
     return multiply(other);
 }
 
 // m * v
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires HasCommonType<OTHER_T, T>
-Vector<COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::multiply(const Vector<COLUMNS, OTHER_T>& other) const {
+Vector<COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::multiply(const Vector<COLUMNS, OTHER_T>& other) const {
     Vector<COLUMNS, std::common_type_t<T, OTHER_T>> result;
 
     for (int c = 0; c < COLUMNS; c++) {
@@ -338,19 +338,19 @@ Vector<COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::multip
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires HasCommonType<OTHER_T, T>
-Vector<COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::operator*(const Vector<COLUMNS, OTHER_T>& other) const {
+Vector<COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::operator*(const Vector<COLUMNS, OTHER_T>& other) const {
     return multiply(other);
 }
 
 // m * #
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires HasCommonType<OTHER_T, T>
-Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::multiply(const OTHER_T val) const {
-    Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> result;
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::multiply(const OTHER_T val) const {
+    Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> result;
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -361,19 +361,19 @@ Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires HasCommonType<OTHER_T, T>
-Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::operator*(const OTHER_T val) const {
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::operator*(const OTHER_T val) const {
     return multiply(val);
 }
 
 // m / #
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires HasCommonType<OTHER_T, T>
-Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::divide(const OTHER_T scalar) const {
-    Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> result;
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::divide(const OTHER_T scalar) const {
+    Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> result;
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -384,18 +384,18 @@ Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires HasCommonType<OTHER_T, T>
-Matrix<COLUMNS, ROWS, std::common_type_t<T, OTHER_T>> Matrix<COLUMNS, ROWS, T>::operator/(const OTHER_T scalar) const {
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::operator/(const OTHER_T scalar) const {
     return divide(scalar);
 }
 
 // m += m
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires std::convertible_to<OTHER_T, T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::addEquals(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::addEquals(const Matrix<ROWS, COLUMNS, OTHER_T>& other) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             data[c][r] += other.data[c][r];
@@ -405,18 +405,18 @@ Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::addEquals(const Matrix<COLUM
     return *this;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires std::convertible_to<OTHER_T, T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::operator+=(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::operator+=(const Matrix<ROWS, COLUMNS, OTHER_T>& other) {
     return addEquals(other);
 }
 
 // m -= m
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires std::convertible_to<OTHER_T, T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::subtractEquals(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::subtractEquals(const Matrix<ROWS, COLUMNS, OTHER_T>& other) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             data[c][r] -= other.data[c][r];
@@ -426,18 +426,18 @@ Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::subtractEquals(const Matrix<
     return *this;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires std::convertible_to<OTHER_T, T>
-Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::operator-=(const Matrix<COLUMNS, ROWS, OTHER_T>& other) {
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::operator-=(const Matrix<ROWS, COLUMNS, OTHER_T>& other) {
     return subtractEquals(other);
 }
 
 // m *= #
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires std::convertible_to<OTHER_T, T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::multiplyEquals(const OTHER_T val) {
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::multiplyEquals(const OTHER_T val) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             data[c][r] *= val;
@@ -447,18 +447,18 @@ Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::multiplyEquals(const OTHER_T
     return *this;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires std::convertible_to<OTHER_T, T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::operator*=(const OTHER_T val) {
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::operator*=(const OTHER_T val) {
     return multiplyEquals(val);
 }
 
 // m /= #
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires std::convertible_to<OTHER_T, T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::divideEquals(const OTHER_T scalar) {
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::divideEquals(const OTHER_T scalar) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             data[c][r] /= scalar;
@@ -468,26 +468,26 @@ Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::divideEquals(const OTHER_T s
     return *this;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
 requires std::convertible_to<OTHER_T, T>
-Matrix<COLUMNS, ROWS, T>& Matrix<COLUMNS, ROWS, T>::operator/=(const OTHER_T scalar) {
+Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::operator/=(const OTHER_T scalar) {
     return divideEquals(scalar);
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-T* Matrix<COLUMNS, ROWS, T>::operator[](const int index) {
+template< int ROWS, int COLUMNS, scalar T>
+T* Matrix<ROWS, COLUMNS, T>::operator[](const int index) {
     return &data[index][0];
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-const T* Matrix<COLUMNS, ROWS, T>::operator[](const int index) const {
+template< int ROWS, int COLUMNS, scalar T>
+const T* Matrix<ROWS, COLUMNS, T>::operator[](const int index) const {
     return &data[index][0];
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::operator-() const {
-    Matrix<COLUMNS, ROWS, T> result;
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::operator-() const {
+    Matrix<ROWS, COLUMNS, T> result;
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -498,12 +498,12 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::operator-() const {
     return result;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::operator T*() {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>::operator T*() {
     return &data[0][0];
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::operator const T*() const {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>::operator const T*() const {
     return &data[0][0];
 }
