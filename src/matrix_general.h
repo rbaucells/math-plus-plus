@@ -85,8 +85,8 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::random() {
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::transpose() const {
-    Matrix<ROWS, COLUMNS, T> result;
+Matrix<COLUMNS, ROWS, T> Matrix<ROWS, COLUMNS, T>::transpose() const {
+    Matrix<COLUMNS, ROWS, T> result;
 
     for (int c = 0; c < ROWS; c++) {
         for (int r = 0; r < COLUMNS; r++) {
@@ -98,12 +98,12 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::transpose() const {
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::conjugateTranspose() const {
+Matrix<COLUMNS, ROWS, T> Matrix<ROWS, COLUMNS, T>::conjugateTranspose() const {
     if constexpr (!isComplex) {
         return transpose();
     }
     else {
-        Matrix<ROWS, COLUMNS, T> result;
+        Matrix<COLUMNS, ROWS, T> result;
 
         for (int c = 0; c < ROWS; c++) {
             for (int r = 0; r < COLUMNS; r++) {

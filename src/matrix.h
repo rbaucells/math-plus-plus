@@ -159,8 +159,8 @@ struct Matrix {
 
     Matrix<ROWS, COLUMNS, T> operator-() const;
 
-    Matrix<ROWS, COLUMNS, T> transpose() const;
-    Matrix<ROWS, COLUMNS, T> conjugateTranspose() const;
+    Matrix<COLUMNS, ROWS, T> transpose() const;
+    Matrix<COLUMNS, ROWS, T> conjugateTranspose() const;
 
     Matrix<ROWS, COLUMNS, T> inverse() const requires (isSquare);
 
