@@ -3,8 +3,8 @@
 
 #include "matrix.h"
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isRowEchelon(bool pivotMustBeOne) const {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isRowEchelon(bool pivotMustBeOne) const {
     bool foundZeroRows = false;
     int lastPivotColumn = -1;
     for (int r = 0; r < ROWS; r++) {
@@ -42,8 +42,8 @@ bool Matrix<COLUMNS, ROWS, T>::isRowEchelon(bool pivotMustBeOne) const {
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isReducedRowEchelon() const {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isReducedRowEchelon() const {
     bool foundZeroRows = false;
     int lastPivotColumn = -1;
 
@@ -93,8 +93,8 @@ bool Matrix<COLUMNS, ROWS, T>::isReducedRowEchelon() const {
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isSymmetrical() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isSymmetrical() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             if (!compare(data[c][r], data[r][c]))
@@ -105,8 +105,8 @@ bool Matrix<COLUMNS, ROWS, T>::isSymmetrical() const requires (isSquare) {
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isSkewSymmetrical() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isSkewSymmetrical() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             if (!compare(data[c][r], -data[r][c]))
@@ -117,8 +117,8 @@ bool Matrix<COLUMNS, ROWS, T>::isSkewSymmetrical() const requires (isSquare) {
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isHermitian() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isHermitian() const requires (isSquare) {
     if constexpr (!isComplex)
         return isSymmetrical();
     else {
@@ -134,8 +134,8 @@ bool Matrix<COLUMNS, ROWS, T>::isHermitian() const requires (isSquare) {
     }
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isSkewHermitian() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isSkewHermitian() const requires (isSquare) {
     if constexpr (!isComplex)
         return isSkewSymmetrical();
     else {
@@ -150,8 +150,8 @@ bool Matrix<COLUMNS, ROWS, T>::isSkewHermitian() const requires (isSquare) {
     }
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveDefinite(const PositiveDefiniteAlgorithm algorithm) const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isPositiveDefinite(const PositiveDefiniteAlgorithm algorithm) const requires (isSquare) {
     switch (algorithm) {
         case PositiveDefiniteAlgorithm::cholesky:
             return isPositiveDefiniteCholesky();
@@ -173,9 +173,9 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveDefinite(const PositiveDefiniteAlgorith
     }
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<int K>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteSylvester() const requires (isSquare) {
+bool Matrix<ROWS, COLUMNS, T>::isPositiveDefiniteSylvester() const requires (isSquare) {
     if constexpr (K > COLUMNS)
         return true;
     else {
@@ -185,8 +185,8 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteSylvester() const requires (isS
     }
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteLdl() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isPositiveDefiniteLdl() const requires (isSquare) {
     auto [l, d, lt] = ldlDecomposition();
 
     for (int c = 0; c < COLUMNS; c++) {
@@ -200,8 +200,8 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteLdl() const requires (isSquare)
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteCholesky() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isPositiveDefiniteCholesky() const requires (isSquare) {
     try {
         choleskyDecomposition();
         return true;
@@ -211,10 +211,10 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveDefiniteCholesky() const requires (isSq
     }
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveDefinitePivots() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isPositiveDefinitePivots() const requires (isSquare) {
     try {
-        Matrix<COLUMNS, ROWS, T> ref = toRowEchelon(false);
+        Matrix<ROWS, COLUMNS, T> ref = toRowEchelon(false);
 
         for (int c = 0; c < COLUMNS; c++) {
             T curValue = ref[c][c];
@@ -231,8 +231,8 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveDefinitePivots() const requires (isSqua
     }
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite(PositiveSemiDefiniteAlgorithm algorithm) const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isPositiveSemiDefinite(PositiveSemiDefiniteAlgorithm algorithm) const requires (isSquare) {
     switch (algorithm) {
         case PositiveDefiniteAlgorithm::ldl:
             return isPositiveSemiDefiniteLdl();
@@ -250,44 +250,44 @@ bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinite(PositiveSemiDefiniteAlgori
     }
 }
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 template<int K>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteSylvester() const requires (isSquare) { return false; }
+bool Matrix<ROWS, COLUMNS, T>::isPositiveSemiDefiniteSylvester() const requires (isSquare) { return false; }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefiniteLdl() const requires (isSquare) { return false; }
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isPositiveSemiDefiniteLdl() const requires (isSquare) { return false; }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isPositiveSemiDefinitePivots() const requires (isSquare) { return false; }
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isPositiveSemiDefinitePivots() const requires (isSquare) { return false; }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isNegativeDefinite() const requires (isSquare) { return false; }
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isNegativeDefinite() const requires (isSquare) { return false; }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isNegativeSemiDefinite() const requires (isSquare) { return false; }
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isNegativeSemiDefinite() const requires (isSquare) { return false; }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isUnitary() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isUnitary() const requires (isSquare) {
     return conjugateTranspose() * *this == identity();
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isSpecialUnitary() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isSpecialUnitary() const requires (isSquare) {
     return conjugateTranspose() * *this == identity() && compare(determinant(), 1);
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isOrthogonal() const requires (!isComplex && isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isOrthogonal() const requires (!isComplex && isSquare) {
     return transpose() * *this == identity();
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isSpecialOrthogonal() const requires (!isComplex && isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isSpecialOrthogonal() const requires (!isComplex && isSquare) {
     return transpose() * *this == identity() && compare(determinant(), 1);
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isSemiOrthogonal() const requires (!isComplex && !isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isSemiOrthogonal() const requires (!isComplex && !isSquare) {
     if constexpr (COLUMNS > ROWS) { // wide
         return multiply(transpose()) == identity();
     }
@@ -296,8 +296,8 @@ bool Matrix<COLUMNS, ROWS, T>::isSemiOrthogonal() const requires (!isComplex && 
     }
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isUpperTriangleMatrix() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isUpperTriangleMatrix() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         // dont worry about out of bounds, loop wont even run if c + 1 is too big
         for (int r = c + 1; r < ROWS; r++) {
@@ -309,8 +309,8 @@ bool Matrix<COLUMNS, ROWS, T>::isUpperTriangleMatrix() const requires (isSquare)
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isLowerTriangleMatrix() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isLowerTriangleMatrix() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < c; r++) {
             if (!compare(data[c][r], 0))
@@ -321,8 +321,8 @@ bool Matrix<COLUMNS, ROWS, T>::isLowerTriangleMatrix() const requires (isSquare)
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isDiagonalMatrix() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isDiagonalMatrix() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             if (c == r)
@@ -336,8 +336,8 @@ bool Matrix<COLUMNS, ROWS, T>::isDiagonalMatrix() const requires (isSquare) {
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isUpperUnitriangularMatrix() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isUpperUnitriangularMatrix() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = c; r < ROWS; r++) {
             if (c == r) {
@@ -354,8 +354,8 @@ bool Matrix<COLUMNS, ROWS, T>::isUpperUnitriangularMatrix() const requires (isSq
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isLowerUnitriangularMatrix() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isLowerUnitriangularMatrix() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r <= c; r++) {
             if (c == r) {
@@ -371,8 +371,8 @@ bool Matrix<COLUMNS, ROWS, T>::isLowerUnitriangularMatrix() const requires (isSq
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isStrictlyUpperTriangularMatrix() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isStrictlyUpperTriangularMatrix() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = c; r < ROWS; r++) {
             if (!compare(data[c][r], 0)) {
@@ -384,8 +384,8 @@ bool Matrix<COLUMNS, ROWS, T>::isStrictlyUpperTriangularMatrix() const requires 
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isStrictlyLowerTriangularMatrix() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isStrictlyLowerTriangularMatrix() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r <= c; r++) {
             if (!compare(data[c][r], 0))
@@ -396,8 +396,8 @@ bool Matrix<COLUMNS, ROWS, T>::isStrictlyLowerTriangularMatrix() const requires 
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isFrobeniusMatrix() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isFrobeniusMatrix() const requires (isSquare) {
     int columnWithNonZero = -1;
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -422,8 +422,8 @@ bool Matrix<COLUMNS, ROWS, T>::isFrobeniusMatrix() const requires (isSquare) {
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isUpperHessenberg() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isUpperHessenberg() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = c + 2; r < ROWS; r++) {
             if (!compare(data[c][r], 0))
@@ -434,8 +434,8 @@ bool Matrix<COLUMNS, ROWS, T>::isUpperHessenberg() const requires (isSquare) {
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isUnreducedUpperHessenberg() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isUnreducedUpperHessenberg() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = c + 1; r < ROWS; r++) {
             // subdiagonal
@@ -455,8 +455,8 @@ bool Matrix<COLUMNS, ROWS, T>::isUnreducedUpperHessenberg() const requires (isSq
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isLowerHessenberg() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isLowerHessenberg() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = c - 2; r >= 0; r--) {
             if (!compare(data[c][r], 0))
@@ -467,8 +467,8 @@ bool Matrix<COLUMNS, ROWS, T>::isLowerHessenberg() const requires (isSquare) {
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isUnreducedLowerHessenberg() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isUnreducedLowerHessenberg() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = c - 1; r >= 0; r--) {
             // supra-diagonal
@@ -488,8 +488,8 @@ bool Matrix<COLUMNS, ROWS, T>::isUnreducedLowerHessenberg() const requires (isSq
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isTridiagonal() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isTridiagonal() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             // diagonal, subdiagonal, supradiagonal
@@ -504,13 +504,13 @@ bool Matrix<COLUMNS, ROWS, T>::isTridiagonal() const requires (isSquare) {
     return true;
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-bool Matrix<COLUMNS, ROWS, T>::isRowEchelonOfThis(const Matrix<COLUMNS, ROWS, T>& ref, const Matrix<COLUMNS, ROWS, T>::UnderlyingType precision) const {
+template< int ROWS, int COLUMNS, scalar T>
+bool Matrix<ROWS, COLUMNS, T>::isRowEchelonOfThis(const Matrix<ROWS, COLUMNS, T>& ref, const Matrix<ROWS, COLUMNS, T>::UnderlyingType precision) const {
     if (!ref.isRowEchelon())
         return false;
 
-    const Matrix<COLUMNS, ROWS, T> rrefOfRef = ref.toReducedRowEchelon();
-    const Matrix<COLUMNS, ROWS, T> rrefOfThis = toReducedRowEchelon();
+    const Matrix<ROWS, COLUMNS, T> rrefOfRef = ref.toReducedRowEchelon();
+    const Matrix<ROWS, COLUMNS, T> rrefOfThis = toReducedRowEchelon();
 
     return rrefOfRef.equals(rrefOfThis, precision);
 }

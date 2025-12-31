@@ -7,7 +7,7 @@ TEST(MatrixOperators, subscript) {
     const Matrix<2, 2> b = {{1, 2}, {3, 4}};
     // act / assert
     ASSERT_FLOAT_EQ(a[0][0], 1.0f);
-    ASSERT_FLOAT_EQ(a[1][0], 2.0f);
+    ASSERT_FLOAT_EQ(a[1][0], 2.0f); 
     ASSERT_FLOAT_EQ(a[0][1], 3.0f);
     ASSERT_FLOAT_EQ(a[1][1], 4.0f);
 
@@ -84,8 +84,8 @@ TEST(MatrixOperators, multiplication_same_type_same_size) {
 
 TEST(MatrixOperators, multiplication_same_type_different_size) {
     // arrange
-    constexpr Matrix<3, 2> a = {{1, 2, 3}, {3, 4, 5}};
-    constexpr Matrix<2, 3> b = {{2, 3}, {4, 5}, {6, 7}};
+    constexpr Matrix<2, 3> a = {{1, 2, 3}, {3, 4, 5}};
+    constexpr Matrix<3, 2> b = {{2, 3}, {4, 5}, {6, 7}};
     constexpr Matrix<2, 2> expectedAb = {{28, 34}, {52, 64}};
     constexpr Matrix<3, 3> expectedBa = {{11, 16, 21}, {19, 28, 37}, {27, 40, 53}};
     // act
@@ -201,8 +201,8 @@ TEST(MatrixOperators, multiplication_diff_type_same_size) {
 
 TEST(MatrixOperators, multiplication_diff_type_different_size) {
     // arrange
-    constexpr Matrix<3, 2, std::complex<float>> a = {{1, 2, 3}, {3, 4, 5}};
-    constexpr Matrix<2, 3> b = {{2, 3}, {4, 5}, {6, 7}};
+    constexpr Matrix<2, 3, std::complex<float>> a = {{1, 2, 3}, {3, 4, 5}};
+    constexpr Matrix<3, 2> b = {{2, 3}, {4, 5}, {6, 7}};
     constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{28, 34}, {52, 64}};
     constexpr Matrix<3, 3, std::complex<float>> expectedBa = {{11, 16, 21}, {19, 28, 37}, {27, 40, 53}};
     // act

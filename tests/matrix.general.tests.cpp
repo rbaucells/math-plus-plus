@@ -130,10 +130,10 @@ TEST(MatrixGeneral, inverse_random) {
 
 TEST(MatrixGeneral, row_echelon_form) {
     // arrange
-    constexpr Matrix<4, 3> m = {{2, 1, -1, 8}, {-3, -1, 2, -11}, {-2, 1, 2, -3}};
+    constexpr Matrix<3, 4> m = {{2, 1, -1, 8}, {-3, -1, 2, -11}, {-2, 1, 2, -3}};
 
     // act
-    const Matrix<4, 3> ref = m.toRowEchelon();
+    const Matrix<3, 4> ref = m.toRowEchelon();
 
     // assert
     ASSERT_TRUE(m.isRowEchelonOfThis(ref));
@@ -152,11 +152,11 @@ TEST(MatrixChecks, row_echelon_skip_pivot_column) {
 
 TEST(MatrixGeneral, reduced_row_echelon_form) {
     // arrange
-    constexpr Matrix<4, 3> m = {{2, 1, -1, 8}, {-3, -1, 2, -11}, {-2, 1, 2, -3}};
-    constexpr Matrix<4, 3> expected = {{1, 0, 0, 2}, {0, 1, 0, 3}, {0, 0, 1, -1}};
+    constexpr Matrix<3, 4> m = {{2, 1, -1, 8}, {-3, -1, 2, -11}, {-2, 1, 2, -3}};
+    constexpr Matrix<3, 4> expected = {{1, 0, 0, 2}, {0, 1, 0, 3}, {0, 0, 1, -1}};
 
     // act
-    const Matrix<4, 3> rref = m.toReducedRowEchelon();
+    const Matrix<3, 4> rref = m.toReducedRowEchelon();
 
     // assert
     ASSERT_TRUE(rref.equals(expected, 0.1));

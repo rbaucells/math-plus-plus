@@ -3,10 +3,10 @@
 #include "matrix.h"
 #include "matrix_exceptions.h"
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::fullLuDecomposition(const bool skipZeroColumns) const {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>::template LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::fullLuDecomposition(const bool skipZeroColumns) const {
     Matrix<ROWS, ROWS, T> l = Matrix<ROWS, ROWS, T>::identity();
-    Matrix<COLUMNS, ROWS, T> u = *this;
+    Matrix<ROWS, COLUMNS, T> u = *this;
 
     // use std::min so we never access the pivot that's out of the matrix
     for (int c = 0; c < std::min(ROWS, COLUMNS); c++) {
@@ -43,11 +43,11 @@ Matrix<COLUMNS, ROWS, T>::template LUDecomposition<Matrix<ROWS, ROWS, T>, Matrix
     return {l, u};
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template LDUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::fullLduDecomposition() const {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>::template LDUDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::fullLduDecomposition() const {
     Matrix<ROWS, ROWS, T> l = Matrix<ROWS, ROWS, T>::identity();
     Matrix<ROWS, ROWS, T> d;
-    Matrix<COLUMNS, ROWS, T> u = *this;
+    Matrix<ROWS, COLUMNS, T> u = *this;
 
     // use std::min so we never access the pivot that's out of the matrix
     for (int c = 0; c < std::min(ROWS, COLUMNS); c++) {
@@ -85,10 +85,10 @@ Matrix<COLUMNS, ROWS, T>::template LDUDecomposition<Matrix<ROWS, ROWS, T>, Matri
     return {l, d, u};
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template LUPDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::fullLupDecomposition(const LUPDecompositionParams& params) const {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>::template LUPDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>, Matrix<ROWS, ROWS, T>> Matrix<ROWS, COLUMNS, T>::fullLupDecomposition(const LUPDecompositionParams& params) const {
     Matrix<ROWS, ROWS, T> l = Matrix<ROWS, ROWS, T>::identity();
-    Matrix<COLUMNS, ROWS, T> u = *this;
+    Matrix<ROWS, COLUMNS, T> u = *this;
     Matrix<ROWS, ROWS, T> p = Matrix<ROWS, ROWS, T>::identity();
 
     // use std::min so we never access the pivot that's out of the matrix
@@ -153,10 +153,10 @@ Matrix<COLUMNS, ROWS, T>::template LUPDecomposition<Matrix<ROWS, ROWS, T>, Matri
     return {l, u, p};
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template LUPQDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::fullLupqDecomposition(const LUPQDecompositionParams& params) const {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>::template LUPQDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>, Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::fullLupqDecomposition(const LUPQDecompositionParams& params) const {
     Matrix<ROWS, ROWS, T> l = Matrix<ROWS, ROWS, T>::identity();
-    Matrix<COLUMNS, ROWS, T> u = *this;
+    Matrix<ROWS, COLUMNS, T> u = *this;
     Matrix<ROWS, ROWS, T> p = Matrix<ROWS, ROWS, T>::identity();
     Matrix<COLUMNS, COLUMNS, T> q = Matrix<COLUMNS, COLUMNS, T>::identity();
 
@@ -231,13 +231,13 @@ Matrix<COLUMNS, ROWS, T>::template LUPQDecomposition<Matrix<ROWS, ROWS, T>, Matr
     return {l, u, p, q};
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::choleskyDecomposition(CholeskyDecompositionParams params) const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>::template CholeskyDecomposition<Matrix<ROWS, COLUMNS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::choleskyDecomposition(CholeskyDecompositionParams params) const requires (isSquare) {
     if (!params.skipChecks && !isHermitian())
         throw NotSymmetricOrHermitian("Cholesky decomposition is not valid for non symmetric / hermitian matrices");
 
-    Matrix<COLUMNS, ROWS, T> l;
-    Matrix<COLUMNS, ROWS, T> lt;
+    Matrix<ROWS, COLUMNS, T> l;
+    Matrix<ROWS, COLUMNS, T> lt;
 
     for (int c = 0; c < COLUMNS; c++) {
         // data[c][c] is guaranteed to be real since matrix is hermitian, so just take real part
@@ -293,17 +293,17 @@ Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T
     return {l, lt};
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template PivotedCholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::pivotedCholeskyDecomposition(PivotedCholeskyDecompositionParams params) const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>::template PivotedCholeskyDecomposition<Matrix<ROWS, COLUMNS, T>, Matrix<ROWS, COLUMNS, T>, Matrix<ROWS, COLUMNS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::pivotedCholeskyDecomposition(PivotedCholeskyDecompositionParams params) const requires (isSquare) {
     if (!params.skipChecks && !isHermitian())
         throw NotSymmetricOrHermitian("Cholesky decomposition is not valid for non symmetric / hermitian matrices");
 
-    Matrix<COLUMNS, ROWS, T> l;
-    Matrix<COLUMNS, ROWS, T> lt;
-    Matrix<COLUMNS, ROWS, T> p = Matrix<COLUMNS, ROWS, T>::identity();
-    Matrix<COLUMNS, ROWS, T> pt = Matrix<COLUMNS, ROWS, T>::identity();
+    Matrix<ROWS, COLUMNS, T> l;
+    Matrix<ROWS, COLUMNS, T> lt;
+    Matrix<ROWS, COLUMNS, T> p = Matrix<ROWS, COLUMNS, T>::identity();
+    Matrix<ROWS, COLUMNS, T> pt = Matrix<ROWS, COLUMNS, T>::identity();
 
-    Matrix<COLUMNS, ROWS, T> a = *this;
+    Matrix<ROWS, COLUMNS, T> a = *this;
 
     for (int c = 0; c < COLUMNS; c++) {
         // use std::real cuz main diagonal of hermitian matrix is real
@@ -368,13 +368,13 @@ Matrix<COLUMNS, ROWS, T>::template PivotedCholeskyDecomposition<Matrix<COLUMNS, 
     return {l, lt, p, pt};
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<COLUMNS, ROWS, T>::ldlDecomposition(const bool allowSemidefinite, const UnderlyingType precision) const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>::template LDLDecomposition<Matrix<ROWS, COLUMNS, T>, Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::ldlDecomposition(const bool allowSemidefinite, const UnderlyingType precision) const requires (isSquare) {
     if (!isHermitian())
         throw NotSymmetricOrHermitian("Cholesky decomposition is not valid for non symmetric / hermitian matrices");
 
-    Matrix<COLUMNS, ROWS, T> l;
-    Matrix<COLUMNS, ROWS, T> d;
+    Matrix<ROWS, COLUMNS, T> l;
+    Matrix<ROWS, COLUMNS, T> d;
 
     for (int c = 0; c < COLUMNS; c++) {
         d[c][c] = data[c][c];
@@ -408,8 +408,8 @@ Matrix<COLUMNS, ROWS, T>::template LDLDecomposition<Matrix<COLUMNS, ROWS, T>, Ma
     return {l, d, l.conjugateTranspose()};
 }
 
-template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::qrDecomposition() const requires (isSquare) {
+template< int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T>::template QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::qrDecomposition() const requires (isSquare) {
     std::array<Vector<ROWS>, COLUMNS> a = getColumnVectors();
     std::array<Vector<ROWS>, COLUMNS> u = {};
     Matrix<ROWS, ROWS, T> q;
@@ -428,7 +428,7 @@ Matrix<COLUMNS, ROWS, T>::template QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix
         }
     }
 
-    Matrix<COLUMNS, ROWS, T> r = q.transpose() * *this;
+    Matrix<ROWS, COLUMNS, T> r = q.transpose() * *this;
 
     return {q, r};
 }

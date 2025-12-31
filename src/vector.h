@@ -3,7 +3,7 @@
 #include <random>
 #include "helper.h"
 
-template<int COLUMNS, int ROWS, scalar T>
+template< int ROWS, int COLUMNS, scalar T>
 struct Matrix;
 
 template<int N, scalar T = float>
