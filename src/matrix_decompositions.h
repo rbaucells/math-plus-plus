@@ -232,43 +232,53 @@ Matrix<COLUMNS, ROWS, T>::template LUPQDecomposition<Matrix<ROWS, ROWS, T>, Matr
 }
 
 template<int COLUMNS, int ROWS, scalar T>
-Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::choleskyDecomposition() const requires (isSquare) {
-    if (!isHermitian())
+Matrix<COLUMNS, ROWS, T>::template CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> Matrix<COLUMNS, ROWS, T>::choleskyDecomposition(CholeskyDecompositionParams params) const requires (isSquare) {
+    if (!params.skipChecks && !isHermitian())
         throw NotSymmetricOrHermitian("Cholesky decomposition is not valid for non symmetric / hermitian matrices");
 
     Matrix<COLUMNS, ROWS, T> l;
     Matrix<COLUMNS, ROWS, T> lt;
 
     for (int c = 0; c < COLUMNS; c++) {
-        for (int r = c; r < ROWS; r++) {
-            if (c == r) {
-                // data[c][c] is guaranteed to be real since matrix is hermitian, so just take real part
-                UnderlyingType sum = std::real(data[c][c]);
+        // data[c][c] is guaranteed to be real since matrix is hermitian, so just take real part
+        UnderlyingType pivot = std::real(data[c][c]);
 
-                for (int k = 0; k < c; k++) {
-                    sum -= std::norm(l[k][r]);
+        for (int k = 0; k < c; k++) {
+            pivot -= std::norm(l[k][c]);
+        }
+
+        if (compare(pivot, 0, params.precision)) {
+            if (!params.allowPositiveSemiDefinite)
+                throw NotPositiveDefinite("Cannot continue cholesky decomposition as matrix is not positive definite (0 found on l's diagonal)");
+
+            // set it to exactly zero to avoid floating point arithmetic
+            l[c][c] = 0;
+        }
+        else if (pivot < 0)
+            throw NotPositiveDefinite("Cannot cholesky decompose matrix if not positive definite");
+        else
+            l[c][c] = lt[c][c] = std::sqrt(pivot);
+
+        for (int r = c + 1; r < ROWS; r++) {
+            T sum = data[c][r];
+
+            for (int k = 0; k < c; k++) {
+                if constexpr (isComplex) {
+                    sum -= std::conj(l[k][c]) * l[k][r];
                 }
+                else {
+                    sum -= l[k][c] * l[k][r];
+                }
+            }
 
-                if (sum < 0 || compare(sum, 0, 0.001f))
-                    throw NotPositiveDefinite("Cannot cholesky decompose matrix if not positive definite");
+            if (compare(l[c][c], 0)) {
+                if (!params.allowPositiveSemiDefinite)
+                    throw NotPositiveDefinite("Cannot continue cholesky decomposition as matrix is not positive definite (0 found on l's diagonal)");
 
-                T sqrt = std::sqrt(sum);
-
-                l[c][c] = sqrt;
-                lt[c][c] = sqrt;
+                l[c][r] = 0;
+                lt[r][c] = 0;
             }
             else {
-                T sum = data[c][r];
-
-                for (int k = 0; k < c; k++) {
-                    if constexpr (isComplex) {
-                        sum -= std::conj(l[k][c]) * l[k][r];
-                    }
-                    else {
-                        sum -= l[k][c] * l[k][r];
-                    }
-                }
-
                 T val = sum / l[c][c];
                 l[c][r] = val;
 

@@ -435,8 +435,14 @@ public:
         L_TRANSPOSE_TYPE lTranspose;
     };
 
+    struct CholeskyDecompositionParams {
+        bool allowPositiveSemiDefinite = false;
+        bool skipChecks = false;
+        UnderlyingType precision = 0.001;
+    };
+
     // uses Cholesky–Banachiewicz and Cholesky–Crout algorithms
-    CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> choleskyDecomposition() const requires (isSquare);
+    CholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> choleskyDecomposition(CholeskyDecompositionParams params = {}) const requires (isSquare);
 
     template<typename L_TYPE, typename L_TRANSPOSE_TYPE, typename P_TYPE, typename P_TRANSPOSE_TYPE>
     struct PivotedCholeskyDecomposition {
