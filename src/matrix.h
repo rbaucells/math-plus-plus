@@ -6,7 +6,7 @@
 #include "vector.h"
 #include <optional>
 
-template< int ROWS, int COLUMNS, scalar T = float>
+template<int ROWS, int COLUMNS, scalar T = float>
 struct Matrix {
     static constexpr int columns = COLUMNS;
     static constexpr int rows = ROWS;
@@ -546,7 +546,7 @@ public:
 };
 
 // # * m
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> multiply(const T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
     Matrix<ROWS, COLUMNS, T> result;
 
@@ -559,13 +559,13 @@ Matrix<ROWS, COLUMNS, T> multiply(const T scalar, const Matrix<ROWS, COLUMNS, T>
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> operator*(const T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
     return multiply(scalar, matrix);
 }
 
 // # * m
-template< int ROWS, int COLUMNS, scalar T, typename OTHER_T> requires HasCommonType<OTHER_T, T>
+template<int ROWS, int COLUMNS, scalar T, typename OTHER_T> requires HasCommonType<OTHER_T, T>
 Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> multiply(const OTHER_T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
     Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> result;
 
@@ -578,13 +578,13 @@ Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> multiply(const OTHER_T sca
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T, typename OTHER_T> requires HasCommonType<OTHER_T, T>
+template<int ROWS, int COLUMNS, scalar T, typename OTHER_T> requires HasCommonType<OTHER_T, T>
 Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> operator*(const OTHER_T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
     return multiply(scalar, matrix);
 }
 
 // block matrix
-template< int ROWS, int COLUMNS, int B_COLUMNS, int B_ROWS, scalar B_T>
+template<int ROWS, int COLUMNS, int B_COLUMNS, int B_ROWS, scalar B_T>
 struct Matrix<ROWS, COLUMNS, Matrix<B_ROWS, B_COLUMNS, B_T>> {
     static constexpr int columns = COLUMNS;
     static constexpr int rows = ROWS;

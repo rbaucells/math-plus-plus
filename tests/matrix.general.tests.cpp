@@ -50,7 +50,7 @@ TEST(MatrixGeneral, determinant_3x3) {
 
 TEST(MatrixGeneral, determinant_4x4_laplace) {
     // arrange
-    const Matrix<4, 4> a = {{1, 2, 2, 1}, {1, 9, 8, 12}, {1, 2, 3, 4}, {7, 3, 2, 1}};
+    constexpr Matrix<4, 4> a = {{1, 2, 2, 1}, {1, 9, 8, 12}, {1, 2, 3, 4}, {7, 3, 2, 1}};
     // act
     const float det = a.determinant();
     // assert
@@ -106,7 +106,7 @@ TEST(MatrixGeneral, inverse_3x3) {
 }
 
 TEST(MatrixGeneral, inverse_random) {
-    // run until we get a matrix that isnt singular
+    // run until we get a matrix that isn't singular
     while (true) {
         // arrange
         const Matrix<3, 3> a = Matrix<3, 3>::random();
@@ -141,7 +141,7 @@ TEST(MatrixGeneral, row_echelon_form) {
 
 TEST(MatrixChecks, row_echelon_skip_pivot_column) {
     // arrange
-    constexpr Matrix<3, 3> m = {{{0, 2, 2},{0, 3.0, 4.0},{0, 5, 6.0}}};
+    constexpr Matrix<3, 3> m = {{{0, 2, 2}, {0, 3.0, 4.0}, {0, 5, 6.0}}};
 
     // act
     const Matrix<3, 3> ref = m.toRowEchelon();
@@ -267,4 +267,124 @@ TEST(MatrixGeneral, anti_hermitian_part) {
     const Matrix<2, 2, std::complex<float>> hermitianPart = m.antiHermitianPart();
     // assert
     ASSERT_TRUE(hermitianPart == expected);
+}
+
+TEST(MatrixGeneral, transpose_real_square) {
+    // arrange
+    constexpr Matrix<3, 3> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<3, 3> expected = {{1, 4, 7}, {2, 5, 8}, {3, 6, 9}};
+    // act
+    const Matrix<3, 3> transpose = a.transpose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, transpose_real_wide) {
+    // arrange
+    constexpr Matrix<3, 4> a = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}};
+    constexpr Matrix<4, 3> expected = {{1, 5, 9}, {2, 6, 10}, {3, 7, 11}, {4, 8, 12}};
+    // act
+    const Matrix<4, 3> transpose = a.transpose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, transpose_real_tall) {
+    // arrange
+    constexpr Matrix<4, 3> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
+    constexpr Matrix<3, 4> expected = {{1, 4, 7, 10}, {2, 5, 8, 11}, {3, 6, 9, 12}};
+    // act
+    const Matrix<3, 4> transpose = a.transpose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, transpose_complex_square) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{2, 3}, {-1, 4}, {5, -1}}, {{0, -3}, {4, 0}, {-2, 6}}, {{7, -5}, {-8, 1}, {1, 2}}};
+    constexpr Matrix<3, 3, std::complex<float>> expected = {{{2, 3}, {0, -3}, {7, -5}}, {{-1, 4}, {4, 0}, {-8, 1}}, {{5, -1}, {-2, 6}, {1, 2}}};
+    // act
+    const Matrix<3, 3, std::complex<float>> transpose = a.transpose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, transpose_complex_wide) {
+    // arrange
+    constexpr Matrix<3, 4, std::complex<float>> a = {{{1, 1}, {-2, 3}, {4, 0}, {0, -5}}, {{-3, 2}, {6, -1}, {-7, 4}, {8, 0}}, {{0, 9}, {-10, 5}, {11, -3}, {-12, 0}}};
+    constexpr Matrix<4, 3, std::complex<float>> expected = {{{1, 1}, {-3, 2}, {0, 9}}, {{-2, 3}, {6, -1}, {-10, 5}}, {{4, 0}, {-7, 4}, {11, -3}}, {{0, -5}, {8, 0}, {-12, 0}}};
+    // act
+    const Matrix<4, 3, std::complex<float>> transpose = a.transpose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, transpose_complex_tall) {
+    // arrange
+    constexpr Matrix<4, 3, std::complex<float>> a = {{{-1, 2}, {3, 0}, {0, -4}}, {{5, -1}, {-6, 7}, {8, 0}}, {{-9, 0}, {10, -2}, {-11, 5}}, {{0, 12}, {-13, 0}, {14, -3}}};
+    constexpr Matrix<3, 4, std::complex<float>> expected = {{ {-1, 2}, {5, -1}, {-9, 0}, {0, 12} },{ {3, 0}, {-6, 7}, {10, -2}, {-13, 0} },{ {0, -4}, {8, 0}, {-11, 5}, {14, -3} }};
+    // act
+    const Matrix<3, 4, std::complex<float>> transpose = a.transpose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, conjugate_transpose_real_square) {
+    // arrange
+    constexpr Matrix<3, 3> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<3, 3> expected = {{1, 4, 7}, {2, 5, 8}, {3, 6, 9}};
+    // act
+    const Matrix<3, 3> transpose = a.conjugateTranspose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, conjugate_transpose_real_wide) {
+    // arrange
+    constexpr Matrix<3, 4> a = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}};
+    constexpr Matrix<4, 3> expected = {{1, 5, 9}, {2, 6, 10}, {3, 7, 11}, {4, 8, 12}};
+    // act
+    const Matrix<4, 3> transpose = a.conjugateTranspose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, conjugate_transpose_real_tall) {
+    // arrange
+    constexpr Matrix<4, 3> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
+    constexpr Matrix<3, 4> expected = {{1, 4, 7, 10}, {2, 5, 8, 11}, {3, 6, 9, 12}};
+    // act
+    const Matrix<3, 4> transpose = a.conjugateTranspose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, conjugate_transpose_complex_square) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{2, 3}, {-1, 4}, {5, -1}}, {{0, -3}, {4, 0}, {-2, 6}}, {{7, -5}, {-8, 1}, {1, 2}}};
+    constexpr Matrix<3, 3, std::complex<float>> expected = {{{2, -3}, {0, 3}, {7, 5}}, {{-1, -4}, {4, 0}, {-8, -1}}, {{5, 1}, {-2, -6}, {1, -2}}};
+    // act
+    const Matrix<3, 3, std::complex<float>> transpose = a.conjugateTranspose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, conjugate_transpose_complex_wide) {
+    // arrange
+    constexpr Matrix<3, 4, std::complex<float>> a = {{{1, 1}, {-2, 3}, {4, 0}, {0, -5}}, {{-3, 2}, {6, -1}, {-7, 4}, {8, 0}}, {{0, 9}, {-10, 5}, {11, -3}, {-12, 0}}};
+    constexpr Matrix<4, 3, std::complex<float>> expected = {{{1, -1}, {-3, -2}, {0, -9}}, {{-2, -3}, {6, 1}, {-10, -5}}, {{4, 0}, {-7, -4}, {11, 3}}, {{0, 5}, {8, 0}, {-12, 0}}};
+    // act
+    const Matrix<4, 3, std::complex<float>> transpose = a.conjugateTranspose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, conjugate_transpose_complex_tall) {
+    // arrange
+    constexpr Matrix<4, 3, std::complex<float>> a = {{{-1, 2}, {3, 0}, {0, -4}}, {{5, -1}, {-6, 7}, {8, 0}}, {{-9, 0}, {10, -2}, {-11, 5}}, {{0, 12}, {-13, 0}, {14, -3}}};
+    constexpr Matrix<3, 4, std::complex<float>> expected = {{{-1, -2}, {5, 1}, {-9, 0}, {0, -12}}, {{3, 0}, {-6, -7}, {10, 2}, {-13, 0}}, {{0, 4}, {8, 0}, {-11, -5}, {14, 3}}};
+    // act
+    const Matrix<3, 4, std::complex<float>> transpose = a.conjugateTranspose();
+    // assert
+    ASSERT_TRUE(transpose.equals(expected, 0.001f));
 }

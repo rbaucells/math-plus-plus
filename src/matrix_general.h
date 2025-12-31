@@ -88,9 +88,9 @@ template< int ROWS, int COLUMNS, scalar T>
 Matrix<COLUMNS, ROWS, T> Matrix<ROWS, COLUMNS, T>::transpose() const {
     Matrix<COLUMNS, ROWS, T> result;
 
-    for (int c = 0; c < ROWS; c++) {
-        for (int r = 0; r < COLUMNS; r++) {
-            result[c][r] = data[r][c];
+    for (int c = 0; c < COLUMNS; c++) {
+        for (int r = 0; r < ROWS; r++) {
+            result[r][c] = data[c][r];
         }
     }
 
@@ -105,9 +105,9 @@ Matrix<COLUMNS, ROWS, T> Matrix<ROWS, COLUMNS, T>::conjugateTranspose() const {
     else {
         Matrix<COLUMNS, ROWS, T> result;
 
-        for (int c = 0; c < ROWS; c++) {
-            for (int r = 0; r < COLUMNS; r++) {
-                result[c][r] = std::conj(data[r][c]);
+        for (int c = 0; c < COLUMNS; c++) {
+            for (int r = 0; r < ROWS; r++) {
+                result[r][c] = std::conj(data[c][r]);
             }
         }
 
