@@ -248,3 +248,23 @@ TEST(MatrixGeneral, anti_symmetric_part) {
     // assert
     ASSERT_TRUE(symmetricPart == expected);
 }
+
+TEST(MatrixGeneral, hermitian_part) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr Matrix<2, 2, std::complex<float>> expected = {{{1, 0}, {4, -1}}, {{4, 1}, {7, 0}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> hermitianPart = m.hermitianPart();
+    // assert
+    ASSERT_TRUE(hermitianPart == expected);
+}
+
+TEST(MatrixGeneral, anti_hermitian_part) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr Matrix<2, 2, std::complex<float>> expected = {{{0, 2}, {-1, 5}}, {{1, 5}, {0, 8}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> hermitianPart = m.antiHermitianPart();
+    // assert
+    ASSERT_TRUE(hermitianPart == expected);
+}

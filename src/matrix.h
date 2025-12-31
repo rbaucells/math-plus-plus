@@ -244,6 +244,7 @@ public:
     Matrix<COLUMNS, ROWS, T> antiSymmetricPart() const requires (isSquare);
 
     Matrix<COLUMNS, ROWS, T> hermitianPart() const requires (isSquare);
+    Matrix<COLUMNS, ROWS, T> antiHermitianPart() const requires (isSquare);
 
     enum class PositiveDefiniteAlgorithm {
         cholesky,

@@ -896,7 +896,7 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::symmetricPart() const require
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
-            result[c][r] = (data[c][r] + data[r][c]) / 2;
+            result[c][r] = (data[c][r] + data[r][c]) / T(2);
         }
     }
 
@@ -909,9 +909,45 @@ Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::antiSymmetricPart() const req
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
-            result[c][r] = (data[c][r] - data[r][c]) / 2;
+            result[c][r] = (data[c][r] - data[r][c]) / T(2);
         }
     }
 
     return result;
+}
+
+template<int COLUMNS, int ROWS, scalar T>
+Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::hermitianPart() const requires (isSquare) {
+    if constexpr (!isComplex) {
+        return symmetricPart();
+    }
+    else {
+        Matrix<COLUMNS, ROWS, T> result;
+
+        for (int c = 0; c < COLUMNS; c++) {
+            for (int r = 0; r < ROWS; r++) {
+                result[c][r] = (data[c][r] + std::conj(data[r][c])) / T(2);
+            }
+        }
+
+        return result;
+    }
+}
+
+template<int COLUMNS, int ROWS, scalar T>
+Matrix<COLUMNS, ROWS, T> Matrix<COLUMNS, ROWS, T>::antiHermitianPart() const requires (isSquare) {
+    if constexpr (!isComplex) {
+        return antiSymmetricPart();
+    }
+    else {
+        Matrix<COLUMNS, ROWS, T> result;
+
+        for (int c = 0; c < COLUMNS; c++) {
+            for (int r = 0; r < ROWS; r++) {
+                result[c][r] = (data[c][r] - std::conj(data[r][c])) / T(2);
+            }
+        }
+
+        return result;
+    }
 }
