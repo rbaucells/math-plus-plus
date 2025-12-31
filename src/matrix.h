@@ -452,7 +452,12 @@ public:
         P_TRANSPOSE_TYPE pTranspose;
     };
 
-    PivotedCholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> pivotedCholeskyDecomposition() const requires (isSquare);
+    struct PivotedCholeskyDecompositionParams {
+        bool skipChecks = false;
+        UnderlyingType precision = 0.001;
+    };
+
+    PivotedCholeskyDecomposition<Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>, Matrix<COLUMNS, ROWS, T>> pivotedCholeskyDecomposition(PivotedCholeskyDecompositionParams params = {}) const requires (isSquare);
 
     template<typename L_TYPE, typename D_TYPE, typename L_TRANSPOSE_TYPE>
     struct LDLDecomposition {
