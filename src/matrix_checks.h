@@ -96,7 +96,7 @@ bool Matrix<ROWS, COLUMNS, T>::isReducedRowEchelon() const {
 template< int ROWS, int COLUMNS, scalar T>
 bool Matrix<ROWS, COLUMNS, T>::isSymmetrical() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
-        for (int r = 0; r < ROWS; r++) {
+        for (int r = c + 1; r < ROWS; r++) {
             if (!compare(data[c][r], data[r][c]))
                 return false;
         }
@@ -108,7 +108,7 @@ bool Matrix<ROWS, COLUMNS, T>::isSymmetrical() const requires (isSquare) {
 template< int ROWS, int COLUMNS, scalar T>
 bool Matrix<ROWS, COLUMNS, T>::isSkewSymmetrical() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
-        for (int r = 0; r < ROWS; r++) {
+        for (int r = c; r < ROWS; r++) {
             if (!compare(data[c][r], -data[r][c]))
                 return false;
         }
@@ -123,7 +123,7 @@ bool Matrix<ROWS, COLUMNS, T>::isHermitian() const requires (isSquare) {
         return isSymmetrical();
     else {
         for (int c = 0; c < COLUMNS; c++) {
-            for (int r = 0; r < ROWS; r++) {
+            for (int r = c; r < ROWS; r++) {
                 if (!compare(data[c][r], std::conj(data[r][c]))) {
                     return false;
                 }
@@ -140,7 +140,7 @@ bool Matrix<ROWS, COLUMNS, T>::isSkewHermitian() const requires (isSquare) {
         return isSkewSymmetrical();
     else {
         for (int c = 0; c < COLUMNS; c++) {
-            for (int r = 0; r < ROWS; r++) {
+            for (int r = c; r < ROWS; r++) {
                 if (!compare(data[c][r], -std::conj(data[r][c])))
                     return false;
             }
