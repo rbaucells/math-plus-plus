@@ -19,14 +19,18 @@ concept complex = is_complex_v<T>;
 template<typename T>
 concept scalar = std::is_arithmetic_v<T> || complex<T>;
 
+// IsRealScalar
+template<typename T>
+concept real = std::is_arithmetic_v<T>;
+
 // is_matrix - is_matrix_v - IsMatrix
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 struct Matrix;
 
 template<typename T>
 struct is_matrix : std::false_type {};
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 struct is_matrix<Matrix<ROWS, COLUMNS, T>> : std::true_type {};
 
 template<typename T>
@@ -136,22 +140,28 @@ constexpr underlying_type_t<T> epsilon() {
     return epsilon<underlying_type_t<T>>();
 }
 
-template<std::integral T>
-bool compare(const T a, const T b, const T precision = epsilon<T>()) {
-    return std::abs(a - b) < precision;
-}
-
-template<std::floating_point T>
-bool compare(const T a, const T b, const T precision = epsilon<T>()) {
-    return std::abs(a - b) < precision;
-}
-
-template<complex T>
-bool compare(const T a, const T b, const underlying_type_t<T> precision = epsilon<underlying_type_t<T>>()) {
-    return std::abs(a - b) < precision;
-}
-
-template<scalar T, scalar U> requires HasCommonType<T, U>
+// anything with anything
+template<scalar T, scalar U> requires HasCommonType<underlying_type_t<T>, underlying_type_t<U>>
 bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
-    return compare(static_cast<std::common_type_t<T, U>>(a), static_cast<std::common_type_t<T, U>>(b), precision);
+    return std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(b))) < precision && std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(b))) < precision;
+}
+
+template<real T, real U> requires HasCommonType<T, U>
+bool lesser(const T a, const U b) {
+    return static_cast<std::common_type_t<T, U>>(a) < static_cast<std::common_type_t<T, U>>(b);
+}
+
+template<complex T, real U>  requires HasCommonType<underlying_type_t<T>, U>
+bool lesser(const T a, const U b) {
+    return lesser(std::real(a), b) && compare(std::imag(a), 0);
+}
+
+template<real T, real U> requires HasCommonType<T, U>
+bool greater(const T a, const U b) {
+    return static_cast<std::common_type_t<T, U>>(a) > static_cast<std::common_type_t<T, U>>(b);
+}
+
+template<complex T, real U> requires HasCommonType<underlying_type_t<T>, U>
+bool greater(const T a, const U b) {
+    return greater(std::real(a), b) && compare(std::imag(a), 0);
 }

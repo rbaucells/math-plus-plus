@@ -20,260 +20,455 @@ static_assert(epsilon<std::complex<float>>() == FLT_EPSILON, "Epsilon function h
 static_assert(epsilon<std::complex<double>>() == DBL_EPSILON, "Epsilon function has incorrect epsilon for complex<double>");
 static_assert(epsilon<std::complex<long double>>() == LDBL_EPSILON, "Epsilon function has incorrect epsilon for complex<long double>");
 
-// float with float
-TEST(Helper, compare_f_f_true) {
-    // arrange
-    constexpr float a = 1.0f;
-    constexpr float b = 1.0f;
+static_assert(epsilon<std::complex<int>>() == 1, "Epsilon function has incorrect epsilon for complex<int>");
+static_assert(epsilon<std::complex<long>>() == 1, "Epsilon function has incorrect epsilon for complex<long>");
+static_assert(epsilon<std::complex<long long>>() == 1, "Epsilon function has incorrect epsilon for complex<long long>");
+static_assert(epsilon<std::complex<short>>() == 1, "Epsilon function has incorrect epsilon for complex<short>");
 
-    // act
-    const bool result = compare(a, b);
+static_assert(epsilon<std::complex<unsigned int>>() == 1, "Epsilon function has incorrect epsilon for complex<unsigned int>");
+static_assert(epsilon<std::complex<unsigned long>>() == 1, "Epsilon function has incorrect epsilon for complex<unsigned long>");
+static_assert(epsilon<std::complex<unsigned long long>>() == 1, "Epsilon function has incorrect epsilon for complex<unsigned long long>");
+static_assert(epsilon<std::complex<unsigned short>>() == 1, "Epsilon function has incorrect epsilon for complex<unsigned short>");
 
-    // assert
-    EXPECT_TRUE(result);
+// =======================================================
+// real with real
+// =======================================================
+
+TEST(Helper, int_with_int) {
+    // compare
+    ASSERT_TRUE(compare(1, 1));
+    ASSERT_FALSE(compare(1, 2));
+
+    // lesser
+    ASSERT_TRUE(lesser(1, 2));
+    ASSERT_FALSE(lesser(2, 1));
+    ASSERT_FALSE(lesser(1, 1));
+
+    // greater
+    ASSERT_TRUE(greater(2, 1));
+    ASSERT_FALSE(greater(1, 2));
+    ASSERT_FALSE(greater(1, 1));
 }
 
-TEST(Helper, compare_f_f_false) {
-    // arrange
-    constexpr float a = 1.0f;
-    constexpr float b = 1.1f;
+TEST(Helper, float_with_float) {
+    // compare
+    ASSERT_TRUE(compare(1.0f, 1.0f));
+    ASSERT_FALSE(compare(1.0f, 2.0f));
 
-    // act
-    const bool result = compare(a, b);
+    // lesser
+    ASSERT_TRUE(lesser(1.0f, 2.0f));
+    ASSERT_FALSE(lesser(2.0f, 1.0f));
+    ASSERT_FALSE(lesser(1.0f, 1.0f));
 
-    // assert
-    EXPECT_FALSE(result);
+    // greater
+    ASSERT_TRUE(greater(2.0f, 1.0f));
+    ASSERT_FALSE(greater(1.0f, 2.0f));
+    ASSERT_FALSE(greater(1.0f, 1.0f));
 }
 
-// int with int
-TEST(Helper, compare_i_i_true) {
-    // arrange
-    constexpr int a = 5;
-    constexpr int b = 5;
+TEST(Helper, double_with_double) {
+    // compare
+    ASSERT_TRUE(compare(1.0, 1.0));
+    ASSERT_FALSE(compare(1.0, 2.0));
 
-    // act
-    const bool result = compare(a, b);
+    // lesser
+    ASSERT_TRUE(lesser(1.0, 2.0));
+    ASSERT_FALSE(lesser(2.0, 1.0));
+    ASSERT_FALSE(lesser(1.0, 1.0));
 
-    // assert
-    EXPECT_TRUE(result);
+    // greater
+    ASSERT_TRUE(greater(2.0, 1.0));
+    ASSERT_FALSE(greater(1.0, 2.0));
+    ASSERT_FALSE(greater(1.0, 1.0));
 }
 
-TEST(Helper, compare_i_i_false) {
-    // arrange
-    constexpr int a = 5;
-    constexpr int b = 7;
+TEST(Helper, long_double_with_long_double) {
+    // compare
+    ASSERT_TRUE(compare(1.0L, 1.0L));
+    ASSERT_FALSE(compare(1.0L, 2.0L));
 
-    // act
-    const bool result = compare(a, b);
+    // lesser
+    ASSERT_TRUE(lesser(1.0L, 2.0L));
+    ASSERT_FALSE(lesser(2.0L, 1.0L));
+    ASSERT_FALSE(lesser(1.0L, 1.0L));
 
-    // assert
-    EXPECT_FALSE(result);
+    // greater
+    ASSERT_TRUE(greater(2.0L, 1.0L));
+    ASSERT_FALSE(greater(1.0L, 2.0L));
+    ASSERT_FALSE(greater(1.0L, 1.0L));
 }
 
-// complex<float> with complex<float>
-TEST(Helper, compare_cf_cf_true) {
-    // arrange
-    constexpr std::complex<float> a{1.0f, 2.0f};
-    constexpr std::complex<float> b{1.0f, 2.0f};
+// =======================================================
+// complex with complex (compare only)
+// =======================================================
 
-    // act
-    const bool result = compare(a, b);
-
-    // assert
-    EXPECT_TRUE(result);
+TEST(Helper, complex_int_with_complex_int) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<int>{1,0}, std::complex<int>{1,0}));
+    ASSERT_FALSE(compare(std::complex<int>{1,1}, std::complex<int>{1,0}));
 }
 
-TEST(Helper, compare_cf_cf_false) {
-    // arrange
-    constexpr std::complex<float> a{1.0f, 2.0f};
-    constexpr std::complex<float> b{1.0f, 2.1f};
-
-    // act
-    const bool result = compare(a, b);
-
-    // assert
-    EXPECT_FALSE(result);
+TEST(Helper, complex_float_with_complex_float) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<float>{1.0f,0.0f}, std::complex<float>{1.0f,0.0f}));
+    ASSERT_FALSE(compare(std::complex<float>{1.0f,1.0f}, std::complex<float>{1.0f,0.0f}));
 }
 
-// float with double
-TEST(Helper, compare_f_d_true) {
-    // arrange
-    constexpr float a = 1.0f;
-    constexpr double b = 1.0;
-
-    // act
-    const bool result = compare(a, b);
-
-    // assert
-    EXPECT_TRUE(result);
+TEST(Helper, complex_double_with_complex_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<double>{1.0,0.0}, std::complex<double>{1.0,0.0}));
+    ASSERT_FALSE(compare(std::complex<double>{1.0,1.0}, std::complex<double>{1.0,0.0}));
 }
 
-TEST(Helper, compare_f_d_false) {
-    // arrange
-    constexpr float a = 1.0f;
-    constexpr double b = 2.0;
-
-    // act
-    const bool result = compare(a, b);
-
-    // assert
-    EXPECT_FALSE(result);
+TEST(Helper, complex_long_double_with_complex_long_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<long double>{1.0L,0.0L}, std::complex<long double>{1.0L,0.0L}));
+    ASSERT_FALSE(compare(std::complex<long double>{1.0L,1.0L}, std::complex<long double>{1.0L,0.0L}));
 }
 
-// int with long
-TEST(Helper, compare_i_l_true) {
-    // arrange
-    constexpr int a = 42;
-    constexpr long b = 42;
+// =======================================================
+// complex with int
+// =======================================================
 
-    // act
-    const bool result = compare(a, b);
+TEST(Helper, complex_int_with_int) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<int>{1,0}, 1));
+    ASSERT_FALSE(compare(std::complex<int>{1,1}, 1));
 
-    // assert
-    EXPECT_TRUE(result);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<int>{1,0}, 2));
+    ASSERT_FALSE(lesser(std::complex<int>{2,0}, 1));
+    ASSERT_FALSE(lesser(std::complex<int>{1,0}, 1));
+
+    // greater
+    ASSERT_TRUE(greater(std::complex<int>{2,0}, 1));
+    ASSERT_FALSE(greater(std::complex<int>{1,0}, 2));
+    ASSERT_FALSE(greater(std::complex<int>{1,0}, 1));
 }
 
-TEST(Helper, compare_i_l_false) {
-    // arrange
-    constexpr int a = 42;
-    constexpr long b = 99;
+TEST(Helper, complex_float_with_int) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<float>{1.0f,0.0f}, 1));
+    ASSERT_FALSE(compare(std::complex<float>{1.0f,1.0f}, 1));
 
-    // act
-    const bool result = compare(a, b);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<float>{1.0f,0.0f}, 2));
+    ASSERT_FALSE(lesser(std::complex<float>{2.0f,0.0f}, 1));
+    ASSERT_FALSE(lesser(std::complex<float>{1.0f,0.0f}, 1));
 
-    // assert
-    EXPECT_FALSE(result);
+    // greater
+    ASSERT_TRUE(greater(std::complex<float>{2.0f,0.0f}, 1));
+    ASSERT_FALSE(greater(std::complex<float>{1.0f,0.0f}, 2));
+    ASSERT_FALSE(greater(std::complex<float>{1.0f,0.0f}, 1));
 }
 
-// complex<float> with complex<double>
-TEST(Helper, compare_cf_cd_true) {
-    // arrange
-    constexpr std::complex<float> a{1.0f, 2.0f};
-    constexpr std::complex<double> b{1.0, 2.0};
+TEST(Helper, complex_double_with_int) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<double>{1.0,0.0}, 1));
+    ASSERT_FALSE(compare(std::complex<double>{1.0,1.0}, 1));
 
-    // act
-    const bool result = compare(a, b);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<double>{1.0,0.0}, 2));
+    ASSERT_FALSE(lesser(std::complex<double>{2.0,0.0}, 1));
+    ASSERT_FALSE(lesser(std::complex<double>{1.0,0.0}, 1));
 
-    // assert
-    EXPECT_TRUE(result);
+    // greater
+    ASSERT_TRUE(greater(std::complex<double>{2.0,0.0}, 1));
+    ASSERT_FALSE(greater(std::complex<double>{1.0,0.0}, 2));
+    ASSERT_FALSE(greater(std::complex<double>{1.0,0.0}, 1));
 }
 
-TEST(Helper, compare_cf_cd_false) {
-    // arrange
-    std::complex<float> a{1.0f, 2.0f};
-    std::complex<double> b{1.5, 2.0};
+TEST(Helper, complex_long_double_with_int) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<long double>{1.0L,0.0L}, 1));
+    ASSERT_FALSE(compare(std::complex<long double>{1.0L,1.0L}, 1));
 
-    // act
-    const bool result = compare(a, b);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<long double>{1.0L,0.0L}, 2));
+    ASSERT_FALSE(lesser(std::complex<long double>{2.0L,0.0L}, 1));
+    ASSERT_FALSE(lesser(std::complex<long double>{1.0L,0.0L}, 1));
 
-    // assert
-    EXPECT_FALSE(result);
+    // greater
+    ASSERT_TRUE(greater(std::complex<long double>{2.0L,0.0L}, 1));
+    ASSERT_FALSE(greater(std::complex<long double>{1.0L,0.0L}, 2));
+    ASSERT_FALSE(greater(std::complex<long double>{1.0L,0.0L}, 1));
 }
 
-// float with float, custom precision
-TEST(Helper, compare_f_f_custom_true) {
-    // arrange
-    constexpr float a = 1.0f;
-    constexpr float b = 1.05f;
-    constexpr float precision = 0.1f;
+// =======================================================
+// complex with float
+// =======================================================
 
-    // act
-    const bool result = compare(a, b, precision);
+TEST(Helper, complex_int_with_float) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<int>{1,0}, 1.0f));
+    ASSERT_FALSE(compare(std::complex<int>{1,1}, 1.0f));
 
-    // assert
-    EXPECT_TRUE(result);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<int>{1,0}, 2.0f));
+    ASSERT_FALSE(lesser(std::complex<int>{2,0}, 1.0f));
+    ASSERT_FALSE(lesser(std::complex<int>{1,0}, 1.0f));
+
+    // greater
+    ASSERT_TRUE(greater(std::complex<int>{2,0}, 1.0f));
+    ASSERT_FALSE(greater(std::complex<int>{1,0}, 2.0f));
+    ASSERT_FALSE(greater(std::complex<int>{1,0}, 1.0f));
 }
 
-TEST(Helper, compare_f_f_custom_false) {
-    // arrange
-    constexpr float a = 1.0f;
-    constexpr float b = 1.2f;
-    constexpr float precision = 0.1f;
+TEST(Helper, complex_float_with_float) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<float>{1.0f,0.0f}, 1.0f));
+    ASSERT_FALSE(compare(std::complex<float>{1.0f,1.0f}, 1.0f));
 
-    // act
-    const bool result = compare(a, b, precision);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<float>{1.0f,0.0f}, 2.0f));
+    ASSERT_FALSE(lesser(std::complex<float>{2.0f,0.0f}, 1.0f));
+    ASSERT_FALSE(lesser(std::complex<float>{1.0f,0.0f}, 1.0f));
 
-    // assert
-    EXPECT_FALSE(result);
+    // greater
+    ASSERT_TRUE(greater(std::complex<float>{2.0f,0.0f}, 1.0f));
+    ASSERT_FALSE(greater(std::complex<float>{1.0f,0.0f}, 2.0f));
+    ASSERT_FALSE(greater(std::complex<float>{1.0f,0.0f}, 1.0f));
 }
 
-// float with double, custom precision
-TEST(Helper, compare_f_d_custom_true) {
-    // arrange
-    constexpr float a = 1.0f;
-    constexpr double b = 1.05;
-    constexpr double precision = 0.1;
+TEST(Helper, complex_double_with_float) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<double>{1.0,0.0}, 1.0f));
+    ASSERT_FALSE(compare(std::complex<double>{1.0,1.0}, 1.0f));
 
-    // act
-    const bool result = compare(a, b, precision);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<double>{1.0,0.0}, 2.0f));
+    ASSERT_FALSE(lesser(std::complex<double>{2.0,0.0}, 1.0f));
+    ASSERT_FALSE(lesser(std::complex<double>{1.0,0.0}, 1.0f));
 
-    // assert
-    EXPECT_TRUE(result);
+    // greater
+    ASSERT_TRUE(greater(std::complex<double>{2.0,0.0}, 1.0f));
+    ASSERT_FALSE(greater(std::complex<double>{1.0,0.0}, 2.0f));
+    ASSERT_FALSE(greater(std::complex<double>{1.0,0.0}, 1.0f));
 }
 
-TEST(Helper, compare_f_d_custom_false) {
-    // arrange
-    constexpr float a = 1.0f;
-    constexpr double b = 1.2;
-    constexpr double precision = 0.1;
+TEST(Helper, complex_long_double_with_float) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<long double>{1.0L,0.0L}, 1.0f));
+    ASSERT_FALSE(compare(std::complex<long double>{1.0L,1.0L}, 1.0f));
 
-    // act
-    const bool result = compare(a, b, precision);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<long double>{1.0L,0.0L}, 2.0f));
+    ASSERT_FALSE(lesser(std::complex<long double>{2.0L,0.0L}, 1.0f));
+    ASSERT_FALSE(lesser(std::complex<long double>{1.0L,0.0L}, 1.0f));
 
-    // assert
-    EXPECT_FALSE(result);
+    // greater
+    ASSERT_TRUE(greater(std::complex<long double>{2.0L,0.0L}, 1.0f));
+    ASSERT_FALSE(greater(std::complex<long double>{1.0L,0.0L}, 2.0f));
+    ASSERT_FALSE(greater(std::complex<long double>{1.0L,0.0L}, 1.0f));
 }
 
-// complex<float> with complex<float>, custom precision
-TEST(Helper, compare_cf_cf_custom_true) {
-    // arrange
-    constexpr std::complex<float> a{1.0f, 2.0f};
-    constexpr std::complex<float> b{1.05f, 2.05f};
-    constexpr float precision = 0.1f;
+// =======================================================
+// complex with double
+// =======================================================
 
-    // act
-    const bool result = compare(a, b, precision);
+TEST(Helper, complex_int_with_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<int>{1,0}, 1.0));
+    ASSERT_FALSE(compare(std::complex<int>{1,1}, 1.0));
 
-    // assert
-    EXPECT_TRUE(result);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<int>{1,0}, 2.0));
+    ASSERT_FALSE(lesser(std::complex<int>{2,0}, 1.0));
+    ASSERT_FALSE(lesser(std::complex<int>{1,0}, 1.0));
+
+    // greater
+    ASSERT_TRUE(greater(std::complex<int>{2,0}, 1.0));
+    ASSERT_FALSE(greater(std::complex<int>{1,0}, 2.0));
+    ASSERT_FALSE(greater(std::complex<int>{1,0}, 1.0));
 }
 
-TEST(Helper, compare_cf_cf_custom_false) {
-    // arrange
-    constexpr std::complex<float> a{1.0f, 2.0f};
-    constexpr std::complex<float> b{1.2f, 2.0f};
-    constexpr float precision = 0.1f;
+TEST(Helper, complex_float_with_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<float>{1.0f,0.0f}, 1.0));
+    ASSERT_FALSE(compare(std::complex<float>{1.0f,1.0f}, 1.0));
 
-    // act
-    const bool result = compare(a, b, precision);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<float>{1.0f,0.0f}, 2.0));
+    ASSERT_FALSE(lesser(std::complex<float>{2.0f,0.0f}, 1.0));
+    ASSERT_FALSE(lesser(std::complex<float>{1.0f,0.0f}, 1.0));
 
-    // assert
-    EXPECT_FALSE(result);
+    // greater
+    ASSERT_TRUE(greater(std::complex<float>{2.0f,0.0f}, 1.0));
+    ASSERT_FALSE(greater(std::complex<float>{1.0f,0.0f}, 2.0));
+    ASSERT_FALSE(greater(std::complex<float>{1.0f,0.0f}, 1.0));
 }
 
-// complex<float> with complex<double>, custom precision
-TEST(Helper, compare_cf_cd_custom_true) {
-    // arrange
-    constexpr std::complex<float> a{1.0f, 2.0f};
-    constexpr std::complex<double> b{1.05, 2.05};
-    constexpr double precision = 0.1;
+TEST(Helper, complex_double_with_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<double>{1.0,0.0}, 1.0));
+    ASSERT_FALSE(compare(std::complex<double>{1.0,1.0}, 1.0));
 
-    // act
-    const bool result = compare(a, b, precision);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<double>{1.0,0.0}, 2.0));
+    ASSERT_FALSE(lesser(std::complex<double>{2.0,0.0}, 1.0));
+    ASSERT_FALSE(lesser(std::complex<double>{1.0,0.0}, 1.0));
 
-    // assert
-    EXPECT_TRUE(result);
+    // greater
+    ASSERT_TRUE(greater(std::complex<double>{2.0,0.0}, 1.0));
+    ASSERT_FALSE(greater(std::complex<double>{1.0,0.0}, 2.0));
+    ASSERT_FALSE(greater(std::complex<double>{1.0,0.0}, 1.0));
 }
 
-TEST(Helper, compare_cf_cd_custom_false) {
-    // arrange
-    constexpr std::complex<float> a{1.0f, 2.0f};
-    constexpr std::complex<double> b{1.2, 2.0};
-    constexpr double precision = 0.1;
+TEST(Helper, complex_long_double_with_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<long double>{1.0L,0.0L}, 1.0));
+    ASSERT_FALSE(compare(std::complex<long double>{1.0L,1.0L}, 1.0));
 
-    // act
-    const bool result = compare(a, b, precision);
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<long double>{1.0L,0.0L}, 2.0));
+    ASSERT_FALSE(lesser(std::complex<long double>{2.0L,0.0L}, 1.0));
+    ASSERT_FALSE(lesser(std::complex<long double>{1.0L,0.0L}, 1.0));
 
-    // assert
-    EXPECT_FALSE(result);
+    // greater
+    ASSERT_TRUE(greater(std::complex<long double>{2.0L,0.0L}, 1.0));
+    ASSERT_FALSE(greater(std::complex<long double>{1.0L,0.0L}, 2.0));
+    ASSERT_FALSE(greater(std::complex<long double>{1.0L,0.0L}, 1.0));
+}
+
+// =======================================================
+// complex with long double
+// =======================================================
+
+TEST(Helper, complex_int_with_long_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<int>{1,0}, 1.0L));
+    ASSERT_FALSE(compare(std::complex<int>{1,1}, 1.0L));
+
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<int>{1,0}, 2.0L));
+    ASSERT_FALSE(lesser(std::complex<int>{2,0}, 1.0L));
+    ASSERT_FALSE(lesser(std::complex<int>{1,0}, 1.0L));
+
+    // greater
+    ASSERT_TRUE(greater(std::complex<int>{2,0}, 1.0L));
+    ASSERT_FALSE(greater(std::complex<int>{1,0}, 2.0L));
+    ASSERT_FALSE(greater(std::complex<int>{1,0}, 1.0L));
+}
+
+TEST(Helper, complex_float_with_long_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<float>{1.0f,0.0f}, 1.0L));
+    ASSERT_FALSE(compare(std::complex<float>{1.0f,1.0f}, 1.0L));
+
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<float>{1.0f,0.0f}, 2.0L));
+    ASSERT_FALSE(lesser(std::complex<float>{2.0f,0.0f}, 1.0L));
+    ASSERT_FALSE(lesser(std::complex<float>{1.0f,0.0f}, 1.0L));
+
+    // greater
+    ASSERT_TRUE(greater(std::complex<float>{2.0f,0.0f}, 1.0L));
+    ASSERT_FALSE(greater(std::complex<float>{1.0f,0.0f}, 2.0L));
+    ASSERT_FALSE(greater(std::complex<float>{1.0f,0.0f}, 1.0L));
+}
+
+TEST(Helper, complex_double_with_long_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<double>{1.0,0.0}, 1.0L));
+    ASSERT_FALSE(compare(std::complex<double>{1.0,1.0}, 1.0L));
+
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<double>{1.0,0.0}, 2.0L));
+    ASSERT_FALSE(lesser(std::complex<double>{2.0,0.0}, 1.0L));
+    ASSERT_FALSE(lesser(std::complex<double>{1.0,0.0}, 1.0L));
+
+    // greater
+    ASSERT_TRUE(greater(std::complex<double>{2.0,0.0}, 1.0L));
+    ASSERT_FALSE(greater(std::complex<double>{1.0,0.0}, 2.0L));
+    ASSERT_FALSE(greater(std::complex<double>{1.0,0.0}, 1.0L));
+}
+
+TEST(Helper, complex_long_double_with_long_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<long double>{1.0L,0.0L}, 1.0L));
+    ASSERT_FALSE(compare(std::complex<long double>{1.0L,1.0L}, 1.0L));
+
+    // lesser
+    ASSERT_TRUE(lesser(std::complex<long double>{1.0L,0.0L}, 2.0L));
+    ASSERT_FALSE(lesser(std::complex<long double>{2.0L,0.0L}, 1.0L));
+    ASSERT_FALSE(lesser(std::complex<long double>{1.0L,0.0L}, 1.0L));
+
+    // greater
+    ASSERT_TRUE(greater(std::complex<long double>{2.0L,0.0L}, 1.0L));
+    ASSERT_FALSE(greater(std::complex<long double>{1.0L,0.0L}, 2.0L));
+    ASSERT_FALSE(greater(std::complex<long double>{1.0L,0.0L}, 1.0L));
+}
+
+TEST(Helper, complex_int_with_complex_float) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<int>{1,0}, std::complex<float>{1.0f,0.0f}));
+    ASSERT_FALSE(compare(std::complex<int>{1,1}, std::complex<float>{1.0f,0.0f}));
+}
+
+TEST(Helper, complex_int_with_complex_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<int>{1,0}, std::complex<double>{1.0,0.0}));
+    ASSERT_FALSE(compare(std::complex<int>{1,1}, std::complex<double>{1.0,0.0}));
+}
+
+TEST(Helper, complex_int_with_complex_long_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<int>{1,0}, std::complex<long double>{1.0L,0.0L}));
+    ASSERT_FALSE(compare(std::complex<int>{1,1}, std::complex<long double>{1.0L,0.0L}));
+}
+
+// complex<float> with *
+TEST(Helper, complex_float_with_complex_int) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<float>{1.0f,0.0f}, std::complex<int>{1,0}));
+    ASSERT_FALSE(compare(std::complex<float>{1.0f,1.0f}, std::complex<int>{1,0}));
+}
+
+TEST(Helper, complex_float_with_complex_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<float>{1.0f,0.0f}, std::complex<double>{1.0,0.0}));
+    ASSERT_FALSE(compare(std::complex<float>{1.0f,1.0f}, std::complex<double>{1.0,0.0}));
+}
+
+TEST(Helper, complex_float_with_complex_long_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<float>{1.0f,0.0f}, std::complex<long double>{1.0L,0.0L}));
+    ASSERT_FALSE(compare(std::complex<float>{1.0f,1.0f}, std::complex<long double>{1.0L,0.0L}));
+}
+
+// complex<double> with *
+TEST(Helper, complex_double_with_complex_int) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<double>{1.0,0.0}, std::complex<int>{1,0}));
+    ASSERT_FALSE(compare(std::complex<double>{1.0,1.0}, std::complex<int>{1,0}));
+}
+
+TEST(Helper, complex_double_with_complex_float) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<double>{1.0,0.0}, std::complex<float>{1.0f,0.0f}));
+    ASSERT_FALSE(compare(std::complex<double>{1.0,1.0}, std::complex<float>{1.0f,0.0f}));
+}
+
+TEST(Helper, complex_double_with_complex_long_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<double>{1.0,0.0}, std::complex<long double>{1.0L,0.0L}));
+    ASSERT_FALSE(compare(std::complex<double>{1.0,1.0}, std::complex<long double>{1.0L,0.0L}));
+}
+
+// complex<long double> with *
+TEST(Helper, complex_long_double_with_complex_int) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<long double>{1.0L,0.0L}, std::complex<int>{1,0}));
+    ASSERT_FALSE(compare(std::complex<long double>{1.0L,1.0L}, std::complex<int>{1,0}));
+}
+
+TEST(Helper, complex_long_double_with_complex_float) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<long double>{1.0L,0.0L}, std::complex<float>{1.0f,0.0f}));
+    ASSERT_FALSE(compare(std::complex<long double>{1.0L,1.0L}, std::complex<float>{1.0f,0.0f}));
+}
+
+TEST(Helper, complex_long_double_with_complex_double) {
+    // compare
+    ASSERT_TRUE(compare(std::complex<long double>{1.0L,0.0L}, std::complex<double>{1.0,0.0}));
+    ASSERT_FALSE(compare(std::complex<long double>{1.0L,1.0L}, std::complex<double>{1.0,0.0}));
 }

@@ -423,114 +423,226 @@ TEST(MatrixChecks, not_reduced_row_echelon_wide_complex_zero_row) {
 }
 
 
-TEST(MatrixChecks, positive_defnite_sylvesters) {
+TEST(MatrixChecks, positive_defnite_real_sylvesters) {
     // arrange
     constexpr Matrix<2, 2> m = {{4, -2}, {3, 3}};
     // act / assert
     ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::sylvester));
 }
 
-TEST(MatrixChecks, not_positive_defnite_sylvesters) {
+TEST(MatrixChecks, not_positive_defnite_real_sylvesters) {
     // arrange
     constexpr Matrix<2, 2> m = {{-2, 1}, {1, -3}};
     // act / assert
     ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::sylvester));
 }
 
-TEST(MatrixChecks, positive_defnite_ldl) {
+TEST(MatrixChecks, positive_defnite_real_ldl) {
     // arrange
     constexpr Matrix<2, 2> m = {{2, 1}, {1, 3}};
     // act / assert
     ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::ldl));
 }
 
-TEST(MatrixChecks, not_positive_defnite_ldl) {
+TEST(MatrixChecks, not_positive_defnite_real_ldl) {
     // arrange
     constexpr Matrix<2, 2> m = {{-2, 1}, {1, -3}};
     // act / assert
     ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::ldl));
 }
 
-TEST(MatrixChecks, positive_defnite_cholesky) {
+TEST(MatrixChecks, positive_defnite_real_cholesky) {
     // arrange
     constexpr Matrix<2, 2> m = {{2, 1}, {1, 3}};
     // act / assert
     ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::cholesky));
 }
 
-TEST(MatrixChecks, not_positive_defnite_cholesky) {
+TEST(MatrixChecks, not_positive_defnite_real_cholesky) {
     // arrange
     constexpr Matrix<2, 2> m = {{-2, 1}, {1, -3}};
     // act / assert
     ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::cholesky));
 }
 
-TEST(MatrixChecks, positive_defnite_pivots) {
+TEST(MatrixChecks, positive_defnite_real_pivots) {
     // arrange
     constexpr Matrix<2, 2> m = {{2, 1}, {1, 3}};
     // act / assert
     ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::pivots));
 }
 
-TEST(MatrixChecks, not_positive_defnite_pivots) {
+TEST(MatrixChecks, not_positive_defnite_real_pivots) {
     // arrange
     constexpr Matrix<2, 2> m = {{-2, 1}, {1, -3}};
     // act / assert
     ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::pivots));
 }
 
-TEST(MatrixChecks, positive_defnite_sylvesters_non_symmetric) {
+TEST(MatrixChecks, positive_defnite_real_sylvesters_non_symmetric) {
     // arrange
     constexpr Matrix<2, 2> m = {{2, -1}, {1, 3}};
     // act / assert
     ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::sylvester_non_symmetric));
 }
 
-TEST(MatrixChecks, not_positive_defnite_sylvesters_non_symmetric) {
+TEST(MatrixChecks, not_positive_defnite_real_sylvesters_non_symmetric) {
     // arrange
     constexpr Matrix<2, 2> m = {{2, -1}, {1, -3}};
     // act / assert
     ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::sylvester_non_symmetric));
 }
 
-TEST(MatrixChecks, positive_defnite_ldl_non_symmetric) {
+TEST(MatrixChecks, positive_defnite_real_ldl_non_symmetric) {
     // arrange
     constexpr Matrix<2, 2> m = {{2, -1}, {1, 3}};
     // act / assert
     ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::ldl_non_symmetric));
 }
 
-TEST(MatrixChecks, not_positive_defnite_ldl_non_symmetric) {
+TEST(MatrixChecks, not_positive_defnite_real_ldl_non_symmetric) {
     // arrange
     constexpr Matrix<2, 2> m = {{2, -1}, {1, -3}};
     // act / assert
     ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::ldl_non_symmetric));
 }
 
-TEST(MatrixChecks, positive_defnite_cholesky_non_symmetric) {
+TEST(MatrixChecks, positive_defnite_real_cholesky_non_symmetric) {
     // arrange
     constexpr Matrix<2, 2> m = {{2, -1}, {1, 3}};
     // act / assert
     ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::cholesky_non_symmetric));
 }
 
-TEST(MatrixChecks, not_positive_defnite_cholesky_non_symmetric) {
+TEST(MatrixChecks, not_positive_defnite_real_cholesky_non_symmetric) {
     // arrange
     constexpr Matrix<2, 2> m = {{2, -1}, {1, -3}};
     // act / assert
     ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::cholesky_non_symmetric));
 }
 
-TEST(MatrixChecks, positive_defnite_pivots_non_symmetric) {
+TEST(MatrixChecks, positive_defnite_real_pivots_non_symmetric) {
     // arrange
     constexpr Matrix<2, 2> m = {{2, -1}, {1, 3}};
     // act / assert
     ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::pivots_non_symmetric));
 }
 
-TEST(MatrixChecks, not_positive_defnite_pivots_non_symmetric) {
+TEST(MatrixChecks, not_positive_defnite_real_pivots_non_symmetric) {
     // arrange
     constexpr Matrix<2, 2> m = {{2, -1}, {1, -3}};
     // act / assert
     ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2>::PositiveDefiniteAlgorithm::pivots_non_symmetric));
+}
+
+TEST(MatrixChecks, positive_defnite_complex_sylvesters) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, -1}, {4, 0}}};
+    // act / assert
+    ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::sylvester));
+}
+
+TEST(MatrixChecks, not_positive_defnite_complex_sylvesters) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{1, 0}, {2, 1}}, {{2, -1}, {3, 0}}};
+    // act / assert
+    ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::sylvester));
+}
+
+TEST(MatrixChecks, positive_defnite_complex_ldl) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, -1}, {4, 0}}};
+    // act / assert
+    ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::ldl));
+}
+
+TEST(MatrixChecks, not_positive_defnite_complex_ldl) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{1, 0}, {2, 1}}, {{2, -1}, {3, 0}}};
+    // act / assert
+    ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::ldl));
+}
+
+TEST(MatrixChecks, positive_defnite_complex_cholesky) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, -1}, {4, 0}}};
+    // act / assert
+    ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::cholesky));
+}
+
+TEST(MatrixChecks, not_positive_defnite_complex_cholesky) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{1, 0}, {2, 1}}, {{2, -1}, {3, 0}}};
+    // act / assert
+    ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::cholesky));
+}
+
+TEST(MatrixChecks, positive_defnite_complex_pivots) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, -1}, {4, 0}}};
+    // act / assert
+    ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::pivots));
+}
+
+TEST(MatrixChecks, not_positive_defnite_complex_pivots) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{1, 0}, {2, 1}}, {{2, -1}, {3, 0}}};
+    // act / assert
+    ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::pivots));
+}
+
+TEST(MatrixChecks, positive_defnite_complex_sylvesters_non_symmetric) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, 1}, {4, 0}}};
+    // act / assert
+    ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::sylvester_non_symmetric));
+}
+
+TEST(MatrixChecks, not_positive_defnite_complex_sylvesters_non_symmetric) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, 1}, {1, 0}}};
+    // act / assert
+    ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::sylvester_non_symmetric));
+}
+
+TEST(MatrixChecks, positive_defnite_complex_ldl_non_symmetric) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, 1}, {4, 0}}};
+    // act / assert
+    ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::ldl_non_symmetric));
+}
+
+TEST(MatrixChecks, not_positive_defnite_complex_ldl_non_symmetric) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, 1}, {1, 0}}};
+    // act / assert
+    ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::ldl_non_symmetric));
+}
+
+TEST(MatrixChecks, positive_defnite_complex_cholesky_non_symmetric) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, 1}, {4, 0}}};
+    // act / assert
+    ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::cholesky_non_symmetric));
+}
+
+TEST(MatrixChecks, not_positive_defnite_complex_cholesky_non_symmetric) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, 1}, {1, 0}}};
+    // act / assert
+    ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::cholesky_non_symmetric));
+}
+
+TEST(MatrixChecks, positive_defnite_complex_pivots_non_symmetric) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, 1}, {4, 0}}};
+    // act / assert
+    ASSERT_TRUE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::pivots_non_symmetric));
+}
+
+TEST(MatrixChecks, not_positive_defnite_complex_pivots_non_symmetric) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{2, 0}, {2, 1}}, {{2, 1}, {1, 0}}};
+    // act / assert
+    ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::pivots_non_symmetric));
 }
