@@ -545,54 +545,15 @@ public:
     EigenPair<Vector<COLUMNS, T>, T> powerIteration(PowerIterationParams<Vector<COLUMNS, T>, UnderlyingType> params = PowerIterationParams<Vector<COLUMNS, T>, UnderlyingType>()) const;
 };
 
-// # * m
+// Non member operators
 template<int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T> multiply(const T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
-    Matrix<ROWS, COLUMNS, T> result;
-
-    for (int c = 0; c < COLUMNS; c++) {
-        for (int r = 0; r < ROWS; r++) {
-            result[c][r] = scalar * matrix[c][r];
-        }
-    }
-
-    return result;
-}
+Matrix<ROWS, COLUMNS, T> multiply(T scalar, const Matrix<ROWS, COLUMNS, T>& matrix);
 
 template<int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T> operator*(const T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
-    return multiply(scalar, matrix);
-}
-
-// # * m
-template<int ROWS, int COLUMNS, scalar T, typename OTHER_T> requires HasCommonType<OTHER_T, T>
-Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> multiply(const OTHER_T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
-    Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> result;
-
-    for (int c = 0; c < COLUMNS; c++) {
-        for (int r = 0; r < ROWS; r++) {
-            result[c][r] = scalar * matrix[c][r];
-        }
-    }
-
-    return result;
-}
+Matrix<ROWS, COLUMNS, T> operator*(T scalar, const Matrix<ROWS, COLUMNS, T>& matrix);
 
 template<int ROWS, int COLUMNS, scalar T, typename OTHER_T> requires HasCommonType<OTHER_T, T>
-Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> operator*(const OTHER_T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
-    return multiply(scalar, matrix);
-}
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> multiply(OTHER_T scalar, const Matrix<ROWS, COLUMNS, T>& matrix);
 
-// block matrix
-template<int ROWS, int COLUMNS, int B_COLUMNS, int B_ROWS, scalar B_T>
-struct Matrix<ROWS, COLUMNS, Matrix<B_ROWS, B_COLUMNS, B_T>> {
-    static constexpr int columns = COLUMNS;
-    static constexpr int rows = ROWS;
-    static constexpr int bColumns = B_COLUMNS;
-    static constexpr int bRows = B_ROWS;
-
-    static constexpr bool isSquare = ROWS == COLUMNS;
-    static constexpr bool bIsSquare = B_ROWS == B_COLUMNS;
-
-    Matrix<B_ROWS, B_COLUMNS, B_T> data[COLUMNS][ROWS] = {};
-};
+template<int ROWS, int COLUMNS, scalar T, typename OTHER_T> requires HasCommonType<OTHER_T, T>
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> operator*(OTHER_T scalar, const Matrix<ROWS, COLUMNS, T>& matrix);

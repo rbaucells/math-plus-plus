@@ -507,3 +507,40 @@ template< int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T>::operator const T*() const {
     return &data[0][0];
 }
+
+// Non member operators
+template<int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> multiply(const T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
+    Matrix<ROWS, COLUMNS, T> result;
+
+    for (int c = 0; c < COLUMNS; c++) {
+        for (int r = 0; r < ROWS; r++) {
+            result[c][r] = scalar * matrix[c][r];
+        }
+    }
+
+    return result;
+}
+
+template<int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> operator*(const T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
+    return multiply(scalar, matrix);
+}
+
+template<int ROWS, int COLUMNS, scalar T, typename OTHER_T> requires HasCommonType<OTHER_T, T>
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> multiply(const OTHER_T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
+    Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> result;
+
+    for (int c = 0; c < COLUMNS; c++) {
+        for (int r = 0; r < ROWS; r++) {
+            result[c][r] = scalar * matrix[c][r];
+        }
+    }
+
+    return result;
+}
+
+template<int ROWS, int COLUMNS, scalar T, typename OTHER_T> requires HasCommonType<OTHER_T, T>
+Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> operator*(const OTHER_T scalar, const Matrix<ROWS, COLUMNS, T>& matrix) {
+    return multiply(scalar, matrix);
+}
