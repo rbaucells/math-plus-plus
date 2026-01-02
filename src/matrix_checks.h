@@ -156,17 +156,17 @@ bool Matrix<ROWS, COLUMNS, T>::isPositiveDefinite(const PositiveDefiniteAlgorith
         case PositiveDefiniteAlgorithm::cholesky:
             return isPositiveDefiniteCholesky();
         case PositiveDefiniteAlgorithm::cholesky_non_symmetric:
-            return symmetricPart().isPositiveDefiniteCholesky();
+            return hermitianPart().isPositiveDefiniteCholesky();
         case PositiveDefiniteAlgorithm::ldl:
             return isPositiveDefiniteLdl();
         case PositiveDefiniteAlgorithm::ldl_non_symmetric:
-            return symmetricPart().isPositiveDefiniteLdl();
+            return hermitianPart().isPositiveDefiniteLdl();
         case PositiveDefiniteAlgorithm::pivots:
             return isPositiveDefinitePivots();
         case PositiveDefiniteAlgorithm::pivots_non_symmetric:
-            return symmetricPart().isPositiveDefinitePivots();
+            return hermitianPart().isPositiveDefinitePivots();
         case PositiveDefiniteAlgorithm::sylvester_non_symmetric:
-            return symmetricPart().isPositiveDefiniteSylvester();
+            return hermitianPart().isPositiveDefiniteSylvester();
         case PositiveDefiniteAlgorithm::sylvester:
         default:
             return isPositiveDefiniteSylvester();
@@ -181,23 +181,28 @@ bool Matrix<ROWS, COLUMNS, T>::isPositiveDefiniteSylvester() const requires (isS
     else {
         T upperLeftSubMatrixDeterminant = upperLeftSubMatrix<K>().determinant(Matrix<K, K, T>::DeterminantAlgorithm::lu);
         bool isPositiveDefiniteK1 = isPositiveDefiniteSylvester<K + 1>();
-        return upperLeftSubMatrixDeterminant > 0 && isPositiveDefiniteK1;
+        return greater(upperLeftSubMatrixDeterminant, 0) && isPositiveDefiniteK1;
     }
 }
 
 template< int ROWS, int COLUMNS, scalar T>
 bool Matrix<ROWS, COLUMNS, T>::isPositiveDefiniteLdl() const requires (isSquare) {
-    auto [l, d, lt] = ldlDecomposition();
+    try {
+        auto [l, d, lt] = ldlDecomposition();
 
-    for (int c = 0; c < COLUMNS; c++) {
-        T curValue = d[c][c];
+        for (int c = 0; c < COLUMNS; c++) {
+            T curValue = d[c][c];
 
-        if (curValue < 0 || compare(curValue, 0)) {
-            return false;
+            if (lesser(curValue, 0)) {
+                return false;
+            }
         }
-    }
 
-    return true;
+        return true;
+    }
+    catch ([[maybe_unused]] std::exception e) {
+        return false;
+    }
 }
 
 template< int ROWS, int COLUMNS, scalar T>
@@ -219,7 +224,8 @@ bool Matrix<ROWS, COLUMNS, T>::isPositiveDefinitePivots() const requires (isSqua
         for (int c = 0; c < COLUMNS; c++) {
             T curValue = ref[c][c];
 
-            if (curValue < 0 || compare(curValue, 0)) {
+            // if the real part is less than 0, or real part is 0, or imag part isnt 0
+            if (lesser(curValue, 0)) {
                 return false;
             }
         }
@@ -232,7 +238,7 @@ bool Matrix<ROWS, COLUMNS, T>::isPositiveDefinitePivots() const requires (isSqua
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-bool Matrix<ROWS, COLUMNS, T>::isPositiveSemiDefinite(PositiveSemiDefiniteAlgorithm algorithm) const requires (isSquare) {
+bool Matrix<ROWS, COLUMNS, T>::isPositiveSemiDefinite(const PositiveSemiDefiniteAlgorithm algorithm) const requires (isSquare) {
     switch (algorithm) {
         case PositiveDefiniteAlgorithm::ldl:
             return isPositiveSemiDefiniteLdl();
