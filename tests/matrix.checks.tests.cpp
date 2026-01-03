@@ -706,6 +706,16 @@ TEST(MatrixChecks, not_positive_defnite_complex_pivots_non_symmetric) {
     ASSERT_FALSE(m.isPositiveDefinite(Matrix<2, 2, std::complex<float>>::PositiveDefiniteAlgorithm::pivots_non_symmetric));
 }
 
+TEST(MatrixChecks, positive_semi_definite_algorithms_return_false) {
+    // arrange
+    constexpr Matrix<2, 2> m = {{1, 0}, {0, 1}};
+    // act / assert - these implementations are currently stubs returning false
+    ASSERT_FALSE(m.isPositiveSemiDefinite(Matrix<2, 2>::PositiveSemiDefiniteAlgorithm::sylvester));
+    ASSERT_FALSE(m.isPositiveSemiDefinite(Matrix<2, 2>::PositiveSemiDefiniteAlgorithm::sylvester_non_symmetric));
+    ASSERT_FALSE(m.isPositiveSemiDefinite(Matrix<2, 2>::PositiveSemiDefiniteAlgorithm::ldl));
+    ASSERT_FALSE(m.isPositiveSemiDefinite(Matrix<2, 2>::PositiveSemiDefiniteAlgorithm::ldl_non_symmetric));
+}
+
 TEST(MatrixChecks, symmetrical_real) {
     // arrange
     constexpr Matrix<2, 2> m = {{1, 2}, {2, 3}};
@@ -757,6 +767,14 @@ TEST(MatrixChecks, unitary_complex_identity) {
     ASSERT_TRUE(m.isSpecialUnitary());
 }
 
+TEST(MatrixChecks, unitary_complex_non_identity) {
+    // arrange: not unitary
+    Matrix<2, 2, std::complex<float>> m = {{{1, 0}, {1, 0}}, {{0, 0}, {1, 0}}};
+    // act / assert
+    ASSERT_FALSE(m.isUnitary());
+    ASSERT_FALSE(m.isSpecialUnitary());
+}
+
 TEST(MatrixChecks, orthogonal_real_identity) {
     // arrange
     constexpr Matrix<2, 2> m = {{1, 0}, {0, 1}};
@@ -768,6 +786,13 @@ TEST(MatrixChecks, orthogonal_real_identity) {
 TEST(MatrixChecks, semi_orthogonal_wide_real) {
     // arrange
     Matrix<2, 3> m = {{1, 0, 0}, {0, 1, 0}}; // two orthonormal rows (row-major initializer)
+    // act / assert
+    ASSERT_TRUE(m.isSemiOrthogonal());
+}
+
+TEST(MatrixChecks, semi_orthogonal_tall_real) {
+    // arrange: tall matrix whose columns are orthonormal
+    Matrix<3, 2> m = {{1, 0}, {0, 1}, {0, 0}};
     // act / assert
     ASSERT_TRUE(m.isSemiOrthogonal());
 }
@@ -807,6 +832,20 @@ TEST(MatrixChecks, lower_unitriangular_matrix) {
     ASSERT_TRUE(m.isLowerUnitriangularMatrix());
 }
 
+TEST(MatrixChecks, upper_unitriangular_matrix_false) {
+    // arrange: diagonal not all ones
+    constexpr Matrix<3, 3> m = {{2, 2, 3}, {0, 1, 4}, {0, 0, 1}};
+    // act / assert
+    ASSERT_FALSE(m.isUpperUnitriangularMatrix());
+}
+
+TEST(MatrixChecks, lower_unitriangular_matrix_false) {
+    // arrange: diagonal element not one
+    constexpr Matrix<3, 3> m = {{1, 0, 0}, {0, 2, 0}, {0, 0, 1}};
+    // act / assert
+    ASSERT_FALSE(m.isLowerUnitriangularMatrix());
+}
+
 TEST(MatrixChecks, strictly_upper_triangular) {
     // arrange
     constexpr Matrix<3, 3> m = {{0, 1, 2}, {0, 0, 3}, {0, 0, 0}}; // strictly upper triangular (row-major)
@@ -821,6 +860,20 @@ TEST(MatrixChecks, strictly_lower_triangular) {
     ASSERT_TRUE(m.isStrictlyLowerTriangularMatrix());
 }
 
+TEST(MatrixChecks, strictly_upper_triangular_false) {
+    // arrange: a diagonal element is non-zero making it not strictly upper
+    constexpr Matrix<3, 3> m = {{0, 1, 2}, {0, 1, 3}, {0, 0, 0}};
+    // act / assert
+    ASSERT_FALSE(m.isStrictlyUpperTriangularMatrix());
+}
+
+TEST(MatrixChecks, strictly_lower_triangular_false) {
+    // arrange: a diagonal element non-zero -> not strictly lower
+    constexpr Matrix<3, 3> m = {{0, 0, 0}, {1, 1, 0}, {2, 3, 0}};
+    // act / assert
+    ASSERT_FALSE(m.isStrictlyLowerTriangularMatrix());
+}
+
 TEST(MatrixChecks, frobenius_matrix_identity) {
     // arrange
     // use a matrix with ones on the diagonal and a single column (column 1) having a non-zero below the diagonal
@@ -829,11 +882,25 @@ TEST(MatrixChecks, frobenius_matrix_identity) {
     ASSERT_TRUE(m.isFrobeniusMatrix());
 }
 
+TEST(MatrixChecks, frobenius_matrix_two_nonzero_columns_false) {
+    // arrange: two different columns have below-diagonal non-zero entries
+    constexpr Matrix<3, 3> m = {{1, 0, 0}, {0, 1, 0}, {5, 6, 1}};
+    // act / assert
+    ASSERT_FALSE(m.isFrobeniusMatrix());
+}
+
 TEST(MatrixChecks, upper_hessenberg_identity) {
     // arrange
     constexpr Matrix<3, 3> m = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
     // act / assert
     ASSERT_TRUE(m.isUpperHessenberg());
+}
+
+TEST(MatrixChecks, upper_hessenberg_non_identity_false) {
+    // arrange: element at (0,2) is non-zero -> not upper Hessenberg
+    constexpr Matrix<3, 3> m = {{1, 0, 0}, {0, 1, 0}, {1, 0, 1}};
+    // act / assert
+    ASSERT_FALSE(m.isUpperHessenberg());
 }
 
 TEST(MatrixChecks, unreduced_upper_hessenberg_subdiagonal_nonzero) {
@@ -850,6 +917,13 @@ TEST(MatrixChecks, lower_hessenberg_identity) {
     ASSERT_TRUE(m.isLowerHessenberg());
 }
 
+TEST(MatrixChecks, lower_hessenberg_non_identity_false) {
+    // arrange: element at (2,0) is non-zero -> not lower Hessenberg
+    constexpr Matrix<3, 3> m = {{1, 0, 1}, {0, 1, 0}, {0, 0, 1}};
+    // act / assert
+    ASSERT_FALSE(m.isLowerHessenberg());
+}
+
 TEST(MatrixChecks, unreduced_lower_hessenberg_subsupra_nonzero) {
     // arrange
     // row0: [1, 1, 0] -> data[1][0] = 1 (supra-diagonal for c=1)
@@ -859,11 +933,25 @@ TEST(MatrixChecks, unreduced_lower_hessenberg_subsupra_nonzero) {
     ASSERT_TRUE(m.isUnreducedLowerHessenberg());
 }
 
+TEST(MatrixChecks, unreduced_lower_hessenberg_identity_is_false) {
+    // arrange: identity has zero supra-diagonals, so it's not unreduced lower Hessenberg
+    constexpr Matrix<3, 3> mi = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    // act / assert
+    ASSERT_FALSE(mi.isUnreducedLowerHessenberg());
+}
+
 TEST(MatrixChecks, tridiagonal_matrix) {
     // arrange
     constexpr Matrix<3, 3> m = {{1, 2, 0}, {3, 4, 5}, {0, 6, 7}}; // only diag and immediate off-diagonals non-zero
     // act / assert
     ASSERT_TRUE(m.isTridiagonal());
+}
+
+TEST(MatrixChecks, tridiagonal_matrix_false) {
+    // arrange: element outside tridiagonal (0,2) non-zero
+    constexpr Matrix<3, 3> m = {{1, 0, 0}, {0, 1, 0}, {1, 0, 1}};
+    // act / assert
+    ASSERT_FALSE(m.isTridiagonal());
 }
 
 TEST(MatrixChecks, row_echelon_of_this_same_rref) {
@@ -874,6 +962,14 @@ TEST(MatrixChecks, row_echelon_of_this_same_rref) {
     ASSERT_TRUE(a.isRowEchelonOfThis(ref, 0.01f));
 }
 
+TEST(MatrixChecks, row_echelon_of_this_ref_not_row_echelon_returns_false) {
+    // arrange: ref is not row echelon
+    constexpr Matrix<3, 3> a = {{1, 2, 0}, {0, 1, 3}, {0, 0, 1}};
+    constexpr Matrix<3, 3> ref = {{1, 0, 0}, {0, 0, 0}, {0, 0, 1}}; // not row echelon
+    // act / assert
+    ASSERT_FALSE(a.isRowEchelonOfThis(ref, 0.01f));
+}
+
 TEST(MatrixChecks, semi_negative_and_negative_definite_stubs_return_false) {
     // arrange
     constexpr Matrix<2, 2> m = {{1, 0}, {0, 1}};
@@ -882,3 +978,4 @@ TEST(MatrixChecks, semi_negative_and_negative_definite_stubs_return_false) {
     ASSERT_FALSE(m.isNegativeDefinite());
     ASSERT_FALSE(m.isNegativeSemiDefinite());
 }
+
