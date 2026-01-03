@@ -84,9 +84,9 @@ struct Matrix {
     Matrix<ROWS, COLUMNS, T>& operator=(const Matrix<ROWS, COLUMNS, OTHER_T>& other);
 
     // m == m
-    template<typename OTHER_T> requires std::equality_comparable_with<OTHER_T, T>
+    template<typename OTHER_T> requires std::equality_comparable_with<underlying_type_t<OTHER_T>, underlying_type_t<T>>
     bool equals(const Matrix<ROWS, COLUMNS, OTHER_T>& other, std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHER_T>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHER_T>>>()) const;
-    template<typename OTHER_T> requires std::equality_comparable_with<OTHER_T, T>
+    template<typename OTHER_T> requires std::equality_comparable_with<underlying_type_t<OTHER_T>, underlying_type_t<T>>
     bool operator==(const Matrix<ROWS, COLUMNS, OTHER_T>& other) const;
 
     // m + m

@@ -234,7 +234,7 @@ Matrix<ROWS, COLUMNS, T>& Matrix<ROWS, COLUMNS, T>::operator=(const Matrix<ROWS,
 // m == m
 template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
-requires std::equality_comparable_with<OTHER_T, T>
+requires std::equality_comparable_with<underlying_type_t<OTHER_T>, underlying_type_t<T>>
 bool Matrix<ROWS, COLUMNS, T>::equals(const Matrix<ROWS, COLUMNS, OTHER_T>& other, const std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHER_T>> precision) const {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -248,7 +248,7 @@ bool Matrix<ROWS, COLUMNS, T>::equals(const Matrix<ROWS, COLUMNS, OTHER_T>& othe
 
 template< int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T>
-requires std::equality_comparable_with<OTHER_T, T>
+requires std::equality_comparable_with<underlying_type_t<OTHER_T>, underlying_type_t<T>>
 bool Matrix<ROWS, COLUMNS, T>::operator==(const Matrix<ROWS, COLUMNS, OTHER_T>& other) const {
     return equals(other);
 }
