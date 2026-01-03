@@ -66,7 +66,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::squeezeMatrix(const int i, co
     Matrix<ROWS, COLUMNS, T> matrix = identity();
 
     matrix[i][i] = k;
-    matrix[j][j] = 1 / k;
+    matrix[j][j] = UnderlyingType(1) / k;
 
     return matrix;
 }
