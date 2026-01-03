@@ -21,7 +21,7 @@ TEST(MatrixGeneral, swap_column) {
     ASSERT_TRUE(swapped == expected);
 }
 
-TEST(MatrixGeneral, determinant_1x1) {
+TEST(MatrixGeneral, determinant_1x1_real) {
     // arrange
     constexpr Matrix<1, 1> a = {{5}};
     // act
@@ -30,7 +30,7 @@ TEST(MatrixGeneral, determinant_1x1) {
     ASSERT_FLOAT_EQ(det, 5);
 }
 
-TEST(MatrixGeneral, determinant_2x2) {
+TEST(MatrixGeneral, determinant_2x2_real) {
     // arrange
     constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
     // act
@@ -39,7 +39,7 @@ TEST(MatrixGeneral, determinant_2x2) {
     ASSERT_FLOAT_EQ(det, -2);
 }
 
-TEST(MatrixGeneral, determinant_3x3) {
+TEST(MatrixGeneral, determinant_3x3_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{1, 2, 3}, {4, 5, 4}, {6, 1, 2}};
     // act
@@ -48,7 +48,7 @@ TEST(MatrixGeneral, determinant_3x3) {
     ASSERT_FLOAT_EQ(det, -40);
 }
 
-TEST(MatrixGeneral, determinant_4x4_laplace) {
+TEST(MatrixGeneral, determinant_4x4_real_laplace) {
     // arrange
     constexpr Matrix<4, 4> a = {{1, 2, 2, 1}, {1, 9, 8, 12}, {1, 2, 3, 4}, {7, 3, 2, 1}};
     // act
@@ -57,7 +57,7 @@ TEST(MatrixGeneral, determinant_4x4_laplace) {
     ASSERT_FLOAT_EQ(det, 133);
 }
 
-TEST(MatrixGeneral, determinant_4x4_lu) {
+TEST(MatrixGeneral, determinant_4x4_real_lu) {
     // arrange
     constexpr Matrix<4, 4> a = {{1, 2, 2, 1}, {1, 9, 8, 12}, {1, 2, 3, 4}, {7, 3, 2, 1}};
     // act
@@ -66,13 +66,67 @@ TEST(MatrixGeneral, determinant_4x4_lu) {
     ASSERT_FLOAT_EQ(det, 133);
 }
 
-TEST(MatrixGeneral, determinant_4x4_triangular) {
+TEST(MatrixGeneral, determinant_4x4_real_triangular) {
     // arrange
     constexpr Matrix<4, 4> a = {{1, 4, 5, 2}, {0, 2, 5, 7}, {0, 0, 1, 5}, {0, 0, 0, 4}};
     // act
     const float det = a.determinant(Matrix<4, 4>::DeterminantAlgorithm::triangular);
     // assert
     ASSERT_FLOAT_EQ(det, 8);
+}
+
+TEST(MatrixGeneral, determinant_1x1_complex) {
+    // arrange
+    constexpr Matrix<1, 1, std::complex<float>> a = {{{5, 2}}};
+    // act
+    const std::complex<float> det = a.determinant();
+    // assert
+    ASSERT_TRUE(compare(det, std::complex<float>(5, 2), 0.001f));
+}
+
+TEST(MatrixGeneral, determinant_2x2_complex) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> a = {{{1, 0}, {2, 1}}, {{3, 0}, {4, 0}}};
+    // act
+    const std::complex<float> det = a.determinant();
+    // assert
+    ASSERT_TRUE(compare(det, std::complex<float>(-2, -3), 0.001f));
+}
+
+TEST(MatrixGeneral, determinant_3x3_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{1, -1}, {2, 1}, {3, 0}}, {{0, 7}, {5, 6}, {4, 1}}, {{0, 6}, {1, 0}, {0, 2}}};
+    // act
+    const std::complex<float> det = a.determinant();
+    // assert
+    ASSERT_TRUE(compare(det, std::complex<float>(93, 12), 0.001f));
+}
+
+TEST(MatrixGeneral, determinant_4x4_complex_laplace) {
+    // arrange
+    constexpr Matrix<4, 4, std::complex<float>> a = {{{1, 0}, {2, 3}, {4, 0}, {5, -6}}, {{6, -7}, {41, 0}, {0, 2}, {1, 0}}, {{0, 1}, {0, 0}, {-1, 0}, {12, -12}}, {{1, 0}, {2, 0}, {3, 0}, {0, 4}}};
+    // act
+    const std::complex<float> det = a.determinant();
+    // assert
+    ASSERT_TRUE(compare(det, std::complex<float>(3652, 78), 0.001f));
+}
+
+TEST(MatrixGeneral, determinant_4x4_complex_lu) {
+    // arrange
+    constexpr Matrix<4, 4, std::complex<float>> a = {{{1, 0}, {2, 3}, {4, 0}, {5, -6}}, {{6, -7}, {41, 0}, {0, 2}, {1, 0}}, {{0, 1}, {0, 0}, {-1, 0}, {12, -12}}, {{1, 0}, {2, 0}, {3, 0}, {0, 4}}};
+    // act
+    const std::complex<float> det = a.determinant(Matrix<4, 4, std::complex<float>>::DeterminantAlgorithm::lu);
+    // assert
+    ASSERT_TRUE(compare(det, std::complex<float>(3652, 78), 0.001f));
+}
+
+TEST(MatrixGeneral, determinant_4x4_complex_triangular) {
+    // arrange
+    constexpr Matrix<4, 4, std::complex<float>> a = {{{1, 1}, {4, 0}, {5, 0}, {2, 0}}, {{0, 0}, {2, 0}, {5, 1}, {7, 0}}, {{0, 0}, {0, 0}, {1, 0}, {5, 0}}, {{0, 0}, {0, 0}, {0, 0}, {4, 0}}};
+    // act
+    const std::complex<float> det = a.determinant(Matrix<4, 4, std::complex<float>>::DeterminantAlgorithm::triangular);
+    // assert
+    ASSERT_TRUE(compare(det, std::complex<float>(8, 8), 0.001f));
 }
 
 TEST(MatrixGeneral, inverse_1x1_real) {

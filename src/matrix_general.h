@@ -244,7 +244,12 @@ T Matrix<ROWS, COLUMNS, T>::laplaceDeterminant() const requires (isSquare) {
 
     for (int c = 0; c < COLUMNS; c++) {
         Matrix<ROWS - 1, COLUMNS - 1, T> sub = removeColumnAndRow(c, 0);
-        result += sign * sub.determinant() * data[c][0];
+
+        if (sign == 1)
+            result += sub.determinant() * data[c][0];
+        else
+            result += -sub.determinant() * data[c][0];
+
         sign = -sign;
     }
 
@@ -273,7 +278,7 @@ T Matrix<ROWS, COLUMNS, T>::luDeterminant() const requires (isSquare) {
     if (numRowSwaps % 2 == 0)
         return u.determinant(DeterminantAlgorithm::triangular);
 
-    return u.determinant(DeterminantAlgorithm::triangular) * -1;
+    return -u.determinant(DeterminantAlgorithm::triangular);
 }
 
 template<int ROWS, int COLUMNS, scalar T>
