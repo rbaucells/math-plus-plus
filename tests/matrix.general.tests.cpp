@@ -885,3 +885,51 @@ TEST(MatrixGeneral, get_row_vectors_wide) {
     ASSERT_TRUE(v[1].equals(expected1, 0.001f));
     ASSERT_TRUE(v[2].equals(expected2, 0.001f));
 }
+
+TEST(MatrixGeneral, set_column_vector) {
+    // arrange
+    Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Vector<3> v = {10, 11, 12};
+    // act
+    m.setColumnVector(1, v);
+    const Vector<3> result = m.getColumnVector(1);
+    // assert
+    ASSERT_TRUE(result.equals(v, 0.001f));
+}
+
+TEST(MatrixGeneral, set_column_vectors) {
+    // arrange
+    Matrix<3, 3> m = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+    constexpr std::array<Vector<3>, 3> v = {Vector<3>{1, 4, 7}, Vector<3>{2, 5, 8}, Vector<3>{3, 6, 9}};
+    // act
+    m.setColumnVectors(v);
+    const std::array<Vector<3>, 3> result = m.getColumnVectors();
+    // assert
+    ASSERT_TRUE(result[0].equals(v[0], 0.001f));
+    ASSERT_TRUE(result[1].equals(v[1], 0.001f));
+    ASSERT_TRUE(result[2].equals(v[2], 0.001f));
+}
+
+TEST(MatrixGeneral, set_row_vector) {
+    // arrange
+    Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Vector<3> v = {10, 11, 12};
+    // act
+    m.setRowVector(1, v);
+    const Vector<3> result = m.getRowVector(1);
+    // assert
+    ASSERT_TRUE(result.equals(v, 0.001f));
+}
+
+TEST(MatrixGeneral, set_row_vectors) {
+    // arrange
+    Matrix<3, 3> m = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+    constexpr std::array<Vector<3>, 3> v = {Vector<3>{1, 2, 3}, Vector<3>{4, 5, 6}, Vector<3>{7, 8, 9}};
+    // act
+    m.setRowVectors(v);
+    const std::array<Vector<3>, 3> result = m.getRowVectors();
+    // assert
+    ASSERT_TRUE(result[0].equals(v[0], 0.001f));
+    ASSERT_TRUE(result[1].equals(v[1], 0.001f));
+    ASSERT_TRUE(result[2].equals(v[2], 0.001f));
+}
