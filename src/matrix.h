@@ -28,7 +28,7 @@ struct Matrix {
     template<typename OTHER_T> requires std::convertible_to<OTHER_T, T>
     Matrix(const Matrix<ROWS, COLUMNS, OTHER_T>& other);
 
-    static Matrix<ROWS, COLUMNS, T> random();
+    static Matrix<ROWS, COLUMNS, T> random(UnderlyingType min = -1, UnderlyingType max = 1);
 
     // m = m
     Matrix<ROWS, COLUMNS, T>& operator=(const Matrix<ROWS, COLUMNS, T>& other);

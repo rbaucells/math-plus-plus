@@ -388,3 +388,55 @@ TEST(MatrixGeneral, conjugate_transpose_complex_tall) {
     // assert
     ASSERT_TRUE(transpose.equals(expected, 0.001f));
 }
+
+TEST(MatrixGeneral, random_real_float) {
+    // arrange
+    const Matrix<2, 2> a = Matrix<2, 2>::random(0.0f, 4.0f);
+    // act / assert
+    for (int c = 0; c < 2; c++) {
+        for (int r = 0; r < 2; r++) {
+            ASSERT_GE(a[c][r], 0.0f);
+            ASSERT_LE(a[c][r], 4.0f);
+        }
+    }
+}
+
+TEST(MatrixGeneral, random_real_int) {
+    // arrange
+    const Matrix<2, 2, int> a = Matrix<2, 2>::random(0, 4);
+    // act / assert
+    for (int c = 0; c < 2; c++) {
+        for (int r = 0; r < 2; r++) {
+            ASSERT_GE(a[c][r], 0);
+            ASSERT_LE(a[c][r], 4);
+        }
+    }
+}
+
+TEST(MatrixGeneral, random_complex_float) {
+    // arrange
+    const Matrix<2, 2, std::complex<float>> a =Matrix<2, 2, std::complex<float>>::random(0.0f, 4.0f);
+    // act / assert
+    for (int c = 0; c < 2; c++) {
+        for (int r = 0; r < 2; r++) {
+            ASSERT_GE(a[c][r].real(), 0.0f);
+            ASSERT_LE(a[c][r].real(), 4.0f);
+            ASSERT_GE(a[c][r].imag(), 0.0f);
+            ASSERT_LE(a[c][r].imag(), 4.0f);
+        }
+    }
+}
+
+TEST(MatrixGeneral, random_complex_int) {
+    // arrange
+    const Matrix<2, 2, std::complex<int>> a =Matrix<2, 2, std::complex<int>>::random(0, 4);
+    // act / assert
+    for (int c = 0; c < 2; c++) {
+        for (int r = 0; r < 2; r++) {
+            ASSERT_GE(a[c][r].real(), 0);
+            ASSERT_LE(a[c][r].real(), 4);
+            ASSERT_GE(a[c][r].imag(), 0);
+            ASSERT_LE(a[c][r].imag(), 4);
+        }
+    }
+}

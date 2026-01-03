@@ -4,7 +4,7 @@
 #include "exceptions.h"
 #include "matrix_exceptions.h"
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 constexpr Matrix<ROWS, COLUMNS, T>::Matrix(std::initializer_list<std::initializer_list<T>> initializerList) {
     // number of rows in initializer list
     if (initializerList.size() != ROWS)
@@ -30,12 +30,12 @@ constexpr Matrix<ROWS, COLUMNS, T>::Matrix(std::initializer_list<std::initialize
     }
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T>::Matrix(const Matrix<ROWS, COLUMNS, T>& other) {
     memcpy(data, other.data, sizeof(T) * ROWS * COLUMNS);
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T> requires std::convertible_to<OTHER_T, T>
 Matrix<ROWS, COLUMNS, T>::Matrix(const Matrix<ROWS, COLUMNS, OTHER_T>& other) {
     for (int c = 0; c < COLUMNS; c++) {
@@ -45,15 +45,15 @@ Matrix<ROWS, COLUMNS, T>::Matrix(const Matrix<ROWS, COLUMNS, OTHER_T>& other) {
     }
 }
 
-template< int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::random() {
+template<int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::random(const UnderlyingType min, const UnderlyingType max) {
     Matrix<ROWS, COLUMNS, T> m;
 
     std::random_device dev;
     std::mt19937 eng(dev());
 
     if constexpr (std::is_integral_v<T>) {
-        std::uniform_int_distribution<T> dist(0, 1);
+        std::uniform_int_distribution<T> dist(min, max);
 
         for (int c = 0; c < COLUMNS; c++) {
             for (int r = 0; r < ROWS; r++) {
@@ -62,7 +62,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::random() {
         }
     }
     else if constexpr (std::is_floating_point_v<T>) {
-        std::uniform_real_distribution<T> dist(0, 1);
+        std::uniform_real_distribution<T> dist(min, max);
 
         for (int c = 0; c < COLUMNS; c++) {
             for (int r = 0; r < ROWS; r++) {
@@ -71,12 +71,24 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::random() {
         }
     }
     else if constexpr (isComplex) {
-        std::uniform_real_distribution<UnderlyingType> realDist(0, 1);
-        std::uniform_real_distribution<UnderlyingType> imagDist(0, 1);
+        if constexpr (std::is_integral_v<UnderlyingType>) {
+            std::uniform_int_distribution<UnderlyingType> realDist(min, max);
+            std::uniform_int_distribution<UnderlyingType> imagDist(min, max);
 
-        for (int c = 0; c < COLUMNS; c++) {
-            for (int r = 0; r < ROWS; r++) {
-                m[c][r] = std::complex<UnderlyingType>(realDist(eng), imagDist(eng));
+            for (int c = 0; c < COLUMNS; c++) {
+                for (int r = 0; r < ROWS; r++) {
+                    m[c][r] = std::complex<UnderlyingType>(realDist(eng), imagDist(eng));
+                }
+            }
+        }
+        else {
+            std::uniform_real_distribution<UnderlyingType> realDist(min, max);
+            std::uniform_real_distribution<UnderlyingType> imagDist(min, max);
+
+            for (int c = 0; c < COLUMNS; c++) {
+                for (int r = 0; r < ROWS; r++) {
+                    m[c][r] = std::complex<UnderlyingType>(realDist(eng), imagDist(eng));
+                }
             }
         }
     }
@@ -84,7 +96,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::random() {
     return m;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<COLUMNS, ROWS, T> Matrix<ROWS, COLUMNS, T>::transpose() const {
     Matrix<COLUMNS, ROWS, T> result;
 
@@ -97,7 +109,7 @@ Matrix<COLUMNS, ROWS, T> Matrix<ROWS, COLUMNS, T>::transpose() const {
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<COLUMNS, ROWS, T> Matrix<ROWS, COLUMNS, T>::conjugateTranspose() const {
     if constexpr (!isComplex) {
         return transpose();
@@ -115,7 +127,7 @@ Matrix<COLUMNS, ROWS, T> Matrix<ROWS, COLUMNS, T>::conjugateTranspose() const {
     }
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::inverse() const requires (isSquare) {
     if constexpr (ROWS == 1) { // its a one by one, we can just return 1 / value
         if (compare(data[0][0], 0)) {
@@ -197,7 +209,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::inverse() const requires (isS
     }
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 T Matrix<ROWS, COLUMNS, T>::determinant(const DeterminantAlgorithm algorithm) const requires (isSquare) {
     if constexpr (COLUMNS == 1) {
         return data[0][0];
@@ -225,7 +237,7 @@ T Matrix<ROWS, COLUMNS, T>::determinant(const DeterminantAlgorithm algorithm) co
     }
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 T Matrix<ROWS, COLUMNS, T>::laplaceDeterminant() const requires (isSquare) {
     T result = {};
     int sign = 1;
@@ -239,7 +251,7 @@ T Matrix<ROWS, COLUMNS, T>::laplaceDeterminant() const requires (isSquare) {
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 T Matrix<ROWS, COLUMNS, T>::triangularDeterminant() const requires (isSquare) {
     T result = 1;
 
@@ -250,10 +262,10 @@ T Matrix<ROWS, COLUMNS, T>::triangularDeterminant() const requires (isSquare) {
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 T Matrix<ROWS, COLUMNS, T>::tridiagonalDeterminant() const requires (isSquare) { return T(); }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 T Matrix<ROWS, COLUMNS, T>::luDeterminant() const requires (isSquare) {
     int numRowSwaps = 0;
     auto [l, u, p] = fullLupDecomposition({.numRowSwaps = &numRowSwaps});
@@ -264,7 +276,7 @@ T Matrix<ROWS, COLUMNS, T>::luDeterminant() const requires (isSquare) {
     return u.determinant(DeterminantAlgorithm::triangular) * -1;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 std::string Matrix<ROWS, COLUMNS, T>::toString() const {
     std::stringstream ss;
     ss.precision(2);
@@ -290,7 +302,7 @@ std::string Matrix<ROWS, COLUMNS, T>::toString() const {
     return ss.str();
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 std::string Matrix<ROWS, COLUMNS, T>::toLaTex() const {
     std::stringstream ss;
     ss.precision(2);
@@ -313,7 +325,7 @@ std::string Matrix<ROWS, COLUMNS, T>::toLaTex() const {
     return ss.str();
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 template<int NUM_COLUMNS_TO_REMOVE>
 Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> Matrix<ROWS, COLUMNS, T>::removeColumns(const std::array<int, NUM_COLUMNS_TO_REMOVE>& columnsToRemove) const {
     Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> m;
@@ -334,7 +346,7 @@ Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> Matrix<ROWS, COLUMNS, T>::remov
     return m;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 template<int NUM_ROWS_TO_REMOVE>
 Matrix<ROWS, COLUMNS - NUM_ROWS_TO_REMOVE, T> Matrix<ROWS, COLUMNS, T>::removeRows(const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const {
     Matrix<ROWS, COLUMNS - NUM_ROWS_TO_REMOVE, T> m;
@@ -353,7 +365,7 @@ Matrix<ROWS, COLUMNS - NUM_ROWS_TO_REMOVE, T> Matrix<ROWS, COLUMNS, T>::removeRo
     return m;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 template<int NUM_COLUMNS_TO_REMOVE, int NUM_ROWS_TO_REMOVE>
 Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE - NUM_ROWS_TO_REMOVE, T> Matrix<ROWS, COLUMNS, T>::removeColumnsAndRows(const std::array<int, NUM_COLUMNS_TO_REMOVE>& columnsToRemove, const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const {
     Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE - NUM_ROWS_TO_REMOVE, T> m;
@@ -377,7 +389,7 @@ Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE - NUM_ROWS_TO_REMOVE, T> Matrix<ROW
     return m;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS - 1, T> Matrix<ROWS, COLUMNS, T>::removeColumn(const int columnToRemove) const {
     Matrix<ROWS, COLUMNS - 1, T> m;
 
@@ -395,7 +407,7 @@ Matrix<ROWS, COLUMNS - 1, T> Matrix<ROWS, COLUMNS, T>::removeColumn(const int co
     return m;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS - 1, T> Matrix<ROWS, COLUMNS, T>::removeRow(const int rowToRemove) const {
     Matrix<ROWS, COLUMNS - 1, T> m;
 
@@ -413,7 +425,7 @@ Matrix<ROWS, COLUMNS - 1, T> Matrix<ROWS, COLUMNS, T>::removeRow(const int rowTo
     return m;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS - 1, COLUMNS - 1, T> Matrix<ROWS, COLUMNS, T>::removeColumnAndRow(const int columnToRemove, const int rowToRemove) const {
     Matrix<ROWS - 1, COLUMNS - 1, T> m;
 
@@ -436,7 +448,7 @@ Matrix<ROWS - 1, COLUMNS - 1, T> Matrix<ROWS, COLUMNS, T>::removeColumnAndRow(co
     return m;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::swapRows(const int rowA, const int rowB) const {
     Matrix<ROWS, COLUMNS, T> m(*this);
 
@@ -447,7 +459,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::swapRows(const int rowA, cons
     return m;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::swapColumns(const int columnA, const int columnB) const {
     Matrix<ROWS, COLUMNS, T> m(*this);
 
@@ -458,7 +470,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::swapColumns(const int columnA
     return m;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 constexpr Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::identity() requires (isSquare) {
     Matrix<ROWS, COLUMNS, T> result;
 
@@ -469,7 +481,7 @@ constexpr Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::identity() requires
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::toRowEchelon(const bool doRowSwaps) const {
     Matrix<ROWS, COLUMNS, T> a = *this;
 
@@ -518,7 +530,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::toRowEchelon(const bool doRow
     return a;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::toReducedRowEchelon() const {
     Matrix<ROWS, COLUMNS, T> a = *this;
 
@@ -570,7 +582,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::toReducedRowEchelon() const {
     return a;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 int Matrix<ROWS, COLUMNS, T>::rank() const {
     Matrix<ROWS, COLUMNS, T> ref = toRowEchelon();
     int result = 0;
@@ -597,7 +609,7 @@ int Matrix<ROWS, COLUMNS, T>::rank() const {
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Vector<ROWS, T> Matrix<ROWS, COLUMNS, T>::getColumnVector(const int i) const {
     Vector<ROWS, T> v;
 
@@ -608,7 +620,7 @@ Vector<ROWS, T> Matrix<ROWS, COLUMNS, T>::getColumnVector(const int i) const {
     return v;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 std::array<Vector<ROWS>, COLUMNS> Matrix<ROWS, COLUMNS, T>::getColumnVectors() const {
     std::array<Vector<ROWS>, COLUMNS> vecs;
 
@@ -621,7 +633,7 @@ std::array<Vector<ROWS>, COLUMNS> Matrix<ROWS, COLUMNS, T>::getColumnVectors() c
     return vecs;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::getRowVector(const int i) const {
     Vector<COLUMNS, T> v;
 
@@ -632,7 +644,7 @@ Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::getRowVector(const int i) const {
     return v;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 std::array<Vector<COLUMNS>, ROWS> Matrix<ROWS, COLUMNS, T>::getRowVectors() const {
     std::array<Vector<COLUMNS>, ROWS> vecs;
 
@@ -645,7 +657,7 @@ std::array<Vector<COLUMNS>, ROWS> Matrix<ROWS, COLUMNS, T>::getRowVectors() cons
     return vecs;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 void Matrix<ROWS, COLUMNS, T>::setColumnVectors(const std::array<Vector<ROWS, T>, COLUMNS>& columnVectors) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -654,14 +666,14 @@ void Matrix<ROWS, COLUMNS, T>::setColumnVectors(const std::array<Vector<ROWS, T>
     }
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 void Matrix<ROWS, COLUMNS, T>::setColumnVector(const int i, const Vector<ROWS, T>& v) {
     for (int j = 0; j < ROWS; j++) {
         data[i][j] = v[j];
     }
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 void Matrix<ROWS, COLUMNS, T>::setRowVectors(const std::array<Vector<COLUMNS, T>, ROWS> rowVectors) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -670,14 +682,14 @@ void Matrix<ROWS, COLUMNS, T>::setRowVectors(const std::array<Vector<COLUMNS, T>
     }
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 void Matrix<ROWS, COLUMNS, T>::setRowVector(const int i, const Vector<COLUMNS, T>& v) {
     for (int j = 0; j < COLUMNS; j++) {
         data[j][i] = v[j];
     }
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 T Matrix<ROWS, COLUMNS, T>::trace() const requires (isSquare) {
     T sum = {};
 
@@ -688,12 +700,12 @@ T Matrix<ROWS, COLUMNS, T>::trace() const requires (isSquare) {
     return sum;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 T Matrix<ROWS, COLUMNS, T>::minorOfElement(const int c, const int r) const requires (isSquare) {
     return removeColumnAndRow(c, r).determinant();
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::minorMatrix() const requires (isSquare) {
     Matrix<ROWS, COLUMNS, T> result;
 
@@ -706,12 +718,12 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::minorMatrix() const requires 
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 T Matrix<ROWS, COLUMNS, T>::cofactorOfElement(const int c, const int r) const requires (isSquare) {
     return minorOfElement(c, r) * std::pow(-1, c + r);
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::cofactorMatrix() const requires (isSquare) {
     Matrix<ROWS, COLUMNS, T> result;
 
@@ -724,12 +736,12 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::cofactorMatrix() const requir
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::adjoint() const requires (isSquare) {
     return cofactorMatrix().transpose();
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::hadamardProduct(const Matrix<ROWS, COLUMNS, T>& other) const {
     Matrix<ROWS, COLUMNS, T> result;
 
@@ -742,7 +754,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::hadamardProduct(const Matrix<
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 template<typename OTHER_T> requires HasCommonType<OTHER_T, T>
 Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::hadamardProduct(const Matrix<ROWS, COLUMNS, OTHER_T>& other) const {
     Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> result;
@@ -756,7 +768,7 @@ Matrix<ROWS, COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 template<int OTHER_COLUMNS, int OTHER_ROWS>
 Matrix<ROWS * OTHER_ROWS, COLUMNS * OTHER_COLUMNS, T> Matrix<ROWS, COLUMNS, T>::kroneckerProduct(const Matrix<OTHER_ROWS, OTHER_COLUMNS, T>& other) const {
     Matrix<ROWS * OTHER_ROWS, COLUMNS * OTHER_COLUMNS, T> result;
@@ -776,7 +788,7 @@ Matrix<ROWS * OTHER_ROWS, COLUMNS * OTHER_COLUMNS, T> Matrix<ROWS, COLUMNS, T>::
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 template<int OTHER_COLUMNS, int OTHER_ROWS, typename OTHER_T> requires HasCommonType<OTHER_T, T>
 Matrix<ROWS * OTHER_ROWS, COLUMNS * OTHER_COLUMNS, std::common_type_t<T, OTHER_T>> Matrix<ROWS, COLUMNS, T>::kroneckerProduct(const Matrix<OTHER_ROWS, OTHER_COLUMNS, OTHER_T>& other) const {
     Matrix<ROWS * OTHER_ROWS, COLUMNS * OTHER_COLUMNS, std::common_type_t<T, OTHER_T>> result;
@@ -796,7 +808,7 @@ Matrix<ROWS * OTHER_ROWS, COLUMNS * OTHER_COLUMNS, std::common_type_t<T, OTHER_T
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Vector<ROWS, T> Matrix<ROWS, COLUMNS, T>::backwardSubstitution(const Vector<ROWS, T>& b) const requires (isSquare) {
     Vector<ROWS, T> result;
 
@@ -813,7 +825,7 @@ Vector<ROWS, T> Matrix<ROWS, COLUMNS, T>::backwardSubstitution(const Vector<ROWS
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Vector<ROWS, T> Matrix<ROWS, COLUMNS, T>::forwardSubstitution(const Vector<ROWS, T>& b) const requires (isSquare) {
     Vector<ROWS, T> result;
 
@@ -830,7 +842,7 @@ Vector<ROWS, T> Matrix<ROWS, COLUMNS, T>::forwardSubstitution(const Vector<ROWS,
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::solveLinearSystem(const Vector<ROWS, T>& b, const LinearSystemAlgorithm algorithm) const {
     switch (algorithm) {
         case LinearSystemAlgorithm::lu_factorization:
@@ -843,12 +855,12 @@ Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::solveLinearSystem(const Vector<ROWS
     }
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::solveLinearSystemThroughInverse(const Vector<ROWS, T>& b) const requires (isSquare) {
     return inverse() * b;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::solveLinearSystemThroughLu(const Vector<ROWS, T>& b) const requires (isSquare) {
     auto [l,u, p] = fullLupDecomposition();
 
@@ -858,7 +870,7 @@ Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::solveLinearSystemThroughLu(const Ve
     return x;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::solveLinearSystemThroughRowReduction(const Vector<ROWS, T>& b) const requires (isSquare) {
     Matrix<ROWS, COLUMNS + 1, T> a;
 
@@ -876,7 +888,7 @@ Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::solveLinearSystemThroughRowReductio
     return x;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 template<int K>
 Matrix<K, K, T> Matrix<ROWS, COLUMNS, T>::upperLeftSubMatrix() const requires (isSquare) {
     Matrix<K, K, T> result;
@@ -890,7 +902,7 @@ Matrix<K, K, T> Matrix<ROWS, COLUMNS, T>::upperLeftSubMatrix() const requires (i
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::symmetricPart() const requires (isSquare) {
     Matrix<ROWS, COLUMNS, T> result;
 
@@ -903,7 +915,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::symmetricPart() const require
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::antiSymmetricPart() const requires (isSquare) {
     Matrix<ROWS, COLUMNS, T> result;
 
@@ -916,7 +928,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::antiSymmetricPart() const req
     return result;
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::hermitianPart() const requires (isSquare) {
     if constexpr (!isComplex) {
         return symmetricPart();
@@ -934,7 +946,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::hermitianPart() const require
     }
 }
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::antiHermitianPart() const requires (isSquare) {
     if constexpr (!isComplex) {
         return antiSymmetricPart();
