@@ -455,6 +455,26 @@ TEST(MatrixOperators, indexing_operator_real) {
     ASSERT_TRUE(compare(m[1][1], 4));
 }
 
+TEST(MatrixOperators, const_indexing_operator_complex) {
+    // arrange
+    const Matrix<2, 2, std::complex<float>> m = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    // act / assert
+    ASSERT_TRUE(compare(m[0][0], std::complex<float>(1, 2)));
+    ASSERT_TRUE(compare(m[1][0], std::complex<float>(3, 4)));
+    ASSERT_TRUE(compare(m[0][1], std::complex<float>(5, 6)));
+    ASSERT_TRUE(compare(m[1][1], std::complex<float>(7, 8)));
+}
+
+TEST(MatrixOperators, indexing_operator_complex) {
+    // arrange
+    Matrix<2, 2, std::complex<float>> m = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    // act / assert
+    ASSERT_TRUE(compare(m[0][0], std::complex<float>(1, 2)));
+    ASSERT_TRUE(compare(m[1][0], std::complex<float>(3, 4)));
+    ASSERT_TRUE(compare(m[0][1], std::complex<float>(5, 6)));
+    ASSERT_TRUE(compare(m[1][1], std::complex<float>(7, 8)));
+}
+
 TEST(MatrixOperators, unary_minus_real) {
     // arrange
     constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
@@ -473,4 +493,52 @@ TEST(MatrixOperators, unary_minus_complex) {
     const Matrix<2, 2, std::complex<float>> b = -a;
     // assert
     ASSERT_TRUE(b.equals(expected, 0.001f));
+}
+
+TEST(MatrixOperators, const_to_pointer_real) {
+    // arrange
+    const Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    // act
+    const float* data = static_cast<const float*>(a);
+    // assert
+    ASSERT_TRUE(compare(data[0], 1, 0.001f));
+    ASSERT_TRUE(compare(data[1], 3, 0.001f));
+    ASSERT_TRUE(compare(data[2], 2, 0.001f));
+    ASSERT_TRUE(compare(data[3], 4, 0.001f));
+}
+
+TEST(MatrixOperators, to_pointer_real) {
+    // arrange
+    Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    // act
+    float* data = static_cast<float*>(a);
+    // assert
+    ASSERT_TRUE(compare(data[0], 1, 0.001f));
+    ASSERT_TRUE(compare(data[1], 3, 0.001f));
+    ASSERT_TRUE(compare(data[2], 2, 0.001f));
+    ASSERT_TRUE(compare(data[3], 4, 0.001f));
+}
+
+TEST(MatrixOperators, const_to_pointer_complex) {
+    // arrange
+    const Matrix<2, 2, std::complex<float>> a = {{{1, 1}, {2, 2}}, {{3, 3}, {4, 4}}};
+    // act
+    const std::complex<float>* data = static_cast<const std::complex<float>*>(a);
+    // assert
+    ASSERT_TRUE(compare(data[0], std::complex<float>(1, 1), 0.001f));
+    ASSERT_TRUE(compare(data[1], std::complex<float>(3, 3), 0.001f));
+    ASSERT_TRUE(compare(data[2], std::complex<float>(2, 2), 0.001f));
+    ASSERT_TRUE(compare(data[3], std::complex<float>(4, 4), 0.001f));
+}
+
+TEST(MatrixOperators, to_pointer_complex) {
+    // arrange
+    Matrix<2, 2, std::complex<float>> a = {{{1, 1}, {2, 2}}, {{3, 3}, {4, 4}}};
+    // act
+    std::complex<float>* data = static_cast<std::complex<float>*>(a);
+    // assert
+    ASSERT_TRUE(compare(data[0], std::complex<float>(1, 1), 0.001f));
+    ASSERT_TRUE(compare(data[1], std::complex<float>(3, 3), 0.001f));
+    ASSERT_TRUE(compare(data[2], std::complex<float>(2, 2), 0.001f));
+    ASSERT_TRUE(compare(data[3], std::complex<float>(4, 4), 0.001f));
 }
