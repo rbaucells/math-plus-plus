@@ -488,3 +488,198 @@ TEST(MatrixGeneral, random_complex_int) {
         }
     }
 }
+
+TEST(MatrixGeneral, remove_row_square) {
+    // arrange
+    constexpr Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<2, 3> expected = {{1, 2, 3}, {7, 8, 9}};
+    // act
+    const Matrix<2, 3> result = m.removeRow(1);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_row_tall) {
+    // arrange
+    constexpr Matrix<4, 2> m = {{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+    constexpr Matrix<3, 2> expected = {{1, 2}, {5, 6}, {7, 8}};
+    // act
+    const Matrix<3, 2> result = m.removeRow(1);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_row_wide) {
+    // arrange
+    constexpr Matrix<2, 4> m = {{1, 2, 3, 4}, {5, 6, 7, 8}};
+    constexpr Matrix<1, 4> expected = {{5, 6, 7, 8}};
+    // act
+    const Matrix<1, 4> result = m.removeRow(0);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_column_square) {
+    // arrange
+    constexpr Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<3, 2> expected = {{1, 3}, {4, 6}, {7, 9}};
+    // act
+    const Matrix<3, 2> result = m.removeColumn(1);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_column_tall) {
+    // arrange
+    constexpr Matrix<4, 2> m = {{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+    constexpr Matrix<4, 1> expected = {{1}, {3}, {5}, {7}};
+    // act
+    const Matrix<4, 1> result = m.removeColumn(1);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_column_wide) {
+    // arrange
+    constexpr Matrix<2, 4> m = {{1, 2, 3, 4}, {5, 6, 7, 8}};
+    constexpr Matrix<2, 3> expected = {{1, 3, 4}, {5, 7, 8}};
+    // act
+    const Matrix<2, 3> result = m.removeColumn(1);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_row_and_column_square) {
+    // arrange
+    constexpr Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<2, 2> expected = {{1, 3}, {7, 9}};
+    // act
+    const Matrix<2, 2> result = m.removeColumnAndRow(1, 1);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_row_and_column_tall) {
+    // arrange
+    constexpr Matrix<4, 2> m = {{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+    constexpr Matrix<3, 1> expected = {{1}, {5}, {7}};
+    // act
+    const Matrix<3, 1> result = m.removeColumnAndRow(1, 1);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_row_and_column_wide) {
+    // arrange
+    constexpr Matrix<2, 4> m = {{1, 2, 3, 4}, {5, 6, 7, 8}};
+    constexpr Matrix<1, 3> expected = {{1, 3, 4}};
+    // act
+    const Matrix<1, 3> result = m.removeColumnAndRow(1, 1);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+// removeRows tests
+TEST(MatrixGeneral, remove_rows_square) {
+    // arrange
+    constexpr Matrix<4, 4> m = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
+    constexpr std::array<int, 2> rowsToRemove = {1, 2};
+    constexpr Matrix<2, 4> expected = {{1, 2, 3, 4}, {13, 14, 15, 16}};
+    // act
+    const Matrix<2, 4> result = m.removeRows(rowsToRemove);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_rows_tall) {
+    // arrange
+    constexpr Matrix<5, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}, {13, 14, 15}};
+    constexpr std::array<int, 2> rowsToRemove = {1, 2};
+    constexpr Matrix<3, 3> expected = {{1, 2, 3}, {10, 11, 12}, {13, 14, 15}};
+    // act
+    const Matrix<3, 3> result = m.removeRows(rowsToRemove);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_rows_wide) {
+    // arrange
+    constexpr Matrix<3, 5> m = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}};
+    constexpr std::array<int, 2> rowsToRemove = {1, 2};
+    constexpr Matrix<1, 5> expected = {{1, 2, 3, 4, 5}};
+    // act
+    const Matrix<1, 5> result = m.removeRows(rowsToRemove);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+// removeColumns tests
+TEST(MatrixGeneral, remove_columns_square) {
+    // arrange
+    constexpr Matrix<4, 4> m = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
+    constexpr std::array<int, 2> colsToRemove = {1, 2};
+    constexpr Matrix<4, 2> expected = {{1, 4}, {5, 8}, {9, 12}, {13, 16}};
+    // act
+    const Matrix<4, 2> result = m.removeColumns(colsToRemove);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_columns_tall) {
+    // arrange
+    constexpr Matrix<5, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}, {13, 14, 15}};
+    constexpr std::array<int, 2> colsToRemove = {1, 2};
+    constexpr Matrix<5, 1> expected = {{1}, {4}, {7}, {10}, {13}};
+    // act
+    const Matrix<5, 1> result = m.removeColumns(colsToRemove);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_columns_wide) {
+    // arrange
+    constexpr Matrix<3, 5> m = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}};
+    constexpr std::array<int, 2> colsToRemove = {1, 2};
+    constexpr Matrix<3, 3> expected = {{1, 4, 5}, {6, 9, 10}, {11, 14, 15}};
+    // act
+    const Matrix<3, 3> result = m.removeColumns(colsToRemove);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+// removeColumnsAndRows tests
+TEST(MatrixGeneral, remove_rows_and_columns_square) {
+    // arrange
+    constexpr Matrix<4, 4> m = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
+    constexpr std::array<int, 2> rowsToRemove = {1, 2};
+    constexpr std::array<int, 2> colsToRemove = {1, 2};
+    constexpr Matrix<2, 2> expected = {{1, 4}, {13, 16}};
+    // act
+    const Matrix<2, 2> result = m.removeColumnsAndRows(colsToRemove, rowsToRemove);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_rows_and_columns_tall) {
+    // arrange
+    constexpr Matrix<5, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}, {13, 14, 15}};
+    constexpr std::array<int, 2> rowsToRemove = {1, 2};
+    constexpr std::array<int, 2> colsToRemove = {0, 1};
+    constexpr Matrix<3, 1> expected = {{3}, {12}, {15}};
+    // act
+    const Matrix<3, 1> result = m.removeColumnsAndRows(colsToRemove, rowsToRemove);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, remove_rows_and_columns_wide) {
+    // arrange
+    constexpr Matrix<3, 5> m = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}};
+    constexpr std::array<int, 2> rowsToRemove = {0, 1};
+    constexpr std::array<int, 2> colsToRemove = {1, 2};
+    constexpr Matrix<1, 3> expected = {{11, 14, 15}};
+    // act
+    const Matrix<1, 3> result = m.removeColumnsAndRows(colsToRemove, rowsToRemove);
+    // assert
+    ASSERT_TRUE(result.equals(expected, 0.001f));
+}

@@ -326,13 +326,13 @@ std::string Matrix<ROWS, COLUMNS, T>::toLaTex() const {
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-template<int NUM_COLUMNS_TO_REMOVE>
+template<size_t NUM_COLUMNS_TO_REMOVE>
 Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> Matrix<ROWS, COLUMNS, T>::removeColumns(const std::array<int, NUM_COLUMNS_TO_REMOVE>& columnsToRemove) const {
     Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> m;
 
     int subC = 0;
     for (int c = 0; c < COLUMNS; c++) {
-        if (std::find(columnsToRemove.begin(), columnsToRemove.end(), c))
+        if (std::find(columnsToRemove.begin(), columnsToRemove.end(), c)  != columnsToRemove.end())
             continue;
 
         int subR = 0;
@@ -347,14 +347,14 @@ Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> Matrix<ROWS, COLUMNS, T>::remov
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-template<int NUM_ROWS_TO_REMOVE>
-Matrix<ROWS, COLUMNS - NUM_ROWS_TO_REMOVE, T> Matrix<ROWS, COLUMNS, T>::removeRows(const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const {
-    Matrix<ROWS, COLUMNS - NUM_ROWS_TO_REMOVE, T> m;
+template<size_t NUM_ROWS_TO_REMOVE>
+Matrix<ROWS - NUM_ROWS_TO_REMOVE, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::removeRows(const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const {
+    Matrix<ROWS - NUM_ROWS_TO_REMOVE, COLUMNS, T> m;
 
     for (int c = 0; c < COLUMNS; c++) {
         int subR = 0;
         for (int r = 0; r < ROWS; r++) {
-            if (std::find(rowsToRemove.begin(), rowsToRemove.end(), r))
+            if (std::find(rowsToRemove.begin(), rowsToRemove.end(), r) != rowsToRemove.end())
                 continue;
 
             m[c][subR] = data[c][r];
@@ -366,18 +366,18 @@ Matrix<ROWS, COLUMNS - NUM_ROWS_TO_REMOVE, T> Matrix<ROWS, COLUMNS, T>::removeRo
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-template<int NUM_COLUMNS_TO_REMOVE, int NUM_ROWS_TO_REMOVE>
-Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE - NUM_ROWS_TO_REMOVE, T> Matrix<ROWS, COLUMNS, T>::removeColumnsAndRows(const std::array<int, NUM_COLUMNS_TO_REMOVE>& columnsToRemove, const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const {
-    Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE - NUM_ROWS_TO_REMOVE, T> m;
+template<size_t NUM_COLUMNS_TO_REMOVE, size_t NUM_ROWS_TO_REMOVE>
+Matrix<ROWS - NUM_ROWS_TO_REMOVE, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> Matrix<ROWS, COLUMNS, T>::removeColumnsAndRows(const std::array<int, NUM_COLUMNS_TO_REMOVE>& columnsToRemove, const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const {
+    Matrix<ROWS - NUM_ROWS_TO_REMOVE, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> m;
 
     int subC = 0;
     for (int c = 0; c < COLUMNS; c++) {
-        if (std::find(columnsToRemove.begin(), columnsToRemove.end(), c))
+        if (std::find(columnsToRemove.begin(), columnsToRemove.end(), c) != columnsToRemove.end())
             continue;
 
         int subR = 0;
         for (int r = 0; r < ROWS; r++) {
-            if (std::find(rowsToRemove.begin(), rowsToRemove.end(), r))
+            if (std::find(rowsToRemove.begin(), rowsToRemove.end(), r) != rowsToRemove.end())
                 continue;
 
             m[subC][subR] = data[c][r];
@@ -408,8 +408,8 @@ Matrix<ROWS, COLUMNS - 1, T> Matrix<ROWS, COLUMNS, T>::removeColumn(const int co
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS - 1, T> Matrix<ROWS, COLUMNS, T>::removeRow(const int rowToRemove) const {
-    Matrix<ROWS, COLUMNS - 1, T> m;
+Matrix<ROWS - 1, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::removeRow(const int rowToRemove) const {
+    Matrix<ROWS - 1, COLUMNS, T> m;
 
     for (int c = 0; c < COLUMNS; c++) {
         int subR = 0;

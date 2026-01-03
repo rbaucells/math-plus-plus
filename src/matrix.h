@@ -201,15 +201,15 @@ public:
     [[nodiscard]] std::string toString() const;
     [[nodiscard]] std::string toLaTex() const;
 
-    template<int NUM_COLUMNS_TO_REMOVE>
+    template<size_t NUM_COLUMNS_TO_REMOVE>
     Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> removeColumns(const std::array<int, NUM_COLUMNS_TO_REMOVE>& columnsToRemove) const;
-    template<int NUM_ROWS_TO_REMOVE>
-    Matrix<ROWS, COLUMNS - NUM_ROWS_TO_REMOVE, T> removeRows(const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const;
-    template<int NUM_COLUMNS_TO_REMOVE, int NUM_ROWS_TO_REMOVE>
-    Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE - NUM_ROWS_TO_REMOVE, T> removeColumnsAndRows(const std::array<int, NUM_COLUMNS_TO_REMOVE>& columnsToRemove, const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const;
+    template<size_t NUM_ROWS_TO_REMOVE>
+    Matrix<ROWS - NUM_ROWS_TO_REMOVE, COLUMNS, T> removeRows(const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const;
+    template<size_t NUM_COLUMNS_TO_REMOVE, size_t NUM_ROWS_TO_REMOVE>
+    Matrix<ROWS  - NUM_ROWS_TO_REMOVE, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> removeColumnsAndRows(const std::array<int, NUM_COLUMNS_TO_REMOVE>& columnsToRemove, const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const;
 
     Matrix<ROWS, COLUMNS - 1, T> removeColumn(int columnToRemove) const;
-    Matrix<ROWS, COLUMNS - 1, T> removeRow(int rowToRemove) const;
+    Matrix<ROWS - 1, COLUMNS, T> removeRow(int rowToRemove) const;
     Matrix<ROWS - 1, COLUMNS - 1, T> removeColumnAndRow(int columnToRemove, int rowToRemove) const;
 
     Matrix<ROWS, COLUMNS, T> swapRows(int rowA, int rowB) const;
