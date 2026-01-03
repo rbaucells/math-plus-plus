@@ -240,17 +240,13 @@ bool Matrix<ROWS, COLUMNS, T>::isPositiveDefinitePivots() const requires (isSqua
 template< int ROWS, int COLUMNS, scalar T>
 bool Matrix<ROWS, COLUMNS, T>::isPositiveSemiDefinite(const PositiveSemiDefiniteAlgorithm algorithm) const requires (isSquare) {
     switch (algorithm) {
-        case PositiveDefiniteAlgorithm::ldl:
+        case PositiveSemiDefiniteAlgorithm::ldl:
             return isPositiveSemiDefiniteLdl();
-        case PositiveDefiniteAlgorithm::ldl_non_symmetric:
+        case PositiveSemiDefiniteAlgorithm::ldl_non_symmetric:
             return symmetricPart().isPositiveSemiDefiniteLdl();
-        case PositiveDefiniteAlgorithm::pivots:
-            return isPositiveSemiDefinitePivots();
-        case PositiveDefiniteAlgorithm::pivots_non_symmetric:
-            return symmetricPart().isPositiveSemiDefinitePivots();
-        case PositiveDefiniteAlgorithm::sylvester_non_symmetric:
+        case PositiveSemiDefiniteAlgorithm::sylvester_non_symmetric:
             return symmetricPart().isPositiveSemiDefiniteSylvester();
-        case PositiveDefiniteAlgorithm::sylvester:
+        case PositiveSemiDefiniteAlgorithm::sylvester:
         default:
             return isPositiveSemiDefiniteSylvester();
     }
@@ -295,10 +291,10 @@ bool Matrix<ROWS, COLUMNS, T>::isSpecialOrthogonal() const requires (!isComplex 
 template< int ROWS, int COLUMNS, scalar T>
 bool Matrix<ROWS, COLUMNS, T>::isSemiOrthogonal() const requires (!isComplex && !isSquare) {
     if constexpr (COLUMNS > ROWS) { // wide
-        return multiply(transpose()) == identity();
+        return multiply(transpose()) == Matrix<ROWS, ROWS, T>::identity();
     }
     else { // tall
-        return transpose() * *this == identity();
+        return transpose() * *this == Matrix<COLUMNS, COLUMNS, T>::identity();
     }
 }
 
@@ -407,17 +403,18 @@ bool Matrix<ROWS, COLUMNS, T>::isFrobeniusMatrix() const requires (isSquare) {
     int columnWithNonZero = -1;
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
-            // not a one on diagonal
-            if (c == r && !compare(data[c][r], 1)) {
-                return false;
+            // diagonal must be one
+            if (c == r) {
+                if (!compare(data[c][r], 1))
+                    return false;
             }
-            if (!compare(data[c][r], 0)) {
-                // its above
+            else if (!compare(data[c][r], 0)) {
+                // it's below the diagonal (r > c) - if it's above or on diagonal that's invalid
                 if (r <= c)
                     return false;
 
-                // too many columns with nonzero
-                if (columnWithNonZero != c)
+                // allow a single column with non-zero entries below the diagonal
+                if (columnWithNonZero != -1 && columnWithNonZero != c)
                     return false;
 
                 columnWithNonZero = c;
