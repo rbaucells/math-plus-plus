@@ -75,41 +75,41 @@ TEST(MatrixGeneral, determinant_4x4_triangular) {
     ASSERT_FLOAT_EQ(det, 8);
 }
 
-TEST(MatrixGeneral, inverse_1x1) {
+TEST(MatrixGeneral, inverse_1x1_real) {
     // arrange
     constexpr Matrix<1, 1> a = {{5}};
-    constexpr Matrix<1, 1> expected = {{1.f / 5.f}};
+    constexpr Matrix<1, 1> expected = {{1.0f / 5.0f}};
     // act
     const Matrix<1, 1> inverse = a.inverse();
     // assert
-    ASSERT_TRUE(inverse == expected);
+    ASSERT_TRUE(inverse.equals(expected, 0.001f));
 }
 
-TEST(MatrixGeneral, inverse_2x2) {
+TEST(MatrixGeneral, inverse_2x2_real) {
     // arrange
     constexpr Matrix<2, 2> a = {{2, 1}, {1, 3}};
-    constexpr Matrix<2, 2> expected = {{3.f / 5.f, -1.f / 5.f}, {-1.f / 5.f, 2.f / 5.f}};
+    constexpr Matrix<2, 2> expected = {{3.0f / 5.0f, -1.0f / 5.0f}, {-1.0f / 5.0f, 2.0f / 5.0f}};
     // act
     const Matrix<2, 2> inverse = a.inverse();
     // assert
-    ASSERT_TRUE(inverse == expected);
+    ASSERT_TRUE(inverse.equals(expected, 0.001f));
 }
 
-TEST(MatrixGeneral, inverse_3x3) {
+TEST(MatrixGeneral, inverse_3x3_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{0, -3, -2}, {1, -4, -2}, {-3, 4, 1}};
     constexpr Matrix<3, 3> expected = {{4, -5, -2}, {5, -6, -2}, {-8, 9, 3}};
     // act
     const Matrix<3, 3> inverse = a.inverse();
     // assert
-    ASSERT_TRUE(inverse.equals(expected, 0.01));
+    ASSERT_TRUE(inverse.equals(expected, 0.001f));
 }
 
-TEST(MatrixGeneral, inverse_random) {
+TEST(MatrixGeneral, inverse_random_real) {
     // run until we get a matrix that isn't singular
     while (true) {
         // arrange
-        const Matrix<3, 3> a = Matrix<3, 3>::random();
+        const Matrix<3, 3> a = Matrix<3, 3>::random(-1, 1);
 
         // if matrix is singular, try again
         if (compare(a.determinant(), 0))
@@ -122,8 +122,56 @@ TEST(MatrixGeneral, inverse_random) {
         const Matrix<3, 3> aInverse = a * inverse;
         const Matrix<3, 3> inverseA = inverse * a;
 
-        ASSERT_TRUE(aInverse.equals(identity, 0.1));
-        ASSERT_TRUE(inverseA.equals(identity, 0.1));
+        ASSERT_TRUE(aInverse.equals(identity, 0.001f));
+        ASSERT_TRUE(inverseA.equals(identity, 0.001));
+        break;
+    }
+}
+
+TEST(MatrixGeneral, inverse_1x1_complex) {
+    // arrange
+    constexpr Matrix<1, 1, std::complex<float>> a = {{{{2.0f, 3.0f}}}};
+    constexpr Matrix<1, 1, std::complex<float>> expected = {{{{2.0f / 13.0f, -3.0f / 13.0f}}}};
+    // act
+    const Matrix<1, 1, std::complex<float>> inverse = a.inverse();
+    // assert
+    ASSERT_TRUE(inverse.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, inverse_2x2_complex) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> a = {{{1, 1}, {2, -1}}, {{3, 0}, {4, 2}}};
+    constexpr Matrix<2, 2, std::complex<float>> expected = {{{0.02061f, -0.45361f}, {0.17526f, 0.14433f}}, {{0.123711f, 0.27835f}, {0.05155f, -0.13402f}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> inverse = a.inverse();
+    // assert
+    ASSERT_TRUE(inverse.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, inverse_3x3_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{1, 1}, {0, -1}, {2, 0}}, {{3, 2}, {-1, 1}, {1, -1}}, {{0, 2}, {1, 0}, {4, -2}}};
+    constexpr Matrix<3, 3, std::complex<float>> expected = {{{0.26923f, 0.11539f}, {0.15385f, -0.153845f}, {-0.11538f, -0.03846f}}, {{0, 0.53846f}, {-0.07692f, -0.23077f}, {0.15385f, -0.15385f}}, {{0.15385f, -0.19231f}, {-0.03846f, -0.03846f}, {0.11538f, 0.15385f}}};
+    // act
+    const Matrix<3, 3, std::complex<float>> inverse = a.inverse();
+    // assert
+    ASSERT_TRUE(inverse.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, inverse_random_complex) {
+    // arrange
+    while (true) {
+        const Matrix<3, 3, std::complex<float>> a = Matrix<3, 3, std::complex<float>>::random(-1, 1);
+        if (compare(a.determinant(), std::complex<float>(0, 0)))
+            continue;
+        const Matrix<3, 3, std::complex<float>> identity = Matrix<3, 3, std::complex<float>>::identity();
+        // act
+        const Matrix<3, 3, std::complex<float>> inverse = a.inverse();
+        // assert
+        const Matrix<3, 3, std::complex<float>> aInverse = a * inverse;
+        const Matrix<3, 3, std::complex<float>> inverseA = inverse * a;
+        ASSERT_TRUE(aInverse.equals(identity, 0.001f));
+        ASSERT_TRUE(inverseA.equals(identity, 0.001f));
         break;
     }
 }
@@ -322,7 +370,7 @@ TEST(MatrixGeneral, transpose_complex_wide) {
 TEST(MatrixGeneral, transpose_complex_tall) {
     // arrange
     constexpr Matrix<4, 3, std::complex<float>> a = {{{-1, 2}, {3, 0}, {0, -4}}, {{5, -1}, {-6, 7}, {8, 0}}, {{-9, 0}, {10, -2}, {-11, 5}}, {{0, 12}, {-13, 0}, {14, -3}}};
-    constexpr Matrix<3, 4, std::complex<float>> expected = {{ {-1, 2}, {5, -1}, {-9, 0}, {0, 12} },{ {3, 0}, {-6, 7}, {10, -2}, {-13, 0} },{ {0, -4}, {8, 0}, {-11, 5}, {14, -3} }};
+    constexpr Matrix<3, 4, std::complex<float>> expected = {{{-1, 2}, {5, -1}, {-9, 0}, {0, 12}}, {{3, 0}, {-6, 7}, {10, -2}, {-13, 0}}, {{0, -4}, {8, 0}, {-11, 5}, {14, -3}}};
     // act
     const Matrix<3, 4, std::complex<float>> transpose = a.transpose();
     // assert
@@ -415,7 +463,7 @@ TEST(MatrixGeneral, random_real_int) {
 
 TEST(MatrixGeneral, random_complex_float) {
     // arrange
-    const Matrix<2, 2, std::complex<float>> a =Matrix<2, 2, std::complex<float>>::random(0.0f, 4.0f);
+    const Matrix<2, 2, std::complex<float>> a = Matrix<2, 2, std::complex<float>>::random(0.0f, 4.0f);
     // act / assert
     for (int c = 0; c < 2; c++) {
         for (int r = 0; r < 2; r++) {
@@ -429,7 +477,7 @@ TEST(MatrixGeneral, random_complex_float) {
 
 TEST(MatrixGeneral, random_complex_int) {
     // arrange
-    const Matrix<2, 2, std::complex<int>> a =Matrix<2, 2, std::complex<int>>::random(0, 4);
+    const Matrix<2, 2, std::complex<int>> a = Matrix<2, 2, std::complex<int>>::random(0, 4);
     // act / assert
     for (int c = 0; c < 2; c++) {
         for (int r = 0; r < 2; r++) {

@@ -136,7 +136,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::inverse() const requires (isS
 
         Matrix<1, 1, T> result;
 
-        result[0][0] = 1 / data[0][0];
+        result[0][0] = T{1} / data[0][0];
         return result;
     }
     else if constexpr (ROWS == 2) { // its a two by two, we can do the special fast thing
