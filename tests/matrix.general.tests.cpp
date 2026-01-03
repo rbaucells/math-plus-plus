@@ -1,6 +1,24 @@
 #include <gtest/gtest.h>
 #include "math++/math.h"
 
+TEST(MatrixGeneral, identity_real) {
+    // arrange
+    constexpr Matrix<3, 3> expected = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    // act
+    const Matrix<3, 3> identity = Matrix<3, 3>::identity();
+    // assert
+    ASSERT_TRUE(identity.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, identity_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> expected = {{{1, 0}, {0, 0}, {0, 0}}, {{0, 0}, {1, 0}, {0, 0}}, {{0, 0}, {0, 0}, {1, 0}}};
+    // act
+    const Matrix<3, 3, std::complex<float>> identity = Matrix<3, 3, std::complex<float>>::identity();
+    // assert
+    ASSERT_TRUE(identity.equals(expected, 0.001f));
+}
+
 TEST(MatrixGeneral, swap_row) {
     // arrange
     constexpr Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
