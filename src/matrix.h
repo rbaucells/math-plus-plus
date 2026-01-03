@@ -219,7 +219,7 @@ public:
 
     explicit operator T*();
 
-    constexpr static Matrix<ROWS, COLUMNS, T> identity() requires (isSquare);
+    static Matrix<ROWS, COLUMNS, T> identity() requires (isSquare);
 
     [[nodiscard]] bool isRowEchelon(bool pivotMustBeOne = false) const;
     Matrix<ROWS, COLUMNS, T> toRowEchelon(bool doRowSwaps = true) const;
@@ -306,18 +306,18 @@ public:
 
     [[nodiscard]] bool isSemiOrthogonal() const requires (!isComplex && !isSquare);
 
-    [[nodiscard]] bool isUpperTriangleMatrix() const requires (isSquare);
-    [[nodiscard]] bool isLowerTriangleMatrix() const requires (isSquare);
+    [[nodiscard]] bool isUpperTriangular() const requires (isSquare);
+    [[nodiscard]] bool isLowerTriangular() const requires (isSquare);
 
-    [[nodiscard]] bool isDiagonalMatrix() const requires (isSquare);
+    [[nodiscard]] bool isDiagonal() const requires (isSquare);
 
-    [[nodiscard]] bool isUpperUnitriangularMatrix() const requires (isSquare);
-    [[nodiscard]] bool isLowerUnitriangularMatrix() const requires (isSquare);
+    [[nodiscard]] bool isUpperUnitriangular() const requires (isSquare);
+    [[nodiscard]] bool isLowerUnitriangular() const requires (isSquare);
 
-    [[nodiscard]] bool isStrictlyUpperTriangularMatrix() const requires (isSquare);
-    [[nodiscard]] bool isStrictlyLowerTriangularMatrix() const requires (isSquare);
+    [[nodiscard]] bool isStrictlyUpperTriangular() const requires (isSquare);
+    [[nodiscard]] bool isStrictlyLowerTriangular() const requires (isSquare);
 
-    [[nodiscard]] bool isFrobeniusMatrix() const requires (isSquare);
+    [[nodiscard]] bool isFrobenius() const requires (isSquare);
 
     Vector<ROWS, T> forwardSubstitution(const Vector<ROWS, T>& b) const requires (isSquare);
     Vector<ROWS, T> backwardSubstitution(const Vector<ROWS, T>& b) const requires (isSquare);

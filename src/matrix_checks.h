@@ -299,7 +299,7 @@ bool Matrix<ROWS, COLUMNS, T>::isSemiOrthogonal() const requires (!isComplex && 
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-bool Matrix<ROWS, COLUMNS, T>::isUpperTriangleMatrix() const requires (isSquare) {
+bool Matrix<ROWS, COLUMNS, T>::isUpperTriangular() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         // dont worry about out of bounds, loop wont even run if c + 1 is too big
         for (int r = c + 1; r < ROWS; r++) {
@@ -312,7 +312,7 @@ bool Matrix<ROWS, COLUMNS, T>::isUpperTriangleMatrix() const requires (isSquare)
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-bool Matrix<ROWS, COLUMNS, T>::isLowerTriangleMatrix() const requires (isSquare) {
+bool Matrix<ROWS, COLUMNS, T>::isLowerTriangular() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < c; r++) {
             if (!compare(data[c][r], 0))
@@ -324,7 +324,7 @@ bool Matrix<ROWS, COLUMNS, T>::isLowerTriangleMatrix() const requires (isSquare)
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-bool Matrix<ROWS, COLUMNS, T>::isDiagonalMatrix() const requires (isSquare) {
+bool Matrix<ROWS, COLUMNS, T>::isDiagonal() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
             if (c == r)
@@ -339,7 +339,7 @@ bool Matrix<ROWS, COLUMNS, T>::isDiagonalMatrix() const requires (isSquare) {
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-bool Matrix<ROWS, COLUMNS, T>::isUpperUnitriangularMatrix() const requires (isSquare) {
+bool Matrix<ROWS, COLUMNS, T>::isUpperUnitriangular() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = c; r < ROWS; r++) {
             if (c == r) {
@@ -357,7 +357,7 @@ bool Matrix<ROWS, COLUMNS, T>::isUpperUnitriangularMatrix() const requires (isSq
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-bool Matrix<ROWS, COLUMNS, T>::isLowerUnitriangularMatrix() const requires (isSquare) {
+bool Matrix<ROWS, COLUMNS, T>::isLowerUnitriangular() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r <= c; r++) {
             if (c == r) {
@@ -374,7 +374,7 @@ bool Matrix<ROWS, COLUMNS, T>::isLowerUnitriangularMatrix() const requires (isSq
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-bool Matrix<ROWS, COLUMNS, T>::isStrictlyUpperTriangularMatrix() const requires (isSquare) {
+bool Matrix<ROWS, COLUMNS, T>::isStrictlyUpperTriangular() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = c; r < ROWS; r++) {
             if (!compare(data[c][r], 0)) {
@@ -387,7 +387,7 @@ bool Matrix<ROWS, COLUMNS, T>::isStrictlyUpperTriangularMatrix() const requires 
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-bool Matrix<ROWS, COLUMNS, T>::isStrictlyLowerTriangularMatrix() const requires (isSquare) {
+bool Matrix<ROWS, COLUMNS, T>::isStrictlyLowerTriangular() const requires (isSquare) {
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r <= c; r++) {
             if (!compare(data[c][r], 0))
@@ -399,7 +399,7 @@ bool Matrix<ROWS, COLUMNS, T>::isStrictlyLowerTriangularMatrix() const requires 
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-bool Matrix<ROWS, COLUMNS, T>::isFrobeniusMatrix() const requires (isSquare) {
+bool Matrix<ROWS, COLUMNS, T>::isFrobenius() const requires (isSquare) {
     int columnWithNonZero = -1;
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {

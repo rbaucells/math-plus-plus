@@ -471,7 +471,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::swapColumns(const int columnA
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-constexpr Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::identity() requires (isSquare) {
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::identity() requires (isSquare) {
     Matrix<ROWS, COLUMNS, T> result;
 
     for (int i = 0; i < COLUMNS; i++) {
