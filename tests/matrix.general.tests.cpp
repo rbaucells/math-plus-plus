@@ -1,6 +1,42 @@
 #include <gtest/gtest.h>
 #include "math++/math.h"
 
+TEST(MatrixGeneral, default_constructor_real) {
+    // arrange
+    constexpr Matrix<2, 2> expected = {{0, 0}, {0, 0}};
+    // act
+    constexpr Matrix<2, 2> m;
+    // assert
+    ASSERT_TRUE(m.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, default_constructor_complex) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> expected = {{{0, 0}, {0, 0}}, {{0, 0}, {0, 0}}};
+    // act
+    constexpr Matrix<2, 2, std::complex<float>> m;
+    // assert
+    ASSERT_TRUE(m.equals(expected, 0.001f));
+}
+
+TEST(MatrixOperators, copy_constructor_same_type) {
+    // arrange
+    constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    // act
+    const Matrix<2, 2> b = a;
+    // assert
+    ASSERT_TRUE(b.equals(a, 0.001f));
+}
+
+TEST(MatrixOperators, copy_constructor_diff_type) {
+    // arrange
+    constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    // act
+    const Matrix<2, 2, std::complex<float>> b = a;
+    // assert
+    ASSERT_TRUE(b.equals(a, 0.001f));
+}
+
 TEST(MatrixGeneral, identity_real) {
     // arrange
     constexpr Matrix<3, 3> expected = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};

@@ -22,12 +22,13 @@ FetchContent_MakeAvailable(googletest)
 # math-tests executable
 add_executable(math-tests
         main.cpp
-        matrix.operators.test.cpp
+        matrix.operators.tests.cpp
         matrix.checks.tests.cpp
         matrix.general.tests.cpp
         helper.tests.cpp
         matrix.decompositions.tests.cpp
         matrix.transformations.tests.cpp
+        vector.operators.tests.cpp
 )
 
 # link with the math lib
