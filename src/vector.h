@@ -135,6 +135,8 @@ struct Vector {
     template<int COLUMNS, typename OTHER_T> requires HasCommonType<OTHER_T, T>
     Vector<COLUMNS, std::common_type_t<T, OTHER_T>> operator*(const Matrix<COLUMNS, N, OTHER_T>& m) const;
 
+    Vector<N, T> operator-() const;
+
     explicit operator T*();
     explicit operator const T*() const;
 
@@ -143,6 +145,7 @@ struct Vector {
 
     template<int V_SIZE>
     static std::array<Vector<N, T>, V_SIZE> orthonormalize(const std::array<Vector<N, T>, V_SIZE>& v);
+
     template<int V_SIZE>
     static std::array<Vector<N, T>, V_SIZE> orthogonalize(const std::array<Vector<N, T>, V_SIZE>& v);
 

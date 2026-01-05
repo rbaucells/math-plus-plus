@@ -968,3 +968,14 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::antiHermitianPart() const req
         return result;
     }
 }
+
+template<int ROWS, int COLUMNS, scalar T>
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::pow(const int i) requires (isSquare) {
+    Matrix<ROWS ,COLUMNS, T> result = Matrix<ROWS, COLUMNS, T>::identity();
+
+    for (int j = 0; j < i; j++) {
+        result = result * *this;
+    }
+
+    return result;
+}

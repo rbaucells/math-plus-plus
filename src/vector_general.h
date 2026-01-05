@@ -70,10 +70,10 @@ Vector<N, T> Vector<N, T>::random() {
 template<int N, scalar T>
 template<int V_SIZE>
 std::array<Vector<N, T>, V_SIZE> Vector<N, T>::orthonormalize(const std::array<Vector<N, T>, V_SIZE>& v) {
-    auto orthoV = orthogonalize(v);
+    auto orthoV = orthogonalize<V_SIZE>(v);
 
     for (auto& vec : orthoV) {
-        vec = vec.normalize();
+        vec = vec.normalized();
     }
 
     return orthoV;
@@ -91,7 +91,7 @@ std::array<Vector<N, T>, V_SIZE> Vector<N, T>::orthogonalize(const std::array<Ve
         u[k] = v[k];
 
         for (int i = 0; i < k; i++) {
-            u[k] -= (v[k].componentDot(u[i]) / u[i].componentDot(u[i])) * u[i];
+            u[k] -= (v[k].dot(u[i]) / u[i].dot(u[i])) * u[i];
         }
     }
 

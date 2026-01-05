@@ -15,7 +15,7 @@ struct Matrix {
     static constexpr bool isComplex = is_complex_v<T>;
 
     using ValueType = T;
-    using UnderlyingType = underlying_type<T>::value_type;
+    using UnderlyingType = underlying_type_t<T>;
 
     T data[COLUMNS][ROWS] = {};
 
@@ -149,10 +149,9 @@ struct Matrix {
     template<typename OTHER_T> requires std::convertible_to<OTHER_T, T>
     Matrix<ROWS, COLUMNS, T>& operator/=(OTHER_T scalar);
 
-    template<int N>
-    Vector<N, T> applyHomogeneousTransformation(const Vector<N, T>& point) const requires (isSquare);
-    template<int N, typename OTHER_T> requires HasCommonType<OTHER_T, T>
-    Vector<N, std::common_type_t<T, OTHER_T>> applyHomogeneousTransformation(const Vector<N, OTHER_T>& point) const requires (isSquare);
+    Vector<COLUMNS - 1, T> applyHomogeneousTransformation(const Vector<COLUMNS - 1, T>& point, T lastElement) const requires (isSquare);
+    template<typename OTHER_T> requires HasCommonType<OTHER_T, T>
+    Vector<COLUMNS - 1, std::common_type_t<T, OTHER_T>> applyHomogeneousTransformation(const Vector<COLUMNS - 1, OTHER_T>& point, std::common_type_t<T, OTHER_T> lastElement) const requires (isSquare);
 
     T* operator[](int index);
     const T* operator[](int index) const;
@@ -184,12 +183,13 @@ public:
     static Matrix<ROWS, COLUMNS, T> shearMatrix(int i, int j, T k) requires (isSquare);
     static Matrix<ROWS, COLUMNS, T> squeezeMatrix(int i, int j, T k) requires (isSquare);
 
+    // counterclockwise
     static Matrix<ROWS, COLUMNS, T> rotationMatrixAboutOrigin(T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 2);
     static Matrix<ROWS + 1, COLUMNS + 1, T> rotationMatrixAboutPoint(const Vector<COLUMNS, T>& p, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 2);
     static Matrix<ROWS, COLUMNS, T> rotationMatrixAroundAxisThroughOrigin(const Vector<COLUMNS, T>& axis, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 3);
-    static Matrix<ROWS + 1, COLUMNS + 1, T> rotationMatrixAroundAxisNotThroughOrigin(const Vector<COLUMNS, T>& axis, const Vector<COLUMNS, T>& point, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 3);
+    static Matrix<ROWS + 1, COLUMNS + 1, T> rotationMatrixAroundAxisNotThroughOrigin(const Vector<COLUMNS, T>& axis, const Vector<COLUMNS, T>& p, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 3);
     static Matrix<ROWS, COLUMNS, T> rotationMatrixInPlaneThroughOrigin(const Vector<COLUMNS, T>& v1, const Vector<COLUMNS, T>& v2, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS >= 3);
-    static Matrix<ROWS, COLUMNS, T> rotationMatrixInPLaneNotThroughOrigin(const Vector<COLUMNS, T>& v1, const Vector<COLUMNS, T>& v2, const Vector<COLUMNS, T>& point, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS >= 3);
+    static Matrix<ROWS, COLUMNS, T> rotationMatrixInPLaneNotThroughOrigin(const Vector<COLUMNS, T>& v1, const Vector<COLUMNS, T>& v2, const Vector<COLUMNS, T>& p, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS >= 3);
 
     static Matrix<ROWS, COLUMNS, T> reflectionMatrixAlongAxisThroughOrigin(const Vector<COLUMNS, T>& axis) requires (isSquare);
     static Matrix<ROWS + 1, COLUMNS + 1, T> reflectionMatrixAlongAxisNotThroughOrigin(const Vector<COLUMNS, T>& axis, const Vector<COLUMNS, T>& point) requires (isSquare);
@@ -197,6 +197,8 @@ public:
     static Matrix<ROWS + 1, COLUMNS + 1, T> translationMatrix(const Vector<COLUMNS, T>& translation) requires (isSquare);
 
     static Matrix<ROWS, COLUMNS, T> orthoMatrix(T left, T right, T bottom, T top, T near, T far) requires (isSquare && COLUMNS == 4);
+
+    Matrix<ROWS, COLUMNS, T> pow(int i) requires (isSquare);
 
     [[nodiscard]] std::string toString() const;
     [[nodiscard]] std::string toLaTex() const;

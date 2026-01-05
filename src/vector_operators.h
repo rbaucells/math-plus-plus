@@ -422,17 +422,22 @@ T Vector<N, T>::dot(const Vector<N, T>& other, const DotProductConjugationBehavi
     T result = {};
 
     for (int i = 0; i < N; i++) {
-        switch (behavior) {
-            case second_argument:
-                result += data[i] * std::conj(other[i]);
-                break;
-            case neither:
-                result += data[i] * other[i];
-                break;
-            case first_argument:
-            default:
-                result += std::conj(data[i]) * other[i];
-                break;
+        if constexpr (!isComplex) {
+            result += data[i] * other[i];
+        }
+        else {
+            switch (behavior) {
+                case second_argument:
+                    result += data[i] * std::conj(other[i]);
+                    break;
+                case neither:
+                    result += data[i] * other[i];
+                    break;
+                case first_argument:
+                default:
+                    result += std::conj(data[i]) * other[i];
+                    break;
+            }
         }
     }
 
@@ -471,4 +476,15 @@ template<int N, scalar T>
 template<typename OTHER_T> requires HasCommonType<OTHER_T, T>
 std::common_type_t<T, OTHER_T> Vector<N, T>::operator*(const Vector<N, OTHER_T>& other) const {
     return dot(other);
+}
+
+template<int N, scalar T>
+Vector<N, T> Vector<N, T>::operator-() const {
+    Vector<N, T> result;
+
+    for (int i = 0; i < N; i++) {
+        result[i] = -data[i];
+    }
+
+    return result;
 }
