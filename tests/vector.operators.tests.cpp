@@ -353,6 +353,105 @@ TEST(VectorOperators, addition_equals_diff_type) {
     ASSERT_TRUE(a.equals(expected, 0.001f));
 }
 
+TEST(VectorOperators, subtraction_equals_same_type_real) {
+    // arrange
+    Vector<3> a = {3, 6, 9};
+    constexpr Vector<3> b = {2, 4, 6};
+    constexpr Vector<3> expected = {1, 2, 3};
+    // act
+    a -= b;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, subtraction_equals_same_type_complex) {
+    // arrange
+    Vector<3, std::complex<float>> a = {{3, 6}, {9, 12}, {15, 18}};
+    constexpr Vector<3, std::complex<float>> b = {{2, 4}, {6, 8}, {10, 12}};
+    constexpr Vector<3, std::complex<float>> expected = {{1, 2}, {3, 4}, {5, 6}};
+    // act
+    a -= b;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, subtraction_equals_diff_type) {
+    // arrange
+    Vector<3, std::complex<float>> a = {{3, 2}, {7, 4}, {11, 6}};
+    constexpr Vector<3> b = {2, 4, 6};
+    constexpr Vector<3, std::complex<float>> expected = {{1, 2}, {3, 4}, {5, 6}};
+    // act
+    a -= b;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, multiply_equals_same_type_real) {
+    // arrange
+    Vector<3> a = {1, 2, 3};
+    constexpr float s = 2.0f;
+    constexpr Vector<3> expected = {2, 4, 6};
+    // act
+    a *= s;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, multiply_equals_same_type_complex) {
+    // arrange
+    Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr std::complex<float> s = {2, 3};
+    constexpr Vector<3, std::complex<float>> expected = {{ -4,  7},{ -6, 17},{ -8, 27}};
+    // act
+    a *= s;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, multiply_equals_diff_type) {
+    // arrange
+    Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr float s = 2.0f;
+    constexpr Vector<3, std::complex<float>> expected = {{2, 4},{6, 8},{10, 12}};
+    // act
+    a *= s;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, divide_equals_same_type_real) {
+    // arrange
+    Vector<3> a = {2, 4, 6};
+    constexpr float s = 2.0f;
+    constexpr Vector<3> expected = {1, 2, 3};
+    // act
+    a /= s;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, divide_equals_same_type_complex) {
+    // arrange
+    Vector<3, std::complex<float>> a = {{2, 4}, {6, 8}, {10, 12}};
+    constexpr std::complex<float> s = {2, 0};
+    constexpr Vector<3, std::complex<float>> expected = {{1, 2},{3, 4},{5, 6}};
+    // act
+    a /= s;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, divide_equals_diff_type) {
+    // arrange
+    Vector<3, std::complex<float>> a = {{2, 4}, {6, 8}, {10, 12}};
+    constexpr float s = 2.0f;
+    constexpr Vector<3, std::complex<float>> expected = {{1, 2},{3, 4},{5, 6}};
+    // act
+    a /= s;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
 TEST(VectorOperators, const_to_pointer_real) {
     // arrange
     constexpr Vector<3> a = {1, 2, 3};
