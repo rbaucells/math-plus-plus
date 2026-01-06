@@ -473,7 +473,7 @@ TEST(MatrixOperators, scalar_division_equals_diff_type) {
     ASSERT_TRUE(a.equals(expected, 0.001f));
 }
 
-TEST(MatrixOperators, const_indexing_operator_real) {
+TEST(MatrixOperators, const_indexing_real) {
     // arrange
     constexpr Matrix<2, 2> m = {{1, 2}, {3, 4}};
     // act / assert
@@ -483,7 +483,7 @@ TEST(MatrixOperators, const_indexing_operator_real) {
     ASSERT_TRUE(compare(m[1][1], 4));
 }
 
-TEST(MatrixOperators, indexing_operator_real) {
+TEST(MatrixOperators, indexing_real) {
     // arrange
     Matrix<2, 2> m = {{1, 2}, {3, 4}};
     // act / assert
@@ -493,7 +493,7 @@ TEST(MatrixOperators, indexing_operator_real) {
     ASSERT_TRUE(compare(m[1][1], 4));
 }
 
-TEST(MatrixOperators, const_indexing_operator_complex) {
+TEST(MatrixOperators, const_indexing_complex) {
     // arrange
     const Matrix<2, 2, std::complex<float>> m = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
     // act / assert
@@ -503,7 +503,7 @@ TEST(MatrixOperators, const_indexing_operator_complex) {
     ASSERT_TRUE(compare(m[1][1], std::complex<float>(7, 8)));
 }
 
-TEST(MatrixOperators, indexing_operator_complex) {
+TEST(MatrixOperators, indexing_complex) {
     // arrange
     Matrix<2, 2, std::complex<float>> m = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
     // act / assert

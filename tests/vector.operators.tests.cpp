@@ -495,3 +495,39 @@ TEST(VectorOperators, to_pointer_complex) {
     ASSERT_TRUE(compare(ptr[1], std::complex<float>(3, 4)));
     ASSERT_TRUE(compare(ptr[2], std::complex<float>(5, 6)));
 }
+
+TEST(VectorOperators, const_indexing_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    // act / assert
+    ASSERT_TRUE(compare(a[0], 1));
+    ASSERT_TRUE(compare(a[1], 2));
+    ASSERT_TRUE(compare(a[2], 3));
+}
+
+TEST(VectorOperators, indexing_real) {
+    // arrange
+    Vector<3> a = {1, 2, 3};
+    // act / assert
+    ASSERT_TRUE(compare(a[0], 1));
+    ASSERT_TRUE(compare(a[1], 2));
+    ASSERT_TRUE(compare(a[2], 3));
+}
+
+TEST(VectorOperators, const_indexing_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    // act / assert
+    ASSERT_TRUE(compare(a[0], std::complex<float>(1, 2)));
+    ASSERT_TRUE(compare(a[1], std::complex<float>(3, 4)));
+    ASSERT_TRUE(compare(a[2], std::complex<float>(5, 6)));
+}
+
+TEST(VectorOperators, indexing_complex) {
+    // arrange
+    Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    // act / assert
+    ASSERT_TRUE(compare(a[0], std::complex<float>(1, 2)));
+    ASSERT_TRUE(compare(a[1], std::complex<float>(3, 4)));
+    ASSERT_TRUE(compare(a[2], std::complex<float>(5, 6)));
+}
