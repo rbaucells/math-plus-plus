@@ -19,11 +19,20 @@ TEST(MatrixGeneral, default_constructor_complex) {
     ASSERT_TRUE(m.equals(expected, 0.001f));
 }
 
-TEST(MatrixOperators, copy_constructor_same_type) {
+TEST(MatrixOperators, copy_constructor_same_type_real) {
     // arrange
     constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
     // act
     const Matrix<2, 2> b = a;
+    // assert
+    ASSERT_TRUE(b.equals(a, 0.001f));
+}
+
+TEST(MatrixOperators, copy_constructor_same_type_complex) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> a = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> b = a;
     // assert
     ASSERT_TRUE(b.equals(a, 0.001f));
 }

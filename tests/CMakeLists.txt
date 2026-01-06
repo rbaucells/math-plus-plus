@@ -29,6 +29,7 @@ add_executable(math-tests
         matrix.decompositions.tests.cpp
         matrix.transformations.tests.cpp
         vector.operators.tests.cpp
+        vector.general.tests.cpp
 )
 
 # link with the math lib

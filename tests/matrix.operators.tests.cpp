@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "math++/math.h"
 
-TEST(MatrixOperators, copy_assignment_operator_same_type_real) {
+TEST(MatrixOperators, copy_assignment_same_type_real) {
     // arrange
     constexpr Matrix<2, 2> expected = {{1, 2}, {3, 4}};
     // act
@@ -11,7 +11,7 @@ TEST(MatrixOperators, copy_assignment_operator_same_type_real) {
     ASSERT_TRUE(b.equals(expected, 0.001f));
 }
 
-TEST(MatrixOperators, copy_assignment_operator_same_type_complex) {
+TEST(MatrixOperators, copy_assignment_same_type_complex) {
     // arrange
     constexpr Matrix<2, 2, std::complex<float>> expected = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
     // act
@@ -21,7 +21,7 @@ TEST(MatrixOperators, copy_assignment_operator_same_type_complex) {
     ASSERT_TRUE(b.equals(expected, 0.001f));
 }
 
-TEST(MatrixOperators, copy_assignment_operator_diff_type) {
+TEST(MatrixOperators, copy_assignment_diff_type) {
     // arrange
     constexpr Matrix<2, 2> expected = {{1, 2}, {3, 4}};
     // act
@@ -31,52 +31,70 @@ TEST(MatrixOperators, copy_assignment_operator_diff_type) {
     ASSERT_TRUE(b.equals(expected, 0.001f));
 }
 
-TEST(MatrixOperators, equality_same_type_real) {
+TEST(MatrixOperators, equal_same_type_real) {
     // arrange
     constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
     constexpr Matrix<2, 2> b = {{1, 2}, {3, 4}};
-    constexpr Matrix<2, 2> c = {{2, 4}, {6, 8}};
     // act / assert
     ASSERT_TRUE(a == b);
+    ASSERT_TRUE(b == a);
     ASSERT_FALSE(a != b);
-    ASSERT_FALSE(a == c);
-    ASSERT_TRUE(a != c);
+    ASSERT_FALSE(b != a);
 }
 
-TEST(MatrixOperators, equality_same_type_complex) {
-    // arrange
-    constexpr Matrix<2, 2, std::complex<float>> a = {{{1, 0}, {2, 0}}, {{3, 0}, {4, 0}}};
-    constexpr Matrix<2, 2, std::complex<float>> b = {{{1, 0}, {2, 0}}, {{3, 0}, {4, 0}}};
-    constexpr Matrix<2, 2, std::complex<float>> c = {{{1, 1}, {2, 2}}, {{3, 3}, {4, 4}}};
-    // act / assert
-    ASSERT_TRUE(a == b);
-    ASSERT_FALSE(a != b);
-    ASSERT_FALSE(a == c);
-    ASSERT_TRUE(a != c);
-}
-
-TEST(MatrixOperators, equality_diff_type_real) {
+TEST(MatrixOperators, not_equal_same_type_real) {
     // arrange
     constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
-    constexpr Matrix<2, 2, int> b = {{1, 2}, {3, 4}};
-    constexpr Matrix<2, 2, double> c = {{2, 4}, {6, 8}};
+    constexpr Matrix<2, 2> b = {{2, 4}, {6, 8}};
     // act / assert
-    ASSERT_TRUE(a == b);
-    ASSERT_FALSE(a != b);
-    ASSERT_FALSE(a == c);
-    ASSERT_TRUE(a != c);
+    ASSERT_FALSE(a == b);
+    ASSERT_FALSE(b == a);
+    ASSERT_TRUE(a != b);
+    ASSERT_TRUE(b != a);
 }
 
-TEST(MatrixOperators, equality_diff_type) {
+TEST(MatrixOperators, equal_same_type_complex) {
     // arrange
-    constexpr Matrix<2, 2, std::complex<float>> a = {{{1, 0}, {2, 0}}, {{3, 0}, {4, 0}}};
-    constexpr Matrix<2, 2, std::complex<int>> b = {{{1, 0}, {2, 0}}, {{3, 0}, {4, 0}}};
-    constexpr Matrix<2, 2, std::complex<double>> c = {{{1, 1}, {2, 2}}, {{3, 3}, {4, 4}}};
+    constexpr Matrix<2, 2, std::complex<float>> a = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr Matrix<2, 2, std::complex<float>> b = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
     // act / assert
     ASSERT_TRUE(a == b);
+    ASSERT_TRUE(b == a);
     ASSERT_FALSE(a != b);
-    ASSERT_FALSE(a == c);
-    ASSERT_TRUE(a != c);
+    ASSERT_FALSE(b != a);
+}
+
+TEST(MatrixOperators, not_equal_same_type_complex) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> a = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr Matrix<2, 2, std::complex<float>> b = {{{2, 4}, {6, 8}}, {{10, 12}, {14, 16}}};
+    // act / assert
+    ASSERT_FALSE(a == b);
+    ASSERT_FALSE(b == a);
+    ASSERT_TRUE(a != b);
+    ASSERT_TRUE(b != a);
+}
+
+TEST(MatrixOperators, equal_diff_type) {
+    // arrange
+    constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    constexpr Matrix<2, 2, std::complex<float>> b = {{{1, 0}, {2, 0}}, {{3, 0}, {4, 0}}};
+    // act / assert
+    ASSERT_TRUE(a == b);
+    ASSERT_TRUE(b == a);
+    ASSERT_FALSE(a != b);
+    ASSERT_FALSE(b != a);
+}
+
+TEST(MatrixOperators, not_equal_diff_type) {
+    // arrange
+    constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    constexpr Matrix<2, 2, std::complex<float>> b = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    // act / assert
+    ASSERT_FALSE(a == b);
+    ASSERT_FALSE(b == a);
+    ASSERT_TRUE(a != b);
+    ASSERT_TRUE(b != a);
 }
 
 TEST(MatrixOperators, addition_same_type_real) {
@@ -230,14 +248,21 @@ TEST(MatrixOperators, scalar_multiplication_same_type_complex) {
 TEST(MatrixOperators, scalar_multiplication_diff_type) {
     // arrange
     constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
-    constexpr std::complex<float> s = {2, 1};
-    constexpr Matrix<2, 2, std::complex<float>> expected = {{{2, 1}, {4, 2}}, {{6, 3}, {8, 4}}};
+    constexpr Matrix<2, 2, std::complex<float>> b = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr float c = 2;
+    constexpr std::complex<float> d = {2, 3};
+    constexpr Matrix<2, 2, std::complex<float>> expectedAd = {{{2, 3}, {4, 6}}, {{6, 9}, {8, 12}}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedBc = {{{2, 4}, {6, 8}}, {{10, 12}, {14, 16}}};
     // act
-    const Matrix<2, 2, std::complex<float>> as = a * s;
-    const Matrix<2, 2, std::complex<float>> sa = s * a;
+    const Matrix<2, 2, std::complex<float>> ad = a * d;
+    const Matrix<2, 2, std::complex<float>> da = d * a;
+    const Matrix<2, 2, std::complex<float>> bc = b * c;
+    const Matrix<2, 2, std::complex<float>> cd = c * b;
     // assert
-    ASSERT_TRUE(as.equals(expected, 0.001f));
-    ASSERT_TRUE(sa.equals(expected, 0.001f));
+    ASSERT_TRUE(ad.equals(expectedAd, 0.001f));
+    ASSERT_TRUE(da.equals(expectedAd, 0.001f));
+    ASSERT_TRUE(bc.equals(expectedBc, 0.001f));
+    ASSERT_TRUE(cd.equals(expectedBc, 0.001f));
 }
 
 TEST(MatrixOperators, scalar_division_same_type_real) {
@@ -265,54 +290,55 @@ TEST(MatrixOperators, scalar_division_same_type_complex) {
 TEST(MatrixOperators, scalar_division_diff_type) {
     // arrange
     constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
-    constexpr std::complex<float> s = {2, 0};
-    constexpr Matrix<2, 2, std::complex<float>> expected = {{{0.5f, 0}, {1, 0}}, {{1.5f, 0}, {2, 0}}};
+    constexpr Matrix<2, 2, std::complex<float>> b = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr float c = 2;
+    constexpr std::complex<float> d = {2, 3};
+    constexpr Matrix<2, 2, std::complex<float>> expectedAd = {{{0.15385f, -0.23077f}, {0.30769f, -0.46154f}}, {{0.46154f, -0.69231f}, {0.61538f, -0.92308f}}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedBc = {{{0.5f, 1}, {1.5f, 2}}, {{2.5f, 3}, {3.5f, 4}}};
     // act
-    const Matrix<2, 2, std::complex<float>> as = a / s;
+    const Matrix<2, 2, std::complex<float>> ad = a / d;
+    const Matrix<2, 2, std::complex<float>> bc = b / c;
     // assert
-    ASSERT_TRUE(as.equals(expected, 0.001f));
+    ASSERT_TRUE(ad.equals(expectedAd, 0.001f));
+    ASSERT_TRUE(bc.equals(expectedBc, 0.001f));
 }
 
 TEST(MatrixOperators, vector_multiplication_same_type_real) {
     // arrange
     constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
     constexpr Vector<2> b = {1, 2};
-    constexpr Vector<2> expectedAb = {5, 11};
-    constexpr Vector<2> expectedBa = {7, 10};
+    constexpr Vector<2> expected = {5, 11};
     // act
-    const Vector<2> ab = a * b;
-    const Vector<2> ba = b * a;
+    const Vector<2> v = a * b;
     // assert
-    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
-    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+    ASSERT_TRUE(v.equals(expected, 0.001f));
 }
 
 TEST(MatrixOperators, vector_multiplication_same_type_complex) {
     // arrange
     constexpr Matrix<2, 2, std::complex<float>> a = {{{1, 0}, {0, 2}}, {{3, 1}, {1, 4}}};
     constexpr Vector<2, std::complex<float>> b = {{1, 0}, {2, 0}};
-    constexpr Vector<2, std::complex<float>> expectedAb = {{1, 4}, {5, 9}};
-    constexpr Vector<2, std::complex<float>> expectedBa = {{7, 2}, {2, 10}};
+    constexpr Vector<2, std::complex<float>> expected = {{1, 4}, {5, 9}};
     // act
-    const Vector<2, std::complex<float>> ab = a * b;
-    const Vector<2, std::complex<float>> ba = b * a;
+    const Vector<2, std::complex<float>> v = a * b;
     // assert
-    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
-    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+    ASSERT_TRUE(v.equals(expected, 0.001f));
 }
 
 TEST(MatrixOperators, vector_multiplication_diff_type) {
     // arrange
     constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
-    constexpr Vector<2, std::complex<float>> b = {{1, 1}, {2, 0}};
-    constexpr Vector<2, std::complex<float>> expectedAb = {{5, 1}, {11, 3}};
-    constexpr Vector<2, std::complex<float>> expectedBa = {{7, 1}, {10, 2}};
+    constexpr Matrix<2, 2, std::complex<float>> b = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr Vector<2> c = {1, 2};
+    constexpr Vector<2, std::complex<float>> d = {{1,2}, {3, 4}};
+    constexpr Vector<2, std::complex<float>> expectedAd = {{7, 10}, {15, 22}};
+    constexpr Vector<2, std::complex<float>> expectedBc = {{7, 10}, {19, 22}};
     // act
-    const Vector<2, std::complex<float>> ab = a * b;
-    const Vector<2, std::complex<float>> ba = b * a;
+    const Vector<2, std::complex<float>> ad = a * d;
+    const Vector<2, std::complex<float>> bc = b * c;
     // assert
-    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
-    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+    ASSERT_TRUE(ad.equals(expectedAd, 0.001f));
+    ASSERT_TRUE(bc.equals(expectedBc, 0.001f));
 }
 
 TEST(MatrixOperators, addition_equals_same_type_real) {
@@ -339,9 +365,9 @@ TEST(MatrixOperators, addition_equals_same_type_complex) {
 
 TEST(MatrixOperators, addition_equals_diff_type) {
     // arrange
-    Matrix<2, 2, std::complex<float>> a = {{1, 2}, {3, 4}};
-    constexpr Matrix<2, 2, std::complex<float>> b = {{{0, 1}, {2, 2}}, {{6, 7}, {0, 0}}};
-    constexpr Matrix<2, 2, std::complex<float>> expected = {{{1, 1}, {4, 2}}, {{9, 7}, {4, 0}}};
+    Matrix<2, 2, std::complex<float>> a = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr Matrix<2, 2> b = {{1, 2}, {3, 4}};
+    constexpr Matrix<2, 2, std::complex<float>> expected = {{{2, 2}, {5, 4}}, {{8, 6}, {11, 8}}};
     // act
     a += b;
     // assert
@@ -372,9 +398,9 @@ TEST(MatrixOperators, subtraction_equals_same_type_complex) {
 
 TEST(MatrixOperators, subtraction_equals_diff_type) {
     // arrange
-    Matrix<2, 2, std::complex<float>> a = {{1, 2}, {3, 4}};
-    constexpr Matrix<2, 2, std::complex<float>> b = {{{0, 1}, {2, 2}}, {{6, 7}, {0, 0}}};
-    constexpr Matrix<2, 2, std::complex<float>> expected = {{{1, -1}, {0, -2}}, {{-3, -7}, {4, 0}}};
+    Matrix<2, 2, std::complex<float>> a = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr Matrix<2, 2> b = {{1, 2}, {3, 4}};
+    constexpr Matrix<2, 2, std::complex<float>> expected = {{{0, 2}, {1, 4}}, {{2, 6}, {3, 8}}};
     // act
     a -= b;
     // assert
@@ -405,9 +431,9 @@ TEST(MatrixOperators, scalar_multiplication_equals_same_type_complex) {
 
 TEST(MatrixOperators, scalar_multiplication_equals_diff_type) {
     // arrange
-    Matrix<2, 2, std::complex<float>> a = {{1, 2}, {3, 4}};
-    constexpr std::complex<float> s = {2, 1};
-    constexpr Matrix<2, 2, std::complex<float>> expected = {{{2, 1}, {4, 2}}, {{6, 3}, {8, 4}}};
+    Matrix<2, 2, std::complex<float>> a = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr float s = 2.0f;
+    constexpr Matrix<2, 2, std::complex<float>> expected ={{{2, 4}, {6, 8}}, {{10, 12}, {14, 16}}};
     // act
     a *= s;
     // assert
@@ -438,18 +464,18 @@ TEST(MatrixOperators, scalar_division_equals_same_type_complex) {
 
 TEST(MatrixOperators, scalar_division_equals_diff_type) {
     // arrange
-    Matrix<2, 2, std::complex<float>> a = {{1, 2}, {3, 4}};
-    constexpr std::complex<float> s = {2, 0};
-    constexpr Matrix<2, 2, std::complex<float>> expected = {{{0.5f, 0}, {1, 0}}, {{1.5f, 0}, {2, 0}}};
+    Matrix<2, 2, std::complex<float>> a = {{{2, 4}, {6, 8}}, {{10, 12}, {14, 16}}};
+    constexpr float scalar = 2.0f;
+    constexpr Matrix<2, 2, std::complex<float>> expected ={{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
     // act
-    a /= s;
+    a /= scalar;
     // assert
     ASSERT_TRUE(a.equals(expected, 0.001f));
 }
 
 TEST(MatrixOperators, const_indexing_operator_real) {
     // arrange
-    const Matrix<2, 2> m = {{1, 2}, {3, 4}};
+    constexpr Matrix<2, 2> m = {{1, 2}, {3, 4}};
     // act / assert
     ASSERT_TRUE(compare(m[0][0], 1));
     ASSERT_TRUE(compare(m[1][0], 2));
@@ -509,7 +535,7 @@ TEST(MatrixOperators, unary_minus_complex) {
 
 TEST(MatrixOperators, const_to_pointer_real) {
     // arrange
-    const Matrix<2, 2> a = {{1, 2}, {3, 4}};
+    constexpr Matrix<2, 2> a = {{1, 2}, {3, 4}};
     // act
     const float* data = static_cast<const float*>(a);
     // assert

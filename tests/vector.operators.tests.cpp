@@ -1,6 +1,102 @@
 #include "math++/math.h"
 #include <gtest/gtest.h>
 
+TEST(VectorOperators, copy_assignment_same_type_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    // act
+    Vector<3> b;
+    b = a;
+    // assert
+    ASSERT_TRUE(b.equals(a, 0.001f));
+}
+
+TEST(VectorOperators, copy_assignment_same_type_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    // act
+    Vector<3, std::complex<float>> b;
+    b = a;
+    // assert
+    ASSERT_TRUE(b.equals(a, 0.001f));
+}
+
+TEST(VectorOperators, copy_assignment_diff_type) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    // act
+    Vector<3, std::complex<float>> b;
+    b = a;
+    // assert
+    ASSERT_TRUE(b.equals(a, 0.001f));
+}
+
+TEST(VectorOperators, equal_same_type_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3> b = {1, 2, 3};
+    // act / assert
+    ASSERT_TRUE(a == b);
+    ASSERT_TRUE(b == a);
+    ASSERT_FALSE(a != b);
+    ASSERT_FALSE(b != a);
+}
+
+TEST(VectorOperators, not_equal_same_type_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3> b = {2, 4, 6};
+    // act / assert
+    ASSERT_FALSE(a == b);
+    ASSERT_FALSE(b == a);
+    ASSERT_TRUE(a != b);
+    ASSERT_TRUE(b != a);
+}
+
+TEST(VectorOperators, equal_same_type_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3, std::complex<float>> b = {{1, 2}, {3, 4}, {5, 6}};
+    // act / assert
+    ASSERT_TRUE(a == b);
+    ASSERT_TRUE(b == a);
+    ASSERT_FALSE(a != b);
+    ASSERT_FALSE(b != a);
+}
+
+TEST(VectorOperators, not_equal_same_type_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3, std::complex<float>> b = {{2, 4}, {6, 8}, {10, 12}};
+    // act / assert
+    ASSERT_FALSE(a == b);
+    ASSERT_FALSE(b == a);
+    ASSERT_TRUE(a != b);
+    ASSERT_TRUE(b != a);
+}
+
+TEST(VectorOperators, equal_diff_type) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3, std::complex<float>> b = {{1, 0}, {2, 0}, {3, 0}};
+    // act / assert
+    ASSERT_TRUE(a == b);
+    ASSERT_TRUE(b == a);
+    ASSERT_FALSE(a != b);
+    ASSERT_FALSE(b != a);
+}
+
+TEST(VectorOperators, not_equal_diff_type) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3, std::complex<float>> b = {{1, 2}, {3, 4}, {5, 6}};
+    // act / assert
+    ASSERT_FALSE(a == b);
+    ASSERT_FALSE(b == a);
+    ASSERT_TRUE(a != b);
+    ASSERT_TRUE(b != a);
+}
+
 TEST(VectorOperators, addition_same_type_real) {
     // arrange
     constexpr Vector<3> a = {1, 2, 3};
@@ -56,8 +152,8 @@ TEST(VectorOperators, subtraction_same_type_real) {
 
 TEST(VectorOperators, subtraction_same_type_complex) {
     // arrange
-    constexpr Vector<3, std::complex<float>> a  = {{1, 2}, {3, 4}, {5, 6}};
-    constexpr Vector<3, std::complex<float>> b  = {{2, 4}, {6, 8}, {10, 12}};
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3, std::complex<float>> b = {{2, 4}, {6, 8}, {10, 12}};
     constexpr Vector<3, std::complex<float>> expectedAb = {{-1, -2}, {-3, -4}, {-5, -6}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{1, 2}, {3, 4}, {5, 6}};
     // act
@@ -71,7 +167,7 @@ TEST(VectorOperators, subtraction_same_type_complex) {
 TEST(VectorOperators, subtraction_diff_type) {
     // arrange
     constexpr Vector<3> a = {1, 2, 3};
-    constexpr Vector<3, std::complex<float>> b  = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3, std::complex<float>> b = {{1, 2}, {3, 4}, {5, 6}};
     constexpr Vector<3, std::complex<float>> expectedAb = {{0, -2}, {-1, -4}, {-2, -6}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{0, 2}, {1, 4}, {2, 6}};
     // act
@@ -164,4 +260,106 @@ TEST(VectorOperators, division_diff_type) {
     // assert
     ASSERT_TRUE(ad.equals(expectedAd, 0.001f));
     ASSERT_TRUE(bc.equals(expectedBc, 0.001f));
+}
+
+TEST(VectorOperators, unary_minus_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3> expected = {-1, -2, -3};
+    // act
+    const Vector<3> v = -a;
+    // assert
+    ASSERT_TRUE(v.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, unary_minus_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3, std::complex<float>> expected = {{-1, -2}, {-3, -4}, {-5, -6}};
+    // act
+    const Vector<3, std::complex<float>> v = -a;
+    // assert
+    ASSERT_TRUE(v.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, matrix_multiplication_same_type_real) {
+    // arrange
+    constexpr Vector<2> a = {1, 2};
+    constexpr Matrix<2, 2> b = {{1, 2}, {3, 4}};
+    constexpr Vector<2> expected = {7, 10};
+    // act
+    const Vector<2> v = a * b;
+    // assert
+    ASSERT_TRUE(v.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, matrix_multiplication_same_type_complex) {
+    // arrange
+    constexpr Vector<2, std::complex<float>> a = {{1, 2}, {3, 4}};
+    constexpr Matrix<2, 2, std::complex<float>> b = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr Vector<2, std::complex<float>> expected = {{-12, 42}, {-16, 62}};
+    // act
+    const Vector<2, std::complex<float>> v = a * b;
+    // assert
+    ASSERT_TRUE(v.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, matrix_multiplicaiton_diff_type) {
+    // arrange
+    constexpr Vector<2> a = {1, 2};
+    constexpr Vector<2, std::complex<float>> b = {{1, 2}, {3, 4}};
+    constexpr Matrix<2, 2> c = {{1, 2}, {3, 4}};
+    constexpr Matrix<2, 2, std::complex<float>> d = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+    constexpr Vector<2, std::complex<float>> expectedAd = {{11, 14}, {17, 20}};
+    constexpr Vector<2, std::complex<float>> expectedBc = {{10, 14}, {14, 20}};
+    // act
+    const Vector<2, std::complex<float>> ad = a * d;
+    const Vector<2, std::complex<float>> bc = b * c;
+    // assert
+    ASSERT_TRUE(ad.equals(expectedAd, 0.001f));
+    ASSERT_TRUE(bc.equals(expectedBc, 0.001f));
+}
+
+TEST(VectorOperators, const_to_pointer_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    // act
+    const float* ptr = static_cast<const float*>(a);
+    // assert
+    ASSERT_TRUE(compare(ptr[0], 1));
+    ASSERT_TRUE(compare(ptr[1], 2));
+    ASSERT_TRUE(compare(ptr[2], 3));
+}
+
+TEST(VectorOperators, to_pointer_real) {
+    // arrange
+    Vector<3> a = {1, 2, 3};
+    // act
+    float* ptr = static_cast<float*>(a);
+    // assert
+    ASSERT_TRUE(compare(ptr[0], 1));
+    ASSERT_TRUE(compare(ptr[1], 2));
+    ASSERT_TRUE(compare(ptr[2], 3));
+}
+
+TEST(VectorOperators, const_to_pointer_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    // act
+    const std::complex<float>* ptr = static_cast<const std::complex<float>*>(a);
+    // assert
+    ASSERT_TRUE(compare(ptr[0], std::complex<float>(1, 2)));
+    ASSERT_TRUE(compare(ptr[1], std::complex<float>(3, 4)));
+    ASSERT_TRUE(compare(ptr[2], std::complex<float>(5, 6)));
+}
+
+TEST(VectorOperators, to_pointer_complex) {
+    // arrange
+    Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    // act
+    std::complex<float>* ptr = static_cast<std::complex<float>*>(a);
+    // assert
+    ASSERT_TRUE(compare(ptr[0], std::complex<float>(1, 2)));
+    ASSERT_TRUE(compare(ptr[1], std::complex<float>(3, 4)));
+    ASSERT_TRUE(compare(ptr[2], std::complex<float>(5, 6)));
 }

@@ -35,32 +35,42 @@ Vector<N, T>::Vector(const Vector<N, OTHER_T>& other) {
 }
 
 template<int N, scalar T>
-Vector<N, T> Vector<N, T>::random() {
+Vector<N, T> Vector<N, T>::random(const UnderlyingType min, const UnderlyingType max) {
     Vector<N, T> v;
 
     std::random_device dev;
     std::mt19937 eng(dev());
 
     if constexpr (std::is_integral_v<T>) {
-        std::uniform_int_distribution<T> dist(0, 1);
+        std::uniform_int_distribution<T> dist(min, max);
 
         for (int i = 0; i < N; i++) {
             v[i] = dist(eng);
         }
     }
     else if constexpr (std::is_floating_point_v<T>) {
-        std::uniform_real_distribution<T> dist(0, 1);
+        std::uniform_real_distribution<T> dist(min, max);
 
         for (int i = 0; i < N; i++) {
             v[i] = dist(eng);
         }
     }
     else if constexpr (isComplex) {
-        std::uniform_real_distribution<UnderlyingType> realDist(0, 1);
-        std::uniform_real_distribution<UnderlyingType> imagDist(0, 1);
+        if constexpr (std::is_integral_v<UnderlyingType>) {
+            std::uniform_int_distribution<UnderlyingType> realDist(min, max);
+            std::uniform_int_distribution<UnderlyingType> imagDist(min, max);
 
-        for (int i = 0; i < N; i++) {
-            v[i] = std::complex<UnderlyingType>(realDist(eng), imagDist(eng));
+            for (int i = 0; i < N; i++) {
+                v[i] = std::complex<UnderlyingType>(realDist(eng), imagDist(eng));
+            }
+        }
+        else {
+            std::uniform_real_distribution<UnderlyingType> realDist(min, max);
+            std::uniform_real_distribution<UnderlyingType> imagDist(min, max);
+
+            for (int i = 0; i < N; i++) {
+                v[i] = std::complex<UnderlyingType>(realDist(eng), imagDist(eng));
+            }
         }
     }
 

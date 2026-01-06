@@ -25,7 +25,7 @@ struct Vector {
     template<typename OTHER_T> requires std::convertible_to<OTHER_T, T>
     Vector(const Vector<N, OTHER_T>& other);
 
-    static Vector<N, T> random();
+    static Vector<N, T> random(UnderlyingType min = -1, UnderlyingType max = 1);
 
     // v = v
     Vector<N, T>& operator=(const Vector<N, T>& other);
