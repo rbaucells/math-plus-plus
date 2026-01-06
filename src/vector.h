@@ -12,7 +12,7 @@ struct Vector {
     static constexpr bool isComplex = is_complex_v<T>;
 
     using ValueType = T;
-    using UnderlyingType = underlying_type<T>::value_type;
+    using UnderlyingType = underlying_type_t<T>;
 
     T data[N] = {};
 

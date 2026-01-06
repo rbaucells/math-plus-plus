@@ -320,6 +320,39 @@ TEST(VectorOperators, matrix_multiplicaiton_diff_type) {
     ASSERT_TRUE(bc.equals(expectedBc, 0.001f));
 }
 
+TEST(VectorOperators, addition_equals_same_type_real) {
+    // arrange
+    Vector<3> a = {1, 2, 3};
+    constexpr Vector<3> b = {2, 4, 6};
+    constexpr Vector<3> expected = {3, 6, 9};
+    // act
+    a += b;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, addition_equals_same_type_complex) {
+    // arrange
+    Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3, std::complex<float>> b = {{2, 4}, {6, 8}, {10, 12}};
+    constexpr Vector<3, std::complex<float>> expected = {{3, 6}, {9, 12}, {15, 18}};
+    // act
+    a += b;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
+TEST(VectorOperators, addition_equals_diff_type) {
+    // arrange
+    Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3> b = {2, 4, 6};
+    constexpr Vector<3, std::complex<float>> expected = {{3, 2}, {7, 4}, {11, 6}};
+    // act
+    a += b;
+    // assert
+    ASSERT_TRUE(a.equals(expected, 0.001f));
+}
+
 TEST(VectorOperators, const_to_pointer_real) {
     // arrange
     constexpr Vector<3> a = {1, 2, 3};
