@@ -212,3 +212,23 @@ TEST(VectorGeneral, max_norm_complex) {
     // assert
     ASSERT_TRUE(compare(norm, expected, 0.001f));
 }
+
+TEST(VectorGeneral, normalized_real) {
+    // arrange
+    constexpr Vector<3> a = {2, 2, 2};
+    constexpr Vector<3> expected = {0.57735f, 0.57735f, 0.57735f};
+    // act
+    const Vector<3> normalized = a.normalized();
+    // assert
+    ASSERT_TRUE(normalized.equals(expected, 0.001f));
+}
+
+TEST(VectorGeneral, normalized_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3, std::complex<float>> expected = {{0.10483f, 0.20966f}, {0.31449f, 0.41931f}, {0.52414f, 0.62897f}};
+    // act
+    const Vector<3, std::complex<float>> normalized = a.normalized();
+    // assert
+    ASSERT_TRUE(normalized.equals(expected, 0.001f));
+}
