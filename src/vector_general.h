@@ -238,19 +238,6 @@ Vector<N, std::common_type_t<T, typename Vector<N, T>::UnderlyingType>> Vector<N
 }
 
 template<int N, scalar T>
-Vector<N, T>::UnderlyingType Vector<N, T>::angle(const Vector<N, T>& other, const RotationType type) const {
-    UnderlyingType result = std::acos(std::real(dot(other)) / (euclidianNorm() * other.euclidianNorm()));
-    return convert(RotationType::radians, type, result);
-}
-
-template<int N, scalar T>
-template<typename OTHER_T> requires HasCommonType<OTHER_T, T>
-std::common_type_t<typename Vector<N, T>::UnderlyingType, typename Vector<N, OTHER_T>::UnderlyingType> Vector<N, T>::angle(const Vector<N, OTHER_T>& other, const RotationType type) const {
-    std::common_type_t<UnderlyingType, typename Vector<N, OTHER_T>::UnderlyingType> result = std::acos(std::real(dot(other)) / (euclidianNorm() * other.euclidianNorm()));
-    return convert(RotationType::radians, type, result);
-}
-
-template<int N, scalar T>
 std::common_type_t<T, typename Vector<N, T>::UnderlyingType> Vector<N, T>::scalarProjection(const Vector<N, T>& other) const {
     return dot(other) / other.euclidianNorm();
 }
@@ -259,5 +246,30 @@ template<int N, scalar T>
 template<typename OTHER_T> requires HasCommonType<T, OTHER_T, typename Vector<N, OTHER_T>::UnderlyingType>
 std::common_type_t<T, OTHER_T, typename Vector<N, OTHER_T>::UnderlyingType> Vector<N, T>::scalarProjection(const Vector<N, OTHER_T>& other) const {
     return dot(other) / other.euclidianNorm();
+}
+
+template<int N, scalar T>
+Vector<N * 2, typename Vector<N, T>::UnderlyingType> Vector<N, T>::toReal() const requires (isComplex) {
+    Vector<N * 2, UnderlyingType> result;
+
+    for (int k = 0; k < N; k++) {
+        result[2 * k]     = data[k].real();
+        result[2 * k + 1] = data[k].imag();
+    }
+
+    return result;
+}
+
+template<int N, scalar T>
+Vector<N, T>::UnderlyingType Vector<N, T>::euclidianAngle(const Vector<N, T>& other, const RotationType type) const {
+    if constexpr (isComplex) {
+        Vector<N * 2, UnderlyingType> realA = toReal();
+        Vector<N * 2, UnderlyingType> realB = other.toReal();
+
+        return convert(RotationType::radians, type, std::acos(realA.dot(realB) / (realA.euclidianNorm() * realB.euclidianNorm())));
+    }
+    else {
+        return convert(RotationType::radians, type, std::acos(dot(other) / (euclidianNorm() * other.euclidianNorm())));
+    }
 }
 

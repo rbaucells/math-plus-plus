@@ -232,3 +232,39 @@ TEST(VectorGeneral, normalized_complex) {
     // assert
     ASSERT_TRUE(normalized.equals(expected, 0.001f));
 }
+
+TEST(VectorGeneral, euclidian_angle_degrees_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 0 , 0};
+    constexpr Vector<3> b {0,1, 0};
+    constexpr float expected = 90;
+    // act
+    const float angleAb = a.euclidianAngle(b, RotationType::degrees);
+    const float angleBa = b.euclidianAngle(a, RotationType::degrees);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected));
+    ASSERT_TRUE(compare(angleBa, expected));
+}
+
+TEST(VectorGeneral, euclidian_angle_radians_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 0 , 0};
+    constexpr Vector<3> b {0,1, 0};
+    constexpr float expected = M_PI_2;
+    // act
+    const float angleAb = a.euclidianAngle(b, RotationType::radians);
+    const float angleBa = b.euclidianAngle(a, RotationType::radians);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected));
+    ASSERT_TRUE(compare(angleBa, expected));
+}
+
+TEST(VectorGeneral, toReal) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<6> expected = {1, 2, 3, 4, 5, 6};
+    // act
+    const Vector<6> real = a.toReal();
+    // assert
+    ASSERT_TRUE(real.equals(expected, 0.001f));
+}

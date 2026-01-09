@@ -3,7 +3,7 @@
 #include <random>
 #include "helper.h"
 
-template< int ROWS, int COLUMNS, scalar T>
+template<int ROWS, int COLUMNS, scalar T>
 struct Matrix;
 
 template<int N, scalar T = float>
@@ -187,9 +187,9 @@ struct Vector {
 
     Vector<N, std::common_type_t<T, UnderlyingType>> normalized() const;
 
-    UnderlyingType angle(const Vector<N, T>& other, RotationType type = RotationType::radians) const;
-    template<typename OTHER_T> requires HasCommonType<OTHER_T, T>
-    std::common_type_t<UnderlyingType, typename Vector<N, OTHER_T>::UnderlyingType> angle(const Vector<N, OTHER_T>& other, RotationType type = RotationType::radians) const;
+    Vector<N * 2, UnderlyingType> toReal() const requires (isComplex);
+
+    UnderlyingType euclidianAngle(const Vector<N, T>& other, RotationType type = RotationType::radians) const;
 
     std::common_type_t<T, UnderlyingType> scalarProjection(const Vector<N, T>& other) const;
     template<typename OTHER_T> requires HasCommonType<T, OTHER_T, typename Vector<N, OTHER_T>::UnderlyingType>
