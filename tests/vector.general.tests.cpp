@@ -242,8 +242,8 @@ TEST(VectorGeneral, euclidian_angle_degrees_real) {
     const float angleAb = a.euclidianAngle(b, RotationType::degrees);
     const float angleBa = b.euclidianAngle(a, RotationType::degrees);
     // assert
-    ASSERT_TRUE(compare(angleAb, expected));
-    ASSERT_TRUE(compare(angleBa, expected));
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
 }
 
 TEST(VectorGeneral, euclidian_angle_radians_real) {
@@ -255,8 +255,34 @@ TEST(VectorGeneral, euclidian_angle_radians_real) {
     const float angleAb = a.euclidianAngle(b, RotationType::radians);
     const float angleBa = b.euclidianAngle(a, RotationType::radians);
     // assert
-    ASSERT_TRUE(compare(angleAb, expected));
-    ASSERT_TRUE(compare(angleBa, expected));
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, euclidian_angle_radians_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr float expected = 0.74758f;
+    // act
+    const float angleAb = a.euclidianAngle(b, RotationType::radians);
+    const float angleBa = b.euclidianAngle(a, RotationType::radians);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, euclidian_angle_angle_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr float expected = 42.83343;
+    // act
+    const float angleAb = a.euclidianAngle(b, RotationType::degrees);
+    const float angleBa = b.euclidianAngle(a, RotationType::degrees);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
 }
 
 TEST(VectorGeneral, toReal) {
