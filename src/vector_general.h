@@ -249,12 +249,12 @@ std::common_type_t<T, OTHER_T, typename Vector<N, OTHER_T>::UnderlyingType> Vect
 }
 
 template<int N, scalar T>
-Vector<N * 2, typename Vector<N, T>::UnderlyingType> Vector<N, T>::toReal() const requires (isComplex) {
+Vector<N * 2, typename Vector<N, T>::UnderlyingType> Vector<N, T>::toReal() const {
     Vector<N * 2, UnderlyingType> result;
 
     for (int k = 0; k < N; k++) {
-        result[2 * k]     = data[k].real();
-        result[2 * k + 1] = data[k].imag();
+        result[2 * k] = std::real(data[k]);
+        result[2 * k + 1] = std::imag(data[k]);
     }
 
     return result;
@@ -262,14 +262,13 @@ Vector<N * 2, typename Vector<N, T>::UnderlyingType> Vector<N, T>::toReal() cons
 
 template<int N, scalar T>
 Vector<N, T>::UnderlyingType Vector<N, T>::euclidianAngle(const Vector<N, T>& other, const RotationType type) const {
-    if constexpr (isComplex) {
-        Vector<N * 2, UnderlyingType> realA = toReal();
-        Vector<N * 2, UnderlyingType> realB = other.toReal();
+    Vector<N * 2, UnderlyingType> realA = toReal();
+    Vector<N * 2, UnderlyingType> realB = other.toReal();
 
-        return convert(RotationType::radians, type, std::acos(realA.dot(realB) / (realA.euclidianNorm() * realB.euclidianNorm())));
-    }
-    else {
-        return convert(RotationType::radians, type, std::acos(dot(other) / (euclidianNorm() * other.euclidianNorm())));
-    }
+    return convert(RotationType::radians, type, std::acos(realA.dot(realB) / (realA.euclidianNorm() * realB.euclidianNorm())));
 }
 
+template<int N, scalar T>
+T Vector<N, T>::complexAngle(const Vector<N, T>& other, const DotProductConjugationBehavior behavior, const RotationType type) const {
+    return convert(RotationType::radians, type, std::acos(dot(other, behavior) / (euclidianNorm() * other.euclidianNorm())));
+}

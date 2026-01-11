@@ -235,8 +235,8 @@ TEST(VectorGeneral, normalized_complex) {
 
 TEST(VectorGeneral, euclidian_angle_degrees_real) {
     // arrange
-    constexpr Vector<3> a = {1, 0 , 0};
-    constexpr Vector<3> b {0,1, 0};
+    constexpr Vector<3> a = {1, 0, 0};
+    constexpr Vector<3> b = {0, 1, 0};
     constexpr float expected = 90;
     // act
     const float angleAb = a.euclidianAngle(b, RotationType::degrees);
@@ -248,8 +248,8 @@ TEST(VectorGeneral, euclidian_angle_degrees_real) {
 
 TEST(VectorGeneral, euclidian_angle_radians_real) {
     // arrange
-    constexpr Vector<3> a = {1, 0 , 0};
-    constexpr Vector<3> b {0,1, 0};
+    constexpr Vector<3> a = {1, 0, 0};
+    constexpr Vector<3> b = {0, 1, 0};
     constexpr float expected = M_PI_2;
     // act
     const float angleAb = a.euclidianAngle(b, RotationType::radians);
@@ -276,13 +276,121 @@ TEST(VectorGeneral, euclidian_angle_angle_complex) {
     // arrange
     constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
-    constexpr float expected = 42.83343;
+    constexpr float expected = 42.83343f;
     // act
     const float angleAb = a.euclidianAngle(b, RotationType::degrees);
     const float angleBa = b.euclidianAngle(a, RotationType::degrees);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, complex_angle_degrees_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 0, 0};
+    constexpr Vector<3> b = {0, 1, 0};
+    constexpr float expected = 90;
+    // act
+    const float angleAb = a.complexAngle(b, Vector<3>::neither, RotationType::degrees);
+    const float angleBa = b.complexAngle(a, Vector<3>::neither, RotationType::degrees);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, complex_angle_radians_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 0, 0};
+    constexpr Vector<3> b = {0, 1, 0};
+    constexpr float expected = M_PI_2;
+    // act
+    const float angleAb = a.complexAngle(b, Vector<3>::neither, RotationType::radians);
+    const float angleBa = b.complexAngle(a, Vector<3>::neither, RotationType::radians);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, complex_angle_radians_complex_first) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr std::complex<float> expectedAb = {0.76677f, 0.19101f};
+    constexpr std::complex<float> expectedBa = {0.76677f, -0.19101f};
+    // act
+    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::first_argument, RotationType::radians);
+    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::radians);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expectedAb, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, complex_angle_degrees_complex_first) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr std::complex<float> expectedAb = {43.93268f, 10.94407f};
+    constexpr std::complex<float> expectedBa = {43.93268f, -10.94407f};
+    // act
+    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
+    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expectedAb, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, complex_angle_radians_complex_neither) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr std::complex<float> expected = {1.37685f, -0.26854f};
+    // act
+    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::neither, RotationType::radians);
+    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::neither, RotationType::radians);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, complex_angle_degrees_complex_neither) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr std::complex<float> expected = {78.87213f, -15.38605f};
+    // act
+    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::neither, RotationType::degrees);
+    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::neither, RotationType::degrees);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, complex_angle_radians_complex_second) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr std::complex<float> expectedAb = {0.76677f, -0.19101f};
+    constexpr std::complex<float> expectedBa = {0.76677f, 0.19101f};
+    // act
+    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
+    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expectedAb, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, complex_angle_degrees_complex_second) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr std::complex<float> expectedAb = {43.93268f, -10.94407f};
+    constexpr std::complex<float> expectedBa = {43.93268f, 10.94407f};
+    // act
+    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
+    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expectedAb, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expectedBa, 0.001f));
 }
 
 TEST(VectorGeneral, toReal) {
