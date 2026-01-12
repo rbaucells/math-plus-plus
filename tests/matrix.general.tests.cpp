@@ -1006,3 +1006,33 @@ TEST(MatrixGeneral, upper_left_sub_matrix) {
     // assert
     ASSERT_TRUE(upperLeft.equals(expected, 0.001f));
 }
+
+TEST(MatrixGeneral, rank_real_square) {
+    // arrange
+    constexpr Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr int expected = 2;
+    // act
+    const int rank = m.rank();
+    // assert
+    ASSERT_TRUE(compare(rank, expected));
+}
+
+TEST(MatrixGeneral, rank_real_wide) {
+    // arrange
+    constexpr Matrix<2, 4> m = {{1, 2, 3, 4}, {2, 4, 6, 8}};
+    constexpr int expected = 1;
+    // act
+    const int rank = m.rank();
+    // assert
+    ASSERT_TRUE(compare(rank, expected));
+}
+
+TEST(MatrixGeneral, rank_real_tall) {
+    // arrange
+    constexpr Matrix<3, 2> m = {{1, 0}, {0, 0}, {2, 7}};
+    constexpr int expected = 2;
+    // act
+    const int rank = m.rank();
+    // assert
+    ASSERT_TRUE(compare(rank, expected));
+}
