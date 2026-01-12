@@ -146,6 +146,16 @@ bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>
     return std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(b))) < precision && std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(b))) < precision;
 }
 
+template<matrix T, matrix U> requires HasCommonType<underlying_type_t<T>, underlying_type_t<U>>
+bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
+    return a.equals(b, precision);
+}
+
+template<vector T, vector U> requires HasCommonType<underlying_type_t<T>, underlying_type_t<U>>
+bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
+    return a.equals(b, precision);
+}
+
 template<real T, real U> requires HasCommonType<T, U>
 bool lesser(const T a, const U b) {
     return static_cast<std::common_type_t<T, U>>(a) < static_cast<std::common_type_t<T, U>>(b);

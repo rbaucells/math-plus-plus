@@ -996,3 +996,13 @@ TEST(MatrixGeneral, set_row_vectors) {
     ASSERT_TRUE(result[1].equals(v[1], 0.001f));
     ASSERT_TRUE(result[2].equals(v[2], 0.001f));
 }
+
+TEST(MatrixGeneral, upper_left_sub_matrix) {
+    // arrange
+    constexpr Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr Matrix<2, 2> expected = {{1, 2}, {4, 5}};
+    // act
+    const Matrix<2, 2> upperLeft = m.upperLeftSubMatrix<2>();
+    // assert
+    ASSERT_TRUE(upperLeft.equals(expected, 0.001f));
+}
