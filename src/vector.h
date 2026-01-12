@@ -191,6 +191,7 @@ struct Vector {
 
     UnderlyingType euclidianAngle(const Vector<N, T>& other, RotationType type = RotationType::radians) const;
     T complexAngle(const Vector<N, T>& other, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument, RotationType type = RotationType::radians) const;
+    UnderlyingType hermitianAngle(const Vector<N, T>& other, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument, RotationType type = RotationType::radians) const;
 
     std::common_type_t<T, UnderlyingType> scalarProjection(const Vector<N, T>& other) const;
     template<typename OTHER_T> requires HasCommonType<T, OTHER_T, typename Vector<N, OTHER_T>::UnderlyingType>

@@ -272,3 +272,8 @@ template<int N, scalar T>
 T Vector<N, T>::complexAngle(const Vector<N, T>& other, const DotProductConjugationBehavior behavior, const RotationType type) const {
     return convert(RotationType::radians, type, std::acos(dot(other, behavior) / (euclidianNorm() * other.euclidianNorm())));
 }
+
+template<int N, scalar T>
+Vector<N, T>::UnderlyingType Vector<N, T>::hermitianAngle(const Vector<N, T>& other, const DotProductConjugationBehavior behavior, const RotationType type) const {
+    return convert(RotationType::radians, type, std::acos(std::abs(dot(other, behavior)) / (euclidianNorm() * other.euclidianNorm())));
+}

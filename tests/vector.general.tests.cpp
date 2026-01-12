@@ -393,6 +393,110 @@ TEST(VectorGeneral, complex_angle_degrees_complex_second) {
     ASSERT_TRUE(compare(angleBa, expectedBa, 0.001f));
 }
 
+TEST(VectorGeneral, hermitian_angle_degrees_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 0, 0};
+    constexpr Vector<3> b = {0, 1, 0};
+    constexpr float expected = 90;
+    // act
+    const float angleAb = a.hermitianAngle(b, Vector<3>::neither, RotationType::degrees);
+    const float angleBa = b.hermitianAngle(a, Vector<3>::neither, RotationType::degrees);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, hermitian_angle_radians_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 0, 0};
+    constexpr Vector<3> b = {0, 1, 0};
+    constexpr float expected = M_PI_2;
+    // act
+    const float angleAb = a.hermitianAngle(b, Vector<3>::neither, RotationType::radians);
+    const float angleBa = b.hermitianAngle(a, Vector<3>::neither, RotationType::radians);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, hermitian_angle_radians_complex_first) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr float expected = 0.72973f;
+    // act
+    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::first_argument, RotationType::radians);
+    const float  angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::radians);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, hermitian_angle_degrees_complex_first) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr float expected = 41.81031f;
+    // act
+    const float  angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
+    const float  angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, hermitian_angle_radians_complex_neither) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr float expected = 1.23096f;
+    // act
+    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::neither, RotationType::radians);
+    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::neither, RotationType::radians);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, hermitian_angle_degrees_complex_neither) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr float expected = 70.52878f;
+    // act
+    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::neither, RotationType::degrees);
+    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::neither, RotationType::degrees);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, hermitian_angle_radians_complex_second) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr float expected = 0.72973f;
+    // act
+    const float  angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
+    const float  angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
+TEST(VectorGeneral, hermitian_angle_degrees_complex_second) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr float expected = 41.81031f;
+    // act
+    const float  angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
+    const float  angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
+    // assert
+    ASSERT_TRUE(compare(angleAb, expected, 0.001f));
+    ASSERT_TRUE(compare(angleBa, expected, 0.001f));
+}
+
 TEST(VectorGeneral, toReal) {
     // arrange
     constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
