@@ -1036,3 +1036,33 @@ TEST(MatrixGeneral, rank_real_tall) {
     // assert
     ASSERT_TRUE(compare(rank, expected));
 }
+
+TEST(MatrixGeneral, rank_complex_square) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> m = {{{1, 0}, {0, 2}, {3, 4}}, {{0, 5}, {0, 4}, {6, 8}}, {{10, 0}, {8, -2}, {6, 0}}};
+    constexpr int expected = 3;
+    // act
+    const int rank = m.rank();
+    // assert
+    ASSERT_TRUE(compare(rank, expected));
+}
+
+TEST(MatrixGeneral, rank_complex_wide) {
+    // arrange
+    constexpr Matrix<2, 3, std::complex<float>> m = {{{1, 0}, {0, 2}, {3, 4}}, {{2, 0}, {0, 4}, {6, 8}}};
+    constexpr int expected = 1;
+    // act
+    const int rank = m.rank();
+    // assert
+    ASSERT_TRUE(compare(rank, expected));
+}
+
+TEST(MatrixGeneral, rank_complex_tall) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> m = {{{1, 0}, {0, 2}}, {{0, 5}, {0, 4}}, {{10, 0}, {8, -2}}};
+    constexpr int expected = 2;
+    // act
+    const int rank = m.rank();
+    // assert
+    ASSERT_TRUE(compare(rank, expected));
+}
