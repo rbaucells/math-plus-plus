@@ -497,7 +497,7 @@ TEST(VectorGeneral, hermitian_angle_degrees_complex_second) {
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
 }
 
-TEST(VectorGeneral, toReal) {
+TEST(VectorGeneral, to_real) {
     // arrange
     constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
     constexpr Vector<6> expected = {1, 2, 3, 4, 5, 6};
@@ -505,4 +505,24 @@ TEST(VectorGeneral, toReal) {
     const Vector<6> real = a.toReal();
     // assert
     ASSERT_TRUE(real.equals(expected, 0.001f));
+}
+
+TEST(VectorGeneral, cross_product_matrix_real) {
+    // arrange
+    constexpr Vector<3> v = {1, 2, 3};
+    constexpr Matrix<3, 3> expected = {{0, -3, 2}, {3, 0, -1}, {-2, 1, 0}};
+    // act
+    const Matrix<3, 3> m = v.crossProductMatrix();
+    // assert
+    ASSERT_TRUE(m.equals(expected, 0.001f));
+}
+
+TEST(VectorGeneral, cross_product_matrix_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> v = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Matrix<3, 3, std::complex<float>> expected = {{{0, 0}, {-5, -6}, {3, 4}}, {{5, 6}, {0, 0}, {-1, -2}}, {{-3, -4}, {1, 2}, {0, 0,}}};
+    // act
+    const Matrix<3, 3, std::complex<float>> m = v.crossProductMatrix();
+    // assert
+    ASSERT_TRUE(m.equals(expected, 0.001f));
 }
