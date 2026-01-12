@@ -224,6 +224,16 @@ Vector<N, T> Vector<N, T>::cross(const Vector<N, T>& other) const requires (N ==
 }
 
 template<int N, scalar T>
+template<typename OTHER_T> requires HasCommonType<T, OTHER_T>
+Vector<N, std::common_type_t<T, OTHER_T>> Vector<N, T>::cross(const Vector<N, OTHER_T>& other) const requires (N == 3) {
+    return {
+        data[1] * other[2] - data[2] * other[1],
+        data[2] * other[0] - data[0] * other[2],
+        data[0] * other[1] - data[1] * other[0]
+    };
+}
+
+template<int N, scalar T>
 Matrix<N, N, T> Vector<N, T>::crossProductMatrix() const requires (N == 3) {
     return {
         {0, -data[2], data[1]},

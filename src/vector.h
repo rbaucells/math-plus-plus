@@ -183,6 +183,11 @@ struct Vector {
     Matrix<OTHER_N, N, std::common_type_t<T, OTHER_T>> outerProductMatrix(const Vector<OTHER_N, OTHER_T>& other) const;
 
     Vector<N, T> cross(const Vector<N, T>& other) const requires (N == 3);
+
+    template<typename OTHER_T> requires HasCommonType<T, OTHER_T>
+    Vector<N, std::common_type_t<T, OTHER_T>> cross(const Vector<N, OTHER_T>& other) const requires (N == 3);
+
+
     Matrix<N, N, T> crossProductMatrix() const requires (N == 3);
 
     Vector<N, std::common_type_t<T, UnderlyingType>> normalized() const;

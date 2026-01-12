@@ -526,3 +526,45 @@ TEST(VectorGeneral, cross_product_matrix_complex) {
     // assert
     ASSERT_TRUE(m.equals(expected, 0.001f));
 }
+
+TEST(VectorGeneral, cross_product_same_type_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3> b = {4, 5, 6};
+    constexpr Vector<3> expectedAb = {-3, 6, -3};
+    constexpr Vector<3> expectedBa = {3, -6, 3};
+    // act
+    const Vector<3> ab = a.cross(b);
+    const Vector<3> ba = b.cross(a);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, cross_product_same_type_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
+    constexpr Vector<3, std::complex<float>> expectedAb = {{0, -24}, {0, 48}, {0, -24}};
+    constexpr Vector<3, std::complex<float>> expectedBa = {{0, 24}, {0, -48}, {0, 24}};
+    // act
+    const Vector<3, std::complex<float>> ab = a.cross(b);
+    const Vector<3, std::complex<float>> ba = b.cross(a);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, cross_product_diff_type) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
+    constexpr Vector<3, std::complex<float>> expectedAb = {{-5, -6}, {10, 12}, {-5, -6}};
+    constexpr Vector<3, std::complex<float>> expectedBa = {{5, 6}, {-10, -12}, {5, 6}};
+    // act
+    const Vector<3, std::complex<float>> ab = a.cross(b);
+    const Vector<3, std::complex<float>> ba = b.cross(a);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
