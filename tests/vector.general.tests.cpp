@@ -426,7 +426,7 @@ TEST(VectorGeneral, hermitian_angle_radians_complex_first) {
     constexpr float expected = 0.72973f;
     // act
     const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::first_argument, RotationType::radians);
-    const float  angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::radians);
+    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::radians);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -438,8 +438,8 @@ TEST(VectorGeneral, hermitian_angle_degrees_complex_first) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr float expected = 41.81031f;
     // act
-    const float  angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
-    const float  angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
+    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
+    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -477,8 +477,8 @@ TEST(VectorGeneral, hermitian_angle_radians_complex_second) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr float expected = 0.72973f;
     // act
-    const float  angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
-    const float  angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
+    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
+    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -490,8 +490,8 @@ TEST(VectorGeneral, hermitian_angle_degrees_complex_second) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr float expected = 41.81031f;
     // act
-    const float  angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
-    const float  angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
+    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
+    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -567,4 +567,99 @@ TEST(VectorGeneral, cross_product_diff_type) {
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, dot_product_same_type_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3> b = {4, 5, 6};
+    constexpr float expected = 32.0f;
+    // act
+    const float ab = a.dot(b);
+    const float ba = b.dot(a);
+    // assert
+    ASSERT_TRUE(compare(ab, expected, 0.001f));
+    ASSERT_TRUE(compare(ba, expected, 0.001f));
+}
+
+TEST(VectorGeneral, dot_product_same_type_complex_first) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr std::complex<float> expectedAb = {11, -2};
+    constexpr std::complex<float> expectedBa = {11, 2};
+    // act
+    const std::complex<float> ab = a.dot(b, Vector<3, std::complex<float>>::first_argument);
+    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::first_argument);
+    // assert
+    ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
+    ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, dot_product_same_type_complex_neither) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr std::complex<float> expected = {3, 4};
+    // act
+    const std::complex<float> ab = a.dot(b, Vector<3, std::complex<float>>::neither);
+    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::neither);
+    // assert
+    ASSERT_TRUE(compare(ab, expected, 0.001f));
+    ASSERT_TRUE(compare(ba, expected, 0.001f));
+}
+
+TEST(VectorGeneral, dot_product_same_type_complex_second) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 1}, {2, 0}, {0, 3}};
+    constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
+    constexpr std::complex<float> expectedAb = {11, 2};
+    constexpr std::complex<float> expectedBa = {11, -2};
+    // act
+    const std::complex<float> ab = a.dot(b, Vector<3, std::complex<float>>::second_argument);
+    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::second_argument);
+    // assert
+    ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
+    ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, dot_product_diff_type_first) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3, std::complex<float>> b = {{4, 1}, {5, 0}, {6, -1}};
+    constexpr std::complex<float> expectedAb = {32, -2};
+    constexpr std::complex<float> expectedBa = {32, 2};
+    // act
+    const std::complex<float> ab = a.dot(b, Vector<3>::first_argument);
+    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::first_argument);
+    // assert
+    ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
+    ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, dot_product_diff_type_neither) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3, std::complex<float>> b = {{4, 1}, {5, 0}, {6, -1}};
+    constexpr std::complex<float> expected = {32, -2};
+    // act
+    const std::complex<float> ab = a.dot(b, Vector<3>::neither);
+    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::neither);
+    // assert
+    ASSERT_TRUE(compare(ab, expected, 0.001f));
+    ASSERT_TRUE(compare(ba, expected, 0.001f));
+}
+
+TEST(VectorGeneral, dot_product_diff_type_second) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3, std::complex<float>> b = {{4, 1}, {5, 0}, {6, -1}};
+    constexpr std::complex<float> expectedAb = {32, 2};
+    constexpr std::complex<float> expectedBa = {32, -2};
+    // act
+    const std::complex<float> ab = a.dot(b, Vector<3>::second_argument);
+    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::second_argument);
+    // assert
+    ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
+    ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
 }

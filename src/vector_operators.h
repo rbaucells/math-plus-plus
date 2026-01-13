@@ -429,7 +429,7 @@ T Vector<N, T>::dot(const Vector<N, T>& other, const DotProductConjugationBehavi
             switch (behavior) {
                 case second_argument:
                     result += data[i] * std::conj(other[i]);
-                    break;
+                break;
                 case neither:
                     result += data[i] * other[i];
                     break;
