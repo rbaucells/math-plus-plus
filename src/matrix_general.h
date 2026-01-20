@@ -725,7 +725,15 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::minorMatrix() const requires 
 
 template<int ROWS, int COLUMNS, scalar T>
 T Matrix<ROWS, COLUMNS, T>::cofactorOfElement(const int c, const int r) const requires (isSquare) {
-    return minorOfElement(c, r) * std::pow(-1, c + r);
+    T minor = minorOfElement(c, r);
+
+    // even
+    if ((c + r) % 2 == 0) {
+        return minor;
+    }
+
+    // odd
+    return -minor;
 }
 
 template<int ROWS, int COLUMNS, scalar T>

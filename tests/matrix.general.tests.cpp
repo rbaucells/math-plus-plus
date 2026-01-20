@@ -1066,3 +1066,23 @@ TEST(MatrixGeneral, rank_complex_tall) {
     // assert
     ASSERT_TRUE(compare(rank, expected));
 }
+
+TEST(MatrixGeneral, adjoint_real) {
+    // arrange
+    constexpr Matrix<3, 3> m = {{-3, 2, -5}, {-1, 0, -2}, {3, -4, 1}};
+    constexpr Matrix<3, 3> expected = {{-8, 18, -4}, {-5, 12, -1}, {4, -6, 2}};
+    // act
+    const Matrix<3, 3> adjoint = m.adjoint();
+    // assert
+    ASSERT_TRUE(adjoint.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, adjoint_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> m = {{{1, 1}, {2, -1}, {3, 0}},{{0, -1}, {4, 0}, {1, 2}},{{0, 2}, {-1, 0}, {5, -1}}};
+    constexpr Matrix<3, 3, std::complex<float>> expected = {{{21, -2}, {-12, 7}, {-8, 3}},{{-3, 7}, {6, -2}, {1, -6}},{{0, -7}, {3, 5}, {5, 6}}};
+    // act
+    const Matrix<3, 3, std::complex<float>> adjoint = m.adjoint();
+    // assert
+    ASSERT_TRUE(adjoint.equals(expected, 0.001f));
+}

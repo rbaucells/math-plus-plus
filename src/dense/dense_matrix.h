@@ -1,30 +1,32 @@
 #pragma once
+#include "../exceptions.h"
 #include "../helper.h"
 
-template<int ROWS, int COLUMNS, scalar T>
+template<scalar T>
 struct DenseMatrix {
-    static constexpr int columns = COLUMNS;
-    static constexpr int rows = ROWS;
+    const int rows;
+    const int columns;
 
-    static constexpr bool isSquare = ROWS == COLUMNS;
+    const bool isSquare = rows == columns;
     static constexpr bool isComplex = is_complex_v<T>;
 
     using ValueType = T;
     using UnderlyingType = underlying_type<T>::value_type;
 
-    T* data = nullptr;
+    // make it mutable so you normally cant edit it, but move constructor can still set it to nullptr
+    mutable T* data = nullptr;
 
-    DenseMatrix() {
-        data = new T[COLUMNS * ROWS];
+    DenseMatrix(const int rows, const int columns): rows(rows), columns(columns), data()  {
+        this->data = new T[columns * rows];
     }
 
-    DenseMatrix(const DenseMatrix& other) {
-        data = new T[COLUMNS * ROWS];
-        memcpy(data, other.data, COLUMNS * ROWS);
+    DenseMatrix(const DenseMatrix& other): rows(other.rows), columns(other.columns) {
+        this->data = new T[columns * rows];
+        memcpy(data, other.data, columns * rows);
     }
 
-    DenseMatrix(DenseMatrix&& other) noexcept {
-        data = other.data;
+    DenseMatrix(DenseMatrix&& other) noexcept : rows(other.rows), columns(other.columns) {
+        this->data = other.data;
         other.data = nullptr;
     }
 
@@ -37,20 +39,22 @@ struct DenseMatrix {
     }
 
     virtual const T& at(const int c, const int r) const {
-        return data[c * ROWS * r];
+        return data[c * rows * r];
     }
 
     virtual T& at(const int c, const int r) {
-        return data[c * ROWS * r];
+        return data[c * rows * r];
     }
 
-    template<int OTHER_COLUMNS>
-    DenseMatrix<ROWS, OTHER_COLUMNS, T> multiply(const DenseMatrix<COLUMNS, OTHER_COLUMNS, T>& other) const {
-        DenseMatrix<ROWS, OTHER_COLUMNS, T> result;
+    DenseMatrix<T> multiply(const DenseMatrix<T>& other) const {
+        if (rows != other.columns)
+            throw InvalidDimensionException("Cannot multiply 2 matrices if columns of first matrix != rows of other matrix");
 
-        for (int c = 0; c < OTHER_COLUMNS; c++) {
-            for (int r = 0; r < ROWS; r++) {
-                for (int x = 0; x < COLUMNS; x++) {
+        DenseMatrix<T> result;
+
+        for (int c = 0; c < other.columns; c++) {
+            for (int r = 0; r < rows; r++) {
+                for (int x = 0; x < columns; x++) {
                     result[c, r] += at(x, r) * other[c, x];
                 }
             }

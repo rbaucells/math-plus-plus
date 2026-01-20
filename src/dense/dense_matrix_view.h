@@ -1,30 +1,29 @@
 #pragma once
 #include "dense_matrix.h"
 
-template<int ROWS, int COLUMNS, int OWNER_ROWS, scalar T>
-struct DenseMatrixView : DenseMatrix<ROWS, COLUMNS, T> {
+template<scalar T>
+struct DenseMatrixView : DenseMatrix<T> {
+    const int rows;
+    const int columns;
+    const int ownerRows;
+    
     DenseMatrixView() = delete;
 
-    template<int OWNER_COLUMNS>
-    DenseMatrixView(const DenseMatrix<OWNER_ROWS, OWNER_COLUMNS, T>& owner, const int rowOffset, const int colOffset) {
-        this->data = &owner.data[0][0];
+    DenseMatrixView(const DenseMatrix<T>& owner, const int rows, const int columns, const int rowOffset, const int colOffset) : DenseMatrix<T>(rows, columns), rows(rows), columns(columns), ownerRows(owner.rows) {
+        this->data = owner.data;
         rowOffset_ = rowOffset;
         colOffset_ = colOffset;
     }
 
-    DenseMatrixView(const DenseMatrixView<ROWS, COLUMNS, OWNER_ROWS, T>& other) = delete;
-
-    DenseMatrixView(DenseMatrixView<ROWS, COLUMNS, OWNER_ROWS, T>&& other) noexcept {
-        this->data = other.data;
-        other.data = nullptr;
-    }
+    DenseMatrixView(const DenseMatrixView<T>& other) = delete;
+    DenseMatrixView(DenseMatrixView<T>&& other) = delete;
 
     T& at(const int c, const int r) override {
-        return this->data[(c + colOffset_) * OWNER_ROWS + (r + rowOffset_)];
+        return this->data[(c + colOffset_) * ownerRows + (r + rowOffset_)];
     }
 
     const T& at(const int c, const int r) const override {
-        return this->data[(c + colOffset_) * OWNER_ROWS + (r + rowOffset_)];
+        return this->data[(c + colOffset_) * ownerRows + (r + rowOffset_)];
     }
 
 private:
