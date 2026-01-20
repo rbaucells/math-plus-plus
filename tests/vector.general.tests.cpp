@@ -663,3 +663,24 @@ TEST(VectorGeneral, dot_product_diff_type_second) {
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
 }
+
+TEST(VectorGeneral, to_string_real) {
+    // arrange
+    constexpr Vector<3> v = {1, -2, 3};
+    constexpr std::string expected = "[1.00, -2.00, 3.00]";
+    // act
+    const std::string string = v.toString(2);
+    // assert
+    ASSERT_TRUE(string == expected);
+}
+
+TEST(VectorGeneral, to_string_complex) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> v = {{1, 2}, {3, -4}, {-5, 6}};
+    const std::string expected = "[1.00 + 2.00i, 3.00 - 4.00i, -5.00 + 6.00i]";
+    // act
+    const std::string string = v.toString(2);
+    // assert
+    ASSERT_TRUE(string == expected);
+}
+

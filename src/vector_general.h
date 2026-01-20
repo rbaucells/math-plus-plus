@@ -171,12 +171,28 @@ Vector<N, T>::UnderlyingType Vector<N, T>::maxNorm() const {
 }
 
 template<int N, scalar T>
-[[nodiscard]] std::string Vector<N, T>::toString() const {
+[[nodiscard]] std::string Vector<N, T>::toString(const int precision) const {
     std::stringstream ss;
+    ss << std::fixed << std::setprecision(precision);
 
     ss << "[";
     for (int i = 0; i < N; i++) {
-        ss << data[i];
+        if constexpr (isComplex) {
+            ss << std::real(data[i]);
+
+            ss << " ";
+
+            UnderlyingType imag = std::imag(data[i]);
+
+            if (imag < 0)
+                ss << "- " << -imag << "i";
+            else
+                ss << "+ " << imag << "i";
+
+        }
+        else {
+            ss << data[i];
+        }
 
         if (i < N - 1)
             ss << ", ";

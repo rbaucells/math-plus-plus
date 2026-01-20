@@ -284,7 +284,7 @@ T Matrix<ROWS, COLUMNS, T>::luDeterminant() const requires (isSquare) {
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-std::string Matrix<ROWS, COLUMNS, T>::toString(int precision) const {
+std::string Matrix<ROWS, COLUMNS, T>::toString(const int precision) const {
     std::stringstream ss;
     ss << std::fixed << std::setprecision(precision);
 

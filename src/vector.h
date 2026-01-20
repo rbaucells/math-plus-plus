@@ -161,7 +161,7 @@ struct Vector {
     UnderlyingType euclidianNormSquared() const;
     UnderlyingType maxNorm() const;
 
-    [[nodiscard]] std::string toString() const;
+    [[nodiscard]] std::string toString(int precision = 2) const;
 
     enum DotProductConjugationBehavior {
         first_argument,
