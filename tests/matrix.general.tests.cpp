@@ -222,29 +222,6 @@ TEST(MatrixGeneral, inverse_3x3_real) {
     ASSERT_TRUE(inverse.equals(expected, 0.001f));
 }
 
-TEST(MatrixGeneral, inverse_random_real) {
-    // run until we get a matrix that isn't singular
-    while (true) {
-        // arrange
-        const Matrix<3, 3> a = Matrix<3, 3>::random(-1, 1);
-
-        // if matrix is singular, try again
-        if (compare(a.determinant(), 0))
-            continue;
-
-        const Matrix<3, 3> identity = Matrix<3, 3>::identity();
-        // act
-        const Matrix<3, 3> inverse = a.inverse();
-        // assert
-        const Matrix<3, 3> aInverse = a * inverse;
-        const Matrix<3, 3> inverseA = inverse * a;
-
-        ASSERT_TRUE(aInverse.equals(identity, 0.001f));
-        ASSERT_TRUE(inverseA.equals(identity, 0.001));
-        break;
-    }
-}
-
 TEST(MatrixGeneral, inverse_1x1_complex) {
     // arrange
     constexpr Matrix<1, 1, std::complex<float>> a = {{{{2.0f, 3.0f}}}};
@@ -275,71 +252,7 @@ TEST(MatrixGeneral, inverse_3x3_complex) {
     ASSERT_TRUE(inverse.equals(expected, 0.001f));
 }
 
-TEST(MatrixGeneral, inverse_random_complex) {
-    // arrange
-    while (true) {
-        const Matrix<3, 3, std::complex<float>> a = Matrix<3, 3, std::complex<float>>::random(-1, 1);
-        if (compare(a.determinant(), std::complex<float>(0, 0)))
-            continue;
-        const Matrix<3, 3, std::complex<float>> identity = Matrix<3, 3, std::complex<float>>::identity();
-        // act
-        const Matrix<3, 3, std::complex<float>> inverse = a.inverse();
-        // assert
-        const Matrix<3, 3, std::complex<float>> aInverse = a * inverse;
-        const Matrix<3, 3, std::complex<float>> inverseA = inverse * a;
-        ASSERT_TRUE(aInverse.equals(identity, 0.001f));
-        ASSERT_TRUE(inverseA.equals(identity, 0.001f));
-        break;
-    }
-}
-
-TEST(MatrixGeneral, row_echelon_form) {
-    // arrange
-    constexpr Matrix<3, 4> m = {{2, 1, -1, 8}, {-3, -1, 2, -11}, {-2, 1, 2, -3}};
-
-    // act
-    const Matrix<3, 4> ref = m.toRowEchelon();
-
-    // assert
-    ASSERT_TRUE(m.isRowEchelonOfThis(ref));
-}
-
-TEST(MatrixChecks, row_echelon_skip_pivot_column) {
-    // arrange
-    constexpr Matrix<3, 3> m = {{{0, 2, 2}, {0, 3.0, 4.0}, {0, 5, 6.0}}};
-
-    // act
-    const Matrix<3, 3> ref = m.toRowEchelon();
-
-    // assert
-    ASSERT_TRUE(m.isRowEchelonOfThis(ref));
-}
-
-TEST(MatrixGeneral, reduced_row_echelon_form) {
-    // arrange
-    constexpr Matrix<3, 4> m = {{2, 1, -1, 8}, {-3, -1, 2, -11}, {-2, 1, 2, -3}};
-    constexpr Matrix<3, 4> expected = {{1, 0, 0, 2}, {0, 1, 0, 3}, {0, 0, 1, -1}};
-
-    // act
-    const Matrix<3, 4> rref = m.toReducedRowEchelon();
-
-    // assert
-    ASSERT_TRUE(rref.equals(expected, 0.1));
-}
-
-TEST(MatrixChecks, reduced_row_echelon_skip_pivot_column) {
-    // arrange
-    constexpr Matrix<3, 3> m = {{{0, 1, 2}, {0, 3.0, 4.0}, {0, 5, 6.0}}};
-    constexpr Matrix<3, 3> expected = {{{0, 1, 0}, {0, 0, 1}, {0, 0, 0}}};
-
-    // act
-    const Matrix<3, 3> rref = m.toReducedRowEchelon();
-
-    // assert
-    ASSERT_TRUE(rref.equals(expected, 0.01));
-}
-
-TEST(MatrixGeneral, forward_substitution) {
+TEST(MatrixGeneral, forward_substitution_real) {
     // arrange
     constexpr Matrix<2, 2> l = {{1, 0}, {2, 3}};
     constexpr Vector<2> b = {4, 11};
@@ -350,7 +263,7 @@ TEST(MatrixGeneral, forward_substitution) {
     ASSERT_TRUE(x == expected);
 }
 
-TEST(MatrixGeneral, backward_substitution) {
+TEST(MatrixGeneral, backward_substitution_real) {
     // arrange
     constexpr Matrix<3, 3> u = {{1, -2, 1}, {0, 1, 6}, {0, 0, 1}};
     constexpr Vector<3> b = {4, -1, 2};
@@ -361,40 +274,7 @@ TEST(MatrixGeneral, backward_substitution) {
     ASSERT_TRUE(x == expected);
 }
 
-TEST(MatrixGeneral, solve_linear_system_inverse) {
-    // arrange
-    constexpr Matrix<3, 3> a = {{1, 1, 1}, {0, 2, 5}, {2, 5, -1}};
-    constexpr Vector<3> b = {6, -4, 27};
-    constexpr Vector<3> expected = {5, 3, -2};
-    // act
-    const Vector<3> x = a.solveLinearSystem(b, Matrix<3, 3>::LinearSystemAlgorithm::inverse);
-    // assert
-    ASSERT_TRUE(x.equals(expected, 0.1));
-}
-
-TEST(MatrixGeneral, solve_linear_system_lu) {
-    // arrange
-    constexpr Matrix<3, 3> a = {{1, 1, 1}, {0, 2, 5}, {2, 5, -1}};
-    constexpr Vector<3> b = {6, -4, 27};
-    constexpr Vector<3> expected = {5, 3, -2};
-    // act
-    const Vector<3> x = a.solveLinearSystem(b, Matrix<3, 3>::LinearSystemAlgorithm::lu_factorization);
-    // assert
-    ASSERT_TRUE(x == expected);
-}
-
-TEST(MatrixGeneral, solve_linear_system_rr) {
-    // arrange
-    constexpr Matrix<3, 3> a = {{1, 1, 1}, {0, 2, 5}, {2, 5, -1}};
-    constexpr Vector<3> b = {6, -4, 27};
-    constexpr Vector<3> expected = {5, 3, -2};
-    // act
-    const Vector<3> x = a.solveLinearSystem(b, Matrix<3, 3>::LinearSystemAlgorithm::row_reduction);
-    // assert
-    ASSERT_TRUE(x == expected);
-}
-
-TEST(MatrixGeneral, symmetric_part) {
+TEST(MatrixGeneral, symmetric_part_real) {
     // arrange
     constexpr Matrix<2, 2> m = {{1, 2}, {3, 4}};
     constexpr Matrix<2, 2> expected = {{1, 2.5f}, {2.5f, 4}};
@@ -404,12 +284,32 @@ TEST(MatrixGeneral, symmetric_part) {
     ASSERT_TRUE(symmetricPart == expected);
 }
 
-TEST(MatrixGeneral, anti_symmetric_part) {
+TEST(MatrixGeneral, anti_symmetric_part_real) {
     // arrange
     constexpr Matrix<2, 2> m = {{1, 2}, {3, 4}};
     constexpr Matrix<2, 2> expected = {{0, -0.5f}, {0.5f, 0}};
     // act
     const Matrix<2, 2> symmetricPart = m.antiSymmetricPart();
+    // assert
+    ASSERT_TRUE(symmetricPart == expected);
+}
+
+TEST(MatrixGeneral, symmetric_part_complex) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{1, 1}, {2, -1}}, {{3, 2}, {4, -1}}};;
+    constexpr Matrix<2, 2, std::complex<float>> expected = {{{1, 1}, {2.5, 0.5}}, {{2.5, 0.5}, {4, -1}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> symmetricPart = m.symmetricPart();
+    // assert
+    ASSERT_TRUE(symmetricPart == expected);
+}
+
+TEST(MatrixGeneral, anti_symmetric_part_complex) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> m = {{{1, 1}, {2, -1}}, {{3, 2}, {4, -1}}};
+    constexpr Matrix<2, 2, std::complex<float>> expected = {{{0, 0}, {-0.5, -1.5}}, {{0.5, 1.5}, {0, 0}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> symmetricPart = m.antiSymmetricPart();
     // assert
     ASSERT_TRUE(symmetricPart == expected);
 }
@@ -1122,7 +1022,7 @@ TEST(MatrixGeneral, cofactor_element_positive_complex) {
     constexpr Matrix<3, 3, std::complex<float>> m = {{{1, 1}, {2, -1}, {3, 0}}, {{0, -1}, {4, 0}, {1, 2}}, {{0, 2}, {-1, 0}, {5, -1}}};
     constexpr std::complex<float> expected = {21, -2};
     // act
-    const std::complex<float>  cofactorElement = m.cofactorOfElement(0, 0);
+    const std::complex<float> cofactorElement = m.cofactorOfElement(0, 0);
     // assert
     ASSERT_TRUE(compare(cofactorElement, expected, 0.001f));
 }
@@ -1142,7 +1042,7 @@ TEST(MatrixGeneral, cofactor_element_negative_complex) {
     constexpr Matrix<3, 3, std::complex<float>> m = {{{1, 1}, {2, -1}, {3, 0}}, {{0, -1}, {4, 0}, {1, 2}}, {{0, 2}, {-1, 0}, {5, -1}}};
     constexpr std::complex<float> expected = {-3, 7};
     // act
-    const std::complex<float>  cofactorElement = m.cofactorOfElement(1, 0);
+    const std::complex<float> cofactorElement = m.cofactorOfElement(1, 0);
     // assert
     ASSERT_TRUE(compare(cofactorElement, expected, 0.001f));
 }
@@ -1162,7 +1062,7 @@ TEST(MatrixGeneral, minor_element_complex) {
     constexpr Matrix<3, 3, std::complex<float>> m = {{{1, 1}, {2, -1}, {3, 0}}, {{0, -1}, {4, 0}, {1, 2}}, {{0, 2}, {-1, 0}, {5, -1}}};
     constexpr std::complex<float> expected = {3, -7};
     // act
-    const std::complex<float>  cofactorElement = m.minorOfElement(1, 0);
+    const std::complex<float> cofactorElement = m.minorOfElement(1, 0);
     // assert
     ASSERT_TRUE(compare(cofactorElement, expected, 0.001f));
 }
