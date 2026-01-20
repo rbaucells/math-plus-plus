@@ -1,6 +1,8 @@
 #pragma once
 #include "matrix.h"
 #include <cstring>
+#include <iomanip>
+
 #include "exceptions.h"
 #include "matrix_exceptions.h"
 
@@ -282,16 +284,31 @@ T Matrix<ROWS, COLUMNS, T>::luDeterminant() const requires (isSquare) {
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-std::string Matrix<ROWS, COLUMNS, T>::toString() const {
+std::string Matrix<ROWS, COLUMNS, T>::toString(int precision) const {
     std::stringstream ss;
-    ss.precision(2);
+    ss << std::fixed << std::setprecision(precision);
 
     ss << "[";
 
     for (int r = 0; r < ROWS; r++) {
         ss << "[";
         for (int c = 0; c < COLUMNS; c++) {
-            ss << data[c][r];
+            if constexpr (isComplex) {
+                ss << std::real(data[c][r]);
+
+                ss << " ";
+
+                UnderlyingType imag = std::imag(data[c][r]);
+
+                if (imag < 0)
+                    ss << "- " << -imag << "i";
+                else
+                    ss << "+ " << imag << "i";
+
+            }
+            else {
+                ss << data[c][r];
+            }
 
             if (c < COLUMNS - 1)
                 ss << ", ";

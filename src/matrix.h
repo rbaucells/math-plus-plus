@@ -200,7 +200,7 @@ public:
 
     Matrix<ROWS, COLUMNS, T> pow(int i) requires (isSquare);
 
-    [[nodiscard]] std::string toString() const;
+    [[nodiscard]] std::string toString(int precision = 2) const;
     [[nodiscard]] std::string toLaTex() const;
 
     template<size_t NUM_COLUMNS_TO_REMOVE>

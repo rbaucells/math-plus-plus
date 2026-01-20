@@ -1086,3 +1086,23 @@ TEST(MatrixGeneral, adjoint_matrix_complex) {
     // assert
     ASSERT_TRUE(adjointMatrix.equals(expected, 0.001f));
 }
+
+TEST(MatrixGeneral, to_string_real) {
+    // arrange
+    constexpr Matrix<3, 3> m = {{1, -2, 3}, {4, 5, 6}, {7, -8, 9}};
+    const std::string expected = "[[1.00, -2.00, 3.00], [4.00, 5.00, 6.00], [7.00, -8.00, 9.00]]";
+    // act
+    const std::string string = m.toString(2);
+    // assert
+    ASSERT_TRUE(string == expected);
+}
+
+TEST(MatrixGeneral, to_string_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> m = {{{1,2 }, {3, -4}, {5, 6}}, {{-7, -8}, {9, 10}, {-11, -12}}, {{13, 14}, {15, -16}, {17, 18}}};
+    const std::string expected = "[[1.00 + 2.00i, 3.00 - 4.00i, 5.00 + 6.00i], [-7.00 - 8.00i, 9.00 + 10.00i, -11.00 - 12.00i], [13.00 + 14.00i, 15.00 - 16.00i, 17.00 + 18.00i]]";
+    // act
+    const std::string string = m.toString(2);
+    // assert
+    ASSERT_TRUE(string == expected);
+}
