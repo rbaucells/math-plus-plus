@@ -487,7 +487,7 @@ public:
 
     Matrix<ROWS, COLUMNS, T> cofactorMatrix() const requires (isSquare);
 
-    Matrix<ROWS, COLUMNS, T> adjoint() const requires (isSquare);
+    Matrix<ROWS, COLUMNS, T> adjointMatrix() const requires (isSquare);
 
     [[nodiscard]] bool isUpperHessenberg() const requires (isSquare);
     [[nodiscard]] bool isUnreducedUpperHessenberg() const requires (isSquare);

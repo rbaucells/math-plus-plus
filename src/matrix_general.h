@@ -750,7 +750,7 @@ Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::cofactorMatrix() const requir
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::adjoint() const requires (isSquare) {
+Matrix<ROWS, COLUMNS, T> Matrix<ROWS, COLUMNS, T>::adjointMatrix() const requires (isSquare) {
     return cofactorMatrix().transpose();
 }
 
