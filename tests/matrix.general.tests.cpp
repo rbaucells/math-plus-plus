@@ -1087,6 +1087,26 @@ TEST(MatrixGeneral, cofactor_matrix_complex) {
     ASSERT_TRUE(cofactorMatrix.equals(expected, 0.001f));
 }
 
+TEST(MatrixGeneral, cofactor_element_real) {
+    // arrange
+    constexpr Matrix<3, 3> m = {{-3, 2, -5}, {-1, 0, -2}, {3, -4, 1}};
+    constexpr float expected = -8.0f;
+    // act
+    const float cofactorElement = m.cofactorOfElement(0, 0);
+    // assert
+    ASSERT_TRUE(compare(cofactorElement, expected, 0.001f));
+}
+
+TEST(MatrixGeneral, cofactor_element_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> m = {{{1, 1}, {2, -1}, {3, 0}}, {{0, -1}, {4, 0}, {1, 2}}, {{0, 2}, {-1, 0}, {5, -1}}};
+    constexpr std::complex<float> expected = {21, -2};
+    // act
+    const std::complex<float>  cofactorElement = m.cofactorOfElement(0, 0);
+    // assert
+    ASSERT_TRUE(compare(cofactorElement, expected, 0.001f));
+}
+
 TEST(MatrixGeneral, adjoint_matrix_real) {
     // arrange
     constexpr Matrix<3, 3> m = {{-3, 2, -5}, {-1, 0, -2}, {3, -4, 1}};
