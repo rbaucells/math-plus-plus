@@ -1106,3 +1106,24 @@ TEST(MatrixGeneral, to_string_complex) {
     // assert
     ASSERT_TRUE(string == expected);
 }
+
+TEST(MatrixGeneral, trace_real) {
+    // arrange
+    constexpr Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    constexpr float expected = 15;
+    // act
+    const float trace = m.trace();
+    // assert
+    ASSERT_TRUE(compare(trace, expected, 0.001f));
+}
+
+TEST(MatrixGeneral, trace_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> m = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
+    constexpr std::complex<float> expected = {27, 30};
+    // act
+    const std::complex<float> trace = m.trace();
+    // assert
+    ASSERT_TRUE(compare(trace, expected, 0.001f));
+}
+
