@@ -149,10 +149,8 @@ struct Vector {
     template<int V_SIZE>
     static std::array<Vector<N, T>, V_SIZE> orthogonalize(const std::array<Vector<N, T>, V_SIZE>& v);
 
-    template<int V_SIZE>
-    static bool isOrthogonal(const std::array<Vector<N, T>, V_SIZE>& vectors);
-    template<int V_SIZE>
-    static bool isOrthonormal(const std::array<Vector<N, T>, V_SIZE>& vectors);
+    static bool isOrthogonal(const std::vector<Vector<N, T>>& vectors);
+    static bool isOrthonormal(const std::vector<Vector<N, T>>& vectors);
 
     Vector<N, T> conjugate() const;
 

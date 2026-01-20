@@ -30,6 +30,7 @@ add_executable(math-tests
         matrix.transformations.tests.cpp
         vector.operators.tests.cpp
         vector.general.tests.cpp
+        vector.checks.tests.cpp
 )
 
 # link with the math lib
