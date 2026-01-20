@@ -64,6 +64,15 @@ TEST(MatrixTransformations, translation_real) {
     ASSERT_TRUE(translation.equals(expected, 0.001f));
 }
 
+TEST(MatrixTransformations, translation_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> expected = {{{1, 0}, {0, 0}, {1, 2}}, {{0, 0}, {1, 0}, {3, 4}}, {{0, 0}, {0, 0}, {1, 0}}};
+    // act
+    const Matrix<3, 3, std::complex<float>> translation = Matrix<2, 2, std::complex<float>>::translationMatrix({{1, 2}, {3, 4}});
+    // assert
+    ASSERT_TRUE(translation.equals(expected, 0.001f));
+}
+
 TEST(MatrixTransformations, rotation_origin_degrees_real) {
     // arrange
     constexpr Matrix<2, 2> expected = {{0, -1}, {1, 0}};
