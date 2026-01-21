@@ -260,18 +260,40 @@ TEST(MatrixGeneral, forward_substitution_real) {
     // act
     const Vector<2> x = l.forwardSubstitution(b);
     // assert
-    ASSERT_TRUE(x == expected);
+    ASSERT_TRUE(x.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, forward_substitution_complex) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> l = {{{1, 2}, {0, 0}}, {{3, -4}, {5, 6}}};
+    constexpr Vector<2, std::complex<float>> b = {{7, -8}, {9, 10}};
+    constexpr Vector<2, std::complex<float>> expected = {{-9.0f / 5.0f, -22.0f / 5.0f}, {256.0f / 61.0f, -112.0f / 61.0f}};
+    // act
+    const Vector<2, std::complex<float>> x = l.forwardSubstitution(b);
+    // assert
+    ASSERT_TRUE(x.equals(expected, 0.001f));
 }
 
 TEST(MatrixGeneral, backward_substitution_real) {
     // arrange
-    constexpr Matrix<3, 3> u = {{1, -2, 1}, {0, 1, 6}, {0, 0, 1}};
-    constexpr Vector<3> b = {4, -1, 2};
-    constexpr Vector<3> expected = {-24, -13, 2};
+    constexpr Matrix<2, 2> u = {{1, 2}, {0, 3}};
+    constexpr Vector<2> b = {4, 11};
+    constexpr Vector<2> expected = {-10.0f / 3.0f, 11.0f / 3.0f};
     // act
-    const Vector<3> x = u.backwardSubstitution(b);
+    const Vector<2> x = u.backwardSubstitution(b);
     // assert
-    ASSERT_TRUE(x == expected);
+    ASSERT_TRUE(x.equals(expected, 0.001f));
+}
+
+TEST(MatrixGeneral, backward_substitution_complex) {
+    // arrange
+    constexpr Matrix<2, 2, std::complex<float>> u = {{{1, 2}, {3, - 4}}, {{0, 0}, {5, 6}}};
+    constexpr Vector<2, std::complex<float>> b = {{7, 8}, {9, -10}};
+    constexpr Vector<2, std::complex<float>> expected = {{2368.0f / 305.0f, -1036.0f / 305.0f}, {-15.0f / 61.0f, -104.0f / 61.0f}};
+    // act
+    const Vector<2, std::complex<float>> x = u.backwardSubstitution(b);
+    // assert
+    ASSERT_TRUE(x.equals(expected, 0.001f));
 }
 
 TEST(MatrixGeneral, symmetric_part_real) {
