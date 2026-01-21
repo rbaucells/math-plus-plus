@@ -176,9 +176,9 @@ struct Vector {
     std::common_type_t<T, OTHER_T> operator*(const Vector<N, OTHER_T>& other) const;
 
     template<int OTHER_N>
-    Matrix<OTHER_N, N, T> outerProductMatrix(const Vector<OTHER_N, T>& other) const;
+    Matrix<OTHER_N, N, T> outerProductMatrix(const Vector<OTHER_N, T>& other, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
     template<int OTHER_N, typename OTHER_T> requires HasCommonType<OTHER_T, T>
-    Matrix<OTHER_N, N, std::common_type_t<T, OTHER_T>> outerProductMatrix(const Vector<OTHER_N, OTHER_T>& other) const;
+    Matrix<OTHER_N, N, std::common_type_t<T, OTHER_T>> outerProductMatrix(const Vector<OTHER_N, OTHER_T>& other, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
 
     Vector<N, T> cross(const Vector<N, T>& other) const requires (N == 3);
 

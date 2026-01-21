@@ -204,12 +204,28 @@ template<int N, scalar T>
 
 template<int N, scalar T>
 template<int OTHER_N>
-Matrix<OTHER_N, N, T> Vector<N, T>::outerProductMatrix(const Vector<OTHER_N, T>& other) const {
+Matrix<OTHER_N, N, T> Vector<N, T>::outerProductMatrix(const Vector<OTHER_N, T>& other, DotProductConjugationBehavior behavior) const {
     Matrix<OTHER_N, N, T> result;
 
     for (int c = 0; c < OTHER_N; c++) {
         for (int r = 0; r < N; r++) {
-            result[c][r] = data[r] * other[c];
+            if constexpr (isComplex) {
+                switch (behavior) {
+                    case second_argument:
+                        result[c][r] = data[r] * std::conj(other[c]);
+                        break;
+                    case neither:
+                        result[c][r] = data[r] * other[c];
+                        break;
+                    default:
+                    case first_argument:
+                        result[c][r] = std::conj(data[r]) * other[c];
+                        break;
+                }
+            }
+            else {
+                result[c][r] = data[r] * other[c];
+            }
         }
     }
 
@@ -218,12 +234,28 @@ Matrix<OTHER_N, N, T> Vector<N, T>::outerProductMatrix(const Vector<OTHER_N, T>&
 
 template<int N, scalar T>
 template<int OTHER_N, typename OTHER_T> requires HasCommonType<OTHER_T, T>
-Matrix<OTHER_N, N, std::common_type_t<T, OTHER_T>> Vector<N, T>::outerProductMatrix(const Vector<OTHER_N, OTHER_T>& other) const {
+Matrix<OTHER_N, N, std::common_type_t<T, OTHER_T>> Vector<N, T>::outerProductMatrix(const Vector<OTHER_N, OTHER_T>& other, DotProductConjugationBehavior behavior) const {
     Matrix<OTHER_N, N, std::common_type_t<T, OTHER_T>> result;
 
     for (int c = 0; c < OTHER_N; c++) {
         for (int r = 0; r < N; r++) {
-            result[c][r] = data[r] * other[c];
+            if constexpr (isComplex || is_complex_v<OTHER_T>) {
+                switch (behavior) {
+                    case second_argument:
+                        result[c][r] = data[r] * std::conj(other[c]);
+                        break;
+                    case neither:
+                        result[c][r] = data[r] * other[c];
+                        break;
+                    default:
+                    case first_argument:
+                        result[c][r] = std::conj(data[r]) * other[c];
+                        break;
+                }
+            }
+            else {
+                result[c][r] = data[r] * other[c];
+            }
         }
     }
 

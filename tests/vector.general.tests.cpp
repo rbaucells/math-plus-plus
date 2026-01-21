@@ -684,3 +684,100 @@ TEST(VectorGeneral, to_string_complex) {
     ASSERT_TRUE(string == expected);
 }
 
+TEST(VectorGeneral, outer_product_same_type_real) {
+    // arrange
+    constexpr Vector<2> a = {1, 2};
+    constexpr Vector<2> b = {3, 4};
+    constexpr Matrix<2, 2> expectedAb = {{3, 4}, {6, 8}};
+    constexpr Matrix<2, 2> expectedBa = {{3, 6}, {4, 8}};
+    // act
+    const Matrix<2, 2> ab = a.outerProductMatrix(b);
+    const Matrix<2, 2> ba = b.outerProductMatrix(a);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, outer_product_same_type_complex_neither) {
+    // arrange
+    constexpr Vector<2, std::complex<float>> a = {{1, 2}, {3, 4}};
+    constexpr Vector<2, std::complex<float>> b = {{5, 6}, {7, 8}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{-7, 16}, {-9, 22}}, {{-9, 38}, {-11, 52}}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{-7, 16}, {-9, 38}}, {{-9, 22}, {-11, 52}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::neither);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, outer_product_same_type_complex_first) {
+    // arrange
+    constexpr Vector<2, std::complex<float>> a = {{1, 2}, {3, 4}};
+    constexpr Vector<2, std::complex<float>> b = {{5, 6}, {7, 8}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{17, -4}, {23, -6}}, {{39, -2}, {53, -4}}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{17, 4}, {39, 2}}, {{23, 6}, {53, 4}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, outer_product_same_type_complex_second) {
+    // arrange
+    constexpr Vector<2, std::complex<float>> a = {{1, 2}, {3, 4}};
+    constexpr Vector<2, std::complex<float>> b = {{5, 6}, {7, 8}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{17, 4}, {23, 6}}, {{39, 2}, {53, 4}}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{17, -4}, {39, -2}}, {{23, -6}, {53, -4}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, outer_product_diff_type_neither) {
+    // arrange
+    constexpr Vector<2> a = {1, 2};
+    constexpr Vector<2, std::complex<float>> b = {{3, 4}, {5, 6}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{3, 4}, {5, 6}}, {{6, 8}, {10, 12}}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{3, 4}, {6, 8}}, {{5, 6}, {10, 12}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2>::DotProductConjugationBehavior::neither);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::neither);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, outer_product_diff_type_first) {
+    // arrange
+    constexpr Vector<2> a = {1, 2};
+    constexpr Vector<2, std::complex<float>> b = {{3, 4}, {5, 6}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{3, 4}, {5, 6}}, {{6, 8}, {10, 12}}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{3, -4}, {6, -8}}, {{5, -6}, {10, -12}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2>::DotProductConjugationBehavior::first_argument);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, outer_product_diff_type_second) {
+    // arrange
+    constexpr Vector<2> a = {1, 2};
+    constexpr Vector<2, std::complex<float>> b = {{3, 4}, {5, 6}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{3, -4}, {5, -6}}, {{6, -8}, {10, -12}}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{3, 4}, {6, 8}}, {{5, 6}, {10, 12}}};
+    // act
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2>::DotProductConjugationBehavior::second_argument);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
