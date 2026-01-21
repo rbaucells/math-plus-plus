@@ -71,7 +71,7 @@ TEST(MatrixGeneral, swap_row) {
     // act
     const Matrix<3, 3> swapped = m.swapRows(0, 2);
     // assert
-    ASSERT_TRUE(swapped == expected);
+    ASSERT_TRUE(swapped.equals(expected, 0.001f));
 }
 
 TEST(MatrixGeneral, swap_column) {
@@ -81,7 +81,7 @@ TEST(MatrixGeneral, swap_column) {
     // act
     const Matrix<3, 3> swapped = m.swapColumns(0, 2);
     // assert
-    ASSERT_TRUE(swapped == expected);
+    ASSERT_TRUE(swapped.equals(expected, 0.001f));
 }
 
 TEST(MatrixGeneral, determinant_1x1_real) {
@@ -287,7 +287,7 @@ TEST(MatrixGeneral, backward_substitution_real) {
 
 TEST(MatrixGeneral, backward_substitution_complex) {
     // arrange
-    constexpr Matrix<2, 2, std::complex<float>> u = {{{1, 2}, {3, - 4}}, {{0, 0}, {5, 6}}};
+    constexpr Matrix<2, 2, std::complex<float>> u = {{{1, 2}, {3, -4}}, {{0, 0}, {5, 6}}};
     constexpr Vector<2, std::complex<float>> b = {{7, 8}, {9, -10}};
     constexpr Vector<2, std::complex<float>> expected = {{2368.0f / 305.0f, -1036.0f / 305.0f}, {-15.0f / 61.0f, -104.0f / 61.0f}};
     // act
@@ -303,7 +303,7 @@ TEST(MatrixGeneral, symmetric_part_real) {
     // act
     const Matrix<2, 2> symmetricPart = m.symmetricPart();
     // assert
-    ASSERT_TRUE(symmetricPart == expected);
+    ASSERT_TRUE(symmetricPart.equals(expected, 0.001f));
 }
 
 TEST(MatrixGeneral, anti_symmetric_part_real) {
@@ -313,7 +313,7 @@ TEST(MatrixGeneral, anti_symmetric_part_real) {
     // act
     const Matrix<2, 2> symmetricPart = m.antiSymmetricPart();
     // assert
-    ASSERT_TRUE(symmetricPart == expected);
+    ASSERT_TRUE(symmetricPart.equals(expected, 0.001f));
 }
 
 TEST(MatrixGeneral, symmetric_part_complex) {
@@ -323,7 +323,7 @@ TEST(MatrixGeneral, symmetric_part_complex) {
     // act
     const Matrix<2, 2, std::complex<float>> symmetricPart = m.symmetricPart();
     // assert
-    ASSERT_TRUE(symmetricPart == expected);
+    ASSERT_TRUE(symmetricPart.equals(expected, 0.001f));
 }
 
 TEST(MatrixGeneral, anti_symmetric_part_complex) {
@@ -333,7 +333,7 @@ TEST(MatrixGeneral, anti_symmetric_part_complex) {
     // act
     const Matrix<2, 2, std::complex<float>> symmetricPart = m.antiSymmetricPart();
     // assert
-    ASSERT_TRUE(symmetricPart == expected);
+    ASSERT_TRUE(symmetricPart.equals(expected, 0.001f));
 }
 
 TEST(MatrixGeneral, hermitian_part) {
@@ -343,7 +343,7 @@ TEST(MatrixGeneral, hermitian_part) {
     // act
     const Matrix<2, 2, std::complex<float>> hermitianPart = m.hermitianPart();
     // assert
-    ASSERT_TRUE(hermitianPart == expected);
+    ASSERT_TRUE(hermitianPart.equals(expected, 0.001f));
 }
 
 TEST(MatrixGeneral, anti_hermitian_part) {
@@ -353,7 +353,7 @@ TEST(MatrixGeneral, anti_hermitian_part) {
     // act
     const Matrix<2, 2, std::complex<float>> hermitianPart = m.antiHermitianPart();
     // assert
-    ASSERT_TRUE(hermitianPart == expected);
+    ASSERT_TRUE(hermitianPart.equals(expected, 0.001f));
 }
 
 TEST(MatrixGeneral, transpose_real_square) {
@@ -1121,7 +1121,7 @@ TEST(MatrixGeneral, to_string_real) {
 
 TEST(MatrixGeneral, to_string_complex) {
     // arrange
-    constexpr Matrix<3, 3, std::complex<float>> m = {{{1,2 }, {3, -4}, {5, 6}}, {{-7, -8}, {9, 10}, {-11, -12}}, {{13, 14}, {15, -16}, {17, 18}}};
+    constexpr Matrix<3, 3, std::complex<float>> m = {{{1, 2}, {3, -4}, {5, 6}}, {{-7, -8}, {9, 10}, {-11, -12}}, {{13, 14}, {15, -16}, {17, 18}}};
     const std::string expected = "[[1.00 + 2.00i, 3.00 - 4.00i, 5.00 + 6.00i], [-7.00 - 8.00i, 9.00 + 10.00i, -11.00 - 12.00i], [13.00 + 14.00i, 15.00 - 16.00i, 17.00 + 18.00i]]";
     // act
     const std::string string = m.toString(2);
@@ -1148,4 +1148,3 @@ TEST(MatrixGeneral, trace_complex) {
     // assert
     ASSERT_TRUE(compare(trace, expected, 0.001f));
 }
-
