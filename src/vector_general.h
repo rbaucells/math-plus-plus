@@ -296,17 +296,6 @@ Vector<N, std::common_type_t<T, typename Vector<N, T>::UnderlyingType>> Vector<N
 }
 
 template<int N, scalar T>
-std::common_type_t<T, typename Vector<N, T>::UnderlyingType> Vector<N, T>::scalarProjection(const Vector<N, T>& other) const {
-    return dot(other) / other.euclidianNorm();
-}
-
-template<int N, scalar T>
-template<typename OTHER_T> requires HasCommonType<T, OTHER_T, typename Vector<N, OTHER_T>::UnderlyingType>
-std::common_type_t<T, OTHER_T, typename Vector<N, OTHER_T>::UnderlyingType> Vector<N, T>::scalarProjection(const Vector<N, OTHER_T>& other) const {
-    return dot(other) / other.euclidianNorm();
-}
-
-template<int N, scalar T>
 Vector<N * 2, typename Vector<N, T>::UnderlyingType> Vector<N, T>::toReal() const {
     Vector<N * 2, UnderlyingType> result;
 
@@ -334,4 +323,48 @@ T Vector<N, T>::complexAngle(const Vector<N, T>& other, const DotProductConjugat
 template<int N, scalar T>
 Vector<N, T>::UnderlyingType Vector<N, T>::hermitianAngle(const Vector<N, T>& other, const DotProductConjugationBehavior behavior, const RotationType type) const {
     return convert(RotationType::radians, type, std::acos(std::abs(dot(other, behavior)) / (euclidianNorm() * other.euclidianNorm())));
+}
+
+template<int N, scalar T>
+T Vector<N, T>::scalarProjectOnto(const Vector<N, T>& v, DotProductConjugationBehavior behavior) const {
+    return dot(v, behavior) / v.euclidianNorm();
+}
+
+template<int N, scalar T>
+template<typename OTHER_T>
+std::common_type_t<T, OTHER_T> Vector<N, T>::scalarProjectOnto(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior) const {
+    return dot(v, behavior) / v.euclidianNorm();
+}
+
+template<int N, scalar T>
+Vector<N, T> Vector<N, T>::vectorProjectOnto(const Vector<N, T>& v, DotProductConjugationBehavior behavior) const {
+    return (dot(v, behavior) / v.euclidianNormSquared()) * v;
+}
+
+template<int N, scalar T>
+template<typename OTHER_T>
+Vector<N, std::common_type_t<T, OTHER_T>> Vector<N, T>::vectorProjectOnto(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior) const {
+    return (dot(v, behavior) / v.euclidianNormSquared()) * v;
+}
+
+template<int N, scalar T>
+T Vector<N, T>::scalarRejectFrom(const Vector<N, T>& v, DotProductConjugationBehavior behavior) const {
+
+}
+
+template<int N, scalar T>
+template<typename OTHER_T>
+std::common_type_t<T, OTHER_T> Vector<N, T>::scalarRejectFrom(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior) const {
+
+}
+
+template<int N, scalar T>
+Vector<N, T> Vector<N, T>::vectorRejectFrom(const Vector<N, T>& v, DotProductConjugationBehavior behavior) const {
+
+}
+
+template<int N, scalar T>
+template<typename OTHER_T>
+Vector<N, std::common_type_t<T, OTHER_T>> Vector<N, T>::vectorRejectFrom(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior) const {
+
 }

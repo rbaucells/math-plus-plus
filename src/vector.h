@@ -196,9 +196,21 @@ struct Vector {
     T complexAngle(const Vector<N, T>& other, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument, RotationType type = RotationType::radians) const;
     UnderlyingType hermitianAngle(const Vector<N, T>& other, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument, RotationType type = RotationType::radians) const;
 
-    std::common_type_t<T, UnderlyingType> scalarProjection(const Vector<N, T>& other) const;
-    template<typename OTHER_T> requires HasCommonType<T, OTHER_T, typename Vector<N, OTHER_T>::UnderlyingType>
-    std::common_type_t<T, OTHER_T, typename Vector<N, OTHER_T>::UnderlyingType> scalarProjection(const Vector<N, OTHER_T>& other) const;
+    T scalarProjectOnto(const Vector<N, T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+    template<typename OTHER_T>
+    std::common_type_t<T, OTHER_T> scalarProjectOnto(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+
+    Vector<N, T> vectorProjectOnto(const Vector<N, T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+    template<typename OTHER_T>
+    Vector<N, std::common_type_t<T, OTHER_T>> vectorProjectOnto(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+
+    T scalarRejectFrom(const Vector<N, T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+    template<typename OTHER_T>
+    std::common_type_t<T, OTHER_T> scalarRejectFrom(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+
+    Vector<N, T> vectorRejectFrom(const Vector<N, T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+    template<typename OTHER_T>
+    Vector<N, std::common_type_t<T, OTHER_T>> vectorRejectFrom(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
 };
 
 template<int N, scalar T>

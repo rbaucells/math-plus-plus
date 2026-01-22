@@ -418,10 +418,10 @@ Matrix<ROWS, COLUMNS, T>::template QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix
         u[k] = a[k];
 
         for (int j = 0; j < k; j++) {
-            u[k] -= u[j].projection(a[k]);
+            u[k] -= u[j].vectorProjectOnto(a[k]);
         }
 
-        T uMagnitude = u[k].magnitude();
+        T uMagnitude = u[k].euclidianNorm();
 
         for (int i = 0; i < ROWS; i++) {
             q[k][i] = u[k][i] / uMagnitude;
