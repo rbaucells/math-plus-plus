@@ -1,0 +1,15 @@
+[build-system]
+requires = ["scikit-build-core", "pybind11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "mathpy"
+version = "0.0.1"
+description = "C++ Math Library"
+requires-python = ">=3.10"
+dependencies = [
+    "pybind11>=2.10",
+]
+
+[tool.scikit-build]
+cmake.args = ["-DMATHPP_BINDINGS=ON", "-DMATHPP_BUILD_TESTS=OFF"]

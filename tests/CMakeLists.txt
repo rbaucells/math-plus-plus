@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(math-tests)
+project(mathpp-tests)
 
 # using cpp 23
 set(CMAKE_CXX_STANDARD 23)
@@ -20,7 +20,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # math-tests executable
-add_executable(math-tests
+add_executable(mathpp-tests
         main.cpp
         matrix.operators.tests.cpp
         matrix.checks.tests.cpp
@@ -34,11 +34,11 @@ add_executable(math-tests
 )
 
 # link with the math lib
-target_link_libraries(math-tests PRIVATE math++ GTest::gtest_main)
+target_link_libraries(mathpp-tests PRIVATE mathpp GTest::gtest_main)
 
 # enable more warnings in tests for better
-target_compile_options(math-tests PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(mathpp-tests PRIVATE -Wall -Wextra -Wpedantic)
 
 # auto-discover Gtests as Ctests
 include(GoogleTest)
-gtest_discover_tests(math-tests)
+gtest_discover_tests(mathpp-tests)
