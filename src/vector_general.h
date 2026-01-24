@@ -348,23 +348,23 @@ Vector<N, std::common_type_t<T, OTHER_T>> Vector<N, T>::vectorProjectOnto(const 
 }
 
 template<int N, scalar T>
-T Vector<N, T>::scalarRejectFrom(const Vector<N, T>& v, DotProductConjugationBehavior behavior) const {
-
+Vector<N, T>::UnderlyingType Vector<N, T>::scalarRejectFrom(const Vector<N, T>& v, DotProductConjugationBehavior behavior) const {
+    return vectorRejectFrom(v, behavior).euclidianNorm();
 }
 
 template<int N, scalar T>
 template<typename OTHER_T>
-std::common_type_t<T, OTHER_T> Vector<N, T>::scalarRejectFrom(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior) const {
-
+std::common_type_t<typename Vector<N, T>::UnderlyingType, underlying_type_t<OTHER_T>> Vector<N, T>::scalarRejectFrom(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior) const {
+    return vectorRejectFrom(v, behavior).euclidianNorm();
 }
 
 template<int N, scalar T>
 Vector<N, T> Vector<N, T>::vectorRejectFrom(const Vector<N, T>& v, DotProductConjugationBehavior behavior) const {
-    return subtract((dot(v) / v.euclidianNormSquared()) * v);
+    return subtract(vectorProjectOnto(v, behavior));
 }
 
 template<int N, scalar T>
 template<typename OTHER_T>
 Vector<N, std::common_type_t<T, OTHER_T>> Vector<N, T>::vectorRejectFrom(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior) const {
-    return subtract((dot(v) / v.euclidianNormSquared()) * v);
+    return subtract(vectorProjectOnto(v, behavior));
 }

@@ -204,9 +204,9 @@ struct Vector {
     template<typename OTHER_T>
     Vector<N, std::common_type_t<T, OTHER_T>> vectorProjectOnto(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
 
-    T scalarRejectFrom(const Vector<N, T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+    UnderlyingType scalarRejectFrom(const Vector<N, T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
     template<typename OTHER_T>
-    std::common_type_t<T, OTHER_T> scalarRejectFrom(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+    std::common_type_t<UnderlyingType, underlying_type_t<OTHER_T>> scalarRejectFrom(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
 
     Vector<N, T> vectorRejectFrom(const Vector<N, T>& v, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
     template<typename OTHER_T>
