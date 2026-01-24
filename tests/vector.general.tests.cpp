@@ -880,104 +880,104 @@ TEST(VectorGeneral, scalar_project_diff_type_second) {
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
 }
+
+TEST(VectorGeneral, vector_project_same_type_real) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3> b = {4, 5, 6};
+    constexpr Vector<3> expectedAb = {128.0f / 77.0f, 160.0f / 77.0f, 192.0f / 77.0f};
+    constexpr Vector<3> expectedBa = {16.0f / 7.0f, 32.0f / 7.0f, 48.0f / 7.0f};
+    // act
+    const Vector<3> ab = a.vectorProjectOnto(b);
+    const Vector<3> ba = b.vectorProjectOnto(a);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, vector_project_same_type_complex_first) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
+    constexpr Vector<3, std::complex<float>> expectedAb = {{2.97496f, 2.88014}, {3.81574, 3.59213}, {4.65653, 4.30411}};
+    constexpr Vector<3, std::complex<float>> expectedBa = {{1.98901f, 4.96703f}, {6.36264f, 10.13187f}, {10.73626f, 15.29670f}};
+    // act
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, vector_project_same_type_complex_neither) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
+    constexpr Vector<3, std::complex<float>> expectedAb = {{-3.55098f, 2.12165f}, {-4.45617f, 2.74776f}, {-5.36136f, 3.37388f}};
+    constexpr Vector<3, std::complex<float>> expectedBa = {{-5.13187f, 1.49451f}, {-10.69231f, 5.34066f}, {-16.25275f, 9.18681}};
+    // act
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, vector_project_same_type_complex_second) {
+    // arrange
+    constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
+    constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
+    constexpr Vector<3, std::complex<float>> expectedAb = {{2.45975f, 3.33095f}, {3.17174f, 4.17173f}, {3.88372f, 5.01252f}};
+    constexpr Vector<3, std::complex<float>> expectedBa = {{2.78022f, 4.57143f}, {7.94506f, 8.94506f}, {13.10989f, 13.31868f}};
+    // act
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, vector_project_diff_type_first) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
+    constexpr Vector<3, std::complex<float>> expectedAb = {{-0.18962f, 1.63148f}, {-0.21109f, 2.06798f}, {-0.23256f, 2.50447f}};
+    constexpr Vector<3, std::complex<float>> expectedBa = {{4.14286f, -4.57143f}, {8.28571f, -9.14286f}, {12.42857f, -13.71429f}};
+    // act
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3>::DotProductConjugationBehavior::first_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
 //
-// TEST(VectorGeneral, vector_project_same_type_real) {
-//     // arrange
-//     constexpr Vector<3> a = {1, 2, 3};
-//     constexpr Vector<3> b = {4, 5, 6};
-//     constexpr Vector<3> expectedAb = {128.0f / 77.0f, 160.0f / 77.0f, 192.0f / 77.0f};
-//     constexpr Vector<3> expectedBa = {16.0f / 7.0f, 32.0f / 7.0f, 48.0f / 7.0f};
-//     // act
-//     const Vector<3> ab = a.vectorProjectOnto(b);
-//     const Vector<3> ba = b.vectorProjectOnto(a);
-//     // assert
-//     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
-//     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
-// }
-//
-// TEST(VectorGeneral, vector_project_same_type_complex_first) {
-//     // arrange
-//     constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
-//     constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
-//     constexpr Vector<3, std::complex<float>> expectedAb = {};
-//     constexpr Vector<3, std::complex<float>> expectedBa = {};
-//     // act
-//     const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
-//     const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
-//     // assert
-//     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
-//     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
-// }
-//
-// TEST(VectorGeneral, vector_project_same_type_complex_neither) {
-//     // arrange
-//     constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
-//     constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
-//     constexpr Vector<3, std::complex<float>> expectedAb = {};
-//     constexpr Vector<3, std::complex<float>> expectedBa = {};
-//     // act
-//     const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
-//     const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
-//     // assert
-//     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
-//     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
-// }
-//
-// TEST(VectorGeneral, vector_project_same_type_complex_second) {
-//     // arrange
-//     constexpr Vector<3, std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
-//     constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
-//     constexpr Vector<3, std::complex<float>> expectedAb = {};
-//     constexpr Vector<3, std::complex<float>> expectedBa = {};
-//     // act
-//     const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
-//     const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
-//     // assert
-//     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
-//     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
-// }
-//
-// TEST(VectorGeneral, vector_project_diff_type_first) {
-//     // arrange
-//     constexpr Vector<3> a = {1, 2, 3};
-//     constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
-//     constexpr Vector<3, std::complex<float>> expectedAb = {};
-//     constexpr Vector<3, std::complex<float>> expectedBa = {};
-//     // act
-//     const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3>::DotProductConjugationBehavior::first_argument);
-//     const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
-//     // assert
-//     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
-//     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
-// }
-//
-// TEST(VectorGeneral, vector_project_diff_type_neither) {
-//     // arrange
-//     constexpr Vector<3> a = {1, 2, 3};
-//     constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
-//     constexpr Vector<3, std::complex<float>> expectedAb = {};
-//     constexpr Vector<3, std::complex<float>> expectedBa = {};
-//     // act
-//     const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3>::DotProductConjugationBehavior::neither);
-//     const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
-//     // assert
-//     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
-//     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
-// }
-//
-// TEST(VectorGeneral, vector_project_diff_type_second) {
-//     // arrange
-//     constexpr Vector<3> a = {1, 2, 3};
-//     constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
-//     constexpr Vector<3, std::complex<float>> expectedAb = {};
-//     constexpr Vector<3, std::complex<float>> expectedBa = {};
-//     // act
-//     const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3>::DotProductConjugationBehavior::second_argument);
-//     const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
-//     // assert
-//     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
-//     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
-// }
+TEST(VectorGeneral, vector_project_diff_type_neither) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
+    constexpr Vector<3, std::complex<float>> expectedAb = {{-0.18962f, 1.63148f}, {-0.21109f, 2.06798f}, {-0.23256f, 2.50447f}};
+    constexpr Vector<3, std::complex<float>> expectedBa = {{4.14286f, 4.57143f}, {8.28571f, 9.14286f}, {12.42857f, 13.71429f}};
+    // act
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3>::DotProductConjugationBehavior::neither);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
+
+TEST(VectorGeneral, vector_project_diff_type_second) {
+    // arrange
+    constexpr Vector<3> a = {1, 2, 3};
+    constexpr Vector<3, std::complex<float>> b = {{7, 8}, {9, 10}, {11, 12}};
+    constexpr Vector<3, std::complex<float>> expectedAb = {{1.64222f, 0.02862f}, {2.07871f, 0.00716f}, {2.51521f, -0.01431f}};
+    constexpr Vector<3, std::complex<float>> expectedBa = {{4.14286f, 4.57143f}, {8.28571f, 9.14286f}, {12.42857f, 13.71429f}};
+    // act
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3>::DotProductConjugationBehavior::second_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    // assert
+    ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
+    ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
+}
 //
 // TEST(VectorGeneral, scalar_reject_same_type_real) {
 //     // arrange
