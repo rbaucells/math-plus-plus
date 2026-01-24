@@ -360,11 +360,11 @@ std::common_type_t<T, OTHER_T> Vector<N, T>::scalarRejectFrom(const Vector<N, OT
 
 template<int N, scalar T>
 Vector<N, T> Vector<N, T>::vectorRejectFrom(const Vector<N, T>& v, DotProductConjugationBehavior behavior) const {
-
+    return subtract((dot(v) / v.euclidianNormSquared()) * v);
 }
 
 template<int N, scalar T>
 template<typename OTHER_T>
 Vector<N, std::common_type_t<T, OTHER_T>> Vector<N, T>::vectorRejectFrom(const Vector<N, OTHER_T>& v, DotProductConjugationBehavior behavior) const {
-
+    return subtract((dot(v) / v.euclidianNormSquared()) * v);
 }

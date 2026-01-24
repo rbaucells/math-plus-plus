@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "mathpy"
-version = "0.0.3"
+version = "0.0.8"
 description = "C++ Math Library"
 requires-python = ">=3.10"
 dependencies = [
