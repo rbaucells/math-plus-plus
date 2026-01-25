@@ -328,6 +328,70 @@ TEST(MatrixDecompositions, fail_ldu_wide_zero_pivot_real) {
     // act / assert
     ASSERT_ANY_THROW(a.fullLduDecomposition());
 }
+
+TEST(MatrixDecompositions, ldu_square_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{1, 2}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}, {{-11, 11}, {4, 0}, {9, -3}}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedL = {{{1, 0}, {0, 0}, {0, 0}},{{1.4f, -2.8f}, {1, 0}, {0, 0}},{{2.2f, 6.6f}, {-0.95405f, 0.62432f}, {1, 0}}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedD = {{{1, 2}, {0, 0}, {0, 0}},{{0, 0}, {16, 22}, {0, 0}},{{0, 0}, {0, 0}, {24.633f, -19.4578f}}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedU = {{{1, 0}, {-1, -2}, {3.4, -0.8}},{{0, 0}, {1, 0}, {-0.0508, 1.044}},{{0, 0}, {0, 0}, {1, 0}}};
+    // act
+    auto [l, d, u] = a.fullLduDecomposition();
+    // assert
+    ASSERT_TRUE(l.equals(expectedL, 0.001f));
+    ASSERT_TRUE(d.equals(expectedD, 0.001f));
+    ASSERT_TRUE(u.equals(expectedU, 0.001f));
+}
+
+TEST(MatrixDecompositions, fail_ldu_square_zero_pivot_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{0, 0}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}, {{-11, 11}, {4, 0}, {9, -3}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLduDecomposition());
+}
+
+TEST(MatrixDecompositions, ldu_wide_complex) {
+    // arrange
+    constexpr Matrix<2, 3, std::complex<float>> a = {{{1, 2}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedL = {{{1, 0}, {0, 0}}, {{1.4f, -2.8f}, {1, 0}}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedD = {{{1, 2}, {0, 0}}, {{0, 0}, {16, 22}}};
+    constexpr Matrix<2, 3, std::complex<float>> expectedU = {{{1, 0}, {-1, -2}, {3.4, -0.8}}, {{0, 0}, {1, 0}, {-0.0508, 1.044}}};
+    // act
+    auto [l, d, u] = a.fullLduDecomposition();
+    // assert
+    ASSERT_TRUE(l.equals(expectedL, 0.001f));
+    ASSERT_TRUE(d.equals(expectedD, 0.001f));
+    ASSERT_TRUE(u.equals(expectedU, 0.001f));
+}
+
+TEST(MatrixDecompositions, fail_ldu_wide_zero_pivot_complex) {
+    // arrange
+    constexpr Matrix<2, 3, std::complex<float>> a = {{{0, 0}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLduDecomposition());
+}
+
+TEST(MatrixDecompositions, ldu_tall_complex) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> a = {{{1, 2}, {3, -4}}, {{7, 0}, {9, 8}}, {{-11, 11}, {4, 0}}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedL = {{{1, 0}, {0, 0}, {0, 0}}, {{1.4f, -2.8f}, {1, 0}, {0, 0}}, {{2.2f, 6.6f}, {-0.95405f, 0.62432f}, {1, 0}}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedD = {{{1, 2}, {0, 0}, {0, 0}},{{0, 0}, {16, 22}, {0, 0}},{{0, 0}, {0, 0}, {0, 0}}};
+    constexpr Matrix<3, 2, std::complex<float>> expectedU = {{{1, 0}, {-1, -2}}, {{0, 0}, {1, 0}}, {{0, 0}, {0, 0}}};
+    // act
+    auto [l, d, u] = a.fullLduDecomposition();
+    // assert
+    ASSERT_TRUE(l.equals(expectedL, 0.001f));
+    ASSERT_TRUE(d.equals(expectedD, 0.001f));
+    ASSERT_TRUE(u.equals(expectedU, 0.001f));
+}
+
+TEST(MatrixDecompositions, fail_ldu_tall_zero_pivot_complex) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> a = {{{0, 0}, {3, -4}}, {{7, 0}, {9, 8}}, {{-11, 11}, {4, 0}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLduDecomposition());
+}
+
 #pragma endregion
 
 #pragma region LUP
