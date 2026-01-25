@@ -740,6 +740,124 @@ TEST(MatrixDecompositions, fail_lupq_wide_zero_section_real) {
     // act / assert
     ASSERT_ANY_THROW(a.fullLupqDecomposition());
 }
+
+TEST(MatrixDecompositions, lupq_square_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{1, 2}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}, {{-11, 11}, {4, 0}, {9, -3}}};
+    constexpr int expectedNumRowSwaps = 2;
+    constexpr int expectedNumColumnSwaps = 2;
+    // act
+    int numRowSwaps = 0;
+    int numColumnSwaps = 0;
+    auto [l, u, p, q] = a.fullLupqDecomposition({.numRowSwaps = &numRowSwaps, .numColumnSwaps = &numColumnSwaps});
+    const Matrix<3, 3, std::complex<float>> calculatedA = p.transpose() * l * u * q.transpose();
+    // assert
+    ASSERT_TRUE(a.equals(calculatedA, 0.001f));
+    ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
+    ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
+}
+
+TEST(MatrixDecompositions, lupq_square_zero_section_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}}, {{2, 4}, {6, 8}, {10, 12}}, {{4, 8}, {12, 16}, {20, 24}}};
+    constexpr int expectedNumRowSwaps = 1;
+    constexpr int expectedNumColumnSwaps = 1;
+    // act
+    int numRowSwaps = 0;
+    int numColumnSwaps = 0;
+    auto [l, u, p, q] = a.fullLupqDecomposition({true, &numRowSwaps, &numColumnSwaps});
+    const Matrix<3, 3, std::complex<float>> calculatedA = p.transpose() * l * u * q.transpose();
+    // assert
+    ASSERT_TRUE(a.equals(calculatedA, 0.001f));
+    ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
+    ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
+}
+
+TEST(MatrixDecompositions, fail_lupq_square_zero_section_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}}, {{2, 4}, {6, 8}, {10, 12}}, {{4, 8}, {12, 16}, {20, 24}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLupqDecomposition());
+}
+
+TEST(MatrixDecompositions, lupq_tall_complex) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> a = {{{1, 2}, {3, -4}}, {{7, 0}, {9, 8}}, {{-11, 11}, {4, 0}}};
+    constexpr int expectedNumRowSwaps = 1;
+    constexpr int expectedNumColumnSwaps = 1;
+    // act
+    int numRowSwaps = 0;
+    int numColumnSwaps = 0;
+    auto [l, u, p, q] = a.fullLupqDecomposition({.numRowSwaps = &numRowSwaps, .numColumnSwaps = &numColumnSwaps});
+    const Matrix<3, 2, std::complex<float>> calculatedA = p.transpose() * l * u * q.transpose();
+    // assert
+    ASSERT_TRUE(a.equals(calculatedA, 0.001f));
+    ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
+    ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
+}
+
+TEST(MatrixDecompositions, lupq_tall_zero_section_complex) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> a = {{{1, 2}, {3, 4}}, {{2, 4}, {6, 8}}, {{4, 8}, {12, 16}}};
+    constexpr int expectedNumRowSwaps = 1;
+    constexpr int expectedNumColumnSwaps = 1;
+    // act
+    int numRowSwaps = 0;
+    int numColumnSwaps = 0;
+    auto [l, u, p, q] = a.fullLupqDecomposition({true, &numRowSwaps, &numColumnSwaps});
+    const Matrix<3, 2, std::complex<float>> calculatedA = p.transpose() * l * u * q.transpose();
+    // assert
+    ASSERT_TRUE(a.equals(calculatedA, 0.001f));
+    ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
+    ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
+}
+
+TEST(MatrixDecompositions, fail_lupq_tall_zero_section_complex) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> a = {{{1, 2}, {3, 4}}, {{2, 4}, {6, 8}}, {{4, 8}, {12, 16}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLupqDecomposition());
+}
+
+TEST(MatrixDecompositions, lupq_wide_complex) {
+    // arrange
+    constexpr Matrix<2, 3, std::complex<float>> a = {{{1, 2}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}};
+    constexpr int expectedNumRowSwaps = 1;
+    constexpr int expectedNumColumnSwaps = 1;
+    // act
+    int numRowSwaps = 0;
+    int numColumnSwaps = 0;
+    auto [l, u, p, q] = a.fullLupqDecomposition({.numRowSwaps = &numRowSwaps, .numColumnSwaps = &numColumnSwaps});
+    const Matrix<2, 3, std::complex<float>> calculatedA = p.transpose() * l * u * q.transpose();
+    // assert
+    ASSERT_TRUE(a.equals(calculatedA, 0.001f));
+    ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
+    ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
+}
+
+TEST(MatrixDecompositions, lupq_wide_zero_section_complex) {
+    // arrange
+    constexpr Matrix<2, 3, std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}}, {{2, 4}, {6, 8}, {10, 12}}};
+    constexpr int expectedNumRowSwaps = 1;
+    constexpr int expectedNumColumnSwaps = 1;
+    // act
+    int numRowSwaps = 0;
+    int numColumnSwaps = 0;
+    auto [l, u, p, q] = a.fullLupqDecomposition({true, &numRowSwaps, &numColumnSwaps});
+    const Matrix<2, 3, std::complex<float>> calculatedA = p.transpose() * l * u * q.transpose();
+    // assert
+    ASSERT_TRUE(a.equals(calculatedA, 0.001f));
+    ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
+    ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
+}
+
+TEST(MatrixDecompositions, fail_lupq_wide_zero_section_complex) {
+    // arrange
+    constexpr Matrix<2, 3, std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}}, {{2, 4}, {6, 8}, {10, 12}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLupqDecomposition());
+}
+
 #pragma endregion
 
 #pragma region Cholesky
