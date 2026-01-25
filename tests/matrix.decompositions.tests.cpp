@@ -2,7 +2,7 @@
 #include "math++/math.h"
 
 #pragma region LU
-TEST(MatrixDecompositions, lu_decomp_square) {
+TEST(MatrixDecompositions, lu_square_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{2, 1, 3}, {4, 4, 7}, {6, 7, 9}};
     constexpr Matrix<3, 3> expectedL = {{1, 0, 0}, {2, 1, 0}, {3, 2, 1}};
@@ -14,7 +14,7 @@ TEST(MatrixDecompositions, lu_decomp_square) {
     ASSERT_TRUE(u.equals(expectedU, 0.001f));
 }
 
-TEST(MatrixDecompositions, lu_decomp_square_zero_column) {
+TEST(MatrixDecompositions, lu_square_zero_column_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{0, 1, 3}, {0, 4, 7}, {0, 7, 9}};
     // act
@@ -24,21 +24,21 @@ TEST(MatrixDecompositions, lu_decomp_square_zero_column) {
     ASSERT_TRUE(a.equals(calculatedA, 0.001f));
 }
 
-TEST(MatrixDecompositions, fail_lu_decomp_square_zero_column) {
+TEST(MatrixDecompositions, fail_lu_square_zero_column_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{0, 1, 3}, {0, 4, 7}, {0, 7, 9}};
     // act / assert
     ASSERT_ANY_THROW(a.fullLuDecomposition());
 }
 
-TEST(MatrixDecompositions, fail_lu_decomp_square_zero_pivot_no_skip) {
+TEST(MatrixDecompositions, fail_lu_square_zero_pivot_no_skip_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{0, 1, 3}, {1, 4, 7}, {2, 7, 9}};
     // act / assert
     ASSERT_ANY_THROW(a.fullLuDecomposition());
 }
 
-TEST(MatrixDecompositions, fail_lu_decomp_square_zero_pivot_with_skip) {
+TEST(MatrixDecompositions, fail_lu_square_zero_pivot_with_skip_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{0, 1, 3}, {1, 4, 7}, {2, 7, 9}};
     // act / assert
@@ -46,7 +46,7 @@ TEST(MatrixDecompositions, fail_lu_decomp_square_zero_pivot_with_skip) {
 }
 
 
-TEST(MatrixDecompositions, lu_decomp_tall) {
+TEST(MatrixDecompositions, lu_tall_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{2, 1}, {4, 4}, {6, 7}};
     constexpr Matrix<3, 3> expectedL = {{1, 0, 0}, {2, 1, 0}, {3, 2, 1}};
@@ -58,7 +58,7 @@ TEST(MatrixDecompositions, lu_decomp_tall) {
     ASSERT_TRUE(u.equals(expectedU, 0.001f));
 }
 
-TEST(MatrixDecompositions, lu_decomp_tall_zero_column) {
+TEST(MatrixDecompositions, lu_tall_zero_column_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{2, 0}, {4, 0}, {6, 0}};
     // act
@@ -68,21 +68,21 @@ TEST(MatrixDecompositions, lu_decomp_tall_zero_column) {
     ASSERT_TRUE(a.equals(calculatedA, 0.001f));
 }
 
-TEST(MatrixDecompositions, fail_lu_decomp_tall_zero_column) {
+TEST(MatrixDecompositions, fail_lu_tall_zero_column_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{2, 0}, {4, 0}, {6, 0}};
     // act / assert
     ASSERT_ANY_THROW(a.fullLuDecomposition());
 }
 
-TEST(MatrixDecompositions, fail_lu_decomp_tall_zero_pivot_no_skip) {
+TEST(MatrixDecompositions, fail_lu_tall_zero_pivot_no_skip_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{0, 4}, {4, 5}, {6, 4}};
     // act / assert
     ASSERT_ANY_THROW(a.fullLuDecomposition());
 }
 
-TEST(MatrixDecompositions, fail_lu_decomp_tall_zero_pivot_with_skip) {
+TEST(MatrixDecompositions, fail_lu_tall_zero_pivot_with_skip_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{0, 4}, {4, 5}, {6, 4}};
     // act / assert
@@ -90,7 +90,7 @@ TEST(MatrixDecompositions, fail_lu_decomp_tall_zero_pivot_with_skip) {
 }
 
 
-TEST(MatrixDecompositions, lu_decomp_wide) {
+TEST(MatrixDecompositions, lu_wide_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{2, 1, 3}, {4, 4, 7}};
     constexpr Matrix<2, 2> expectedL = {{1, 0}, {2, 1}};
@@ -102,7 +102,7 @@ TEST(MatrixDecompositions, lu_decomp_wide) {
     ASSERT_TRUE(u.equals(expectedU, 0.001f));
 }
 
-TEST(MatrixDecompositions, lu_decomp_wide_zero_column) {
+TEST(MatrixDecompositions, lu_wide_zero_column_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{2, 0, 3}, {4, 0, 7}};
     // act
@@ -112,30 +112,160 @@ TEST(MatrixDecompositions, lu_decomp_wide_zero_column) {
     ASSERT_TRUE(a.equals(calculatedA, 0.001f));
 }
 
-TEST(MatrixDecompositions, fail_lu_decomp_wide_zero_column) {
+TEST(MatrixDecompositions, fail_lu_wide_zero_column_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{2, 0, 3}, {4, 0, 7}};
     // act / assert
     ASSERT_ANY_THROW(a.fullLuDecomposition());
 }
 
-TEST(MatrixDecompositions, fail_lu_decomp_wide_zero_pivot_no_skip) {
+TEST(MatrixDecompositions, fail_lu_wide_zero_pivot_no_skip_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{0, 5, 3}, {4, 6, 7}};
     // act / assert
     ASSERT_ANY_THROW(a.fullLuDecomposition());
 }
 
-TEST(MatrixDecompositions, fail_lu_decomp_wide_zero_pivot_with_skip) {
+TEST(MatrixDecompositions, fail_lu_wide_zero_pivot_with_skip_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{0, 5, 3}, {4, 6, 7}};
     // act / assert
     ASSERT_ANY_THROW(a.fullLuDecomposition(true));
 }
+
+TEST(MatrixDecompositions, lu_square_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{1, 2}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}, {{-11, 11}, {4, 0}, {9, -3}}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedL = {{{1, 0}, {0, 0}, {0, 0}}, {{1.4f, -2.8f}, {1, 0}, {0, 0}}, {{2.2f, 6.6f}, {-0.95405f, 0.62432f}, {1, 0}}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedU = {{{1, 2}, {3, -4}, {5, 6}}, {{0, 0}, {16, 22}, {-23.8f, 15.6f}}, {{0, 0}, {0, 0}, {24.633f, -19.4578f}}};
+    // act
+    auto [l, u] = a.fullLuDecomposition();
+    // assert
+    ASSERT_TRUE(l.equals(expectedL, 0.001f));
+    ASSERT_TRUE(u.equals(expectedU, 0.001f));
+}
+
+TEST(MatrixDecompositions, lu_square_zero_column_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{0, 0}, {3, -4}, {5, 6}}, {{0, 0}, {9, 8}, {0, 10}}, {{0, 0}, {4, 0}, {9, -3}}};
+    // act
+    auto [l, u] = a.fullLuDecomposition(true);
+    const Matrix<3, 3, std::complex<float>> calculatedA = l * u;
+    // assert
+    ASSERT_TRUE(calculatedA.equals(a, 0.001f));
+}
+
+TEST(MatrixDecompositions, fail_lu_square_zero_column_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{0, 0}, {3, -4}, {5, 6}}, {{0, 0}, {9, 8}, {0, 10}}, {{0, 0}, {4, 0}, {9, -3}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLuDecomposition());
+}
+
+TEST(MatrixDecompositions, fail_lu_square_zero_pivot_no_skip_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{0, 0}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}, {{-11, 11}, {4, 0}, {9, -3}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLuDecomposition());
+}
+
+TEST(MatrixDecompositions, fail_lu_square_zero_pivot_with_skip_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{0, 0}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}, {{-11, 11}, {4, 0}, {9, -3}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLuDecomposition(true));
+}
+
+TEST(MatrixDecompositions, lu_tall_complex) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> a = {{{1, 2}, {3, -4}}, {{7, 0}, {9, 8}}, {{-11, 11}, {4, 0}}};
+    constexpr Matrix<3, 3, std::complex<float>> expectedL = {{{1, 0}, {0, 0}, {0, 0}}, {{1.4f, -2.8f}, {1, 0}, {0, 0}}, {{2.2f, 6.6f}, {-0.95405f, 0.62432f}, {1, 0}}};
+    constexpr Matrix<3, 2, std::complex<float>> expectedU = {{{1, 2}, {3, -4}}, {{0, 0}, {16, 22}}, {{0, 0}, {0, 0}}};
+    // act
+    auto [l, u] = a.fullLuDecomposition();
+    // assert
+    ASSERT_TRUE(l.equals(expectedL, 0.001f));
+    ASSERT_TRUE(u.equals(expectedU, 0.001f));
+}
+
+TEST(MatrixDecompositions, lu_tall_zero_column_complex) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> a = {{{1, 2}, {3, -4}}, {{7, 0}, {9, 8}}, {{-11, 11}, {4, 0}}};
+    // act
+    auto [l, u] = a.fullLuDecomposition(true);
+    const Matrix<3, 2, std::complex<float>> calculatedA = l * u;
+    // assert
+    ASSERT_TRUE(calculatedA.equals(a, 0.001f));
+}
+
+TEST(MatrixDecompositions, fail_lu_tall_zero_column_complex) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> a = {{{0, 0}, {3, -4}}, {{0, 0}, {9, 8}}, {{0, 0}, {4, 0}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLuDecomposition());
+}
+
+TEST(MatrixDecompositions, fail_lu_tall_zero_pivot_no_skip_complex) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> a = {{{0, 0}, {3, -4}}, {{7, 0}, {9, 8}}, {{-11, 11}, {4, 0}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLuDecomposition());
+}
+
+TEST(MatrixDecompositions, fail_lu_tall_zero_pivot_with_skip_complex) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> a = {{{0, 0}, {3, -4}}, {{7, 0}, {9, 8}}, {{-11, 11}, {4, 0}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLuDecomposition(true));
+}
+
+TEST(MatrixDecompositions, lu_wide_complex) {
+    // arrange
+    constexpr Matrix<2, 3, std::complex<float>> a = {{{1, 2}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}};
+    constexpr Matrix<2, 2, std::complex<float>> expectedL = {{{1, 0}, {0, 0}}, {{1.4f, -2.8f}, {1, 0}}};
+    constexpr Matrix<2, 3, std::complex<float>> expectedU = {{{1, 2}, {3, -4}, {5, 6}}, {{0, 0}, {16, 22}, {-23.8f, 15.6f}}};
+    // act
+    auto [l, u] = a.fullLuDecomposition();
+    // assert
+    ASSERT_TRUE(l.equals(expectedL, 0.001f));
+    ASSERT_TRUE(u.equals(expectedU, 0.001f));
+}
+
+TEST(MatrixDecompositions, lu_wide_zero_column_complex) {
+    // arrange
+    constexpr Matrix<2, 3, std::complex<float>> a = {{{0, 0}, {3, -4}, {5, 6}}, {{0, 0}, {9, 8}, {0, 10}}};
+    // act
+    auto [l, u] = a.fullLuDecomposition(true);
+    const Matrix<2, 3, std::complex<float>> calculatedA = l * u;
+    // assert
+    ASSERT_TRUE(calculatedA.equals(a, 0.001f));
+}
+
+TEST(MatrixDecompositions, fail_lu_wide_zero_column_complex) {
+    // arrange
+    constexpr Matrix<2, 3, std::complex<float>> a = {{{0, 0}, {3, -4}, {5, 6}}, {{0, 0}, {9, 8}, {0, 10}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLuDecomposition());
+}
+
+TEST(MatrixDecompositions, fail_lu_wide_zero_pivot_no_skip_complex) {
+    // arrange
+    constexpr Matrix<2, 3, std::complex<float>> a = {{{0, 0}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLuDecomposition());
+}
+
+TEST(MatrixDecompositions, fail_lu_wide_zero_pivot_with_skip_complex) {
+    // arrange
+    constexpr Matrix<2, 3, std::complex<float>> a = {{{0, 0}, {3, -4}, {5, 6}}, {{7, 0}, {9, 8}, {0, 10}}};
+    // act / assert
+    ASSERT_ANY_THROW(a.fullLuDecomposition(true));
+}
+
 #pragma endregion
 
 #pragma region LDU
-TEST(MatrixDecompositions, ldu_decomp_square) {
+TEST(MatrixDecompositions, ldu_square_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{2, 1, 3}, {4, 4, 7}, {6, 7, 9}};
     constexpr Matrix<3, 3> expectedL = {{1, 0, 0}, {2, 1, 0}, {3, 2, 1}};
@@ -149,14 +279,14 @@ TEST(MatrixDecompositions, ldu_decomp_square) {
     ASSERT_TRUE(u.equals(expectedU, 0.001f));
 }
 
-TEST(MatrixDecompositions, fail_ldu_decomp_square_zero_pivot) {
+TEST(MatrixDecompositions, fail_ldu_square_zero_pivot_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{0, 1, 3}, {1, 4, 7}, {2, 7, 9}};
     // act / assert
     ASSERT_ANY_THROW(a.fullLduDecomposition());
 }
 
-TEST(MatrixDecompositions, ldu_decomp_tall) {
+TEST(MatrixDecompositions, ldu_tall_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{2, 1}, {4, 4}, {6, 7}};
     constexpr Matrix<3, 3> expectedL = {{1, 0, 0}, {2, 1, 0}, {3, 2, 1}};
@@ -170,7 +300,7 @@ TEST(MatrixDecompositions, ldu_decomp_tall) {
     ASSERT_TRUE(u.equals(expectedU, 0.001f));
 }
 
-TEST(MatrixDecompositions, fail_ldu_decomp_tall_zero_pivot) {
+TEST(MatrixDecompositions, fail_ldu_tall_zero_pivot_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{0, 4}, {4, 5}, {6, 4}};
     // act / assert
@@ -178,7 +308,7 @@ TEST(MatrixDecompositions, fail_ldu_decomp_tall_zero_pivot) {
 }
 
 
-TEST(MatrixDecompositions, ldu_decomp_wide) {
+TEST(MatrixDecompositions, ldu_wide_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{2, 1, 3}, {4, 4, 7}};
     constexpr Matrix<2, 2> expectedL = {{1, 0}, {2, 1}};
@@ -192,7 +322,7 @@ TEST(MatrixDecompositions, ldu_decomp_wide) {
     ASSERT_TRUE(u.equals(expectedU, 0.001f));
 }
 
-TEST(MatrixDecompositions, fail_ldu_decomp_wide_zero_pivot) {
+TEST(MatrixDecompositions, fail_ldu_wide_zero_pivot_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{0, 5, 3}, {4, 6, 7}};
     // act / assert
@@ -201,7 +331,7 @@ TEST(MatrixDecompositions, fail_ldu_decomp_wide_zero_pivot) {
 #pragma endregion
 
 #pragma region LUP
-TEST(MatrixDecompositions, lup_decomp_square) {
+TEST(MatrixDecompositions, lup_square_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{2, 1, 3}, {4, 4, 7}, {6, 7, 9}};
     constexpr Matrix<3, 3> expectedL = {{1, 0, 0}, {1.0f / 3.0f, 1, 0}, {2.0f / 3.0f, 0.5f, 1}};
@@ -218,7 +348,7 @@ TEST(MatrixDecompositions, lup_decomp_square) {
     ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
 }
 
-TEST(MatrixDecompositions, lup_decomp_square_zero_column) {
+TEST(MatrixDecompositions, lup_square_zero_column_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{2, 1, 0}, {4, 4, 0}, {6, 7, 0}};
     constexpr int expectedNumRowSwaps = 2;
@@ -231,7 +361,7 @@ TEST(MatrixDecompositions, lup_decomp_square_zero_column) {
     ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
 }
 
-TEST(MatrixDecompositions, fail_lup_decomp_square_zero_column) {
+TEST(MatrixDecompositions, fail_lup_square_zero_column_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{2, 1, 0}, {4, 4, 0}, {6, 7, 0}};
     // act / assert
@@ -239,7 +369,7 @@ TEST(MatrixDecompositions, fail_lup_decomp_square_zero_column) {
 }
 
 
-TEST(MatrixDecompositions, lup_decomp_tall) {
+TEST(MatrixDecompositions, lup_tall_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{2, 1}, {4, 4}, {6, 7}};
     constexpr Matrix<3, 3> expectedL = {{1, 0, 0}, {1.0f / 3.0f, 1, 0}, {2.0f / 3.0f, 0.5f, 1}};
@@ -256,7 +386,7 @@ TEST(MatrixDecompositions, lup_decomp_tall) {
     ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
 }
 
-TEST(MatrixDecompositions, lup_decomp_tall_zero_column) {
+TEST(MatrixDecompositions, lup_tall_zero_column_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{0, 1}, {0, 4}, {0, 7}};
     constexpr int expectedNumRowSwaps = 1;
@@ -269,7 +399,7 @@ TEST(MatrixDecompositions, lup_decomp_tall_zero_column) {
     ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
 }
 
-TEST(MatrixDecompositions, fail_lup_decomp_tall_zero_column) {
+TEST(MatrixDecompositions, fail_lup_tall_zero_column_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{0, 1}, {0, 4}, {0, 7}};
     // act / assert
@@ -277,7 +407,7 @@ TEST(MatrixDecompositions, fail_lup_decomp_tall_zero_column) {
 }
 
 
-TEST(MatrixDecompositions, lup_decomp_wide) {
+TEST(MatrixDecompositions, lup_wide_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{2, 1, 3}, {4, 4, 7}};
     constexpr Matrix<2, 2> expectedL = {{1, 0}, {0.5f, 1}};
@@ -294,7 +424,7 @@ TEST(MatrixDecompositions, lup_decomp_wide) {
     ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
 }
 
-TEST(MatrixDecompositions, lup_decomp_wide_zero_column) {
+TEST(MatrixDecompositions, lup_wide_zero_column_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{0, 1, 3}, {0, 4, 7}};
     constexpr int expectedNumRowSwaps = 0;
@@ -307,7 +437,7 @@ TEST(MatrixDecompositions, lup_decomp_wide_zero_column) {
     ASSERT_EQ(numRowSwaps, expectedNumRowSwaps);
 }
 
-TEST(MatrixDecompositions, fail_lup_decomp_wide_zero_column) {
+TEST(MatrixDecompositions, fail_lup_wide_zero_column_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{0, 1, 3}, {0, 4, 7}};
     // act / assert
@@ -316,7 +446,7 @@ TEST(MatrixDecompositions, fail_lup_decomp_wide_zero_column) {
 #pragma endregion
 
 #pragma region LUPQ
-TEST(MatrixDecompositions, lupq_decomp_square) {
+TEST(MatrixDecompositions, lupq_square_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{2, 1, 3}, {4, 4, 7}, {6, 7, 9}};
     constexpr int expectedNumRowSwaps = 1;
@@ -332,7 +462,7 @@ TEST(MatrixDecompositions, lupq_decomp_square) {
     ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
 }
 
-TEST(MatrixDecompositions, lupq_decomp_square_zero_section) {
+TEST(MatrixDecompositions, lupq_square_zero_section_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{1, 2, 3}, {2, 4, 6}, {4, 8, 12}};
     constexpr int expectedNumRowSwaps = 1;
@@ -348,7 +478,7 @@ TEST(MatrixDecompositions, lupq_decomp_square_zero_section) {
     ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
 }
 
-TEST(MatrixDecompositions, fail_lupq_decomp_square_zero_section) {
+TEST(MatrixDecompositions, fail_lupq_square_zero_section_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{1, 2, 3}, {2, 4, 6}, {4, 8, 12}};
     // act / assert
@@ -356,7 +486,7 @@ TEST(MatrixDecompositions, fail_lupq_decomp_square_zero_section) {
 }
 
 
-TEST(MatrixDecompositions, lupq_decomp_tall) {
+TEST(MatrixDecompositions, lupq_tall_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{2, 1}, {4, 4}, {6, 7}};
     constexpr int expectedNumRowSwaps = 1;
@@ -372,7 +502,7 @@ TEST(MatrixDecompositions, lupq_decomp_tall) {
     ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
 }
 
-TEST(MatrixDecompositions, lupq_decomp_tall_zero_section) {
+TEST(MatrixDecompositions, lupq_tall_zero_section_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{1, 2}, {2, 4}, {3, 6}};
     constexpr int expectedNumRowSwaps = 1;
@@ -388,7 +518,7 @@ TEST(MatrixDecompositions, lupq_decomp_tall_zero_section) {
     ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
 }
 
-TEST(MatrixDecompositions, fail_lupq_decomp_tall_zero_section) {
+TEST(MatrixDecompositions, fail_lupq_tall_zero_section_real) {
     // arrange
     constexpr Matrix<3, 2> a = {{1, 2}, {2, 4}, {3, 6}};
     // act / assert
@@ -396,7 +526,7 @@ TEST(MatrixDecompositions, fail_lupq_decomp_tall_zero_section) {
 }
 
 
-TEST(MatrixDecompositions, lupq_decomp_wide) {
+TEST(MatrixDecompositions, lupq_wide_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{2, 1, 3}, {4, 4, 7}};
     constexpr int expectedNumRowSwaps = 1;
@@ -412,7 +542,7 @@ TEST(MatrixDecompositions, lupq_decomp_wide) {
     ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
 }
 
-TEST(MatrixDecompositions, lupq_decomp_wide_zero_section) {
+TEST(MatrixDecompositions, lupq_wide_zero_section_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{1, 2, 3}, {2, 4, 6}};
     constexpr int expectedNumRowSwaps = 1;
@@ -428,7 +558,7 @@ TEST(MatrixDecompositions, lupq_decomp_wide_zero_section) {
     ASSERT_EQ(numColumnSwaps, expectedNumColumnSwaps);
 }
 
-TEST(MatrixDecompositions, fail_lupq_decomp_wide_zero_section) {
+TEST(MatrixDecompositions, fail_lupq_wide_zero_section_real) {
     // arrange
     constexpr Matrix<2, 3> a = {{1, 2, 3}, {2, 4, 6}};
     // act / assert
@@ -449,7 +579,7 @@ TEST(MatrixDecompositions, cholesky_real) {
     ASSERT_TRUE(lt.equals(expectedLt, 0.001f));
 }
 
-TEST(MatrixDecompositions, cholesky_real_psd) {
+TEST(MatrixDecompositions, cholesky_real_psd_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{3, 1, 2}, {1, 3, 2}, {2, 2, 2}};
     // act
@@ -459,21 +589,21 @@ TEST(MatrixDecompositions, cholesky_real_psd) {
     ASSERT_TRUE(a.equals(calculatedA, 0.001f));
 }
 
-TEST(MatrixDecompositions, cholesky_real_not_symmetric_skip_checks) {
+TEST(MatrixDecompositions, cholesky_real_not_symmetric_skip_checks_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{4, 12, -16}, {12, 37, -43}, {-15, -43, 98}};
     // act / assert
     ASSERT_NO_THROW(a.choleskyDecomposition({.skipChecks = true}));
 }
 
-TEST(MatrixDecompositions, fail_cholesky_real_psd_not_allowed) {
+TEST(MatrixDecompositions, fail_cholesky_real_psd_not_allowed_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{3, 1, 2}, {1, 3, 2}, {2, 2, 2}};
     // act / assert
     ASSERT_THROW(a.choleskyDecomposition(), NotPositiveDefinite);
 }
 
-TEST(MatrixDecompositions, fail_cholesky_real_not_symmetric) {
+TEST(MatrixDecompositions, fail_cholesky_real_not_symmetric_real) {
     // arrange
     constexpr Matrix<3, 3> a = {{4, 12, -16}, {12, 37, -43}, {-15, -43, 98}};
     // act / assert
