@@ -477,7 +477,20 @@ public:
         R_TYPE r;
     };
 
-    QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> qrDecomposition() const requires (isSquare);
+    enum class QRDecompositionAlgorithm {
+        givens_rotations,
+        householder_reflections,
+        gram_schmidt
+    };
+
+    QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> fullQrDecomposition(QRDecompositionAlgorithm algorithm = QRDecompositionAlgorithm::gram_schmidt, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+
+private:
+    QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> fullQrDecompositionThroughGivensRotations(DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+    QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> fullQrDecompositionThroughHouseholderReflections(DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+    QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> fullQrDecompositionThroughGramSchmidt(DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
+
+public:
 
     T minorOfElement(int c, int r) const requires (isSquare);
 

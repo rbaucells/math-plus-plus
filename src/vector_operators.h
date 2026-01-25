@@ -427,13 +427,13 @@ T Vector<N, T>::dot(const Vector<N, T>& other, const DotProductConjugationBehavi
         }
         else {
             switch (behavior) {
-                case second_argument:
+                case DotProductConjugationBehavior::second_argument:
                     result += data[i] * std::conj(other[i]);
                 break;
-                case neither:
+                case DotProductConjugationBehavior::neither:
                     result += data[i] * other[i];
                     break;
-                case first_argument:
+                case DotProductConjugationBehavior::first_argument:
                 default:
                     result += std::conj(data[i]) * other[i];
                     break;
@@ -456,13 +456,13 @@ std::common_type_t<T, OTHER_T> Vector<N, T>::dot(const Vector<N, OTHER_T>& other
 
     for (int i = 0; i < N; i++) {
         switch (behavior) {
-            case second_argument:
+            case DotProductConjugationBehavior::second_argument:
                 result += data[i] * std::conj(other[i]);
                 break;
-            case neither:
+            case DotProductConjugationBehavior::neither:
                 result += data[i] * other[i];
                 break;
-            case first_argument:
+            case DotProductConjugationBehavior::first_argument:
             default:
                 result += std::conj(data[i]) * other[i];
                 break;

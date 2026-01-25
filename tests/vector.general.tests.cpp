@@ -291,8 +291,8 @@ TEST(VectorGeneral, complex_angle_degrees_real) {
     constexpr Vector<3> b = {0, 1, 0};
     constexpr float expected = 90;
     // act
-    const float angleAb = a.complexAngle(b, Vector<3>::neither, RotationType::degrees);
-    const float angleBa = b.complexAngle(a, Vector<3>::neither, RotationType::degrees);
+    const float angleAb = a.complexAngle(b, DotProductConjugationBehavior::neither, RotationType::degrees);
+    const float angleBa = b.complexAngle(a, DotProductConjugationBehavior::neither, RotationType::degrees);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -304,8 +304,8 @@ TEST(VectorGeneral, complex_angle_radians_real) {
     constexpr Vector<3> b = {0, 1, 0};
     constexpr float expected = M_PI_2;
     // act
-    const float angleAb = a.complexAngle(b, Vector<3>::neither, RotationType::radians);
-    const float angleBa = b.complexAngle(a, Vector<3>::neither, RotationType::radians);
+    const float angleAb = a.complexAngle(b, DotProductConjugationBehavior::neither, RotationType::radians);
+    const float angleBa = b.complexAngle(a, DotProductConjugationBehavior::neither, RotationType::radians);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -318,8 +318,8 @@ TEST(VectorGeneral, complex_angle_radians_complex_first) {
     constexpr std::complex<float> expectedAb = {0.76677f, 0.19101f};
     constexpr std::complex<float> expectedBa = {0.76677f, -0.19101f};
     // act
-    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::first_argument, RotationType::radians);
-    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::radians);
+    const std::complex<float> angleAb = a.complexAngle(b,DotProductConjugationBehavior::first_argument, RotationType::radians);
+    const std::complex<float> angleBa = b.complexAngle(a,DotProductConjugationBehavior::first_argument, RotationType::radians);
     // assert
     ASSERT_TRUE(compare(angleAb, expectedAb, 0.001f));
     ASSERT_TRUE(compare(angleBa, expectedBa, 0.001f));
@@ -332,8 +332,8 @@ TEST(VectorGeneral, complex_angle_degrees_complex_first) {
     constexpr std::complex<float> expectedAb = {43.93268f, 10.94407f};
     constexpr std::complex<float> expectedBa = {43.93268f, -10.94407f};
     // act
-    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
-    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
+    const std::complex<float> angleAb = a.complexAngle(b,DotProductConjugationBehavior::first_argument, RotationType::degrees);
+    const std::complex<float> angleBa = b.complexAngle(a,DotProductConjugationBehavior::first_argument, RotationType::degrees);
     // assert
     ASSERT_TRUE(compare(angleAb, expectedAb, 0.001f));
     ASSERT_TRUE(compare(angleBa, expectedBa, 0.001f));
@@ -345,8 +345,8 @@ TEST(VectorGeneral, complex_angle_radians_complex_neither) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr std::complex<float> expected = {1.37685f, -0.26854f};
     // act
-    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::neither, RotationType::radians);
-    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::neither, RotationType::radians);
+    const std::complex<float> angleAb = a.complexAngle(b,DotProductConjugationBehavior::neither, RotationType::radians);
+    const std::complex<float> angleBa = b.complexAngle(a,DotProductConjugationBehavior::neither, RotationType::radians);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -358,8 +358,8 @@ TEST(VectorGeneral, complex_angle_degrees_complex_neither) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr std::complex<float> expected = {78.87213f, -15.38605f};
     // act
-    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::neither, RotationType::degrees);
-    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::neither, RotationType::degrees);
+    const std::complex<float> angleAb = a.complexAngle(b,DotProductConjugationBehavior::neither, RotationType::degrees);
+    const std::complex<float> angleBa = b.complexAngle(a,DotProductConjugationBehavior::neither, RotationType::degrees);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -372,8 +372,8 @@ TEST(VectorGeneral, complex_angle_radians_complex_second) {
     constexpr std::complex<float> expectedAb = {0.76677f, -0.19101f};
     constexpr std::complex<float> expectedBa = {0.76677f, 0.19101f};
     // act
-    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
-    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
+    const std::complex<float> angleAb = a.complexAngle(b,DotProductConjugationBehavior::second_argument, RotationType::radians);
+    const std::complex<float> angleBa = b.complexAngle(a,DotProductConjugationBehavior::second_argument, RotationType::radians);
     // assert
     ASSERT_TRUE(compare(angleAb, expectedAb, 0.001f));
     ASSERT_TRUE(compare(angleBa, expectedBa, 0.001f));
@@ -386,8 +386,8 @@ TEST(VectorGeneral, complex_angle_degrees_complex_second) {
     constexpr std::complex<float> expectedAb = {43.93268f, -10.94407f};
     constexpr std::complex<float> expectedBa = {43.93268f, 10.94407f};
     // act
-    const std::complex<float> angleAb = a.complexAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
-    const std::complex<float> angleBa = b.complexAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
+    const std::complex<float> angleAb = a.complexAngle(b,DotProductConjugationBehavior::second_argument, RotationType::degrees);
+    const std::complex<float> angleBa = b.complexAngle(a,DotProductConjugationBehavior::second_argument, RotationType::degrees);
     // assert
     ASSERT_TRUE(compare(angleAb, expectedAb, 0.001f));
     ASSERT_TRUE(compare(angleBa, expectedBa, 0.001f));
@@ -399,8 +399,8 @@ TEST(VectorGeneral, hermitian_angle_degrees_real) {
     constexpr Vector<3> b = {0, 1, 0};
     constexpr float expected = 90;
     // act
-    const float angleAb = a.hermitianAngle(b, Vector<3>::neither, RotationType::degrees);
-    const float angleBa = b.hermitianAngle(a, Vector<3>::neither, RotationType::degrees);
+    const float angleAb = a.hermitianAngle(b, DotProductConjugationBehavior::neither, RotationType::degrees);
+    const float angleBa = b.hermitianAngle(a, DotProductConjugationBehavior::neither, RotationType::degrees);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -412,8 +412,8 @@ TEST(VectorGeneral, hermitian_angle_radians_real) {
     constexpr Vector<3> b = {0, 1, 0};
     constexpr float expected = M_PI_2;
     // act
-    const float angleAb = a.hermitianAngle(b, Vector<3>::neither, RotationType::radians);
-    const float angleBa = b.hermitianAngle(a, Vector<3>::neither, RotationType::radians);
+    const float angleAb = a.hermitianAngle(b, DotProductConjugationBehavior::neither, RotationType::radians);
+    const float angleBa = b.hermitianAngle(a, DotProductConjugationBehavior::neither, RotationType::radians);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -425,8 +425,8 @@ TEST(VectorGeneral, hermitian_angle_radians_complex_first) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr float expected = 0.72973f;
     // act
-    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::first_argument, RotationType::radians);
-    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::radians);
+    const float angleAb = a.hermitianAngle(b,DotProductConjugationBehavior::first_argument, RotationType::radians);
+    const float angleBa = b.hermitianAngle(a,DotProductConjugationBehavior::first_argument, RotationType::radians);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -438,8 +438,8 @@ TEST(VectorGeneral, hermitian_angle_degrees_complex_first) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr float expected = 41.81031f;
     // act
-    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
-    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::first_argument, RotationType::degrees);
+    const float angleAb = a.hermitianAngle(b,DotProductConjugationBehavior::first_argument, RotationType::degrees);
+    const float angleBa = b.hermitianAngle(a,DotProductConjugationBehavior::first_argument, RotationType::degrees);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -451,8 +451,8 @@ TEST(VectorGeneral, hermitian_angle_radians_complex_neither) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr float expected = 1.23096f;
     // act
-    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::neither, RotationType::radians);
-    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::neither, RotationType::radians);
+    const float angleAb = a.hermitianAngle(b,DotProductConjugationBehavior::neither, RotationType::radians);
+    const float angleBa = b.hermitianAngle(a,DotProductConjugationBehavior::neither, RotationType::radians);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -464,8 +464,8 @@ TEST(VectorGeneral, hermitian_angle_degrees_complex_neither) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr float expected = 70.52878f;
     // act
-    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::neither, RotationType::degrees);
-    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::neither, RotationType::degrees);
+    const float angleAb = a.hermitianAngle(b,DotProductConjugationBehavior::neither, RotationType::degrees);
+    const float angleBa = b.hermitianAngle(a,DotProductConjugationBehavior::neither, RotationType::degrees);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -477,8 +477,8 @@ TEST(VectorGeneral, hermitian_angle_radians_complex_second) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr float expected = 0.72973f;
     // act
-    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
-    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::radians);
+    const float angleAb = a.hermitianAngle(b,DotProductConjugationBehavior::second_argument, RotationType::radians);
+    const float angleBa = b.hermitianAngle(a,DotProductConjugationBehavior::second_argument, RotationType::radians);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -490,8 +490,8 @@ TEST(VectorGeneral, hermitian_angle_degrees_complex_second) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr float expected = 41.81031f;
     // act
-    const float angleAb = a.hermitianAngle(b, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
-    const float angleBa = b.hermitianAngle(a, Vector<3, std::complex<float>>::second_argument, RotationType::degrees);
+    const float angleAb = a.hermitianAngle(b,DotProductConjugationBehavior::second_argument, RotationType::degrees);
+    const float angleBa = b.hermitianAngle(a,DotProductConjugationBehavior::second_argument, RotationType::degrees);
     // assert
     ASSERT_TRUE(compare(angleAb, expected, 0.001f));
     ASSERT_TRUE(compare(angleBa, expected, 0.001f));
@@ -589,8 +589,8 @@ TEST(VectorGeneral, dot_product_same_type_complex_first) {
     constexpr std::complex<float> expectedAb = {11, -2};
     constexpr std::complex<float> expectedBa = {11, 2};
     // act
-    const std::complex<float> ab = a.dot(b, Vector<3, std::complex<float>>::first_argument);
-    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::first_argument);
+    const std::complex<float> ab = a.dot(b,DotProductConjugationBehavior::first_argument);
+    const std::complex<float> ba = b.dot(a,DotProductConjugationBehavior::first_argument);
     // assert
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -602,8 +602,8 @@ TEST(VectorGeneral, dot_product_same_type_complex_neither) {
     constexpr Vector<3, std::complex<float>> b = {{3, 1}, {2, 0}, {0, 1}};
     constexpr std::complex<float> expected = {3, 4};
     // act
-    const std::complex<float> ab = a.dot(b, Vector<3, std::complex<float>>::neither);
-    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::neither);
+    const std::complex<float> ab = a.dot(b,DotProductConjugationBehavior::neither);
+    const std::complex<float> ba = b.dot(a,DotProductConjugationBehavior::neither);
     // assert
     ASSERT_TRUE(compare(ab, expected, 0.001f));
     ASSERT_TRUE(compare(ba, expected, 0.001f));
@@ -616,8 +616,8 @@ TEST(VectorGeneral, dot_product_same_type_complex_second) {
     constexpr std::complex<float> expectedAb = {11, 2};
     constexpr std::complex<float> expectedBa = {11, -2};
     // act
-    const std::complex<float> ab = a.dot(b, Vector<3, std::complex<float>>::second_argument);
-    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::second_argument);
+    const std::complex<float> ab = a.dot(b,DotProductConjugationBehavior::second_argument);
+    const std::complex<float> ba = b.dot(a,DotProductConjugationBehavior::second_argument);
     // assert
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -630,8 +630,8 @@ TEST(VectorGeneral, dot_product_diff_type_first) {
     constexpr std::complex<float> expectedAb = {32, -2};
     constexpr std::complex<float> expectedBa = {32, 2};
     // act
-    const std::complex<float> ab = a.dot(b, Vector<3>::first_argument);
-    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::first_argument);
+    const std::complex<float> ab = a.dot(b, DotProductConjugationBehavior::first_argument);
+    const std::complex<float> ba = b.dot(a,DotProductConjugationBehavior::first_argument);
     // assert
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -643,8 +643,8 @@ TEST(VectorGeneral, dot_product_diff_type_neither) {
     constexpr Vector<3, std::complex<float>> b = {{4, 1}, {5, 0}, {6, -1}};
     constexpr std::complex<float> expected = {32, -2};
     // act
-    const std::complex<float> ab = a.dot(b, Vector<3>::neither);
-    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::neither);
+    const std::complex<float> ab = a.dot(b, DotProductConjugationBehavior::neither);
+    const std::complex<float> ba = b.dot(a,DotProductConjugationBehavior::neither);
     // assert
     ASSERT_TRUE(compare(ab, expected, 0.001f));
     ASSERT_TRUE(compare(ba, expected, 0.001f));
@@ -657,9 +657,10 @@ TEST(VectorGeneral, dot_product_diff_type_second) {
     constexpr std::complex<float> expectedAb = {32, 2};
     constexpr std::complex<float> expectedBa = {32, -2};
     // act
-    const std::complex<float> ab = a.dot(b, Vector<3>::second_argument);
-    const std::complex<float> ba = b.dot(a, Vector<3, std::complex<float>>::second_argument);
+    const std::complex<float> ab = a.dot(b, DotProductConjugationBehavior::second_argument);
+    const std::complex<float> ba = b.dot(a,DotProductConjugationBehavior::second_argument);
     // assert
+    ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
 }
@@ -705,8 +706,8 @@ TEST(VectorGeneral, outer_product_same_type_complex_neither) {
     constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{-7, 16}, {-9, 22}}, {{-9, 38}, {-11, 52}}};
     constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{-7, 16}, {-9, 38}}, {{-9, 22}, {-11, 52}}};
     // act
-    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2, std::complex<float>>::DotProductConjugationBehavior::neither);
-    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, DotProductConjugationBehavior::neither);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, DotProductConjugationBehavior::neither);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -719,8 +720,8 @@ TEST(VectorGeneral, outer_product_same_type_complex_first) {
     constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{17, -4}, {23, -6}}, {{39, -2}, {53, -4}}};
     constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{17, 4}, {39, 2}}, {{23, 6}, {53, 4}}};
     // act
-    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2, std::complex<float>>::DotProductConjugationBehavior::first_argument);
-    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, DotProductConjugationBehavior::first_argument);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, DotProductConjugationBehavior::first_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -733,8 +734,8 @@ TEST(VectorGeneral, outer_product_same_type_complex_second) {
     constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{17, 4}, {23, 6}}, {{39, 2}, {53, 4}}};
     constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{17, -4}, {39, -2}}, {{23, -6}, {53, -4}}};
     // act
-    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2, std::complex<float>>::DotProductConjugationBehavior::second_argument);
-    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, DotProductConjugationBehavior::second_argument);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, DotProductConjugationBehavior::second_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -747,8 +748,8 @@ TEST(VectorGeneral, outer_product_diff_type_neither) {
     constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{3, 4}, {5, 6}}, {{6, 8}, {10, 12}}};
     constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{3, 4}, {6, 8}}, {{5, 6}, {10, 12}}};
     // act
-    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2>::DotProductConjugationBehavior::neither);
-    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, DotProductConjugationBehavior::neither);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, DotProductConjugationBehavior::neither);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -761,8 +762,8 @@ TEST(VectorGeneral, outer_product_diff_type_first) {
     constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{3, 4}, {5, 6}}, {{6, 8}, {10, 12}}};
     constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{3, -4}, {6, -8}}, {{5, -6}, {10, -12}}};
     // act
-    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2>::DotProductConjugationBehavior::first_argument);
-    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, DotProductConjugationBehavior::first_argument);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, DotProductConjugationBehavior::first_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -775,8 +776,8 @@ TEST(VectorGeneral, outer_product_diff_type_second) {
     constexpr Matrix<2, 2, std::complex<float>> expectedAb = {{{3, -4}, {5, -6}}, {{6, -8}, {10, -12}}};
     constexpr Matrix<2, 2, std::complex<float>> expectedBa = {{{3, 4}, {6, 8}}, {{5, 6}, {10, 12}}};
     // act
-    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, Vector<2>::DotProductConjugationBehavior::second_argument);
-    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, Vector<2, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const Matrix<2, 2, std::complex<float>> ab = a.outerProductMatrix(b, DotProductConjugationBehavior::second_argument);
+    const Matrix<2, 2, std::complex<float>> ba = b.outerProductMatrix(a, DotProductConjugationBehavior::second_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -804,8 +805,8 @@ TEST(VectorGeneral, scalar_project_same_type_complex_first) {
     constexpr std::complex<float> expectedAb = {9.17812f, -0.76132f};
     constexpr std::complex<float> expectedBa = {22.74778f, 1.88691f};
     // arrange
-    const std::complex<float> ab = a.scalarProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
-    const std::complex<float> ba = b.scalarProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const std::complex<float> ab = a.scalarProjectOnto(b, DotProductConjugationBehavior::first_argument);
+    const std::complex<float> ba = b.scalarProjectOnto(a, DotProductConjugationBehavior::first_argument);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -818,8 +819,8 @@ TEST(VectorGeneral, scalar_project_same_type_complex_neither) {
     constexpr std::complex<float> expectedAb = {-1.64952f, 9.05124f};
     constexpr std::complex<float> expectedBa = {-4.08831f, 22.43329f};
     // arrange
-    const std::complex<float> ab = a.scalarProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
-    const std::complex<float> ba = b.scalarProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const std::complex<float> ab = a.scalarProjectOnto(b, DotProductConjugationBehavior::neither);
+    const std::complex<float> ba = b.scalarProjectOnto(a, DotProductConjugationBehavior::neither);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -832,8 +833,8 @@ TEST(VectorGeneral, scalar_project_same_type_complex_second) {
     constexpr std::complex<float> expectedAb = {9.17812f, 0.76132f};
     constexpr std::complex<float> expectedBa = {22.74778f, -1.88691f};
     // arrange
-    const std::complex<float> ab = a.scalarProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
-    const std::complex<float> ba = b.scalarProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const std::complex<float> ab = a.scalarProjectOnto(b, DotProductConjugationBehavior::second_argument);
+    const std::complex<float> ba = b.scalarProjectOnto(a, DotProductConjugationBehavior::second_argument);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -846,8 +847,8 @@ TEST(VectorGeneral, scalar_project_diff_type_first) {
     constexpr std::complex<float> expectedAb = {2.45314f, 2.70691f};
     constexpr std::complex<float> expectedBa = {15.50115f, -17.10472f};
     // arrange
-    const std::complex<float> ab = a.scalarProjectOnto(b, Vector<3>::DotProductConjugationBehavior::first_argument);
-    const std::complex<float> ba = b.scalarProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const std::complex<float> ab = a.scalarProjectOnto(b, DotProductConjugationBehavior::first_argument);
+    const std::complex<float> ba = b.scalarProjectOnto(a, DotProductConjugationBehavior::first_argument);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -860,8 +861,8 @@ TEST(VectorGeneral, scalar_project_diff_type_neither) {
     constexpr std::complex<float> expectedAb = {2.45314f, 2.70691f};
     constexpr std::complex<float> expectedBa = {15.50115f, 17.10472f};
     // arrange
-    const std::complex<float> ab = a.scalarProjectOnto(b, Vector<3>::DotProductConjugationBehavior::neither);
-    const std::complex<float> ba = b.scalarProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const std::complex<float> ab = a.scalarProjectOnto(b, DotProductConjugationBehavior::neither);
+    const std::complex<float> ba = b.scalarProjectOnto(a, DotProductConjugationBehavior::neither);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -874,8 +875,8 @@ TEST(VectorGeneral, scalar_project_diff_type_second) {
     constexpr std::complex<float> expectedAb = {2.45314f, -2.70691f};
     constexpr std::complex<float> expectedBa = {15.50115f, 17.10472f};
     // arrange
-    const std::complex<float> ab = a.scalarProjectOnto(b, Vector<3>::DotProductConjugationBehavior::second_argument);
-    const std::complex<float> ba = b.scalarProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const std::complex<float> ab = a.scalarProjectOnto(b, DotProductConjugationBehavior::second_argument);
+    const std::complex<float> ba = b.scalarProjectOnto(a, DotProductConjugationBehavior::second_argument);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -902,8 +903,8 @@ TEST(VectorGeneral, vector_project_same_type_complex_first) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{2.97496f, 2.88014}, {3.81574, 3.59213}, {4.65653, 4.30411}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{1.98901f, 4.96703f}, {6.36264f, 10.13187f}, {10.73626f, 15.29670f}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
-    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, DotProductConjugationBehavior::first_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, DotProductConjugationBehavior::first_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -916,8 +917,8 @@ TEST(VectorGeneral, vector_project_same_type_complex_neither) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{-3.55098f, 2.12165f}, {-4.45617f, 2.74776f}, {-5.36136f, 3.37388f}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{-5.13187f, 1.49451f}, {-10.69231f, 5.34066f}, {-16.25275f, 9.18681}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
-    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, DotProductConjugationBehavior::neither);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, DotProductConjugationBehavior::neither);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -930,8 +931,8 @@ TEST(VectorGeneral, vector_project_same_type_complex_second) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{2.45975f, 3.33095f}, {3.17174f, 4.17173f}, {3.88372f, 5.01252f}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{2.78022f, 4.57143f}, {7.94506f, 8.94506f}, {13.10989f, 13.31868f}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
-    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, DotProductConjugationBehavior::second_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, DotProductConjugationBehavior::second_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -944,8 +945,8 @@ TEST(VectorGeneral, vector_project_diff_type_first) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{-0.18962f, 1.63148f}, {-0.21109f, 2.06798f}, {-0.23256f, 2.50447f}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{4.14286f, -4.57143f}, {8.28571f, -9.14286f}, {12.42857f, -13.71429f}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3>::DotProductConjugationBehavior::first_argument);
-    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, DotProductConjugationBehavior::first_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, DotProductConjugationBehavior::first_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -958,8 +959,8 @@ TEST(VectorGeneral, vector_project_diff_type_neither) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{-0.18962f, 1.63148f}, {-0.21109f, 2.06798f}, {-0.23256f, 2.50447f}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{4.14286f, 4.57143f}, {8.28571f, 9.14286f}, {12.42857f, 13.71429f}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3>::DotProductConjugationBehavior::neither);
-    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, DotProductConjugationBehavior::neither);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, DotProductConjugationBehavior::neither);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -972,8 +973,8 @@ TEST(VectorGeneral, vector_project_diff_type_second) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{1.64222f, 0.02862f}, {2.07871f, 0.00716f}, {2.51521f, -0.01431f}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{4.14286f, 4.57143f}, {8.28571f, 9.14286f}, {12.42857f, 13.71429f}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, Vector<3>::DotProductConjugationBehavior::second_argument);
-    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const Vector<3, std::complex<float>> ab = a.vectorProjectOnto(b, DotProductConjugationBehavior::second_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorProjectOnto(a, DotProductConjugationBehavior::second_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -1000,8 +1001,8 @@ TEST(VectorGeneral, scalar_reject_same_type_complex_first) {
     constexpr float expectedAb = 2.91563f;
     constexpr float expectedBa = 7.22633f;
     // arrange
-    const float ab = a.scalarRejectFrom(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
-    const float ba = b.scalarRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const float ab = a.scalarRejectFrom(b, DotProductConjugationBehavior::first_argument);
+    const float ba = b.scalarRejectFrom(a, DotProductConjugationBehavior::first_argument);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -1014,8 +1015,8 @@ TEST(VectorGeneral, scalar_reject_same_type_complex_neither) {
     constexpr float expectedAb = 13.86157f;
     constexpr float expectedBa = 36.73726f;
     // arrange
-    const float ab = a.scalarRejectFrom(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
-    const float ba = b.scalarRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const float ab = a.scalarRejectFrom(b, DotProductConjugationBehavior::neither);
+    const float ba = b.scalarRejectFrom(a, DotProductConjugationBehavior::neither);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -1028,8 +1029,8 @@ TEST(VectorGeneral, scalar_reject_same_type_complex_second) {
     constexpr float expectedAb = 2.48646f;
     constexpr float expectedBa = 6.16263f;
     // arrange
-    const float ab = a.scalarRejectFrom(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
-    const float ba = b.scalarRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const float ab = a.scalarRejectFrom(b, DotProductConjugationBehavior::second_argument);
+    const float ba = b.scalarRejectFrom(a, DotProductConjugationBehavior::second_argument);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -1042,8 +1043,8 @@ TEST(VectorGeneral, scalar_reject_diff_type_first) {
     constexpr float expectedAb = 5.47396f;
     constexpr float expectedBa = 34.58943f;
     // arrange
-    const float ab = a.scalarRejectFrom(b, Vector<3>::DotProductConjugationBehavior::first_argument);
-    const float ba = b.scalarRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const float ab = a.scalarRejectFrom(b, DotProductConjugationBehavior::first_argument);
+    const float ba = b.scalarRejectFrom(a, DotProductConjugationBehavior::first_argument);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -1056,8 +1057,8 @@ TEST(VectorGeneral, scalar_reject_diff_type_neither) {
     constexpr float expectedAb = 5.47396f;
     constexpr float expectedBa = 5.11301f;
     // arrange
-    const float ab = a.scalarRejectFrom(b, Vector<3>::DotProductConjugationBehavior::neither);
-    const float ba = b.scalarRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const float ab = a.scalarRejectFrom(b, DotProductConjugationBehavior::neither);
+    const float ba = b.scalarRejectFrom(a, DotProductConjugationBehavior::neither);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -1070,8 +1071,8 @@ TEST(VectorGeneral, scalar_reject_diff_type_second) {
     constexpr float expectedAb = 0.80916f;
     constexpr float expectedBa = 5.11301f;
     // arrange
-    const float ab = a.scalarRejectFrom(b, Vector<3>::DotProductConjugationBehavior::second_argument);
-    const float ba = b.scalarRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const float ab = a.scalarRejectFrom(b, DotProductConjugationBehavior::second_argument);
+    const float ba = b.scalarRejectFrom(a, DotProductConjugationBehavior::second_argument);
     // act
     ASSERT_TRUE(compare(ab, expectedAb, 0.001f));
     ASSERT_TRUE(compare(ba, expectedBa, 0.001f));
@@ -1098,8 +1099,8 @@ TEST(VectorGeneral, vector_reject_same_type_complex_first) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{-1.97496f, -0.88014f}, {-0.81574f, 0.40787f}, {0.34347f, 1.69589f}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{5.01099f, 3.03297f}, {2.63736f, -0.13187f}, {0.26374f, -3.29670f}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
-    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, DotProductConjugationBehavior::first_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, DotProductConjugationBehavior::first_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -1112,8 +1113,8 @@ TEST(VectorGeneral, vector_reject_same_type_complex_neither) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{4.55098f, -0.12165f}, {7.45617f, 1.25224f}, {10.36136f, 2.62612f}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{12.13187f, 6.505491f}, {19.69231f, 4.65934f}, {27.25275f, 2.81319f}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
-    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, DotProductConjugationBehavior::neither);
+    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, DotProductConjugationBehavior::neither);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -1126,8 +1127,8 @@ TEST(VectorGeneral, vector_reject_same_type_complex_second) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{-1.45975f ,-1.33095f}, {-0.17174f ,-0.17173f}, {1.11628f, 0.98748f}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{4.21978f, 3.42857f}, {1.05494f, 1.05494f}, {-2.10989f, -1.31868f}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
-    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, DotProductConjugationBehavior::second_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, DotProductConjugationBehavior::second_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -1140,8 +1141,8 @@ TEST(VectorGeneral, vector_reject_diff_type_first) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{1.18962f, -1.63148f}, {2.21109f, -2.06798f}, {3.23256f, -2.50447f}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{2.85714f, 12.57143f}, {0.71429f, 19.14286f}, {-1.42857f, 25.71429f}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, Vector<3>::DotProductConjugationBehavior::first_argument);
-    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument);
+    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, DotProductConjugationBehavior::first_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, DotProductConjugationBehavior::first_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -1154,8 +1155,8 @@ TEST(VectorGeneral, vector_reject_diff_type_neither) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{1.18962f, -1.63148f}, {2.21109f, -2.06798f}, {3.23256f, -2.50447f}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{2.85714f, 3.42857f}, {0.71429f, 0.85714f}, {-1.42857f, -1.71429f}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, Vector<3>::DotProductConjugationBehavior::neither);
-    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither);
+    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, DotProductConjugationBehavior::neither);
+    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, DotProductConjugationBehavior::neither);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));
@@ -1168,8 +1169,8 @@ TEST(VectorGeneral, vector_reject_diff_type_second) {
     constexpr Vector<3, std::complex<float>> expectedAb = {{-0.64222f, -0.02862f}, {-0.07871f, -0.00716f}, {0.48479f, 0.01431f}};
     constexpr Vector<3, std::complex<float>> expectedBa = {{2.85714f, 3.42857f}, {0.71429f, 0.85714f}, {-1.42857, -1.71429f}};
     // act
-    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, Vector<3>::DotProductConjugationBehavior::second_argument);
-    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument);
+    const Vector<3, std::complex<float>> ab = a.vectorRejectFrom(b, DotProductConjugationBehavior::second_argument);
+    const Vector<3, std::complex<float>> ba = b.vectorRejectFrom(a, DotProductConjugationBehavior::second_argument);
     // assert
     ASSERT_TRUE(ab.equals(expectedAb, 0.001f));
     ASSERT_TRUE(ba.equals(expectedBa, 0.001f));

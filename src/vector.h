@@ -161,17 +161,11 @@ struct Vector {
 
     [[nodiscard]] std::string toString(int precision = 2) const;
 
-    enum DotProductConjugationBehavior {
-        first_argument,
-        second_argument,
-        neither
-    };
-
-    [[nodiscard]] T dot(const Vector<N, T>& other, DotProductConjugationBehavior behavior = first_argument) const;
+    [[nodiscard]] T dot(const Vector<N, T>& other, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
     T operator*(const Vector<N, T>& other) const;
 
     template<typename OTHER_T> requires HasCommonType<OTHER_T, T>
-    [[nodiscard]] std::common_type_t<T, OTHER_T> dot(const Vector<N, OTHER_T>& other, DotProductConjugationBehavior behavior = first_argument) const;
+    [[nodiscard]] std::common_type_t<T, OTHER_T> dot(const Vector<N, OTHER_T>& other, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
     template<typename OTHER_T> requires HasCommonType<OTHER_T, T>
     std::common_type_t<T, OTHER_T> operator*(const Vector<N, OTHER_T>& other) const;
 

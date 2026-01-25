@@ -211,14 +211,14 @@ Matrix<OTHER_N, N, T> Vector<N, T>::outerProductMatrix(const Vector<OTHER_N, T>&
         for (int r = 0; r < N; r++) {
             if constexpr (isComplex) {
                 switch (behavior) {
-                    case second_argument:
+                    case DotProductConjugationBehavior::second_argument:
                         result[c][r] = data[r] * std::conj(other[c]);
                         break;
-                    case neither:
+                    case DotProductConjugationBehavior::neither:
                         result[c][r] = data[r] * other[c];
                         break;
                     default:
-                    case first_argument:
+                    case DotProductConjugationBehavior::first_argument:
                         result[c][r] = std::conj(data[r]) * other[c];
                         break;
                 }
@@ -241,14 +241,14 @@ Matrix<OTHER_N, N, std::common_type_t<T, OTHER_T>> Vector<N, T>::outerProductMat
         for (int r = 0; r < N; r++) {
             if constexpr (isComplex || is_complex_v<OTHER_T>) {
                 switch (behavior) {
-                    case second_argument:
+                    case DotProductConjugationBehavior::second_argument:
                         result[c][r] = data[r] * std::conj(other[c]);
                         break;
-                    case neither:
+                    case DotProductConjugationBehavior::neither:
                         result[c][r] = data[r] * other[c];
                         break;
                     default:
-                    case first_argument:
+                    case DotProductConjugationBehavior::first_argument:
                         result[c][r] = std::conj(data[r]) * other[c];
                         break;
                 }

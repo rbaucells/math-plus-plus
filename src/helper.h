@@ -175,3 +175,9 @@ template<complex T, real U> requires HasCommonType<underlying_type_t<T>, U>
 bool greater(const T a, const U b) {
     return greater(std::real(a), b) && compare(std::imag(a), 0);
 }
+
+enum class DotProductConjugationBehavior {
+    first_argument,
+    second_argument,
+    neither
+};

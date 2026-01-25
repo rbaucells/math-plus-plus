@@ -660,8 +660,3 @@ TEST(MatrixDecompositions, fail_ldl_complex_not_hermitian) {
     ASSERT_THROW(a.ldlDecomposition(), NotSymmetricOrHermitian);
 }
 #pragma endregion
-
-TEST(MatrixDecompositions, qr_real) {
-    // arrange
-    constexpr Matrix<3, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-}
