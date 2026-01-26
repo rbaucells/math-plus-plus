@@ -505,7 +505,7 @@ public:
     template<int ITER>
     LanczosAlgorithm<Matrix<ITER, ITER, T>, Matrix<COLUMNS, ITER + 1, T>> lanczosAlgorithm() const requires (isSquare);
 
-    T rayleighQuotient(const Vector<COLUMNS, T>& vec) const;
+    T rayleighQuotient(const Vector<COLUMNS, T>& vec) const requires (isSquare);
 
     template<typename VECTOR_TYPE, typename VALUE_TYPE>
     struct EigenPair {
@@ -523,7 +523,7 @@ public:
     };
 
     // eigen-vector approximation from eigen-value approximation
-    Vector<COLUMNS, T> inverseIteration(InverseIterationParams<Vector<COLUMNS, T>, T, UnderlyingType> params) const;
+    Vector<COLUMNS, T> inverseIteration(InverseIterationParams<Vector<COLUMNS, T>, T, UnderlyingType> params) const requires (isSquare);
 
     template<typename VECTOR_TYPE, typename VALUE_TYPE, typename TOLERANCE_TYPE>
     struct RayleighQuotientIterationParams {
@@ -533,7 +533,7 @@ public:
         const TOLERANCE_TYPE tolerance = 1e-12;
     };
 
-    EigenPair<Vector<COLUMNS, T>, T> rayleighQuotientIteration(RayleighQuotientIterationParams<Vector<COLUMNS, T>, T, UnderlyingType> params = RayleighQuotientIterationParams<Vector<COLUMNS, T>, T, T>()) const;
+    EigenPair<Vector<COLUMNS, T>, T> rayleighQuotientIteration(RayleighQuotientIterationParams<Vector<COLUMNS, T>, T, UnderlyingType> params = RayleighQuotientIterationParams<Vector<COLUMNS, T>, T, T>()) const requires (isSquare);
 
     template<typename VECTOR_TYPE, typename TOLERANCE_TYPE>
     struct PowerIterationParams {
@@ -543,7 +543,7 @@ public:
     };
 
     // greatest eigen-value and eigen-vector approximation
-    EigenPair<Vector<COLUMNS, T>, T> powerIteration(PowerIterationParams<Vector<COLUMNS, T>, UnderlyingType> params = PowerIterationParams<Vector<COLUMNS, T>, UnderlyingType>()) const;
+    EigenPair<Vector<COLUMNS, T>, T> powerIteration(PowerIterationParams<Vector<COLUMNS, T>, UnderlyingType> params = PowerIterationParams<Vector<COLUMNS, T>, UnderlyingType>()) const requires (isSquare);
 };
 
 // Non member operators

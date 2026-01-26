@@ -41,12 +41,12 @@ Matrix<ROWS, COLUMNS, T>::template LanczosAlgorithm<Matrix<ITER, ITER, T>, Matri
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-T Matrix<ROWS, COLUMNS, T>::rayleighQuotient(const Vector<COLUMNS, T>& vec) const {
+T Matrix<ROWS, COLUMNS, T>::rayleighQuotient(const Vector<COLUMNS, T>& vec) const requires (isSquare) {
     return vec.dot(multiply(vec)) / vec.euclidianNormSquared();
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::inverseIteration(InverseIterationParams<Vector<COLUMNS, T>, T, UnderlyingType> params) const {
+Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::inverseIteration(InverseIterationParams<Vector<COLUMNS, T>, T, UnderlyingType> params) const requires (isSquare) {
     Vector<COLUMNS, T> b_k = params.startingVector;
     Matrix<ROWS, COLUMNS, T> thisMinusEigenIdentityInverse = subtract(params.eigenVal * identity()).inverse();
 
@@ -63,7 +63,7 @@ Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::inverseIteration(InverseIterationPa
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T>::template EigenPair<Vector<COLUMNS, T>, T> Matrix<ROWS, COLUMNS, T>::rayleighQuotientIteration(RayleighQuotientIterationParams<Vector<COLUMNS, T>, T, UnderlyingType> params ) const {
+Matrix<ROWS, COLUMNS, T>::template EigenPair<Vector<COLUMNS, T>, T> Matrix<ROWS, COLUMNS, T>::rayleighQuotientIteration(RayleighQuotientIterationParams<Vector<COLUMNS, T>, T, UnderlyingType> params ) const requires (isSquare) {
     Vector<COLUMNS, T> b_k = params.vectorApproximation;
     T u_k = params.valueApproximation.value_or(rayleighQuotient(b_k));
 
@@ -82,7 +82,7 @@ Matrix<ROWS, COLUMNS, T>::template EigenPair<Vector<COLUMNS, T>, T> Matrix<ROWS,
 }
 
 template< int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T>::template EigenPair<Vector<COLUMNS, T>, T> Matrix<ROWS, COLUMNS, T>::powerIteration(PowerIterationParams<Vector<COLUMNS, T>, UnderlyingType> params) const {
+Matrix<ROWS, COLUMNS, T>::template EigenPair<Vector<COLUMNS, T>, T> Matrix<ROWS, COLUMNS, T>::powerIteration(PowerIterationParams<Vector<COLUMNS, T>, UnderlyingType> params) const requires (isSquare) {
     Vector<COLUMNS, T> b_k = params.vectorApproximation;
     T u_k = {};
 

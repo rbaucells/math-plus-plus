@@ -52,8 +52,7 @@ TEST(VectorChecks, is_orthogonal_complex) {
     constexpr Vector<3, std::complex<float>> b = {{0, 0}, {2, -1}, {0, 0}};
     constexpr Vector<3, std::complex<float>> c = {{0, 0}, {0, 0}, {3, 2}};
     // act
-    const bool isOrthogonal =
-        Vector<3, std::complex<float>>::isOrthogonal({a, b, c});
+    const bool isOrthogonal = Vector<3, std::complex<float>>::isOrthogonal({a, b, c});
     // assert
     ASSERT_TRUE(isOrthogonal);
 }
@@ -64,8 +63,7 @@ TEST(VectorChecks, is_orthonormal_complex) {
     constexpr Vector<3, std::complex<float>> b = {{0, 0}, {0, 1}, {0, 0}};
     constexpr Vector<3, std::complex<float>> c = {{0, 0}, {0, 0}, {1, 0}};
     // act
-    const bool isOrthonormal =
-        Vector<3, std::complex<float>>::isOrthonormal({a, b, c});
+    const bool isOrthonormal = Vector<3, std::complex<float>>::isOrthonormal({a, b, c});
     // assert
     ASSERT_TRUE(isOrthonormal);
 }
@@ -76,8 +74,7 @@ TEST(VectorChecks, not_is_orthogonal_complex) {
     constexpr Vector<3, std::complex<float>> b = {{0, 0}, {2, 0}, {0, 0}};
     constexpr Vector<3, std::complex<float>> c = {{0, 0}, {0, 0}, {3, 1}};
     // act
-    const bool isOrthogonal =
-        Vector<3, std::complex<float>>::isOrthogonal({a, b, c});
+    const bool isOrthogonal = Vector<3, std::complex<float>>::isOrthogonal({a, b, c});
     // assert
     ASSERT_FALSE(isOrthogonal);
 }
@@ -88,8 +85,7 @@ TEST(VectorChecks, not_is_orthonormal_complex_not_orthogonal) {
     constexpr Vector<3, std::complex<float>> b = {{1, 1}, {1, 0}, {0, 0}};
     constexpr Vector<3, std::complex<float>> c = {{0, 0}, {0, 0}, {0, 1}};
     // act
-    const bool isOrthonormal =
-        Vector<3, std::complex<float>>::isOrthonormal({a, b, c});
+    const bool isOrthonormal = Vector<3, std::complex<float>>::isOrthonormal({a, b, c});
     // assert
     ASSERT_FALSE(isOrthonormal);
 }
@@ -100,8 +96,7 @@ TEST(VectorChecks, not_is_orthonormal_complex_not_normalized) {
     constexpr Vector<3, std::complex<float>> b = {{0, 0}, {0, 2}, {0, 0}};
     constexpr Vector<3, std::complex<float>> c = {{0, 0}, {0, 0}, {1, -1}};
     // act
-    const bool isOrthonormal =
-        Vector<3, std::complex<float>>::isOrthonormal({a, b, c});
+    const bool isOrthonormal = Vector<3, std::complex<float>>::isOrthonormal({a, b, c});
     // assert
     ASSERT_FALSE(isOrthonormal);
 }
