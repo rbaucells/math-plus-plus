@@ -8,16 +8,14 @@
 namespace py = pybind11;
 
 PYBIND11_MODULE(mathpy, m) {
-    py::class_<Vector<3>> vector3f(m, "Vector3f");
-
-    py::native_enum<Vector<3>::DotProductConjugationBehavior>(vector3f, "DotProductConjugationBehavior", "enum.Enum")
-        .value("first_argument", Vector<3>::DotProductConjugationBehavior::first_argument)
-        .value("neither", Vector<3>::DotProductConjugationBehavior::neither)
-        .value("second_argument", Vector<3>::DotProductConjugationBehavior::second_argument)
+    py::native_enum<DotProductConjugationBehavior>(m, "DotProductConjugationBehavior", "enum.Enum")
+        .value("first_argument", DotProductConjugationBehavior::first_argument)
+        .value("neither", DotProductConjugationBehavior::neither)
+        .value("second_argument", DotProductConjugationBehavior::second_argument)
         .export_values()
         .finalize();
 
-    vector3f
+    py::class_<Vector<3>>(m, "Vector3f")
         .def(py::init())
         .def(py::init([](const std::vector<float>& elements) {
             auto* vec = new Vector<3>();
@@ -129,27 +127,18 @@ PYBIND11_MODULE(mathpy, m) {
             return self.toString(precision);
         }, py::arg("precision") = 2)
         .def(py::self * py::self)
-        .def("dot", [](const Vector<3>& self, const Vector<3>& other, const Vector<3>::DotProductConjugationBehavior behavior) -> float {
+        .def("dot", [](const Vector<3>& self, const Vector<3>& other, const DotProductConjugationBehavior behavior) -> float {
             return self.dot(other, behavior);
-        }, py::arg("other"), py::arg("behavior") = Vector<3>::DotProductConjugationBehavior::first_argument)
+        }, py::arg("other"), py::arg("behavior") = DotProductConjugationBehavior::first_argument)
         // different types
         .def("__mul__", [](const Vector<3>& self, const Vector<3, std::complex<float>>& other) -> std::complex<float> {
             return self * other;
         }, py::is_operator())
-        .def("dot", [](const Vector<3>& self, const Vector<3, std::complex<float>>& other, const Vector<3>::DotProductConjugationBehavior behavior) -> std::complex<float> {
+        .def("dot", [](const Vector<3>& self, const Vector<3, std::complex<float>>& other, const DotProductConjugationBehavior behavior) -> std::complex<float> {
             return self.dot(other, behavior);
         });
 
-    py::class_<Vector<3, std::complex<float>>> vector3cf(m, "Vector3cf");
-
-    py::native_enum<Vector<3, std::complex<float>>::DotProductConjugationBehavior>(vector3cf, "DotProductConjugationBehavior", "enum.Enum")
-        .value("first_argument", Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument)
-        .value("neither", Vector<3, std::complex<float>>::DotProductConjugationBehavior::neither)
-        .value("second_argument", Vector<3, std::complex<float>>::DotProductConjugationBehavior::second_argument)
-        .export_values()
-        .finalize();
-
-    vector3cf
+    py::class_<Vector<3, std::complex<float>>>(m, "Vector3cf")
         .def(py::init())
         .def(py::init([](const std::vector<std::complex<float>>& elements) {
             auto* vec = new Vector<3, std::complex<float>>();
@@ -282,13 +271,13 @@ PYBIND11_MODULE(mathpy, m) {
             return self.toString(precision);
         }, py::arg("precision") = 2)
         .def(py::self * py::self)
-        .def("dot", [](const Vector<3, std::complex<float>>& self, const Vector<3, std::complex<float>>& other, const Vector<3, std::complex<float>>::DotProductConjugationBehavior behavior) -> std::complex<float> {
+        .def("dot", [](const Vector<3, std::complex<float>>& self, const Vector<3, std::complex<float>>& other, const DotProductConjugationBehavior behavior) -> std::complex<float> {
             return self.dot(other, behavior);
-        }, py::arg("other"), py::arg("behavior") = Vector<3, std::complex<float>>::DotProductConjugationBehavior::first_argument)
+        }, py::arg("other"), py::arg("behavior") = DotProductConjugationBehavior::first_argument)
         .def("__mul__", [](const Vector<3, std::complex<float>>& self, const Vector<3>& other) -> std::complex<float> {
             return self * other;
         }, py::is_operator())
-        .def("dot", [](const Vector<3, std::complex<float>>& self, const Vector<3>& other, const Vector<3, std::complex<float>>::DotProductConjugationBehavior behavior) -> std::complex<float> {
+        .def("dot", [](const Vector<3, std::complex<float>>& self, const Vector<3>& other, const DotProductConjugationBehavior behavior) -> std::complex<float> {
             return self.dot(other, behavior);
         });
 }
