@@ -32,7 +32,7 @@ jobs:
         run: cmake --build build
       
       - name: Run unit tests
-        run: (cd build && ./tests/math-tests)
+        run: (cd build && ./tests/mathpp-tests)
 
       - name: Generate coverage report
         run: gcovr --root . --filter src/ --cobertura cobertura-coverage.xml build/
