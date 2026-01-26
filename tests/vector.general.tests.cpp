@@ -668,7 +668,7 @@ TEST(VectorGeneral, dot_product_diff_type_second) {
 TEST(VectorGeneral, to_string_real) {
     // arrange
     constexpr Vector<3> v = {1, -2, 3};
-    constexpr std::string expected = "[1.00, -2.00, 3.00]";
+    const std::string expected = "[1.00, -2.00, 3.00]";
     // act
     const std::string string = v.toString(2);
     // assert
