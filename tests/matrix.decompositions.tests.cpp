@@ -1084,3 +1084,47 @@ TEST(MatrixDecompositions, fail_ldl_complex_not_hermitian) {
     ASSERT_THROW(a.ldlDecomposition(), NotSymmetricOrHermitian);
 }
 #pragma endregion
+
+#pragma region QR
+
+TEST(MatrixDecompositions, qr_square_real) {
+    // arrange
+    constexpr Matrix<3, 3> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    // act
+    auto [q, r] = a.fullQrDecomposition();
+    const Matrix<3, 3> calculatedA = q * r;
+    // assert
+    ASSERT_TRUE(calculatedA.equals(a, 0.001f));
+}
+
+TEST(MatrixDecompositions, qr_tall_real) {
+    // arrange
+    constexpr Matrix<3, 2> a = {{1, 2}, {3, 4}, {5, 6}};
+    // act
+    auto [q, r] = a.fullQrDecomposition();
+    const Matrix<3, 2> calculatedA = q * r;
+    // assert
+    ASSERT_TRUE(calculatedA.equals(a, 0.001f));
+}
+
+TEST(MatrixDecompositions, qr_square_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
+    // act
+    auto [q, r] = a.fullQrDecomposition();
+    const Matrix<3, 3, std::complex<float>> calculatedA = q * r;
+    // assert
+    ASSERT_TRUE(calculatedA.equals(a, 0.001f));
+}
+
+TEST(MatrixDecompositions, qr_tall_complex) {
+    // arrange
+    constexpr Matrix<3, 2, std::complex<float>> a = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}, {{9, 10}, {11, 12}}};
+    // act
+    auto [q, r] = a.fullQrDecomposition();
+    const Matrix<3, 2, std::complex<float>> calculatedA = q * r;
+    // assert
+    ASSERT_TRUE(calculatedA.equals(a, 0.001f));
+}
+
+#pragma endregion

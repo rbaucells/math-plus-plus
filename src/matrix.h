@@ -289,9 +289,9 @@ public:
     [[nodiscard]] bool isNegativeSemiDefinite() const requires (isSquare);
 
     Vector<ROWS, T> getColumnVector(int i) const;
-    std::array<Vector<ROWS>, COLUMNS> getColumnVectors() const;
+    std::array<Vector<ROWS, T>, COLUMNS> getColumnVectors() const;
     Vector<COLUMNS, T> getRowVector(int i) const;
-    std::array<Vector<COLUMNS>, ROWS> getRowVectors() const;
+    std::array<Vector<COLUMNS, T>, ROWS> getRowVectors() const;
 
     void setColumnVectors(const std::array<Vector<ROWS, T>, COLUMNS>& columnVectors);
     void setColumnVector(int i, const Vector<ROWS, T>& v);
@@ -444,7 +444,6 @@ public:
         UnderlyingType precision = 0.001;
     };
 
-    // uses Cholesky–Banachiewicz and Cholesky–Crout algorithms
     CholeskyDecomposition<Matrix<ROWS, COLUMNS, T>, Matrix<ROWS, COLUMNS, T>> choleskyDecomposition(CholeskyDecompositionParams params = {}) const requires (isSquare);
 
     template<typename L_TYPE, typename L_TRANSPOSE_TYPE, typename P_TYPE, typename P_TRANSPOSE_TYPE>
@@ -477,20 +476,7 @@ public:
         R_TYPE r;
     };
 
-    enum class QRDecompositionAlgorithm {
-        givens_rotations,
-        householder_reflections,
-        gram_schmidt
-    };
-
-    QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> fullQrDecomposition(QRDecompositionAlgorithm algorithm = QRDecompositionAlgorithm::gram_schmidt, DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
-
-private:
-    QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> fullQrDecompositionThroughGivensRotations(DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
-    QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> fullQrDecompositionThroughHouseholderReflections(DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
-    QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> fullQrDecompositionThroughGramSchmidt(DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const;
-
-public:
+    QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> fullQrDecomposition(DotProductConjugationBehavior behavior = DotProductConjugationBehavior::first_argument) const requires (ROWS >= COLUMNS);
 
     T minorOfElement(int c, int r) const requires (isSquare);
 

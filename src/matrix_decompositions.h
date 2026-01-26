@@ -409,49 +409,32 @@ Matrix<ROWS, COLUMNS, T>::template LDLDecomposition<Matrix<ROWS, COLUMNS, T>, Ma
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T>::template QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::fullQrDecomposition(const QRDecompositionAlgorithm algorithm, const DotProductConjugationBehavior behavior) const {
-    switch (algorithm) {
-        case QRDecompositionAlgorithm::givens_rotations:
-            return fullQrDecompositionThroughGivensRotations(behavior);
-        case QRDecompositionAlgorithm::householder_reflections:
-            return fullQrDecompositionThroughHouseholderReflections(behavior);
-        default:
-        case QRDecompositionAlgorithm::givens_rotations:
-            return fullQrDecompositionThroughGramSchmidt(behavior);
-    }
-}
+Matrix<ROWS, COLUMNS, T>::template QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::fullQrDecomposition(DotProductConjugationBehavior behavior) const requires (ROWS >= COLUMNS) {
+    Matrix<ROWS, ROWS, T> q;
+    Matrix<ROWS, COLUMNS, T> r;
 
-template<int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T>::template QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::fullQrDecompositionThroughGivensRotations(DotProductConjugationBehavior behavior) const {
+    std::array<Vector<ROWS, T>, COLUMNS> a = getColumnVectors();
+    std::array<Vector<ROWS, T>, ROWS> e;
 
-}
+    r[0][0] = a[0].euclidianNorm();
+    e[0] = a[0] / r[0][0];
 
-template<int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T>::template QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::fullQrDecompositionThroughHouseholderReflections(DotProductConjugationBehavior behavior) const {
+    for (int j = 1; j < COLUMNS; j++) {
+        Vector<ROWS, T> v_j = a[j];
 
-}
-
-template<int ROWS, int COLUMNS, scalar T>
-Matrix<ROWS, COLUMNS, T>::template QRDecomposition<Matrix<ROWS, ROWS, T>, Matrix<ROWS, COLUMNS, T>> Matrix<ROWS, COLUMNS, T>::fullQrDecompositionThroughGramSchmidt(DotProductConjugationBehavior behavior) const {
-    Matrix<ROWS, COLUMNS, T> q;
-    Matrix<ROWS, ROWS, T> r;
-
-    q.setColumnVector(0, getColumnVector(0).normalized());
-
-    for (int j = 0; j < COLUMNS; j++) {
-        Vector<ROWS, T> w = getColumnVector(j);
-
-        for (int i = 0; i < j; i++) {
-            r[j][i] = w.dot(q.getColumnVector(i), behavior);
+        for (int i = 0; i < std::min(j, ROWS); i++) {
+            r[j][i] = a[j].dot(e[i], behavior);
+            v_j -= r[j][i] * e[i];
         }
 
-        for (int i = 0; i < j; i++) {
-            w -= r[j][i] * q.getColumnVector(i);
-        }
+        r[j][j] = v_j.euclidianNorm();
 
-        r[j][j] = w.euclidianNorm();
-        q.setColumnVector(j, w / r[j][j]);
+        if (j < ROWS) {
+            e[j] = v_j.normalized();
+        }
     }
+
+    q.setColumnVectors(e);
 
     return {q, r};
 }

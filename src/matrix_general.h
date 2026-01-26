@@ -643,8 +643,8 @@ Vector<ROWS, T> Matrix<ROWS, COLUMNS, T>::getColumnVector(const int i) const {
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-std::array<Vector<ROWS>, COLUMNS> Matrix<ROWS, COLUMNS, T>::getColumnVectors() const {
-    std::array<Vector<ROWS>, COLUMNS> vecs;
+std::array<Vector<ROWS, T>, COLUMNS> Matrix<ROWS, COLUMNS, T>::getColumnVectors() const {
+    std::array<Vector<ROWS, T>, COLUMNS> vecs;
 
     for (int c = 0; c < COLUMNS; c++) {
         for (int r = 0; r < ROWS; r++) {
@@ -667,8 +667,8 @@ Vector<COLUMNS, T> Matrix<ROWS, COLUMNS, T>::getRowVector(const int i) const {
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-std::array<Vector<COLUMNS>, ROWS> Matrix<ROWS, COLUMNS, T>::getRowVectors() const {
-    std::array<Vector<COLUMNS>, ROWS> vecs;
+std::array<Vector<COLUMNS, T>, ROWS> Matrix<ROWS, COLUMNS, T>::getRowVectors() const {
+    std::array<Vector<COLUMNS, T>, ROWS> vecs;
 
     for (int r = 0; r < ROWS; r++) {
         for (int c = 0; c < COLUMNS; c++) {
