@@ -199,7 +199,7 @@ public:
     Matrix<ROWS, COLUMNS, T> pow(int i) requires (isSquare);
 
     [[nodiscard]] std::string toString(int precision = 2) const;
-    [[nodiscard]] std::string toLaTex() const;
+    [[nodiscard]] std::string toLaTex(const LatexDelimiter& delimiter = LatexDelimiters::plain, int precision = 2) const;
 
     template<size_t NUM_COLUMNS_TO_REMOVE>
     Matrix<ROWS, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> removeColumns(const std::array<int, NUM_COLUMNS_TO_REMOVE>& columnsToRemove) const;

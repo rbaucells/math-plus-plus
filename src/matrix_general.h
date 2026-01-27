@@ -325,15 +325,30 @@ std::string Matrix<ROWS, COLUMNS, T>::toString(const int precision) const {
 }
 
 template<int ROWS, int COLUMNS, scalar T>
-std::string Matrix<ROWS, COLUMNS, T>::toLaTex() const {
+std::string Matrix<ROWS, COLUMNS, T>::toLaTex(const LatexDelimiter& delimiter, const int precision) const {
     std::stringstream ss;
-    ss.precision(2);
+    ss << std::fixed << std::setprecision(precision);
 
-    ss << "\\begin{bmatrix}";
+    ss << delimiter.start;
 
     for (int r = 0; r < ROWS; r++) {
         for (int c = 0; c < COLUMNS; c++) {
-            ss << data[c][r];
+            if constexpr (isComplex) {
+                ss << std::real(data[c][r]);
+
+                ss << " ";
+
+                UnderlyingType imag = std::imag(data[c][r]);
+
+                if (imag < 0)
+                    ss << "- " << -imag << "i";
+                else
+                    ss << "+ " << imag << "i";
+
+            }
+            else {
+                ss << data[c][r];
+            }
 
             if (c < COLUMNS - 1)
                 ss << " & ";
@@ -343,7 +358,7 @@ std::string Matrix<ROWS, COLUMNS, T>::toLaTex() const {
             ss << "\\\\";
     }
 
-    ss << "\\end{bmatrix}";
+    ss << delimiter.end;
     return ss.str();
 }
 

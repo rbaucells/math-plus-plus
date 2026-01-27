@@ -181,3 +181,17 @@ enum class DotProductConjugationBehavior {
     second_argument,
     neither
 };
+
+struct LatexDelimiter {
+    std::string start;
+    std::string end;
+};
+
+namespace LatexDelimiters {
+    constexpr static inline LatexDelimiter plain = LatexDelimiter("\\begin{matrix}", "\\end{matrix}");
+    constexpr static inline LatexDelimiter parentheses = LatexDelimiter("\\begin{pmatrix}", "\\end{pmatrix}");
+    constexpr static inline LatexDelimiter brackets = LatexDelimiter("\\begin{bmatrix}", "\\end{bmatrix}");
+    constexpr static inline LatexDelimiter braces = LatexDelimiter("\\begin{Bmatrix}", "\\end{Bmatrix}");
+    constexpr static inline LatexDelimiter pipes = LatexDelimiter("\\begin{vmatrix}", "\\end{vmatrix}");
+    constexpr static inline LatexDelimiter doublePipes = LatexDelimiter("\\begin{Vmatrix}", "\\end{Vmatrix}");
+}
