@@ -160,3 +160,26 @@ TEST(MatrixTransformations, rotation_axis_not_through_origin_radians_real) {
     // assert
     ASSERT_TRUE(calculated.equals(expected, 0.001f));
 }
+
+TEST(MatrixTransformations, reflection_through_origin_real) {
+    // arrange
+    constexpr Vector<3> normal = {0, 1, 0};
+    constexpr Matrix<3, 3> expected = {{1, 0, 0}, {0, -1, 0}, {0, 0, 1}};
+    // act
+    const Matrix<3, 3> reflection = Matrix<3, 3>::reflectionMatrixAcrossPlaneThroughOrigin(normal);
+    // assert
+    ASSERT_TRUE(reflection.equals(expected, 0.001f));
+}
+
+TEST(MatrixTransformations, reflection_not_through_origin_real) {
+    // arrange
+    constexpr Vector<3> normal = {0, 1, 0};
+    constexpr Vector<3> point = {0, 2, 0};
+    constexpr Vector<3> v = {0, 0, 1};
+    constexpr Vector<3> expected = {0, 4, 1};
+    // act
+    const Matrix<4, 4> reflection = Matrix<3, 3>::reflectionMatrixAcrossPlaneNotThroughOrigin(normal, point);
+    const Vector<3> calculated = reflection.applyHomogeneousTransformation(v, 1);
+    // assert
+    ASSERT_TRUE(calculated.equals(expected, 0.001f));
+}

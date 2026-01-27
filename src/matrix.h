@@ -177,22 +177,20 @@ private:
     T triangularDeterminant() const requires (isSquare);
     T tridiagonalDeterminant() const requires (isSquare);
     T luDeterminant() const requires (isSquare);
-
 public:
     static Matrix<ROWS, COLUMNS, T> scalingMatrix(const Vector<COLUMNS, T>& factors) requires (isSquare);
     static Matrix<ROWS, COLUMNS, T> shearMatrix(int i, int j, T k) requires (isSquare);
     static Matrix<ROWS, COLUMNS, T> squeezeMatrix(int i, int j, T k) requires (isSquare);
 
-    // counterclockwise
-    static Matrix<ROWS, COLUMNS, T> rotationMatrixAboutOrigin(T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 2);
-    static Matrix<ROWS + 1, COLUMNS + 1, T> rotationMatrixAboutPoint(const Vector<COLUMNS, T>& p, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 2);
-    static Matrix<ROWS, COLUMNS, T> rotationMatrixAroundAxisThroughOrigin(const Vector<COLUMNS, T>& axis, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 3);
-    static Matrix<ROWS + 1, COLUMNS + 1, T> rotationMatrixAroundAxisNotThroughOrigin(const Vector<COLUMNS, T>& axis, const Vector<COLUMNS, T>& p, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 3);
-    static Matrix<ROWS, COLUMNS, T> rotationMatrixInPlaneThroughOrigin(const Vector<COLUMNS, T>& v1, const Vector<COLUMNS, T>& v2, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS >= 3);
-    static Matrix<ROWS, COLUMNS, T> rotationMatrixInPLaneNotThroughOrigin(const Vector<COLUMNS, T>& v1, const Vector<COLUMNS, T>& v2, const Vector<COLUMNS, T>& p, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS >= 3);
+    static Matrix<ROWS, COLUMNS, T> rotationMatrixAboutOrigin(T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 2 && !isComplex);
+    static Matrix<ROWS + 1, COLUMNS + 1, T> rotationMatrixAboutPoint(const Vector<COLUMNS, T>& p, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 2 && !isComplex);
+    static Matrix<ROWS, COLUMNS, T> rotationMatrixAroundAxisThroughOrigin(const Vector<COLUMNS, T>& axis, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 3 && !isComplex);
+    static Matrix<ROWS + 1, COLUMNS + 1, T> rotationMatrixAroundAxisNotThroughOrigin(const Vector<COLUMNS, T>& axis, const Vector<COLUMNS, T>& p, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS == 3 && !isComplex);
+    // static Matrix<ROWS, COLUMNS, T> rotationMatrixInPlaneThroughOrigin(const Vector<COLUMNS, T>& v1, const Vector<COLUMNS, T>& v2, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS >= 3 && !isComplex);
+    // static Matrix<ROWS, COLUMNS, T> rotationMatrixInPLaneNotThroughOrigin(const Vector<COLUMNS, T>& v1, const Vector<COLUMNS, T>& v2, const Vector<COLUMNS, T>& p, T rot, RotationType rotationType = RotationType::radians) requires (isSquare && COLUMNS >= 3 && !isComplex);
 
-    static Matrix<ROWS, COLUMNS, T> reflectionMatrixAlongAxisThroughOrigin(const Vector<COLUMNS, T>& axis) requires (isSquare);
-    static Matrix<ROWS + 1, COLUMNS + 1, T> reflectionMatrixAlongAxisNotThroughOrigin(const Vector<COLUMNS, T>& axis, const Vector<COLUMNS, T>& point) requires (isSquare);
+    static Matrix<ROWS, COLUMNS, T> reflectionMatrixAcrossPlaneThroughOrigin(const Vector<COLUMNS, T>& normal) requires (isSquare && !isComplex);
+    static Matrix<ROWS + 1, COLUMNS + 1, T> reflectionMatrixAcrossPlaneNotThroughOrigin(const Vector<COLUMNS, T>& normal, const Vector<COLUMNS, T>& point) requires (isSquare && !isComplex);
 
     static Matrix<ROWS + 1, COLUMNS + 1, T> translationMatrix(const Vector<COLUMNS, T>& translation) requires (isSquare);
 
@@ -208,7 +206,7 @@ public:
     template<size_t NUM_ROWS_TO_REMOVE>
     Matrix<ROWS - NUM_ROWS_TO_REMOVE, COLUMNS, T> removeRows(const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const;
     template<size_t NUM_COLUMNS_TO_REMOVE, size_t NUM_ROWS_TO_REMOVE>
-    Matrix<ROWS  - NUM_ROWS_TO_REMOVE, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> removeColumnsAndRows(const std::array<int, NUM_COLUMNS_TO_REMOVE>& columnsToRemove, const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const;
+    Matrix<ROWS - NUM_ROWS_TO_REMOVE, COLUMNS - NUM_COLUMNS_TO_REMOVE, T> removeColumnsAndRows(const std::array<int, NUM_COLUMNS_TO_REMOVE>& columnsToRemove, const std::array<int, NUM_ROWS_TO_REMOVE>& rowsToRemove) const;
 
     Matrix<ROWS, COLUMNS - 1, T> removeColumn(int columnToRemove) const;
     Matrix<ROWS - 1, COLUMNS, T> removeRow(int rowToRemove) const;

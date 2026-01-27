@@ -31,6 +31,7 @@ add_executable(mathpp-tests
         vector.operators.tests.cpp
         vector.general.tests.cpp
         vector.checks.tests.cpp
+        matrix.eigen.tests.cpp
 )
 
 # link with the math lib
