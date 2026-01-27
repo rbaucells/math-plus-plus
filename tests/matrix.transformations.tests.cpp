@@ -1,6 +1,56 @@
 #include <gtest/gtest.h>
 #include "math++/math.h"
 
+TEST(MatrixTransformations, apply_homogenous_transformations_same_type_real) {
+    // arrange
+    constexpr Matrix<3, 3> translation = {{1, 0, 2}, {0, 1, 3}, {0, 0, 1}};
+    constexpr Vector<2> v = {0, 0};
+    constexpr Vector<2> expected1 = {2, 3};
+    constexpr Vector<2> expected0 = {0, 0};
+    // act
+    const Vector<2> translated1 = translation.applyHomogeneousTransformation(v, 1);
+    const Vector<2> translated0 = translation.applyHomogeneousTransformation(v, 0);
+    // assert
+    ASSERT_TRUE(translated1.equals(expected1, 0.001f));
+    ASSERT_TRUE(translated0.equals(expected0, 0.001f));
+}
+
+TEST(MatrixTransformations, apply_homogenous_transformations_same_type_complex) {
+    // arrange
+    constexpr Matrix<3, 3, std::complex<float>> translation = {{{1, 0}, {0, 0}, {2, 3}}, {{0, 0}, {1, 0}, {4, 5}}, {{0, 0}, {0,0}, {1, 0}}};
+    constexpr Vector<2, std::complex<float>> v = {{0, 0}, {0, 0}};
+    constexpr Vector<2, std::complex<float>> expected1 = {{2, 3}, {4, 5}};
+    constexpr Vector<2, std::complex<float>> expected0 = {{0, 0}, {0, 0}};
+    // act
+    const Vector<2, std::complex<float>> translated1 = translation.applyHomogeneousTransformation(v, 1);
+    const Vector<2, std::complex<float>> translated0 = translation.applyHomogeneousTransformation(v, 0);
+    // assert
+    ASSERT_TRUE(translated1.equals(expected1, 0.001f));
+    ASSERT_TRUE(translated0.equals(expected0, 0.001f));
+}
+
+TEST(MatrixTransformations, apply_homogenous_transformations_diff_type) {
+    // arrange
+    constexpr Matrix<3, 3> realTransformation = {{1, 0, 2}, {0, 1, 3}, {0, 0, 1}};
+    constexpr Matrix<3, 3, std::complex<float>> complexTranslation = {{{1, 0}, {0, 0}, {2, 3}}, {{0, 0}, {1, 0}, {4, 5}}, {{0, 0}, {0,0}, {1, 0}}};
+    constexpr Vector<2> realV = {0, 0};
+    constexpr Vector<2, std::complex<float>> complexV = {{0, 0}, {0, 0}};
+    constexpr Vector<2, std::complex<float>> expectedRealComplex0 = {{0, 0},{0, 0}};
+    constexpr Vector<2, std::complex<float>> expectedComplexReal1 = {{2, 3}, {4, 5}};
+    constexpr Vector<2, std::complex<float>> expectedComplexReal0 = {{0, 0},{0, 0}};
+    constexpr Vector<2, std::complex<float>> expectedRealComplex1 = {{2,0}, {3, 0}};
+    // act
+    const Vector<2, std::complex<float>> realComplex0 = realTransformation.applyHomogeneousTransformation(complexV, 0);
+    const Vector<2, std::complex<float>> realComplex1 = realTransformation.applyHomogeneousTransformation(complexV, 1);
+    const Vector<2, std::complex<float>> complexReal0 = complexTranslation.applyHomogeneousTransformation(realV, 0);
+    const Vector<2, std::complex<float>> complexReal1 = complexTranslation.applyHomogeneousTransformation(realV, 1);
+    // assert
+    ASSERT_TRUE(realComplex0.equals(expectedRealComplex0, 0.001f));
+    ASSERT_TRUE(realComplex1.equals(expectedRealComplex1, 0.001f));
+    ASSERT_TRUE(complexReal0.equals(expectedComplexReal0, 0.001f));
+    ASSERT_TRUE(complexReal1.equals(expectedComplexReal1, 0.001f));
+}
+
 TEST(MatrixTransformations, scaling_real) {
     // arrange
     constexpr Matrix<2, 2> expected = {{1, 0}, {0, 2}};
