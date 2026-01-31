@@ -1,17 +1,14 @@
 #pragma once
-#include <string>
-
 #include "../../exceptions.h"
+#include "../../helper.h"
 
-#include "gtest/gtest.h"
-
-template<typename T = float>
+template<scalar T = float>
 struct DenseMatrixBase {
-    const int columns;
     const int rows;
+    const int columns;
 
     using ValueType = T;
-    // using UnderlyingType = underlying_type_t<T>;
+    using UnderlyingType = underlying_type_t<T>;
 
     DenseMatrixBase() = delete;
     DenseMatrixBase(const DenseMatrixBase<T>& other) = delete;
@@ -21,13 +18,13 @@ protected:
     /**
      * @brief Initializes the size of the matrix.
      *
-     * Internal constructor that initializes the 'columns' and 'rows' fields.
+     * Internal constructor that initializes the 'rows' and 'columns' fields.
      * Does not allocate memory for matrix elements.
      *
-     * @param columns Number of columns.
      * @param rows Number of rows.
+     * @param columns Number of columns.
      */
-    DenseMatrixBase(const int columns, const int rows) : columns(columns), rows(rows) {}
+    DenseMatrixBase(const int rows, const int columns) : rows(rows), columns(columns) {}
 
 public:
     /**
@@ -59,7 +56,7 @@ public:
     virtual ~DenseMatrixBase() = default;
 };
 
-template<typename T = float>
+template<scalar T = float>
 struct DenseMatrix : DenseMatrixBase<T> {
     mutable T* data = nullptr;
 
@@ -75,7 +72,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @param rows Number of rows.
      * @param fill If true, initializes all elements to zero; otherwise leaves elements uninitialized.
      */
-    DenseMatrix(const int columns, const int rows, const bool fill = true) : DenseMatrixBase<T>(columns, rows) {
+    DenseMatrix(const int rows, const int columns, const bool fill = true) : DenseMatrixBase<T>(rows, columns) {
         data = new T[columns * rows];
 
         if (fill) {
@@ -85,7 +82,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
     }
 
     /**
-     * @brief Constructs a DenseMatrix from a nested initializer list.
+     * @brief Constructs a DenseMatrix from a nested initializer list of size 'initializerList.size() x initializerList.begin()->size()'.
      *
      * Allocates 'rows * columns * sizeof(T)' bytes on the heap.
      * All nested initializer lists must have the same size.
@@ -93,7 +90,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @param initializerList Nested initializer_list representing matrix elements.
      * @throws InvalidDimensionException If nested initializer_lists are not all the same size.
      */
-    DenseMatrix(std::initializer_list<std::initializer_list<T>> initializerList) : DenseMatrixBase<T>(initializerList.begin()->size(), initializerList.size()) {
+    DenseMatrix(std::initializer_list<std::initializer_list<T>> initializerList) : DenseMatrixBase<T>(initializerList.size(), initializerList.begin()->size()) {
         data = new T[this->columns * this->rows];
 
         int r = 0;
@@ -102,7 +99,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
                 throw InvalidDimensionException("Nested initializer lists must all have the same size");
 
             int c = 0;
-            for (const auto element : row) {
+            for (const T element : row) {
                 DenseMatrix<T>::at(c, r) = element;
                 c++;
             }
@@ -113,25 +110,25 @@ struct DenseMatrix : DenseMatrixBase<T> {
     /**
      * @brief Copy constructor for DenseMatrix.
      *
-     * Constructs a 'rows x columns' matrix and performs a deep copy of 'other'.
-     * Allocates 'rows * columns * sizeof(T)' bytes on the heap.
+     * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+     * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
      *
      * @param other DenseMatrix to copy from.
      */
-    DenseMatrix(const DenseMatrix<T>& other) : DenseMatrixBase<T>(other.columns, other.rows) {
+    DenseMatrix(const DenseMatrix<T>& other) : DenseMatrixBase<T>(other.rows, other.columns) {
         data = new T[this->columns * this->rows];
         memcpy(data, other.data, this->columns * this->rows * sizeof(T));
     }
 
     /**
-     * @brief Copy constructor from DenseMatrixBase.
+     * @brief Copy constructor for DenseMatrix from DenseMatrixBase.
      *
-     * Constructs a 'rows x columns' matrix and performs a deep copy of 'other'.
-     * Allocates 'rows * columns * sizeof(T)' bytes on the heap.
+     * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+     * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
      *
      * @param other DenseMatrixBase to copy from.
      */
-    DenseMatrix(const DenseMatrixBase<T>& other) : DenseMatrixBase<T>(other.columns, other.rows) {
+    DenseMatrix(const DenseMatrixBase<T>& other) : DenseMatrixBase<T>(other.rows, other.columns) {
         data = new T[this->columns * this->rows];
 
         for (int c = 0; c < this->columns; c++) {
@@ -149,7 +146,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
      *
      * @param other DenseMatrix to move from.
      */
-    DenseMatrix(DenseMatrix<T>&& other) noexcept : DenseMatrixBase<T>(other.columns, other.rows) {
+    DenseMatrix(DenseMatrix<T>&& other) noexcept : DenseMatrixBase<T>(other.rows, other.columns) {
         data = other.data;
         other.data = nullptr;
     }
@@ -185,7 +182,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
     }
 };
 
-template<typename T = float>
+template<scalar T = float>
 struct DenseMatrixView : DenseMatrixBase<T> {
     const int stride;
 
@@ -204,13 +201,29 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      * The view uses the same data pointer of the owner matrix.
      *
      * @param owner DenseMatrix to create a view from.
-     * @param columns Number of columns in the view.
      * @param rows Number of rows in the view.
+     * @param columns Number of columns in the view.
      * @param colOffset Starting column offset in the owner matrix.
      * @param rowOffset Starting row offset in the owner matrix.
      */
-    DenseMatrixView(const DenseMatrix<T>& owner, const int columns, const int rows, const int colOffset, const int rowOffset) : DenseMatrixBase<T>(columns, rows), stride(owner.rows), colOffset_(colOffset), rowOffset_(rowOffset) {
+    DenseMatrixView(const DenseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : DenseMatrixBase<T>(rows, columns), stride(owner.rows), colOffset_(colOffset), rowOffset_(rowOffset) {
         data = owner.data;
+    }
+
+    /**
+     * @brief Constructs a DenseMatrixView into an existing array of elements.
+     *
+     * Creates a view of size 'rows x columns' into the 'data' array.
+     * Does not allocate new memory. The view uses the 'data' pointer you pass in
+     *
+     * @param data Array of elements of size >= 'rows * columns * stride'.
+     * @param rows Number of rows in the view.
+     * @param columns Number of columns in the view.
+     * @param stride How much you need to jump from one element to another
+     * @note The 'data' array must be in column-major ordering
+     */
+    DenseMatrixView(const T* data, const int rows, const int columns, const int stride) : DenseMatrixBase<T>(rows, columns), stride(stride), colOffset_(0), rowOffset_(0) {
+        this->data = data;
     }
 
     [[nodiscard]] T& at(const int c, const int r) override {
@@ -227,116 +240,3 @@ private:
     const int colOffset_;
     const int rowOffset_;
 };
-
-/**
- * @brief Asserts that 'a' and 'b' have the same dimensions
- * @tparam T Scalar type of DenseMatrixBase<T>
- * @param a First matrix param
- * @param b Second matrix param
- * @param operation The name of the operation being done (e.g. "add", "multiply")
- * @throws InvalidDimensionException if the 'a' and 'b' matrices don't have the same dimensions
- */
-template<typename T>
-inline void assert_same_size(const DenseMatrixBase<T>& a, const DenseMatrixBase<T>& b, const std::string& operation) {
-    if (a.columns != b.columns || a.rows != b.rows) {
-        throw InvalidDimensionException(std::string("Cannot ") + operation + " with matrices of different size");
-    }
-}
-
-/**
- * @brief Asserts that the 'a' matrix is square
- * @tparam T Scalar type of DenseMatrixBase<T>
- * @param m Matrix param
- * @param operation The name of the operation being done (e.g. "add", "multiply")
- * @throws InvalidDimensionException if the 'a' matrix is not square
- */
-template<typename T>
-inline void assert_square(const DenseMatrixBase<T>& m, const std::string& operation) {
-    if (m.columns != m.rows) {
-        throw InvalidDimensionException(std::string("Cannot") + operation + " with non square matrix");
-    }
-}
-
-namespace Mathpp {
-    /**
-     * @brief Adds together all the matrices supplied
-     * @tparam T Scalar type of DenseMatrix<T>
-     * @tparam OTHERS The types of the other matrices being added (must derive fromm DenseMatrixBase)
-     * @param a The first matrix param
-     * @param others All the other matrices to be added to a
-     * @return A DenseMatrix<T> made from adding each element of each matrix together
-     */
-    template<typename T, typename... OTHERS>
-    DenseMatrix<std::common_type_t<T, typename OTHERS::ValueType...>> add(const DenseMatrixBase<T>& a, const OTHERS&... others) {
-        static_assert((std::is_base_of_v<DenseMatrixBase<typename OTHERS::ValueType>, OTHERS> && ...), "All arguments must derive from DenseMatrixBase");
-        (assert_same_size(a, others, "add"), ...);
-
-        const int columns = a.columns;
-        const int rows = a.rows;
-
-        DenseMatrix<std::common_type_t<T, typename OTHERS::ValueType...>> result(a.columns, a.rows);
-
-        std::cout << "looping" << std::endl;
-
-        for (int c = 0; c < columns; c++) {
-            for (int r = 0; r < rows; r++) {
-                result[c, r] = (a[c, r] + ... + others[c, r]);
-            }
-        }
-
-        return result;
-    }
-}
-
-/**
- * Base class for all math Expressions.
- * To be used for operators ONLY.
- * Common uses are + and - operators,
- * where you do all additions and subtractions in one loop instead of multiple
- * @tparam RESULT What the Expression will get turned into implicitly
- * @tparam OTHERS The types of all the other parameters
- */
-template<typename RESULT, typename... OTHERS>
-struct Expression {
-    // All the parameters being passed to the main function
-    const std::tuple<const OTHERS&...> others;
-
-    Expression(const OTHERS&... args) : others(args...) {}
-
-    operator RESULT() const {
-        return this->evaluate();
-    }
-
-    virtual RESULT evaluate() const = 0;
-
-    virtual ~Expression() = default;
-};
-
-template<typename... OTHERS>
-struct DenseMatrixSumExpr : Expression<DenseMatrix<std::common_type_t<typename OTHERS::ValueType...>>, OTHERS...> {
-    using Expression<DenseMatrix<std::common_type_t<typename OTHERS::ValueType...>>, OTHERS...>::Expression;
-
-    DenseMatrix<std::common_type_t<typename OTHERS::ValueType...>> evaluate() const override {
-        return std::apply([](const auto&... args) {
-            return Mathpp::add(args...);
-        }, this->others);
-    }
-
-    template<typename OTHER>
-    DenseMatrixSumExpr<OTHER, OTHERS...> operator+(const OTHER& other) const {
-        return std::apply([&](const auto&... args) {
-            return DenseMatrixSumExpr<OTHER, OTHERS...>(other, args...);
-        }, this->others);
-    }
-};
-
-template<typename T, typename OTHER_T>
-DenseMatrixSumExpr<DenseMatrixBase<T>, DenseMatrixBase<OTHER_T>> operator+(const DenseMatrixBase<T>& a, const DenseMatrixBase<OTHER_T>& b) {
-    return DenseMatrixSumExpr<DenseMatrixBase<T>, DenseMatrixBase<OTHER_T>>(a, b);
-}
-
-// template<typename T, typename OTHER_T>
-// DenseMatrix<std::common_type_t<T, OTHER_T>> operator+(const DenseMatrixBase<T>& a, const DenseMatrixBase<OTHER_T>& b) {
-//     return Mathpp::add(a, b);
-// }
-

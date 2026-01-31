@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
 #include "../src/matrix/dense/matrix.h"
+#include "../src/matrix/dense/operators/add.h"
+#include "../src/matrix/dense/helper.h"
 
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);

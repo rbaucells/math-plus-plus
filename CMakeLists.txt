@@ -11,7 +11,16 @@ option(MATHPP_BINDINGS "Build Python bindings" ON)
 
 # math++ header only lib
 add_library(mathpp INTERFACE
-        src/matrix/dense/matrix.h)
+        src/matrix/dense/matrix.h
+        src/matrix/dense/operators/add.h
+        src/matrix/dense/helper.h
+        src/expression.h
+        src/matrix/exceptions.h
+        src/vector/dense/vector.h
+        src/helper.h
+        src/vector/dense/helper.h
+        src/vector/exceptions.h
+        src/matrix/sparse/matrix.h)
 
 # make include folder publicly available
 target_include_directories(mathpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)

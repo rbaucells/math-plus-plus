@@ -1,7 +1,7 @@
 #pragma once
 #include <complex>
 #include <cstring>
-#include "exceptions.h"
+#include "../exceptions.h"
 #include "matrix.h"
 #include "vector.h"
 

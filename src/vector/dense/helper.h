@@ -1,0 +1,86 @@
+#pragma once
+#include "../../exceptions.h"
+#include "../../helper.h"
+
+template<scalar T>
+struct DenseVectorBase;
+
+template<scalar T>
+struct DenseVector;
+
+template<scalar T>
+struct DenseVectorView;
+
+/**
+ * @brief Asserts that 'a' and 'b' have the same size.
+ * @tparam T Scalar type of DenseVectorBase<T>
+ * @param a First vector param
+ * @param b Second vector param
+ * @param operation The name of the operation being done (e.g. "add", "dot")
+ * @throws InvalidDimensionException if the 'a' and 'b' vectors don't have the same size
+ */
+template<typename T>
+inline void assert_same_size(const DenseVectorBase<T>& a, const DenseVectorBase<T>& b, const std::string& operation) {
+    if (a.n != b.n) {
+        throw InvalidDimensionException(std::string("Cannot ") + operation + " with vectors of different size");
+    }
+}
+
+template<typename T>
+struct is_dense_vector_base {
+private:
+    template<typename U>
+    static std::true_type test(const DenseVectorBase<U>*) {
+        return {};
+    }
+
+    static std::false_type test(...) {
+        return {};
+    }
+
+public:
+    static constexpr bool value = decltype(test(std::declval<std::remove_cvref_t<T>*>()))::value;
+};
+
+template<typename T>
+inline constexpr bool is_dense_vector_base_v = is_dense_vector_base<T>::value;
+
+template<typename T>
+concept dense_vector_base = is_dense_vector_base_v<T>;
+
+
+template<typename T>
+struct is_dense_vector : std::false_type {};
+
+template<typename U>
+struct is_dense_vector<DenseVector<U>> : std::true_type {};
+
+template<typename T>
+inline constexpr bool is_dense_vector_v = is_dense_vector<T>::value;
+
+template<typename T>
+concept dense_vector = is_dense_vector_v<T>;
+
+
+template<typename T>
+struct is_dense_vector_view : std::false_type {};
+
+template<typename U>
+struct is_dense_vector_view<DenseVectorView<U>> : std::true_type {};
+
+template<typename T>
+inline constexpr bool is_dense_vector_view_v = is_dense_vector_view<T>::value;
+
+template<typename T>
+concept dense_vector_view = is_dense_vector_view_v<T>;
+
+
+template<dense_vector_view T>
+struct underlying_type<T> {
+    using value_type = T::ValueType;
+};
+
+template<dense_vector_base T, dense_vector_base U> requires HasCommonType<underlying_type_t<T>, underlying_type_t<U>>
+bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
+    return a.equals(b, precision);
+}

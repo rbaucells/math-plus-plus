@@ -3,7 +3,7 @@
 #include <cstring>
 #include <iomanip>
 
-#include "exceptions.h"
+#include "../exceptions.h"
 #include "matrix_exceptions.h"
 
 template<int ROWS, int COLUMNS, scalar T>
