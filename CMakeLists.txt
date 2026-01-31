@@ -10,7 +10,8 @@ option(MATHPP_BUILD_TESTS "Build tests" ON)
 option(MATHPP_BINDINGS "Build Python bindings" ON)
 
 # math++ header only lib
-add_library(mathpp INTERFACE)
+add_library(mathpp INTERFACE
+        src/matrix/dense/matrix.h)
 
 # make include folder publicly available
 target_include_directories(mathpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
