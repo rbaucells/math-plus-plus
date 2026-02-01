@@ -20,7 +20,10 @@ add_library(mathpp INTERFACE
         src/helper.h
         src/vector/dense/helper.h
         src/vector/exceptions.h
-        src/matrix/sparse/matrix.h)
+        src/matrix/sparse/matrix.h
+        src/vector/sparse/helper.h
+        src/vector/sparse/vector.h
+)
 
 # make include folder publicly available
 target_include_directories(mathpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)

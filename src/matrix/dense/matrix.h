@@ -206,7 +206,7 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      * Creates a view of size `rows x columns` into the `owner` matrix,
      * starting at the colOffset and rowOffset.
      * Does not allocate new memory.
-     * The view holds a const pointer to the owner.
+     * The view holds a reference to the owner.
      *
      * @param owner DenseMatrix to create a view from.
      * @param rows Number of rows in the view.
@@ -235,7 +235,7 @@ template<scalar T = float>
 struct CustomDenseMatrix : DenseMatrixBase<T> {
     const int stride;
 
-    mutable T* data;
+    T* const data;
 
     CustomDenseMatrix() = delete;
     CustomDenseMatrix(const CustomDenseMatrix<T>& other) = delete;
@@ -256,7 +256,7 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
      * @note Lenght of 'data' array must be greater than 'columns x stride + rows'.
      * @note 'data' array must be in column major ordering.
      */
-    CustomDenseMatrix(const T* data, const int rows, const int columns, const int stride) : DenseMatrixBase<T>(rows, columns), data(data), stride(stride) {}
+    CustomDenseMatrix(T* const data, const int rows, const int columns, const int stride) : DenseMatrixBase<T>(rows, columns), data(data), stride(stride) {}
 
     [[nodiscard]] T& at(const int c, const int r) override {
         return data[c * stride + r];

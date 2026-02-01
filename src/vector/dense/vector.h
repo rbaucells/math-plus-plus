@@ -151,53 +151,67 @@ struct DenseVector : DenseVectorBase<T> {
 
 template<scalar T = float>
 struct DenseVectorView : DenseVectorBase<T> {
-    const int stride;
-
-    mutable T* data = nullptr;
+    DenseVector<T>& owner;
 
     DenseVectorView() = delete;
-    DenseVectorView(const DenseVectorView<T>& other) = delete;
     DenseVectorView(DenseVectorView<T>&& other) noexcept = delete;
+
+    /**
+    * @brief Copy constructor for DenseVectorView
+    *
+    * Constructs a view with the same 'owner' as 'other'.
+    * Does not allocate new memory.
+    *
+    * @param other DenseVectorView to copy from
+    */
+    DenseVectorView(const DenseVectorView<T>& other) : DenseVectorBase<T>(other.n), owner(other.owner), offset_(other.offset_) {};
 
     /**
      * @brief Constructs a DenseVectorView into an existing DenseVector.
      *
      * Creates a view of size 'n' into the 'owner' vector, starting at offset.
-     * Does not allocate new memory. The view uses the same data pointer of the owner vector.
+     * Does not allocate new memory.
+     * The view holds a reference to the owner.
      *
      * @param owner DenseVector to create the view from.
      * @param n Number of elements in the view.
      * @param offset Starting index offset in the owner vector.
      */
-    DenseVectorView(const DenseVector<T> owner, const int n, const int offset) : DenseVectorBase<T>(n), stride(1), offset_(offset) {
-        data = owner.data;
-    }
-
-    /**
-     * Constructs a DenseVectorView into an existing array of elements.
-     *
-     * Creates a view of size 'n' into the 'data' array.
-     * Does not allocate new memory. Does not own 'data' pointer
-     * The view uses the 'data' pointer you pass in
-     *
-     * @param data Array of elements of size >= 'n * stride'
-     * @param n How many elements the view can access
-     * @param stride How much you need to jump from one element to another
-     */
-    DenseVectorView(const T* data, const int n, const int stride) : DenseVectorBase<T>(n), stride(stride), offset_(0) {
-        this->data = data;
-    }
+    DenseVectorView(const DenseVector<T>& owner, const int n, const int offset) : DenseVectorBase<T>(n), owner(owner), offset_(offset) {}
 
     [[nodiscard]] T& at(const int i) override {
-        return data[(i + offset_) * stride];
+        return owner.at(i + offset_);
     }
 
     [[nodiscard]] const T& at(const int i) const override {
-        return data[(i + offset_) * stride];
+        return owner.at(i + offset_);
     }
 
     ~DenseVectorView() override = default;
 
 private:
     const int offset_;
+};
+
+template<scalar T = float>
+struct CustomDenseVector : DenseVectorBase<T> {
+    const int stride;
+
+    T* const data;
+
+    CustomDenseVector() = delete;
+    CustomDenseVector(const CustomDenseVector<T>& other) = delete;
+    CustomDenseVector(CustomDenseVector<T>&& other) noexcept = delete;
+
+    CustomDenseVector(T* const data, const int n, const int stride) : DenseVectorBase<T>(n), stride(stride), data(data) {}
+
+    [[nodiscard]] T& at(const int i) override {
+        return data[i * stride];
+    }
+
+    [[nodiscard]] const T& at(const int i) const override {
+        return data[i * stride];
+    }
+
+    ~CustomDenseVector() override = default;
 };

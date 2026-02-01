@@ -11,6 +11,9 @@ struct DenseVector;
 template<scalar T>
 struct DenseVectorView;
 
+template<scalar T>
+struct CustomDenseVector;
+
 /**
  * @brief Asserts that 'a' and 'b' have the same size.
  * @tparam T Scalar type of DenseVectorBase<T>
@@ -26,6 +29,7 @@ inline void assert_same_size(const DenseVectorBase<T>& a, const DenseVectorBase<
     }
 }
 
+// is_dense_vector_base, is_dense_vector_base_v, dense_vector_base
 template<typename T>
 struct is_dense_vector_base {
 private:
@@ -48,7 +52,7 @@ inline constexpr bool is_dense_vector_base_v = is_dense_vector_base<T>::value;
 template<typename T>
 concept dense_vector_base = is_dense_vector_base_v<T>;
 
-
+// is_dense_vector, is_dense_vector_v, dense_vector
 template<typename T>
 struct is_dense_vector : std::false_type {};
 
@@ -61,7 +65,7 @@ inline constexpr bool is_dense_vector_v = is_dense_vector<T>::value;
 template<typename T>
 concept dense_vector = is_dense_vector_v<T>;
 
-
+// is_dense_vector_view, is_dense_vector_view_v, dense_vector_view
 template<typename T>
 struct is_dense_vector_view : std::false_type {};
 
@@ -74,8 +78,21 @@ inline constexpr bool is_dense_vector_view_v = is_dense_vector_view<T>::value;
 template<typename T>
 concept dense_vector_view = is_dense_vector_view_v<T>;
 
+// is_custom_dense_vector, is_custom_dense_vector_v, custom_dense_vector
+template<typename T>
+struct is_custom_dense_vector : std::false_type {};
 
-template<dense_vector_view T>
+template<typename U>
+struct is_custom_dense_vector<CustomDenseVector<U>> : std::true_type {};
+
+template<typename T>
+inline constexpr bool is_custom_dense_vector_v = is_custom_dense_vector<T>::value;
+
+template<typename T>
+concept custom_dense_vector = is_custom_dense_vector_v<T>;
+
+
+template<dense_vector_base T>
 struct underlying_type<T> {
     using value_type = T::ValueType;
 };

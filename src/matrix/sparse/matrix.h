@@ -226,7 +226,7 @@ struct SparseMatrixView : SparseMatrixBase<T> {
      * Creates a view of size `rows x columns` into the `owner` matrix,
      * starting at the colOffset and rowOffset.
      * Does not allocate new memory.
-     * The view holds a const pointer to the owner.
+     * The view holds a reference to the owner.
      *
      * @param owner SparseMatrix to create a view from.
      * @param rows Number of rows in the view.
