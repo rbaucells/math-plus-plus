@@ -184,21 +184,29 @@ struct DenseMatrix : DenseMatrixBase<T> {
 
 template<scalar T = float>
 struct DenseMatrixView : DenseMatrixBase<T> {
-    const int stride;
-
-    mutable T* data = nullptr;
+    DenseMatrix<T>& owner;
 
     DenseMatrixView() = delete;
-    DenseMatrixView(const DenseMatrixView<T>& other) = delete;
+
     DenseMatrixView(DenseMatrixView<T>&& other) noexcept = delete;
+
+    /**
+     * @brief Copy constructor for DenseMatrixView
+     *
+     * Constructs a view with the same 'owner' as 'other'.
+     * Does not allocate new memory.
+     *
+     * @param other DenseMatrixView to copy from
+     */
+    DenseMatrixView(const DenseMatrixView<T>& other) : DenseMatrixBase<T>(other.rows, other.columns), owner(other.owner), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_) {}
 
     /**
      * @brief Constructs a DenseMatrixView into an existing DenseMatrix.
      *
-     * Creates a view of size `rows x columns` into the `owner` matrix, starting
-     * at the colOffset and rowOffset.
+     * Creates a view of size `rows x columns` into the `owner` matrix,
+     * starting at the colOffset and rowOffset.
      * Does not allocate new memory.
-     * The view uses the same data pointer of the owner matrix.
+     * The view holds a const pointer to the owner.
      *
      * @param owner DenseMatrix to create a view from.
      * @param rows Number of rows in the view.
@@ -206,32 +214,14 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      * @param colOffset Starting column offset in the owner matrix.
      * @param rowOffset Starting row offset in the owner matrix.
      */
-    DenseMatrixView(const DenseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : DenseMatrixBase<T>(rows, columns), stride(owner.rows), colOffset_(colOffset), rowOffset_(rowOffset) {
-        data = owner.data;
-    }
-
-    /**
-     * @brief Constructs a DenseMatrixView into an existing array of elements.
-     *
-     * Creates a view of size 'rows x columns' into the 'data' array.
-     * Does not allocate new memory. The view uses the 'data' pointer you pass in
-     *
-     * @param data Array of elements of size >= 'rows * columns * stride'.
-     * @param rows Number of rows in the view.
-     * @param columns Number of columns in the view.
-     * @param stride How much you need to jump from one element to another
-     * @note The 'data' array must be in column-major ordering
-     */
-    DenseMatrixView(const T* data, const int rows, const int columns, const int stride) : DenseMatrixBase<T>(rows, columns), stride(stride), colOffset_(0), rowOffset_(0) {
-        this->data = data;
-    }
+    DenseMatrixView(DenseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : DenseMatrixBase<T>(rows, columns), owner(owner), colOffset_(colOffset), rowOffset_(rowOffset) {}
 
     [[nodiscard]] T& at(const int c, const int r) override {
-        return data[(c + colOffset_) * stride + (r + rowOffset_)];
+        return owner.at(c + colOffset_, r + rowOffset_);
     }
 
     [[nodiscard]] const T& at(const int c, const int r) const override {
-        return data[(c + colOffset_) * stride + (r + rowOffset_)];
+        return owner.at(c + colOffset_, r + rowOffset_);
     }
 
     ~DenseMatrixView() override = default;
@@ -239,4 +229,42 @@ struct DenseMatrixView : DenseMatrixBase<T> {
 private:
     const int colOffset_;
     const int rowOffset_;
+};
+
+template<scalar T = float>
+struct CustomDenseMatrix : DenseMatrixBase<T> {
+    const int stride;
+
+    mutable T* data;
+
+    CustomDenseMatrix() = delete;
+    CustomDenseMatrix(const CustomDenseMatrix<T>& other) = delete;
+    CustomDenseMatrix(CustomDenseMatrix<T>&& other) noexcept = delete;
+
+    /**
+     * @brief Constructs a CustomDenseMatrix of size 'rows x columns'.
+     *
+     * Does not allocate any memory on the heap.
+     * CustomDenseMatrix instance does not own 'data' pointer.
+     * Think of it as a view on an arbitrary data pointer.
+     *
+     * @param data Flat 1d array containing all matrix elements in column major ordering/
+     * @param rows Number of rows in matrix.
+     * @param columns Number of columns in matrix.
+     * @param stride How many elements to skip when accessing elements
+     *
+     * @note Lenght of 'data' array must be greater than 'columns x stride + rows'.
+     * @note 'data' array must be in column major ordering.
+     */
+    CustomDenseMatrix(const T* data, const int rows, const int columns, const int stride) : DenseMatrixBase<T>(rows, columns), data(data), stride(stride) {}
+
+    [[nodiscard]] T& at(const int c, const int r) override {
+        return data[c * stride + r];
+    }
+
+    [[nodiscard]] const T& at(const int c, const int r) const override {
+        return data[c * stride + r];
+    }
+
+    ~CustomDenseMatrix() override = default;
 };
