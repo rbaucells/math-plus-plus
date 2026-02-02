@@ -53,17 +53,17 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * Does not allocate memory yet.
      *
-     * @param n Size of vector
+     * @param n Size of vector.
      */
     explicit SparseVector(const int n) : SparseVectorBase<T>(n) {}
 
     /**
-     * @brief Copy constructor for SparseVector
+     * @brief Copy constructor for SparseVector.
      *
      * Constructs a vector of size 'n' and performs a deep copy of 'other'.
-     * Allocated 'nnz * sizeof(T) * 2' bytes of memory on the heap
+     * Allocated 'nnz * sizeof(T) * 2' bytes of memory on the heap.
      *
-     * @param other SparseVector to copy from
+     * @param other SparseVector to copy from.
      */
     SparseVector(const SparseVector<T>& other) : SparseVectorBase<T>(other.n), nnz(other.nnz) {
         values = new T[nnz];
@@ -190,12 +190,12 @@ struct SparseVectorView : SparseVectorBase<T> {
     SparseVectorView(SparseVectorView<T>&& other) noexcept = delete;
 
     /**
-     * @brief Copy constructor for SparseVectorView
+     * @brief Copy constructor for SparseVectorView.
      *
      * Constructs a view with the same 'owner' as 'other'.
      * Does not allocate new memory.
      *
-     * @param other SparseVectorView to copy from
+     * @param other SparseVectorView to copy from.
      */
     SparseVectorView(const SparseVectorView<T>& other) : SparseVectorBase<T>(other.n), owner(other.owner), offset_(other.offset_) {}
 

@@ -14,21 +14,6 @@ struct DenseVectorView;
 template<scalar T>
 struct CustomDenseVector;
 
-/**
- * @brief Asserts that 'a' and 'b' have the same size.
- * @tparam T Scalar type of DenseVectorBase<T>
- * @param a First vector param
- * @param b Second vector param
- * @param operation The name of the operation being done (e.g. "add", "dot")
- * @throws InvalidDimensionException if the 'a' and 'b' vectors don't have the same size
- */
-template<typename T>
-inline void assert_same_size(const DenseVectorBase<T>& a, const DenseVectorBase<T>& b, const std::string& operation) {
-    if (a.n != b.n) {
-        throw InvalidDimensionException(std::string("Cannot ") + operation + " with vectors of different size");
-    }
-}
-
 // is_dense_vector_base, is_dense_vector_base_v, dense_vector_base
 template<typename T>
 struct is_dense_vector_base {
@@ -100,4 +85,19 @@ struct underlying_type<T> {
 template<dense_vector_base T, dense_vector_base U> requires HasCommonType<underlying_type_t<T>, underlying_type_t<U>>
 bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
     return a.equals(b, precision);
+}
+
+/**
+ * @brief Asserts that 'a' and 'b' have the same size.
+ * @tparam T Vector type of 'a'.
+ * @tparam U Vector type of 'b'.
+ * @param a Dense vector to compare with 'b'.
+ * @param b Dense vector to compare with 'a'.
+ * @param operation The name of the operation being done (e.g "add", "dot").
+ */
+template<dense_vector_base T, dense_vector_base U>
+inline void assert_same_size(const T& a, const U& b, const std::string& operation) {
+    if (a.n != b.n) {
+        throw InvalidDimensionException(std::string("Cannot ") + operation + " with vectors of different size");
+    }
 }

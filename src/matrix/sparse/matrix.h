@@ -27,19 +27,19 @@ protected:
 
 public:
     /**
-     * @brief Sets the value of the element at column 'c' and row 'r'
+     * @brief Sets the value of the element at column 'c' and row 'r'.
      *
-     * @param c Column index
-     * @param r Row index
-     * @param value The value to set at 'c, r'
+     * @param c Column index.
+     * @param r Row index.
+     * @param value The value to set at 'c, r'.
      */
     virtual void set(int c, int r, T value) = 0;
 
     /**
-     * @brief Gets the value of the element at column 'c' and row 'r'
-     * @param c Column index
-     * @param r Row index
-     * @return The value at 'c, r'
+     * @brief Gets the value of the element at column 'c' and row 'r'.
+     * @param c Column index.
+     * @param r Row index.
+     * @return The value at 'c, r'.
      */
     [[nodiscard]] virtual T get(int c, int r) const = 0;
 
@@ -228,20 +228,19 @@ struct SparseMatrixView : SparseMatrixBase<T> {
     SparseMatrixView(SparseMatrixView<T>&& other) noexcept = delete;
 
     /**
-     * @brief Copy constructor for SparseMatrixView
+     * @brief Copy constructor for SparseMatrixView.
      *
      * Constructs a view with the same 'owner' as 'other'.
      * Does not allocate new memory.
      *
-     * @param other SparseMatrixView to copy from
+     * @param other SparseMatrixView to copy from.
      */
     SparseMatrixView(const SparseMatrixView<T>& other) : SparseMatrixBase<T>(other.rows, other.columns), owner(other.owner), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_) {}
 
     /**
      * @brief Constructs a SparseMatrixView into an existing SparseMatrix.
      *
-     * Creates a view of size `rows x columns` into the `owner` matrix,
-     * starting at the 'colOffset' and 'rowOffset'.
+     * Creates a view of size `rows x columns` into the `owner` matrix, starting at the 'colOffset' and 'rowOffset'.
      * Does not allocate new memory.
      * The view holds a reference to the 'owner'.
      *
@@ -280,7 +279,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     CustomSparseMatrix(CustomSparseMatrix<T>&& other) noexcept = delete;
 
     /**
-     * Constructs a CustomSparseMatrix from the provided arrays of size 'rows x columns'
+     * Constructs a CustomSparseMatrix from the provided arrays of size 'rows x columns'.
      *
      * CustomSparseMatrix instance does not own 'colOffsets', 'rowIndices', or 'values' arrays.
      * Does allocate memory sometimes when adding or removeing elements.
@@ -297,8 +296,8 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
      *
      * @note Assumes csc storage.
      * @note Assumes 'rowIndices' are sorted by column and within each column.
-     * @note Assumes 'colOffsets' is of size 'columns + 1'
-     * @note Assumes 'rowIndices' and 'values' is of size 'nnz'
+     * @note Assumes 'colOffsets' is of size 'columns + 1'.
+     * @note Assumes 'rowIndices' and 'values' is of size 'nnz'.
      */
     CustomSparseMatrix(const int rows, const int columns, int*& colOffsets, int*& rowIndices, T*& values, int& nnz) : SparseMatrixBase<T>(rows, columns), colOffsets(colOffsets), rowIndices(rowIndices), values(values), nnz(nnz) {}
 

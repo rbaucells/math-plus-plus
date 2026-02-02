@@ -141,8 +141,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
     /**
      * @brief Move constructor for DenseMatrix.
      *
-     * Constructs a 'other.rows' x 'other.columns' matrix and uses the same data pointer of other.
-     * Does not allocate memory
+     * Constructs a 'other.rows' x 'other.columns' matrix and uses the same data pointer of 'other'.
+     * Does not allocate memory.
      *
      * @param other DenseMatrix to move from.
      */
@@ -191,12 +191,12 @@ struct DenseMatrixView : DenseMatrixBase<T> {
     DenseMatrixView(DenseMatrixView<T>&& other) noexcept = delete;
 
     /**
-     * @brief Copy constructor for DenseMatrixView
+     * @brief Copy constructor for DenseMatrixView.
      *
      * Constructs a view with the same 'owner' as 'other'.
      * Does not allocate new memory.
      *
-     * @param other DenseMatrixView to copy from
+     * @param other DenseMatrixView to copy from.
      */
     DenseMatrixView(const DenseMatrixView<T>& other) : DenseMatrixBase<T>(other.rows, other.columns), owner(other.owner), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_) {}
 
@@ -248,10 +248,10 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
      * CustomDenseMatrix instance does not own 'data' pointer.
      * Think of it as a view on an arbitrary data pointer.
      *
-     * @param data Flat 1d array containing all matrix elements in column major ordering/
+     * @param data Flat 1d array containing all matrix elements in column major ordering.
      * @param rows Number of rows in matrix.
      * @param columns Number of columns in matrix.
-     * @param stride How many elements to skip when accessing elements
+     * @param stride How many elements to skip when accessing elements.
      *
      * @note Lenght of 'data' array must be greater than 'columns x stride + rows'.
      * @note 'data' array must be in column major ordering.

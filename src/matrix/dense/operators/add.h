@@ -3,27 +3,28 @@
 #include <ostream>
 #include <type_traits>
 
+#include "../helper.h"
+
 #include "../../../expression.h"
 #include "../matrix.h"
 
 namespace Mathpp {
     /**
-     * @brief Adds together all the matrices supplied
-     * @tparam T Scalar type of DenseMatrix<T>
-     * @tparam OTHERS The types of the other matrices being added (must derive fromm DenseMatrixBase)
-     * @param a The first matrix param
-     * @param others All the other matrices to be added to a
-     * @return A DenseMatrix<T> made from adding each element of each matrix together
+     * @brief Adds together all the matrices supplied.
+     * @tparam T Matrix type of 'a'.
+     * @tparam OTHERS The types of the other matrices being added.
+     * @param a The first matrix param.
+     * @param others All the other matrices to be added to 'a'.
+     * @return A DenseMatrix made from adding each element of each matrix together.
      */
-    template<typename T, typename... OTHERS>
-    DenseMatrix<std::common_type_t<T, typename OTHERS::ValueType...>> add(const DenseMatrixBase<T>& a, const OTHERS&... others) {
-        static_assert((std::is_base_of_v<DenseMatrixBase<typename OTHERS::ValueType>, OTHERS> && ...), "All arguments must derive from DenseMatrixBase");
-        (assert_same_size(a, others, "add"), ...);
+    template<dense_matrix_base T, dense_matrix_base... OTHERS>
+    DenseMatrix<std::common_type_t<typename T::ValueType, typename OTHERS::ValueType...>> add(const T& a, const OTHERS&... others) {
+        (assert_same_dimensions(a, others, "add"), ...);
 
         const int columns = a.columns;
         const int rows = a.rows;
 
-        DenseMatrix<std::common_type_t<T, typename OTHERS::ValueType...>> result(a.columns, a.rows);
+        DenseMatrix<std::common_type_t<typename T::ValueType, typename OTHERS::ValueType...>> result(a.columns, a.rows);
 
         std::cout << "looping" << std::endl;
 

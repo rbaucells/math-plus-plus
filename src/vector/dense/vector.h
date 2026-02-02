@@ -127,7 +127,7 @@ struct DenseVector : DenseVectorBase<T> {
      * @brief Move constructor for DenseVector.
      *
      * Constructs a vector of size 'other.n' and performs a move from 'other'.
-     * Does not allocate any memory on the heap
+     * Does not allocate any memory on the heap.
      *
      * @param other DenseVector to move from.
      */
@@ -157,12 +157,12 @@ struct DenseVectorView : DenseVectorBase<T> {
     DenseVectorView(DenseVectorView<T>&& other) noexcept = delete;
 
     /**
-    * @brief Copy constructor for DenseVectorView
+    * @brief Copy constructor for DenseVectorView.
     *
     * Constructs a view with the same 'owner' as 'other'.
     * Does not allocate new memory.
     *
-    * @param other DenseVectorView to copy from
+    * @param other DenseVectorView to copy from.
     */
     DenseVectorView(const DenseVectorView<T>& other) : DenseVectorBase<T>(other.n), owner(other.owner), offset_(other.offset_) {};
 

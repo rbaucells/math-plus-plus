@@ -4,10 +4,9 @@
 /**
  * Base class for all math Expressions.
  * To be used for operators ONLY.
- * Common uses are + and - operators,
- * where you do all additions and subtractions in one loop instead of multiple
- * @tparam RESULT What the Expression will get turned into implicitly
- * @tparam OTHERS The types of all the other parameters
+ * Common uses are + and - operators, where you do all additions and subtractions in one loop instead of multiple.
+ * @tparam RESULT What the Expression will get turned into implicitly.
+ * @tparam OTHERS The types of all the other parameters.
  */
 template<typename RESULT, typename... OTHERS>
 struct Expression {
