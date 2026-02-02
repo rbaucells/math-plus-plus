@@ -58,7 +58,7 @@ public:
 
 template<scalar T = float>
 struct DenseMatrix : DenseMatrixBase<T> {
-    mutable T* data = nullptr;
+    T* data = nullptr;
 
     DenseMatrix() = delete;
 

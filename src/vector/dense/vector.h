@@ -55,7 +55,7 @@ public:
 
 template<scalar T = float>
 struct DenseVector : DenseVectorBase<T> {
-    mutable T* data = nullptr;
+    T* data = nullptr;
 
     DenseVector() = delete;
 
