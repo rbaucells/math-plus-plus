@@ -52,7 +52,7 @@ enum class RotationType {
  * @return 'radians' converted to degrees.
  */
 template<scalar T = float>
-T radiansToDegrees(const T radians) {
+[[nodiscard]] T radiansToDegrees(const T radians) {
     return radians * (static_cast<T>(180) / static_cast<T>(M_PI));
 }
 
@@ -63,7 +63,7 @@ T radiansToDegrees(const T radians) {
  * @return 'degrees' converted to radians.
  */
 template<scalar T = float>
-T degreesToRadians(const T degrees) {
+[[nodiscard]] T degreesToRadians(const T degrees) {
     return degrees * (static_cast<T>(M_PI) / static_cast<T>(180));
 }
 
@@ -76,7 +76,7 @@ T degreesToRadians(const T degrees) {
  * @return 'value' converted to 'to' RotationType.
  */
 template<scalar T = float>
-T convert(const RotationType from, const RotationType to, const T value) {
+[[nodiscard]] T convert(const RotationType from, const RotationType to, const T value) {
     switch (from) {
         case RotationType::degrees:
             switch (to) {
@@ -108,7 +108,7 @@ T convert(const RotationType from, const RotationType to, const T value) {
  * @note This is always 1 for integer types.
  */
 template<std::integral T>
-constexpr T epsilon() {
+[[nodiscard]] constexpr T epsilon() {
     return 1;
 }
 
@@ -118,7 +118,7 @@ constexpr T epsilon() {
  * @return The epsilon of type 'T'.
  */
 template<std::floating_point T>
-constexpr T epsilon() {
+[[nodiscard]] constexpr T epsilon() {
     return std::numeric_limits<T>::epsilon();
 }
 
@@ -128,7 +128,7 @@ constexpr T epsilon() {
  * @return The epsilon of type 'T'.
  */
 template<complex T>
-constexpr underlying_type_t<T> epsilon() {
+[[nodiscard]] constexpr underlying_type_t<T> epsilon() {
     return epsilon<underlying_type_t<T>>();
 }
 
@@ -143,7 +143,7 @@ constexpr underlying_type_t<T> epsilon() {
  * @note The underlying types of 'T' and 'U' must have a common type.
  */
 template<scalar T, scalar U> requires HasCommonType<underlying_type_t<T>, underlying_type_t<U>>
-bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
+[[nodiscard]] bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
     return std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(b))) < precision && std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(b))) < precision;
 }
 
@@ -157,7 +157,7 @@ bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>
  * @note Types 'T' and 'U' must have a common type.
  */
 template<real T, real U> requires HasCommonType<T, U>
-bool lesser(const T a, const U b) {
+[[nodiscard]] bool lesser(const T a, const U b) {
     return static_cast<std::common_type_t<T, U>>(a) < static_cast<std::common_type_t<T, U>>(b);
 }
 
@@ -171,7 +171,7 @@ bool lesser(const T a, const U b) {
  * @note Underlying type of 'T' and 'U' must have a common type.
  */
 template<complex T, real U>  requires HasCommonType<underlying_type_t<T>, U>
-bool lesser(const T a, const U b) {
+[[nodiscard]] bool lesser(const T a, const U b) {
     return lesser(std::real(a), b) && compare(std::imag(a), 0);
 }
 
@@ -185,7 +185,7 @@ bool lesser(const T a, const U b) {
  * @note Types 'T' and 'U' must have a common type.
  */
 template<real T, real U> requires HasCommonType<T, U>
-bool greater(const T a, const U b) {
+[[nodiscard]] bool greater(const T a, const U b) {
     return static_cast<std::common_type_t<T, U>>(a) > static_cast<std::common_type_t<T, U>>(b);
 }
 
@@ -199,7 +199,7 @@ bool greater(const T a, const U b) {
  * @note Underlying type of 'T' and 'U' must have a common type.
  */
 template<complex T, real U> requires HasCommonType<underlying_type_t<T>, U>
-bool greater(const T a, const U b) {
+[[nodiscard]] bool greater(const T a, const U b) {
     return greater(std::real(a), b) && compare(std::imag(a), 0);
 }
 

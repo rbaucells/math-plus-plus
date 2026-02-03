@@ -83,7 +83,7 @@ struct underlying_type<T> {
 };
 
 template<dense_vector_base T, dense_vector_base U> requires HasCommonType<underlying_type_t<T>, underlying_type_t<U>>
-bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
+[[nodiscard]] bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
     return a.equals(b, precision);
 }
 
