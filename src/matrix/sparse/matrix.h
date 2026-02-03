@@ -264,7 +264,7 @@ struct SparseMatrixView : SparseMatrixBase<T> {
      *
      * @param other SparseMatrixView to copy from.
      */
-    SparseMatrixView(const SparseMatrixView<T>& other) : SparseMatrixBase<T>(other.rows, other.columns), owner_(other.owner_), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_) {}
+    SparseMatrixView(const SparseMatrixView<T>& other) : SparseMatrixBase<T>(other.rows, other.columns), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {}
 
     /**
      * @brief Constructs a SparseMatrixView into an existing SparseMatrix.
@@ -279,9 +279,10 @@ struct SparseMatrixView : SparseMatrixBase<T> {
      * @param colOffset Starting column offset in the 'owner' matrix.
      * @param rowOffset Starting row offset in the 'owner' matrix.
      */
-    SparseMatrixView(SparseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : SparseMatrixBase<T>(rows, columns), owner_(owner), colOffset_(colOffset), rowOffset_(rowOffset) {}
+    SparseMatrixView(const SparseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : SparseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {}
 
     /**
+    * @brief Trying to modify a DenseMatrix through a view is invalid.
     * @throws InvalidOperation You cannot modify owner through a view.
     */
     void set(const int, const int, const T) override {

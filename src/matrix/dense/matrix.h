@@ -205,7 +205,7 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      *
      * @param other DenseMatrixView to copy from.
      */
-    DenseMatrixView(const DenseMatrixView<T>& other) : DenseMatrixBase<T>(other.rows, other.columns), owner_(other.owner_), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_) {}
+    DenseMatrixView(const DenseMatrixView<T>& other) : DenseMatrixBase<T>(other.rows, other.columns), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {}
 
     /**
      * @brief Constructs a DenseMatrixView into an existing DenseMatrix.
@@ -221,9 +221,10 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      * @param colOffset Starting column offset in the owner matrix.
      * @param rowOffset Starting row offset in the owner matrix.
      */
-    DenseMatrixView(DenseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : DenseMatrixBase<T>(rows, columns), owner_(owner), colOffset_(colOffset), rowOffset_(rowOffset) {}
+    DenseMatrixView(const DenseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : DenseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {}
 
     /**
+     * @brief Trying to modify a DenseMatrix through a view is invalid.
      * @throws InvalidOperation You cannot modify owner through a view.
      */
     [[nodiscard]] T& at(const int, const int) override {
@@ -276,7 +277,7 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
      * @note Lenght of 'data' array must be greater than 'columns x stride + rows'.
      * @note 'data' array must be in column major ordering.
      */
-    CustomDenseMatrix(T* const data, const int rows, const int columns, const int stride) : DenseMatrixBase<T>(rows, columns), data_(data), stride_(stride) {}
+    CustomDenseMatrix(T* data, const int rows, const int columns, const int stride) : DenseMatrixBase<T>(rows, columns), stride_(stride), data_(data) {}
 
     [[nodiscard]] T& at(const int c, const int r) override {
         return data_[c * stride_ + r];
