@@ -1,6 +1,7 @@
 #pragma once
 #include <initializer_list>
 
+#include "../../exceptions.h"
 #include "../../helper.h"
 
 template<scalar T = float>
@@ -55,8 +56,6 @@ public:
 
 template<scalar T = float>
 struct DenseVector : DenseVectorBase<T> {
-    T* data = nullptr;
-
     DenseVector() = delete;
 
     /**
@@ -67,13 +66,13 @@ struct DenseVector : DenseVectorBase<T> {
      * @param fill If true, initializes all elements to zero; otherwise leaves elements uninitialized.
      */
     DenseVector(const int n, const bool fill) : DenseVectorBase<T>(n) {
-        data = new T[n];
+        data_ = new T[n];
 
         if (!fill)
             return;
 
         for (int i = 0; i < n; i++) {
-            data[i] = 0;
+            data_[i] = 0;
         }
     }
 
@@ -85,11 +84,11 @@ struct DenseVector : DenseVectorBase<T> {
     * @param initializerList Nested initializer_list representing matrix elements.
     */
     DenseVector(const std::initializer_list<T>& initializerList) : DenseVectorBase<T>(initializerList.size()) {
-        data = new T[initializerList.size()];
+        data_ = new T[initializerList.size()];
 
         int i = 0;
         for (const T element : initializerList) {
-            data[i] = element;
+            data_[i] = element;
             i++;
         }
     }
@@ -103,8 +102,8 @@ struct DenseVector : DenseVectorBase<T> {
      * @param other DenseVector to copy from.
      */
     DenseVector(const DenseVector<T>& other) : DenseVectorBase<T>(other.n) {
-        data = new T[other.n];
-        memcpy(data, other.data, this->n * sizeof(T));
+        data_ = new T[other.n];
+        memcpy(data_, other.data_, this->n * sizeof(T));
     }
 
     /**
@@ -116,10 +115,10 @@ struct DenseVector : DenseVectorBase<T> {
      * @param other DenseVectorBase to copy from.
      */
     DenseVector(const DenseVectorBase<T>& other) : DenseVectorBase<T>(other.n) {
-        data = new T[other.n];
+        data_ = new T[other.n];
 
         for (int i = 0; i < this->n; i++) {
-            data[i] = other.at(i);
+            data_[i] = other.at(i);
         }
     }
 
@@ -132,27 +131,35 @@ struct DenseVector : DenseVectorBase<T> {
      * @param other DenseVector to move from.
      */
     DenseVector(DenseVector<T>&& other) noexcept : DenseVectorBase<T>(other.n) {
-        data = other.data;
-        other.data = nullptr;
+        data_ = other.data_;
+        other.data_ = nullptr;
     }
 
     [[nodiscard]] T& at(int i) override {
-        return data[i];
+        return data_[i];
     }
 
     [[nodiscard]] const T& at(int i) const override {
-        return data[i];
+        return data_[i];
+    }
+
+    T* data() {
+        return data_;
+    }
+
+    const T* data() const {
+        return data_;
     }
 
     ~DenseVector() override {
-        delete[] data;
+        delete[] data_;
     }
+private:
+    T* data_;
 };
 
 template<scalar T = float>
 struct DenseVectorView : DenseVectorBase<T> {
-    DenseVector<T>& owner;
-
     DenseVectorView() = delete;
     DenseVectorView(DenseVectorView<T>&& other) noexcept = delete;
 
@@ -164,7 +171,7 @@ struct DenseVectorView : DenseVectorBase<T> {
     *
     * @param other DenseVectorView to copy from.
     */
-    DenseVectorView(const DenseVectorView<T>& other) : DenseVectorBase<T>(other.n), owner(other.owner), offset_(other.offset_) {};
+    DenseVectorView(const DenseVectorView<T>& other) : DenseVectorBase<T>(other.n), owner_(other.owner_), offset_(other.offset_) {};
 
     /**
      * @brief Constructs a DenseVectorView into an existing DenseVector.
@@ -177,41 +184,60 @@ struct DenseVectorView : DenseVectorBase<T> {
      * @param n Number of elements in the view.
      * @param offset Starting index offset in the owner vector.
      */
-    DenseVectorView(const DenseVector<T>& owner, const int n, const int offset) : DenseVectorBase<T>(n), owner(owner), offset_(offset) {}
+    DenseVectorView(const DenseVector<T>& owner, const int n, const int offset) : DenseVectorBase<T>(n), owner_(owner), offset_(offset) {}
 
-    [[nodiscard]] T& at(const int i) override {
-        return owner.at(i + offset_);
+    /**
+    * @throws InvalidOperation You cannot modify owner through a view.
+    */
+    [[nodiscard]] T& at(const int) override {
+        throw InvalidOperation("Cannot modify owner through view");
     }
 
     [[nodiscard]] const T& at(const int i) const override {
-        return owner.at(i + offset_);
+        return owner_.at(i + offset_);
+    }
+
+    const DenseVector<T>& owner() {
+        return owner_;
     }
 
     ~DenseVectorView() override = default;
 
 private:
     const int offset_;
+    const DenseVector<T>& owner_;
 };
 
 template<scalar T = float>
 struct CustomDenseVector : DenseVectorBase<T> {
-    const int stride;
-
-    T* const data;
-
     CustomDenseVector() = delete;
     CustomDenseVector(const CustomDenseVector<T>& other) = delete;
     CustomDenseVector(CustomDenseVector<T>&& other) noexcept = delete;
 
-    CustomDenseVector(T* const data, const int n, const int stride) : DenseVectorBase<T>(n), stride(stride), data(data) {}
+    CustomDenseVector(T* const data, const int n, const int stride) : DenseVectorBase<T>(n), stride_(stride), data_(data) {}
 
     [[nodiscard]] T& at(const int i) override {
-        return data[i * stride];
+        return data_[i * stride_];
     }
 
     [[nodiscard]] const T& at(const int i) const override {
-        return data[i * stride];
+        return data_[i * stride_];
+    }
+
+    int stride() const {
+        return stride_;
+    }
+
+    T* data() {
+        return data_;
+    }
+
+    const T* data() const {
+        return data_;
     }
 
     ~CustomDenseVector() override = default;
+private:
+    const int stride_;
+    T* const data_;
 };

@@ -58,8 +58,6 @@ public:
 
 template<scalar T = float>
 struct DenseMatrix : DenseMatrixBase<T> {
-    T* data = nullptr;
-
     DenseMatrix() = delete;
 
     /**
@@ -73,11 +71,11 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @param fill If true, initializes all elements to zero; otherwise leaves elements uninitialized.
      */
     DenseMatrix(const int rows, const int columns, const bool fill = true) : DenseMatrixBase<T>(rows, columns) {
-        data = new T[columns * rows];
+        data_ = new T[columns * rows];
 
         if (fill) {
             for (int i = 0; i < columns * rows; i++)
-                data[i] = 0;
+                data_[i] = 0;
         }
     }
 
@@ -91,7 +89,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @throws InvalidDimensionException If nested initializer_lists are not all the same size.
      */
     DenseMatrix(std::initializer_list<std::initializer_list<T>> initializerList) : DenseMatrixBase<T>(initializerList.size(), initializerList.begin()->size()) {
-        data = new T[this->columns * this->rows];
+        data_ = new T[this->columns * this->rows];
 
         int r = 0;
         for (const auto& row : initializerList) {
@@ -116,8 +114,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @param other DenseMatrix to copy from.
      */
     DenseMatrix(const DenseMatrix<T>& other) : DenseMatrixBase<T>(other.rows, other.columns) {
-        data = new T[this->columns * this->rows];
-        memcpy(data, other.data, this->columns * this->rows * sizeof(T));
+        data_ = new T[this->columns * this->rows];
+        memcpy(data_, other.data_, this->columns * this->rows * sizeof(T));
     }
 
     /**
@@ -129,7 +127,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @param other DenseMatrixBase to copy from.
      */
     DenseMatrix(const DenseMatrixBase<T>& other) : DenseMatrixBase<T>(other.rows, other.columns) {
-        data = new T[this->columns * this->rows];
+        data_ = new T[this->columns * this->rows];
 
         for (int c = 0; c < this->columns; c++) {
             for (int r = 0; r < this->rows; r++) {
@@ -141,14 +139,14 @@ struct DenseMatrix : DenseMatrixBase<T> {
     /**
      * @brief Move constructor for DenseMatrix.
      *
-     * Constructs a 'other.rows' x 'other.columns' matrix and uses the same data pointer of 'other'.
+     * Constructs a 'other.rows' x 'other.columns' matrix and uses the same data_ pointer of 'other'.
      * Does not allocate memory.
      *
      * @param other DenseMatrix to move from.
      */
     DenseMatrix(DenseMatrix<T>&& other) noexcept : DenseMatrixBase<T>(other.rows, other.columns) {
-        data = other.data;
-        other.data = nullptr;
+        data_ = other.data_;
+        other.data_ = nullptr;
     }
 
     /**
@@ -160,32 +158,41 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @param size Size of the square matrix.
      * @return Identity matrix of the given 'size'.
      */
-    static DenseMatrix<T> identity(int size) {
+    static DenseMatrix<T> identity(const int size) {
         DenseMatrix<T> result(size, size, false);
 
         for (int i = 0; i < size * size; i++)
-            result.data[i] = (i % (size + 1) == 0) ? 1 : 0;
+            result.data_[i] = (i % (size + 1) == 0) ? 1 : 0;
 
         return result;
     }
 
     [[nodiscard]] T& at(const int c, const int r) override {
-        return data[c * this->rows + r];
+        return data_[c * this->rows + r];
     }
 
     [[nodiscard]] const T& at(const int c, const int r) const override {
-        return data[c * this->rows + r];
+        return data_[c * this->rows + r];
+    }
+
+    T* data() {
+        return data_;
+    }
+
+    const T* data() const {
+        return data_;
     }
 
     ~DenseMatrix() override {
-        delete[] data;
+        delete[] data_;
     }
+
+private:
+    T* data_;
 };
 
 template<scalar T = float>
 struct DenseMatrixView : DenseMatrixBase<T> {
-    DenseMatrix<T>& owner;
-
     DenseMatrixView() = delete;
 
     DenseMatrixView(DenseMatrixView<T>&& other) noexcept = delete;
@@ -198,7 +205,7 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      *
      * @param other DenseMatrixView to copy from.
      */
-    DenseMatrixView(const DenseMatrixView<T>& other) : DenseMatrixBase<T>(other.rows, other.columns), owner(other.owner), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_) {}
+    DenseMatrixView(const DenseMatrixView<T>& other) : DenseMatrixBase<T>(other.rows, other.columns), owner_(other.owner_), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_) {}
 
     /**
      * @brief Constructs a DenseMatrixView into an existing DenseMatrix.
@@ -214,14 +221,21 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      * @param colOffset Starting column offset in the owner matrix.
      * @param rowOffset Starting row offset in the owner matrix.
      */
-    DenseMatrixView(DenseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : DenseMatrixBase<T>(rows, columns), owner(owner), colOffset_(colOffset), rowOffset_(rowOffset) {}
+    DenseMatrixView(DenseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : DenseMatrixBase<T>(rows, columns), owner_(owner), colOffset_(colOffset), rowOffset_(rowOffset) {}
 
-    [[nodiscard]] T& at(const int c, const int r) override {
-        return owner.at(c + colOffset_, r + rowOffset_);
+    /**
+     * @throws InvalidOperation You cannot modify owner through a view.
+     */
+    [[nodiscard]] T& at(const int, const int) override {
+        throw InvalidOperation("Cannot modify owner through view");
     }
 
     [[nodiscard]] const T& at(const int c, const int r) const override {
-        return owner.at(c + colOffset_, r + rowOffset_);
+        return owner_.at(c + colOffset_, r + rowOffset_);
+    }
+
+    const DenseMatrix<T>& owner() {
+        return owner_;
     }
 
     ~DenseMatrixView() override = default;
@@ -229,13 +243,12 @@ struct DenseMatrixView : DenseMatrixBase<T> {
 private:
     const int colOffset_;
     const int rowOffset_;
+
+    const DenseMatrix<T>& owner_;
 };
 
 template<scalar T = float>
 struct CustomDenseMatrix : DenseMatrixBase<T> {
-    const int stride;
-
-    T* const data;
 
     CustomDenseMatrix() = delete;
     CustomDenseMatrix(const CustomDenseMatrix<T>& other) = delete;
@@ -245,8 +258,8 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
      * @brief Constructs a CustomDenseMatrix of size 'rows x columns'.
      *
      * Does not allocate any memory on the heap.
-     * CustomDenseMatrix instance does not own 'data' pointer.
-     * Think of it as a view on an arbitrary data pointer.
+     * CustomDenseMatrix instance does not own 'data_' pointer.
+     * Think of it as a view on an arbitrary data_ pointer.
      *
      * @param data Flat 1d array containing all matrix elements in column major ordering.
      * @param rows Number of rows in matrix.
@@ -256,15 +269,31 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
      * @note Lenght of 'data' array must be greater than 'columns x stride + rows'.
      * @note 'data' array must be in column major ordering.
      */
-    CustomDenseMatrix(T* const data, const int rows, const int columns, const int stride) : DenseMatrixBase<T>(rows, columns), data(data), stride(stride) {}
+    CustomDenseMatrix(T* const data, const int rows, const int columns, const int stride) : DenseMatrixBase<T>(rows, columns), data_(data), stride_(stride) {}
 
     [[nodiscard]] T& at(const int c, const int r) override {
-        return data[c * stride + r];
+        return data_[c * stride_ + r];
     }
 
     [[nodiscard]] const T& at(const int c, const int r) const override {
-        return data[c * stride + r];
+        return data_[c * stride_ + r];
+    }
+
+    int stride() const {
+        return stride_;
+    }
+
+    T* data() {
+        return data_;
+    }
+
+    const T* data() const {
+        return data_;
     }
 
     ~CustomDenseMatrix() override = default;
+
+private:
+    const int stride_;
+    T* const data_;
 };

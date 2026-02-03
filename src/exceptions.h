@@ -8,3 +8,11 @@ class InvalidDimensionException : public std::invalid_argument
 {
     using std::invalid_argument::invalid_argument;
 };
+
+/**
+ * @brief Thrown when an operation is attempted on something that can't be allowed (e.g. modifying owner on view)
+ */
+class InvalidOperation : public std::logic_error
+{
+    using std::logic_error::logic_error;
+};
