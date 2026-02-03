@@ -185,19 +185,19 @@ struct SparseVector : SparseVectorBase<T> {
         return nnz_;
     }
 
-    T* values() {
+    [[nodiscard]] T* values() {
         return values_;
     }
 
-    const T* values() const {
+    [[nodiscard]] const T* values() const {
         return values_;
     }
 
-    int* indexes() {
+    [[nodiscard]] int* indexes() {
         return indexes_;
     }
 
-    const int* indexes() const {
+    [[nodiscard]] const int* indexes() const {
         return indexes_;
     }
 
@@ -250,7 +250,7 @@ struct SparseVectorView : SparseVectorBase<T> {
         return owner_.get(i + offset_);
     }
 
-    const SparseVector<T>& owner() const {
+    [[nodiscard]] const SparseVector<T>& owner() const {
         return owner_;
     }
 
@@ -268,6 +268,10 @@ struct SparseVectorView : SparseVectorBase<T> {
         return nnz;
     }
 
+    [[nodiscard]] int offset() const {
+        return offset_;
+    }
+
     ~SparseVectorView() override = default;
 
 private:
@@ -278,7 +282,6 @@ private:
 
 template<scalar T = float>
 struct CustomSparseVector : SparseVectorBase<T> {
-
     CustomSparseVector() = delete;
     CustomSparseVector(const CustomSparseVector<T>& other) = delete;
     CustomSparseVector(CustomSparseVector<T>&& other) noexcept = delete;
@@ -286,7 +289,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
     CustomSparseVector(const int n, T* values, int* indexes, const int nnz) : SparseVectorBase<T>(n), values_(values), indexes_(indexes), nnz_(nnz) {}
 
     void set(int i, T value) override {
-int j;
+        int j;
 
         for (j = 0; j < nnz_; j++) {
             const int curIndex = indexes_[j];
@@ -383,19 +386,19 @@ int j;
         return nnz_;
     }
 
-    T* values() {
+    [[nodiscard]] T* values() {
         return values_;
     }
 
-    const T* values() const {
+    [[nodiscard]] const T* values() const {
         return values_;
     }
 
-    int* indexes() {
+    [[nodiscard]] int* indexes() {
         return indexes_;
     }
 
-    const int* indexes() const {
+    [[nodiscard]] const int* indexes() const {
         return indexes_;
     }
 

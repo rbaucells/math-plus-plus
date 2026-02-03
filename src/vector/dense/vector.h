@@ -143,17 +143,18 @@ struct DenseVector : DenseVectorBase<T> {
         return data_[i];
     }
 
-    T* data() {
+    [[nodiscard]] T* data() {
         return data_;
     }
 
-    const T* data() const {
+    [[nodiscard]] const T* data() const {
         return data_;
     }
 
     ~DenseVector() override {
         delete[] data_;
     }
+
 private:
     T* data_;
 };
@@ -197,8 +198,12 @@ struct DenseVectorView : DenseVectorBase<T> {
         return owner_.at(i + offset_);
     }
 
-    const DenseVector<T>& owner() {
+    [[nodiscard]] const DenseVector<T>& owner() {
         return owner_;
+    }
+
+    [[nodiscard]] int offset() const {
+        return offset_;
     }
 
     ~DenseVectorView() override = default;
@@ -224,19 +229,20 @@ struct CustomDenseVector : DenseVectorBase<T> {
         return data_[i * stride_];
     }
 
-    int stride() const {
+    [[nodiscard]] int stride() const {
         return stride_;
     }
 
-    T* data() {
+    [[nodiscard]] T* data() {
         return data_;
     }
 
-    const T* data() const {
+    [[nodiscard]] const T* data() const {
         return data_;
     }
 
     ~CustomDenseVector() override = default;
+
 private:
     const int stride_;
     T* const data_;
