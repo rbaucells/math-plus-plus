@@ -283,10 +283,10 @@ struct SparseMatrixView : SparseMatrixBase<T> {
 
     /**
     * @brief Trying to modify a SparseMatrix through a view is invalid.
-    * @throws InvalidOperation You cannot modify owner through a view.
+    * @throws InvalidOperationException You cannot modify owner through a view.
     */
     void set(const int, const int, const T) override {
-        throw InvalidOperation("Cannot modify owner through view");
+        throw InvalidOperationException("Cannot modify owner through view");
     }
 
     [[nodiscard]] T get(const int c, const int r) const override {
@@ -316,6 +316,14 @@ struct SparseMatrixView : SparseMatrixBase<T> {
         return owner_;
     }
 
+    [[nodiscard]] int colOffset() const {
+        return colOffset_;
+    }
+
+    [[nodiscard]] int rowOffset() const {
+        return rowOffset_;
+    }
+
     ~SparseMatrixView() override = default;
 
 private:
@@ -330,6 +338,8 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     CustomSparseMatrix() = delete;
     CustomSparseMatrix(const CustomSparseMatrix<T>& other) = delete;
     CustomSparseMatrix(CustomSparseMatrix<T>&& other) noexcept = delete;
+    CustomSparseMatrix& operator=(const CustomSparseMatrix<T>& other) = delete;
+    CustomSparseMatrix& operator=(CustomSparseMatrix<T>&& other) noexcept = delete;
 
     /**
      * Constructs a CustomSparseMatrix from the provided arrays of size 'rows x columns'.
@@ -450,7 +460,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         return colOffsets_;
     }
 
-    [[nodiscard]] int* const& colOffsets() const {
+    [[nodiscard]] const int* const& colOffsets() const {
         return colOffsets_;
     }
 
@@ -458,7 +468,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         return rowIndices_;
     }
 
-    [[nodiscard]] int* const& rowIndices() const {
+    [[nodiscard]] const int* const& rowIndices() const {
         return rowIndices_;
     }
 
@@ -466,7 +476,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         return values_;
     }
 
-    [[nodiscard]] T* const& values() const {
+    [[nodiscard]] const T* const& values() const {
         return values_;
     }
 
@@ -481,6 +491,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
 
         return 0;
     }
+
 private:
     int*& colOffsets_;
     int*& rowIndices_;

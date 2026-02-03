@@ -241,10 +241,10 @@ struct SparseVectorView : SparseVectorBase<T> {
 
     /**
      * @brief Trying to modify a SparseVector through a view is invalid.
-     * @throws InvalidOperation You cannot modify owner through a view.
+     * @throws InvalidOperationException You cannot modify owner through a view.
      */
     void set(const int, const T) override {
-        throw InvalidOperation("Cannot modify owner through view");
+        throw InvalidOperationException("Cannot modify owner through view");
     }
 
     [[nodiscard]] T get(const int i) const override {
@@ -286,17 +286,19 @@ struct CustomSparseVector : SparseVectorBase<T> {
     CustomSparseVector() = delete;
     CustomSparseVector(const CustomSparseVector<T>& other) = delete;
     CustomSparseVector(CustomSparseVector<T>&& other) noexcept = delete;
+    CustomSparseVector& operator=(const CustomSparseVector<T>& other) = delete;
+    CustomSparseVector& operator=(CustomSparseVector<T>&& other) noexcept = delete;
 
-    CustomSparseVector(const int n, T* values, int* indexes, const int nnz) : SparseVectorBase<T>(n), values_(values), indexes_(indexes), nnz_(nnz) {}
+    CustomSparseVector(const int n, T*& values, int*& indexes, int& nnz) : SparseVectorBase<T>(n), values_(values), indexes_(indexes), nnz_(nnz) {}
 
-    void set(int i, T value) override {
+    void set(const int i, const T value) override {
         int j;
 
         for (j = 0; j < nnz_; j++) {
             const int curIndex = indexes_[j];
 
             if (curIndex == i) {
-                // there is currently a non-zero element there and we are placing a zero so we remove a non-zero element;
+                // there is currently a non-zero element there, and we are placing a zero so we remove a non-zero element;
                 if (compare(value, 0)) {
                     T* newValues = new T[nnz_ - 1];
 
@@ -316,7 +318,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
 
                     memcpy(newIndices, indexes_, j * sizeof(T));
 
-                    memcpy(&newIndices[j], &values_[j + 1], (nnz_ - j - 1) * sizeof(T));
+                    memcpy(&newIndices[j], &values_[j + 1], (nnz_ - j - 1) * sizeof(int));
 
                     delete[] indexes_;
 
@@ -363,7 +365,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
 
         memcpy(newIndices, indexes_, j * sizeof(T));
 
-        memcpy(&newIndices[j + 1], &values_[j], (nnz_ - j) * sizeof(T));
+        memcpy(&newIndices[j + 1], &values_[j], (nnz_ - j) * sizeof(int));
 
         delete[] indexes_;
 
@@ -372,7 +374,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
         nnz_++;
     }
 
-    [[nodiscard]] T get(int i) const override {
+    [[nodiscard]] T get(const int i) const override {
         for (int j = 0; j < nnz_; j++) {
             const int curIndex = indexes_[j];
 
@@ -387,24 +389,26 @@ struct CustomSparseVector : SparseVectorBase<T> {
         return nnz_;
     }
 
-    [[nodiscard]] T* values() {
+    T*& values() {
         return values_;
     }
 
-    [[nodiscard]] const T* values() const {
+    const T* const& values() const {
         return values_;
     }
 
-    [[nodiscard]] int* indexes() {
+    int*& indexes() {
         return indexes_;
     }
 
-    [[nodiscard]] const int* indexes() const {
+    const int* const& indexes() const {
         return indexes_;
     }
+
+    ~CustomSparseVector() override = default;
 
 private:
-    T* values_;
-    int* indexes_;
-    int nnz_;
+    T*& values_;
+    int*& indexes_;
+    int& nnz_;
 };

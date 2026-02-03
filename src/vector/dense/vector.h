@@ -189,17 +189,17 @@ struct DenseVectorView : DenseVectorBase<T> {
 
     /**
      * @brief Trying to modify a DenseVector through a view is invalid.
-     * @throws InvalidOperation You cannot modify owner through a view.
+     * @throws InvalidOperationException You cannot modify owner through a view.
      */
     [[nodiscard]] T& at(const int) override {
-        throw InvalidOperation("Cannot modify owner through view");
+        throw InvalidOperationException("Cannot modify owner through view");
     }
 
     [[nodiscard]] const T& at(const int i) const override {
         return owner_.at(i + offset_);
     }
 
-    [[nodiscard]] const DenseVector<T>& owner() {
+    [[nodiscard]] const DenseVector<T>& owner() const {
         return owner_;
     }
 

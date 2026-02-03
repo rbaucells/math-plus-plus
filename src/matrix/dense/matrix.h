@@ -74,8 +74,9 @@ struct DenseMatrix : DenseMatrixBase<T> {
         data_ = new T[columns * rows];
 
         if (fill) {
-            for (int i = 0; i < columns * rows; i++)
+            for (int i = 0; i < columns * rows; i++) {
                 data_[i] = 0;
+            }
         }
     }
 
@@ -93,8 +94,9 @@ struct DenseMatrix : DenseMatrixBase<T> {
 
         int r = 0;
         for (const auto& row : initializerList) {
-            if (row.size() != this->columns)
+            if (row.size() != this->columns) {
                 throw InvalidDimensionException("Nested initializer lists must all have the same size");
+            }
 
             int c = 0;
             for (const T element : row) {
@@ -161,8 +163,9 @@ struct DenseMatrix : DenseMatrixBase<T> {
     static DenseMatrix<T> identity(const int size) {
         DenseMatrix<T> result(size, size, false);
 
-        for (int i = 0; i < size * size; i++)
+        for (int i = 0; i < size * size; i++) {
             result.data_[i] = (i % (size + 1) == 0) ? 1 : 0;
+        }
 
         return result;
     }
@@ -225,10 +228,10 @@ struct DenseMatrixView : DenseMatrixBase<T> {
 
     /**
      * @brief Trying to modify a DenseMatrix through a view is invalid.
-     * @throws InvalidOperation You cannot modify owner through a view.
+     * @throws InvalidOperationException You cannot modify owner through a view.
      */
     [[nodiscard]] T& at(const int, const int) override {
-        throw InvalidOperation("Cannot modify owner through view");
+        throw InvalidOperationException("Cannot modify owner through view");
     }
 
     [[nodiscard]] const T& at(const int c, const int r) const override {
@@ -243,7 +246,7 @@ struct DenseMatrixView : DenseMatrixBase<T> {
         return rowOffset_;
     }
 
-    [[nodiscard]] const DenseMatrix<T>& owner() {
+    [[nodiscard]] const DenseMatrix<T>& owner() const {
         return owner_;
     }
 
