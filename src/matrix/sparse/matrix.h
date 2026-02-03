@@ -213,27 +213,27 @@ struct SparseMatrix : SparseMatrixBase<T> {
         return nnz_;
     }
 
-    int* colOffsets() {
+    [[nodiscard]] int* colOffsets() {
         return colOffsets_;
     }
 
-    const int* colOffsets() const {
+    [[nodiscard]] const int* colOffsets() const {
         return colOffsets_;
     }
 
-    int* rowIndices() {
+    [[nodiscard]] int* rowIndices() {
         return rowIndices_;
     }
 
-    const int* rowIndices() const {
+    [[nodiscard]] const int* rowIndices() const {
         return rowIndices_;
     }
 
-    T* values() {
+    [[nodiscard]] T* values() {
         return values_;
     }
 
-    const T* values() const {
+    [[nodiscard]] const T* values() const {
         return values_;
     }
 
@@ -311,7 +311,7 @@ struct SparseMatrixView : SparseMatrixBase<T> {
         return nnz;
     }
 
-    const SparseMatrix<T>& owner() const {
+    [[nodiscard]] const SparseMatrix<T>& owner() const {
         return owner_;
     }
 
@@ -445,27 +445,27 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         return nnz_;
     }
 
-    int*& colOffsets() {
+    [[nodiscard]] int*& colOffsets() {
         return colOffsets_;
     }
 
-    int* const& colOffsets() const {
+    [[nodiscard]] int* const& colOffsets() const {
         return colOffsets_;
     }
 
-    int*& rowIndices() {
+    [[nodiscard]] int*& rowIndices() {
         return rowIndices_;
     }
 
-    int* const& rowIndices() const {
+    [[nodiscard]] int* const& rowIndices() const {
         return rowIndices_;
     }
 
-    T*& values() {
+    [[nodiscard]] T*& values() {
         return values_;
     }
 
-    T* const& values() const {
+    [[nodiscard]] T* const& values() const {
         return values_;
     }
 

@@ -175,11 +175,11 @@ struct DenseMatrix : DenseMatrixBase<T> {
         return data_[c * this->rows + r];
     }
 
-    T* data() {
+    [[nodiscard]] T* data() {
         return data_;
     }
 
-    const T* data() const {
+    [[nodiscard]] const T* data() const {
         return data_;
     }
 
@@ -234,7 +234,15 @@ struct DenseMatrixView : DenseMatrixBase<T> {
         return owner_.at(c + colOffset_, r + rowOffset_);
     }
 
-    const DenseMatrix<T>& owner() {
+    [[nodiscard]] int colOffset() const {
+        return colOffset_;
+    }
+
+    [[nodiscard]] int rowOffset() const {
+        return rowOffset_;
+    }
+
+    [[nodiscard]] const DenseMatrix<T>& owner() {
         return owner_;
     }
 
@@ -249,7 +257,6 @@ private:
 
 template<scalar T = float>
 struct CustomDenseMatrix : DenseMatrixBase<T> {
-
     CustomDenseMatrix() = delete;
     CustomDenseMatrix(const CustomDenseMatrix<T>& other) = delete;
     CustomDenseMatrix(CustomDenseMatrix<T>&& other) noexcept = delete;
@@ -279,15 +286,15 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
         return data_[c * stride_ + r];
     }
 
-    int stride() const {
+    [[nodiscard]] int stride() const {
         return stride_;
     }
 
-    T* data() {
+    [[nodiscard]] T* data() {
         return data_;
     }
 
-    const T* data() const {
+    [[nodiscard]] const T* data() const {
         return data_;
     }
 
