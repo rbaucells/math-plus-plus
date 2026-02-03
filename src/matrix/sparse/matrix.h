@@ -282,7 +282,7 @@ struct SparseMatrixView : SparseMatrixBase<T> {
     SparseMatrixView(const SparseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : SparseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {}
 
     /**
-    * @brief Trying to modify a DenseMatrix through a view is invalid.
+    * @brief Trying to modify a SparseMatrix through a view is invalid.
     * @throws InvalidOperation You cannot modify owner through a view.
     */
     void set(const int, const int, const T) override {

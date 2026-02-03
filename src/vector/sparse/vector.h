@@ -223,7 +223,7 @@ struct SparseVectorView : SparseVectorBase<T> {
      *
      * @param other SparseVectorView to copy from.
      */
-    SparseVectorView(const SparseVectorView<T>& other) : SparseVectorBase<T>(other.n), owner_(other.owner_), offset_(other.offset_) {}
+    SparseVectorView(const SparseVectorView<T>& other) : SparseVectorBase<T>(other.n), offset_(other.offset_), owner_(other.owner_) {}
 
     /**
      * @brief Constructs a SparseVectorView into an existing SparseVector.
@@ -237,9 +237,10 @@ struct SparseVectorView : SparseVectorBase<T> {
      * @param n Number of elements in the view.
      * @param offset Starting element offset into the 'owner' vector.
      */
-    SparseVectorView(SparseVector<T>& owner, const int n, const int offset) : SparseVectorBase<T>(n), owner_(owner), offset_(offset) {}
+    SparseVectorView(const SparseVector<T>& owner, const int n, const int offset) : SparseVectorBase<T>(n), offset_(offset), owner_(owner) {}
 
     /**
+     * @brief Trying to modify a SparseVector through a view is invalid.
      * @throws InvalidOperation You cannot modify owner through a view.
      */
     void set(const int, const T) override {

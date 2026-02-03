@@ -172,7 +172,7 @@ struct DenseVectorView : DenseVectorBase<T> {
     *
     * @param other DenseVectorView to copy from.
     */
-    DenseVectorView(const DenseVectorView<T>& other) : DenseVectorBase<T>(other.n), owner_(other.owner_), offset_(other.offset_) {};
+    DenseVectorView(const DenseVectorView<T>& other) : DenseVectorBase<T>(other.n), offset_(other.offset_), owner_(other.owner_) {};
 
     /**
      * @brief Constructs a DenseVectorView into an existing DenseVector.
@@ -185,11 +185,12 @@ struct DenseVectorView : DenseVectorBase<T> {
      * @param n Number of elements in the view.
      * @param offset Starting index offset in the owner vector.
      */
-    DenseVectorView(const DenseVector<T>& owner, const int n, const int offset) : DenseVectorBase<T>(n), owner_(owner), offset_(offset) {}
+    DenseVectorView(const DenseVector<T>& owner, const int n, const int offset) : DenseVectorBase<T>(n), offset_(offset), owner_(owner) {}
 
     /**
-    * @throws InvalidOperation You cannot modify owner through a view.
-    */
+     * @brief Trying to modify a DenseVector through a view is invalid.
+     * @throws InvalidOperation You cannot modify owner through a view.
+     */
     [[nodiscard]] T& at(const int) override {
         throw InvalidOperation("Cannot modify owner through view");
     }
