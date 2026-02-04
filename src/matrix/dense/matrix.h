@@ -12,11 +12,7 @@ struct DenseMatrixBase {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
-    DenseMatrixBase() = delete;
-    DenseMatrixBase(const DenseMatrixBase<T>& other) = delete;
-    DenseMatrixBase(DenseMatrixBase&& other) noexcept = delete;
-    DenseMatrixBase& operator=(const DenseMatrixBase<T>& other) = delete;
-    DenseMatrixBase& operator=(DenseMatrixBase<T>&& other) noexcept = delete;
+    static constexpr bool isComplex = is_complex_v<T>;
 
 protected:
     /**
@@ -262,6 +258,30 @@ struct DenseMatrix : DenseMatrixBase<T> {
     }
 
     /**
+    * @brief Copy assignment operator for DenseMatrix from different type DenseMatrixBase.
+    * Replaces all elements with elements of 'other'.
+    * Does not allocate memory on the heap.
+    * @param other DenseMatrixBase to copy from.
+    * @return Reference to this.
+    * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+    * @note 'other' must be of same dimensions as this.
+    */
+    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
+    DenseMatrix<T>& operator=(const DenseMatrixBase<OTHER_T>& other) {
+        assert_same_dimensions(*this, other, "copy assign");
+
+        if (data_ != other.data_) {
+            for (int c = 0; c < this->columns; c++) {
+                for (int r = 0; r < this->rows; r++) {
+                    DenseMatrix<T>::at(c, r) = other[c, r];
+                }
+            }
+        }
+
+        return *this;
+    }
+
+    /**
      * @brief Move assignment operator for DenseMatrix from same type DenseMatrix.
      * Takes ownership of 'other' data.
      * Does not allocate memory on the heap.
@@ -322,6 +342,23 @@ struct DenseMatrixView : DenseMatrixBase<T> {
     DenseMatrixView<T>& operator=(DenseMatrixView<T>&& other) noexcept = delete;
 
     /**
+    * @brief Constructs a DenseMatrixView into an existing DenseMatrix.
+    *
+    * Creates a view of size `rows x columns` into the `owner` matrix,
+    * starting at the colOffset and rowOffset.
+    * Does not allocate new memory.
+    * The view holds a reference to the owner.
+    *
+    * @param owner DenseMatrix to create a view from.
+    * @param rows Number of rows in the view.
+    * @param columns Number of columns in the view.
+    * @param colOffset Starting column offset in the owner matrix.
+    * @param rowOffset Starting row offset in the owner matrix.
+    */
+    DenseMatrixView(const DenseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : DenseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {}
+
+
+    /**
      * @brief Copy constructor for DenseMatrixView.
      *
      * Constructs a view with the same 'owner' as 'other'.
@@ -330,22 +367,6 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      * @param other DenseMatrixView to copy from.
      */
     DenseMatrixView(const DenseMatrixView<T>& other) : DenseMatrixBase<T>(other.rows, other.columns), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {}
-
-    /**
-     * @brief Constructs a DenseMatrixView into an existing DenseMatrix.
-     *
-     * Creates a view of size `rows x columns` into the `owner` matrix,
-     * starting at the colOffset and rowOffset.
-     * Does not allocate new memory.
-     * The view holds a reference to the owner.
-     *
-     * @param owner DenseMatrix to create a view from.
-     * @param rows Number of rows in the view.
-     * @param columns Number of columns in the view.
-     * @param colOffset Starting column offset in the owner matrix.
-     * @param rowOffset Starting row offset in the owner matrix.
-     */
-    DenseMatrixView(const DenseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : DenseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {}
 
     /**
      * @brief Trying to modify a DenseMatrix through a view is invalid.
@@ -397,8 +418,8 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
     CustomDenseMatrix() = delete;
     CustomDenseMatrix(const CustomDenseMatrix<T>& other) = delete;
     CustomDenseMatrix(CustomDenseMatrix<T>&& other) noexcept = delete;
-    CustomDenseMatrix& operator=(const CustomDenseMatrix<T>& other) = delete;
-    CustomDenseMatrix& operator=(CustomDenseMatrix<T>&& other) noexcept = delete;
+    CustomDenseMatrix<T>& operator=(const CustomDenseMatrix<T>& other) = delete;
+    CustomDenseMatrix<T>& operator=(CustomDenseMatrix<T>&& other) noexcept = delete;
 
     /**
      * @brief Constructs a CustomDenseMatrix of size 'rows x columns'.

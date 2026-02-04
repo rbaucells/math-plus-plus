@@ -11,11 +11,7 @@ struct DenseVectorBase {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
-    DenseVectorBase() = delete;
-    DenseVectorBase(const DenseVectorBase<T>& other) = delete;
-    DenseVectorBase(DenseVectorBase<T>&& other) = delete;
-    DenseVectorBase& operator=(const DenseVectorBase<T>& other) = delete;
-    DenseVectorBase& operator=(DenseVectorBase<T>&& other) noexcept = delete;
+    static constexpr bool isComplex = is_complex_v<T>;
 
 protected:
     /**
@@ -226,8 +222,6 @@ struct CustomDenseVector : DenseVectorBase<T> {
     CustomDenseVector() = delete;
     CustomDenseVector(const CustomDenseVector<T>& other) = delete;
     CustomDenseVector(CustomDenseVector<T>&& other) noexcept = delete;
-    CustomDenseVector& operator=(const CustomDenseVector<T>& other) = delete;
-    CustomDenseVector& operator=(CustomDenseVector<T>&& other) noexcept = delete;
 
     CustomDenseVector(T* const data, const int n, const int stride) : DenseVectorBase<T>(n), stride_(stride), data_(data) {}
 

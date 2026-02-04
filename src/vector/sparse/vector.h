@@ -10,11 +10,7 @@ struct SparseVectorBase {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
-    SparseVectorBase() = delete;
-    SparseVectorBase(const SparseVectorBase<T>& other) = delete;
-    SparseVectorBase(SparseVectorBase<T>&& other) = delete;
-    SparseVectorBase& operator=(const SparseVectorBase<T>& other) = delete;
-    SparseVectorBase& operator=(SparseVectorBase<T>&& other) noexcept = delete;
+    static constexpr bool isComplex = is_complex_v<T>;
 
 protected:
     /**
@@ -292,8 +288,6 @@ struct CustomSparseVector : SparseVectorBase<T> {
     CustomSparseVector() = delete;
     CustomSparseVector(const CustomSparseVector<T>& other) = delete;
     CustomSparseVector(CustomSparseVector<T>&& other) noexcept = delete;
-    CustomSparseVector& operator=(const CustomSparseVector<T>& other) = delete;
-    CustomSparseVector& operator=(CustomSparseVector<T>&& other) noexcept = delete;
 
     CustomSparseVector(const int n, T*& values, int*& indexes, int& nnz) : SparseVectorBase<T>(n), values_(values), indexes_(indexes), nnz_(nnz) {}
 

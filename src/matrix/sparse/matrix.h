@@ -10,11 +10,7 @@ struct SparseMatrixBase {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
-    SparseMatrixBase() = delete;
-    SparseMatrixBase(const SparseMatrixBase<T>& other) = delete;
-    SparseMatrixBase(SparseMatrixBase&& other) noexcept = delete;
-    SparseMatrixBase& operator=(const SparseMatrixBase<T>& other) = delete;
-    SparseMatrixBase& operator=(SparseMatrixBase<T>&& other) noexcept = delete;
+    static constexpr bool isComplex = is_complex_v<T>;
 
 protected:
     /**
@@ -102,7 +98,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
         }
     }
 
-    SparseMatrix(SparseMatrix&& other) noexcept {
+    SparseMatrix(SparseMatrix&& other) noexcept : SparseMatrixBase<T>(other.rows, other.columns) {
         colOffsets_ = other.colOffsets_;
         other.colOffsets_ = nullptr;
 
@@ -344,8 +340,6 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     CustomSparseMatrix() = delete;
     CustomSparseMatrix(const CustomSparseMatrix<T>& other) = delete;
     CustomSparseMatrix(CustomSparseMatrix<T>&& other) noexcept = delete;
-    CustomSparseMatrix& operator=(const CustomSparseMatrix<T>& other) = delete;
-    CustomSparseMatrix& operator=(CustomSparseMatrix<T>&& other) noexcept = delete;
 
     /**
      * Constructs a CustomSparseMatrix from the provided arrays of size 'rows x columns'.
