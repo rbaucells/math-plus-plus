@@ -193,7 +193,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
 
     /**
      * @brief Copy assignment operator for DenseMatrix from same type DenseMatrix.
-     * Replaces all elements with elements of 'other'
+     * Replaces all elements with elements of 'other'.
      * Does not allocate memory on the heap.
      * @param other DenseMatrix to copy from.
      * @return Reference to this.
@@ -201,9 +201,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @note 'other' must be of same dimensions as this.
      */
     DenseMatrix<T>& operator=(const DenseMatrix<T>& other) {
-        assert_same_dimensions(*this, other, "copy assign");
-
         if (data_ != other.data_) {
+            assert_same_dimensions(*this, other, "copy assign");
             memcpy(data_, other.data_, this->columns * this->rows * sizeof(T));
         }
 
@@ -224,11 +223,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
     template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
     DenseMatrix<T>& operator=(const DenseMatrix<OTHER_T>& other) {
         assert_same_dimensions(*this, other, "copy assign");
-
-        if (data_ != other.data_) {
-            for (int i = 0; i < this->columns * this->rows; i++) {
-                data_[i] = other.data_[i];
-            }
+        for (int i = 0; i < this->columns * this->rows; i++) {
+            data_[i] = other.data_[i];
         }
 
         return *this;
@@ -245,12 +241,9 @@ struct DenseMatrix : DenseMatrixBase<T> {
      */
     DenseMatrix<T>& operator=(const DenseMatrixBase<T>& other) {
         assert_same_dimensions(*this, other, "copy assign");
-
-        if (data_ != other.data_) {
-            for (int c = 0; c < this->columns; c++) {
-                for (int r = 0; r < this->rows; r++) {
-                    DenseMatrix<T>::at(c, r) = other[c, r];
-                }
+        for (int c = 0; c < this->columns; c++) {
+            for (int r = 0; r < this->rows; r++) {
+                DenseMatrix<T>::at(c, r) = other[c, r];
             }
         }
 
@@ -265,16 +258,15 @@ struct DenseMatrix : DenseMatrixBase<T> {
     * @return Reference to this.
     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
     * @note 'other' must be of same dimensions as this.
+    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+    * @tparam OTHER_T Scalar type of the 'other' DenseMatrixBase.
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     DenseMatrix<T>& operator=(const DenseMatrixBase<OTHER_T>& other) {
         assert_same_dimensions(*this, other, "copy assign");
-
-        if (data_ != other.data_) {
-            for (int c = 0; c < this->columns; c++) {
-                for (int r = 0; r < this->rows; r++) {
-                    DenseMatrix<T>::at(c, r) = other[c, r];
-                }
+        for (int c = 0; c < this->columns; c++) {
+            for (int r = 0; r < this->rows; r++) {
+                DenseMatrix<T>::at(c, r) = other[c, r];
             }
         }
 
@@ -291,9 +283,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @note 'other' must be of same dimensions as this.
      */
     DenseMatrix<T>& operator=(DenseMatrix<T>&& other) noexcept {
-        assert_same_dimensions(*this, other, "move assign");
-
         if (data_ != other.data_) {
+            assert_same_dimensions(*this, other, "move assign");
             delete[] data_;
             data_ = other.data_;
             other.data_ = nullptr;
@@ -425,15 +416,15 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
      * @brief Constructs a CustomDenseMatrix of size 'rows x columns'.
      *
      * Does not allocate any memory on the heap.
-     * CustomDenseMatrix instance does not own 'data_' pointer.
-     * Think of it as a view on an arbitrary data_ pointer.
+     * CustomDenseMatrix instance does not own 'data' pointer.
+     * Think of it as a view on an arbitrary 'data' pointer.
      *
      * @param data Flat 1d array containing all matrix elements in column major ordering.
      * @param rows Number of rows in matrix.
      * @param columns Number of columns in matrix.
      * @param stride How many elements to skip when accessing elements.
      *
-     * @note Lenght of 'data' array must be greater than 'columns x stride + rows'.
+     * @note Length of 'data' array must be greater than '(columns - 1) x stride + (rows - 1)'.
      * @note 'data' array must be in column major ordering.
      */
     CustomDenseMatrix(T* data, const int rows, const int columns, const int stride) : DenseMatrixBase<T>(rows, columns), stride_(stride), data_(data) {}
