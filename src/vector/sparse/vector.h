@@ -13,6 +13,8 @@ struct SparseVectorBase {
     SparseVectorBase() = delete;
     SparseVectorBase(const SparseVectorBase<T>& other) = delete;
     SparseVectorBase(SparseVectorBase<T>&& other) = delete;
+    SparseVectorBase& operator=(const SparseVectorBase<T>& other) = delete;
+    SparseVectorBase& operator=(SparseVectorBase<T>&& other) noexcept = delete;
 
 protected:
     /**
@@ -40,6 +42,10 @@ public:
      */
     [[nodiscard]] virtual T get(int i) const = 0;
 
+    /**
+    * @brief Gets the number of non-zero elements in the sparse vector.
+    * @return Number of non-zero elements.
+    */
     [[nodiscard]] virtual int nnz() const = 0;
 
     virtual ~SparseVectorBase() = default;

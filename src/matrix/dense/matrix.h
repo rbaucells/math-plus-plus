@@ -1,4 +1,6 @@
 #pragma once
+#include "helper.h"
+
 #include "../../exceptions.h"
 #include "../../helper.h"
 
@@ -13,6 +15,8 @@ struct DenseMatrixBase {
     DenseMatrixBase() = delete;
     DenseMatrixBase(const DenseMatrixBase<T>& other) = delete;
     DenseMatrixBase(DenseMatrixBase&& other) noexcept = delete;
+    DenseMatrixBase& operator=(const DenseMatrixBase<T>& other) = delete;
+    DenseMatrixBase& operator=(DenseMatrixBase<T>&& other) noexcept = delete;
 
 protected:
     /**
@@ -89,7 +93,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @param initializerList Nested initializer_list representing matrix elements.
      * @throws InvalidDimensionException If nested initializer_lists are not all the same size.
      */
-    DenseMatrix(std::initializer_list<std::initializer_list<T>> initializerList) : DenseMatrixBase<T>(initializerList.size(), initializerList.begin()->size()) {
+    DenseMatrix(const std::initializer_list<std::initializer_list<T>>& initializerList) : DenseMatrixBase<T>(initializerList.size(), initializerList.begin()->size()) {
         data_ = new T[this->columns * this->rows];
 
         int r = 0;
@@ -108,7 +112,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
     }
 
     /**
-     * @brief Copy constructor for DenseMatrix.
+     * @brief Copy constructor for DenseMatrix from same type DenseMatrix.
      *
      * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
      * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
@@ -121,7 +125,26 @@ struct DenseMatrix : DenseMatrixBase<T> {
     }
 
     /**
-     * @brief Copy constructor for DenseMatrix from DenseMatrixBase.
+    * @brief Copy constructor for DenseMatrix from different type DenseMatrix.
+    *
+    * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+    * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
+    *
+    * @tparam OTHER_T Scalar type of the 'other' DenseMatrix.
+    * @param other DenseMatrix to copy from.
+    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+    */
+    template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
+    DenseMatrix(const DenseMatrix<OTHER_T>& other) : DenseMatrixBase<T>(other.rows, other.columns) {
+        data_ = new T[this->columns * this->rows];
+
+        for (int i = 0; i < this->columns * this->rows; i++) {
+            data_[i] = other.data_[i];
+        }
+    }
+
+    /**
+     * @brief Copy constructor for DenseMatrix from same type DenseMatrixBase.
      *
      * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
      * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
@@ -139,7 +162,28 @@ struct DenseMatrix : DenseMatrixBase<T> {
     }
 
     /**
-     * @brief Move constructor for DenseMatrix.
+    * @brief Copy constructor for DenseMatrix from different type DenseMatrixBase.
+    *
+    * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+    * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
+    *
+    * @tparam OTHER_T Scalar type of the 'other' DenseMatrixBase.
+    * @param other DenseMatrixBase to copy from.
+    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+    */
+    template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
+    DenseMatrix(const DenseMatrixBase<OTHER_T>& other) : DenseMatrixBase<T>(other.rows, other.columns) {
+        data_ = new T[this->columns * this->rows];
+
+        for (int c = 0; c < this->columns; c++) {
+            for (int r = 0; r < this->rows; r++) {
+                DenseMatrix<T>::at(c, r) = other[c, r];
+            }
+        }
+    }
+
+    /**
+     * @brief Move constructor for DenseMatrix from same type DenseMatrix.
      *
      * Constructs a 'other.rows' x 'other.columns' matrix and uses the same data_ pointer of 'other'.
      * Does not allocate memory.
@@ -152,22 +196,90 @@ struct DenseMatrix : DenseMatrixBase<T> {
     }
 
     /**
-     * @brief Constructs an identity matrix of size 'size x size'.
-     *
-     * Allocates 'size * size * sizeof(T)' bytes on the heap.
-     * The matrix contains 1s on the diagonal and 0s elsewhere.
-     *
-     * @param size Size of the square matrix.
-     * @return Identity matrix of the given 'size'.
+     * @brief Copy assignment operator for DenseMatrix from same type DenseMatrix.
+     * Replaces all elements with elements of 'other'
+     * Does not allocate memory on the heap.
+     * @param other DenseMatrix to copy from.
+     * @return Reference to this.
+     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+     * @note 'other' must be of same dimensions as this.
      */
-    static DenseMatrix<T> identity(const int size) {
-        DenseMatrix<T> result(size, size, false);
+    DenseMatrix<T>& operator=(const DenseMatrix<T>& other) {
+        assert_same_dimensions(*this, other, "copy assign");
 
-        for (int i = 0; i < size * size; i++) {
-            result.data_[i] = (i % (size + 1) == 0) ? 1 : 0;
+        if (data_ != other.data_) {
+            memcpy(data_, other.data_, this->columns * this->rows * sizeof(T));
         }
 
-        return result;
+        return *this;
+    }
+
+    /**
+    * @brief Copy assignment operator for DenseMatrix from different type DenseMatrix.
+    * Replaces all elements with elements of 'other'.
+    * Does not allocate memory on the heap.
+    * @tparam OTHER_T Scalar type of the 'other' DenseMatrix.
+    * @param other DenseMatrix to copy from.
+    * @return Reference to this.
+    * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+    * @note 'other' must be of same dimensions as this.
+    */
+    template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
+    DenseMatrix<T>& operator=(const DenseMatrix<OTHER_T>& other) {
+        assert_same_dimensions(*this, other, "copy assign");
+
+        if (data_ != other.data_) {
+            for (int i = 0; i < this->columns * this->rows; i++) {
+                data_[i] = other.data_[i];
+            }
+        }
+
+        return *this;
+    }
+
+    /**
+     * @brief Copy assignment operator for DenseMatrix from same type DenseMatrixBase.
+     * Replaces all elements with elements of 'other'.
+     * Does not allocate memory on the heap.
+     * @param other DenseMatrixBase to copy from.
+     * @return Reference to this.
+     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+     * @note 'other' must be of same dimensions as this.
+     */
+    DenseMatrix<T>& operator=(const DenseMatrixBase<T>& other) {
+        assert_same_dimensions(*this, other, "copy assign");
+
+        if (data_ != other.data_) {
+            for (int c = 0; c < this->columns; c++) {
+                for (int r = 0; r < this->rows; r++) {
+                    DenseMatrix<T>::at(c, r) = other[c, r];
+                }
+            }
+        }
+
+        return *this;
+    }
+
+    /**
+     * @brief Move assignment operator for DenseMatrix from same type DenseMatrix.
+     * Takes ownership of 'other' data.
+     * Does not allocate memory on the heap.
+     * @param other DenseMatrix to move from.
+     * @return Reference to this.
+     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+     * @note 'other' must be of same dimensions as this.
+     */
+    DenseMatrix<T>& operator=(DenseMatrix<T>&& other) noexcept {
+        assert_same_dimensions(*this, other, "move assign");
+
+        if (data_ != other.data_) {
+            delete[] data_;
+            data_ = other.data_;
+            other.data_ = nullptr;
+        }
+
+        return *this;
     }
 
     [[nodiscard]] T& at(const int c, const int r) override {
@@ -178,10 +290,18 @@ struct DenseMatrix : DenseMatrixBase<T> {
         return data_[c * this->rows + r];
     }
 
+    /**
+     * @brief Gets the data pointer storing the matrices elements.
+     * @return Pointer to array of elements.
+     */
     [[nodiscard]] T* data() {
         return data_;
     }
 
+    /**
+    * @brief Gets the const data pointer storing the matrices elements.
+    * @return Const pointer to array of elements.
+    */
     [[nodiscard]] const T* data() const {
         return data_;
     }
@@ -197,8 +317,9 @@ private:
 template<scalar T = float>
 struct DenseMatrixView : DenseMatrixBase<T> {
     DenseMatrixView() = delete;
-
     DenseMatrixView(DenseMatrixView<T>&& other) noexcept = delete;
+    DenseMatrixView<T>& operator=(const DenseMatrixView<T>& other) = delete;
+    DenseMatrixView<T>& operator=(DenseMatrixView<T>&& other) noexcept = delete;
 
     /**
      * @brief Copy constructor for DenseMatrixView.
@@ -238,14 +359,26 @@ struct DenseMatrixView : DenseMatrixBase<T> {
         return owner_.at(c + colOffset_, r + rowOffset_);
     }
 
+    /**
+     * @brief Gets the column offset relative to the 'owner'.
+     * @return The column offset.
+     */
     [[nodiscard]] int colOffset() const {
         return colOffset_;
     }
 
+    /**
+     * @brief Gets the row offset relative to the 'owner'.
+     * @return The row offset.
+     */
     [[nodiscard]] int rowOffset() const {
         return rowOffset_;
     }
 
+    /**
+     * @brief Gets the const reference to the DenseMatrix owner.
+     * @return Const reference to denseMatrix owner.
+     */
     [[nodiscard]] const DenseMatrix<T>& owner() const {
         return owner_;
     }
@@ -264,6 +397,8 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
     CustomDenseMatrix() = delete;
     CustomDenseMatrix(const CustomDenseMatrix<T>& other) = delete;
     CustomDenseMatrix(CustomDenseMatrix<T>&& other) noexcept = delete;
+    CustomDenseMatrix& operator=(const CustomDenseMatrix<T>& other) = delete;
+    CustomDenseMatrix& operator=(CustomDenseMatrix<T>&& other) noexcept = delete;
 
     /**
      * @brief Constructs a CustomDenseMatrix of size 'rows x columns'.
@@ -290,14 +425,26 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
         return data_[c * stride_ + r];
     }
 
+    /**
+     * @brief Gets the stride or how far to jump between elements.
+     * @return The stride.
+     */
     [[nodiscard]] int stride() const {
         return stride_;
     }
 
+    /**
+     * @brief Gets the data pointer storing the matrices elements.
+     * @return Pointer to array of elements.
+     */
     [[nodiscard]] T* data() {
         return data_;
     }
 
+    /**
+    * @brief Gets the const data pointer storing the matrices elements.
+    * @return Const pointer to array of elements.
+    */
     [[nodiscard]] const T* data() const {
         return data_;
     }

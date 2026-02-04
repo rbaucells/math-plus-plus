@@ -14,6 +14,8 @@ struct DenseVectorBase {
     DenseVectorBase() = delete;
     DenseVectorBase(const DenseVectorBase<T>& other) = delete;
     DenseVectorBase(DenseVectorBase<T>&& other) = delete;
+    DenseVectorBase& operator=(const DenseVectorBase<T>& other) = delete;
+    DenseVectorBase& operator=(DenseVectorBase<T>&& other) noexcept = delete;
 
 protected:
     /**
@@ -135,6 +137,9 @@ struct DenseVector : DenseVectorBase<T> {
         other.data_ = nullptr;
     }
 
+    DenseVector& operator=(const DenseVector<T>& other) = delete;
+    DenseVector& operator=(DenseVector<T>&& other) noexcept = delete;
+
     [[nodiscard]] T& at(int i) override {
         return data_[i];
     }
@@ -163,6 +168,8 @@ template<scalar T = float>
 struct DenseVectorView : DenseVectorBase<T> {
     DenseVectorView() = delete;
     DenseVectorView(DenseVectorView<T>&& other) noexcept = delete;
+    DenseVectorView& operator=(const DenseVectorView<T>& other) = delete;
+    DenseVectorView& operator=(DenseVectorView<T>&& other) noexcept = delete;
 
     /**
     * @brief Copy constructor for DenseVectorView.
@@ -219,6 +226,8 @@ struct CustomDenseVector : DenseVectorBase<T> {
     CustomDenseVector() = delete;
     CustomDenseVector(const CustomDenseVector<T>& other) = delete;
     CustomDenseVector(CustomDenseVector<T>&& other) noexcept = delete;
+    CustomDenseVector& operator=(const CustomDenseVector<T>& other) = delete;
+    CustomDenseVector& operator=(CustomDenseVector<T>&& other) noexcept = delete;
 
     CustomDenseVector(T* const data, const int n, const int stride) : DenseVectorBase<T>(n), stride_(stride), data_(data) {}
 

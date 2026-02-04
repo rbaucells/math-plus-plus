@@ -13,6 +13,8 @@ struct SparseMatrixBase {
     SparseMatrixBase() = delete;
     SparseMatrixBase(const SparseMatrixBase<T>& other) = delete;
     SparseMatrixBase(SparseMatrixBase&& other) noexcept = delete;
+    SparseMatrixBase& operator=(const SparseMatrixBase<T>& other) = delete;
+    SparseMatrixBase& operator=(SparseMatrixBase<T>&& other) noexcept = delete;
 
 protected:
     /**
@@ -44,6 +46,10 @@ public:
      */
     [[nodiscard]] virtual T get(int c, int r) const = 0;
 
+    /**
+     * @brief Gets the number of non-zero elements in the sparse matrix.
+     * @return Number of non-zero elements.
+     */
     [[nodiscard]] virtual int nnz() const = 0;
 
     virtual ~SparseMatrixBase() = default;
