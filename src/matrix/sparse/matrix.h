@@ -1,8 +1,10 @@
 #pragma once
+#include "helper.h"
+
 #include "../../exceptions.h"
 #include "../../helper.h"
 
-template<scalar T>
+template<scalar T = float>
 struct SparseMatrixBase {
     const int rows;
     const int columns;
@@ -51,8 +53,16 @@ public:
     virtual ~SparseMatrixBase() = default;
 };
 
-template<scalar T>
+template<scalar T = float>
 struct SparseMatrix : SparseMatrixBase<T> {
+    SparseMatrix() = delete;
+
+    /**
+     * @brief Constructs a SparseMatrix of size 'rows x columns'.
+     * Allocates '(columns + 1) * sizeof(int)' bytes of memory on the heap.
+     * @param rows Number of rows.
+     * @param columns Number of columns.
+     */
     SparseMatrix(const int rows, const int columns) : SparseMatrixBase<T>(rows, columns) {
         colOffsets_ = new int[columns + 1];
 
@@ -66,8 +76,16 @@ struct SparseMatrix : SparseMatrixBase<T> {
         values_ = new T[nnz_];
     }
 
+    /**
+     * @brief Copy constructor for SparseMatrix from same type SparseMatrix.
+     *
+     * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+     * Allocates '(other.columns + 1) * sizeof(int) + other.nnz * sizeof(int) + other.nnz * sizeof(T)' bytes on the heap.
+     *
+     * @param other SparseMatrix to copy from.
+     */
     SparseMatrix(const SparseMatrix<T>& other) : SparseMatrixBase<T>(other.rows, other.columns) {
-        colOffsets_ = new int[other.colOffsetsSize];
+        colOffsets_ = new int[this->columns + 1];
         memcpy(colOffsets_, other.colOffsets_, (this->columns + 1) * sizeof(int));
 
         nnz_ = other.nnz_;
@@ -79,6 +97,41 @@ struct SparseMatrix : SparseMatrixBase<T> {
         memcpy(values_, other.values_, nnz_ * sizeof(T));
     }
 
+    /**
+    * @brief Copy constructor for SparseMatrix from different type SparseMatrix.
+    *
+    * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+    * Allocates '(other.columns + 1) * sizeof(int) + other.nnz * sizeof(int) + other.nnz * sizeof(T)' bytes on the heap.
+    *
+    * @tparam OTHER_T Scalar type of the 'other' SparseMatrix.
+    * @param other SparseMatrix to copy from.
+    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+    */
+    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
+    SparseMatrix(const SparseMatrix<OTHER_T>& other) : SparseMatrixBase<T>(other.rows, other.columns) {
+        colOffsets_ = new int[this->columns + 1];
+        memcpy(colOffsets_, other.colOffsets_, (this->columns + 1) * sizeof(int));
+
+
+        nnz_ = other.nnz_;
+
+        rowIndices_ = new int[nnz_];
+        memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(int));
+
+        values_ = new T[nnz_];
+        for (int i = 0; i < nnz_; i++) {
+            values_[i] = other.values_[i];
+        }
+    }
+
+    /**
+     * @brief Copy constructor for SparseMatrix from same type SparseMatrixBase.
+     *
+     * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+     * Allocates '(columns + 1) * sizeof(int) + other.nnz * sizeof(int) + other.nnz * sizeof(T)' bytes on the heap.
+     *
+     * @param other SparseMatrixBase to copy from.
+     */
     SparseMatrix(const SparseMatrixBase<T>& other) : SparseMatrixBase<T>(other.rows, other.columns) {
         colOffsets_ = new int[this->columns + 1];
 
@@ -98,6 +151,44 @@ struct SparseMatrix : SparseMatrixBase<T> {
         }
     }
 
+    /**
+     * @brief Copy constructor for SparseMatrix from different type SparseMatrixBase.
+     *
+     * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+     * Allocates '(columns + 1) * sizeof(int) + other.nnz * sizeof(int) + other.nnz * sizeof(T)' bytes on the heap.
+     *
+     * @tparam OTHER_T Scalar type of the 'other' SparseMatrixBase.
+     * @param other SparseMatrixBase to copy from.
+     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+     */
+    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
+    SparseMatrix(const SparseMatrixBase<OTHER_T>& other) : SparseMatrixBase<T>(other.rows, other.columns) {
+        colOffsets_ = new int[this->columns + 1];
+
+        for (int i = 0; i < this->columns + 1; i++) {
+            colOffsets_[i] = 0;
+        }
+
+        nnz_ = 0;
+
+        rowIndices_ = new int[nnz_];
+        values_ = new T[nnz_];
+
+        for (int c = 0; c < this->columns; c++) {
+            for (int r = 0; r < this->rows; r++) {
+                SparseMatrix<T>::set(c, r, other.get(c, r));
+            }
+        }
+    }
+
+    /**
+     * @brief Move constructor for SparseMatrix from same type SparseMatrix.
+     *
+     * Constructs a 'other.rows' x 'other.columns' matrix and uses the same arrays of 'other'.
+     * Does not allocate memory.
+     *
+     * @param other SparseMatrix to move from.
+     */
     SparseMatrix(SparseMatrix&& other) noexcept : SparseMatrixBase<T>(other.rows, other.columns) {
         colOffsets_ = other.colOffsets_;
         other.colOffsets_ = nullptr;
@@ -109,6 +200,174 @@ struct SparseMatrix : SparseMatrixBase<T> {
         other.values_ = nullptr;
 
         nnz_ = other.nnz_;
+    }
+
+    /**
+     * @brief Copy assignment operator for SparseMatrix from same type SparseMatrix.
+     * Replaces all elements with elements of 'other'.
+     * May allocate memory if nnz != other.nnz, if not then 'nnz * sizeof(T) + nnz * sizeof(int)' bytes of memory are allocated on the heap.
+     * @param other SparseMatrix to copy from.
+     * @return Reference to this.
+     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+     * @note 'other' must be of same dimensions as this.
+     */
+    SparseMatrix<T>& operator=(const SparseMatrix<T>& other) {
+        assert_same_dimensions(*this, other, "copy assign");
+
+        if (values_ != other.values_ && colOffsets_ != other.colOffsets_ && rowIndices_ != other.rowIndices_) {
+            if (nnz_ != other.nnz_) {
+                nnz_ = other.nnz_;
+
+                delete[] values_;
+                values_ = new T[nnz_];
+
+                delete[] rowIndices_;
+                rowIndices_ = new int[nnz_];
+            }
+
+            memcpy(values_, other.values_, nnz_ * sizeof(T));
+            memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(int));
+            memcpy(colOffsets_, other.colOffsets_, (this->columns + 1) * sizeof(int));
+        }
+
+        return *this;
+    }
+
+    /**
+     * @brief Copy assignment operator for SparseMatrix from different type SparseMatrix.
+     * Replaces all elements with elements of 'other'.
+     * May allocate memory if nnz != other.nnz, if not then 'nnz * sizeof(T) + nnz * sizeof(int)' bytes of memory are allocated on the heap.
+     * @param other SparseMatrix to copy from.
+     * @return Reference to this.
+     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+     * @note 'other' must be of same dimensions as this.
+     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+     * @tparam OTHER_T Scalar type of the 'other' SparseMatrix.
+     */
+    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
+    SparseMatrix<T>& operator=(const SparseMatrix<OTHER_T>& other) {
+        assert_same_dimensions(*this, other, "copy assign");
+
+        if (colOffsets_ != other.colOffsets_ && rowIndices_ != other.rowIndices_) {
+            if (nnz_ != other.nnz_) {
+                nnz_ = other.nnz_;
+
+                delete[] values_;
+                values_ = new T[nnz_];
+
+                delete[] rowIndices_;
+                rowIndices_ = new int[nnz_];
+            }
+
+            for (int i = 0; i < nnz_; i++) {
+                values_[i] = other.values_[i];
+            }
+
+            memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(int));
+            memcpy(colOffsets_, other.colOffsets_, (this->columns + 1) * sizeof(int));
+        }
+
+        return *this;
+    }
+
+    /**
+     * @brief Copy assignment operator for DenseMatrix from same type SparseMatrixBase.
+     * Replaces all elements with elements of 'other'.
+     * Allocates 'other.nnz * sizeof(T) + other.nnz * sizeof(int)' bytes of memory on the heap.
+     * @param other SparseMatrixBase to copy from.
+     * @return Reference to this.
+     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+     * @note 'other' must be of same dimensions as this.
+     */
+    SparseMatrix<T>& operator=(const SparseMatrixBase<T>& other) {
+        assert_same_dimensions(*this, other, "copy assign");
+
+        for (int i = 0; i < this->columns + 1; i++) {
+            colOffsets_[i] = 0;
+        }
+
+        nnz_ = 0;
+
+        delete[] rowIndices_;
+        rowIndices_ = new int[nnz_];
+
+        delete[] values_;
+        values_ = new T[nnz_];
+
+        for (int c = 0; c < this->columns; c++) {
+            for (int r = 0; r < this->columns; r++) {
+                SparseMatrix<T>::set(c, r, other.get(c, r));
+            }
+        }
+
+        return *this;
+    }
+
+    /**
+     * @brief Copy assignment operator for DenseMatrix from different type SparseMatrixBase.
+     * Replaces all elements with elements of 'other'.
+     * Allocates 'other.nnz * sizeof(T) + other.nnz * sizeof(int)' bytes of memory on the heap.
+     * @param other SparseMatrixBase to copy from.
+     * @return Reference to this.
+     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+     * @note 'other' must be of same dimensions as this.
+     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+     * @tparam OTHER_T Scalar type of the 'other' SparseMatrixBase.
+     */
+    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
+    SparseMatrix<T>& operator=(const SparseMatrixBase<OTHER_T>& other) {
+        assert_same_dimensions(*this, other, "copy assign");
+
+        for (int i = 0; i < this->columns + 1; i++) {
+            colOffsets_[i] = 0;
+        }
+
+        nnz_ = 0;
+
+        delete[] rowIndices_;
+        rowIndices_ = new int[nnz_];
+
+        delete[] values_;
+        values_ = new T[nnz_];
+
+        for (int c = 0; c < this->columns; c++) {
+            for (int r = 0; r < this->columns; r++) {
+                SparseMatrix<T>::set(c, r, other.get(c, r));
+            }
+        }
+
+        return *this;
+    }
+
+    /**
+    * @brief Move assignment operator for SparseMatrix from same type SparseMatrix.
+    * Takes ownership of 'other' values, rowIndices, and colOffsets.
+    * Does not allocate memory on the heap.
+    * @param other SparseMatrix to move from.
+    * @return Reference to this.
+    * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+    * @note 'other' must be of same dimensions as this.
+    */
+    SparseMatrix<T>& operator=(SparseMatrix<T>&& other) noexcept {
+        if (values_ != other.values_ && rowIndices_ != other.rowIndices_ && colOffsets_ != other.colOffsets_) {
+            assert_same_dimensions(*this, other, "move assign");
+
+            delete[] values_;
+            values_ = other.values_;
+            other.values_ = nullptr;
+
+            delete[] rowIndices_;
+            rowIndices_ = other.rowIndices_;
+            other.rowIndices_ = nullptr;
+
+            delete[] colOffsets_;
+            colOffsets_ = other.colOffsets_;
+            other.colOffsets_ = nullptr;
+
+            nnz_ = other.nnz_;
+        }
+
+        return *this;
     }
 
     void set(const int c, const int r, const T value) override {
@@ -215,26 +474,52 @@ struct SparseMatrix : SparseMatrixBase<T> {
         return nnz_;
     }
 
+    /**
+     * @brief Gets the array containing the column offsets.
+     * Always of size 'columns + 1'.
+     * @return Pointer to array of column offsets.
+     */
     [[nodiscard]] int* colOffsets() {
         return colOffsets_;
     }
 
+    /**
+    * @brief Gets the array containing the column offsets.
+    * Always of size 'columns + 1'.
+    * @return Const pointer to array of column offsets.
+    */
     [[nodiscard]] const int* colOffsets() const {
         return colOffsets_;
     }
 
+    /**
+    * @brief Gets the array containing the row indices.
+    * @return Pointer to array of row indices.
+    */
     [[nodiscard]] int* rowIndices() {
         return rowIndices_;
     }
 
+    /**
+    * @brief Gets the array containing the row indices.
+    * @return Const pointer to array of row indices.
+    */
     [[nodiscard]] const int* rowIndices() const {
         return rowIndices_;
     }
 
+    /**
+    * @brief Gets the values pointer storing the matrices non-zero elements.
+    * @return Pointer to array of non-zero elements.
+    */
     [[nodiscard]] T* values() {
         return values_;
     }
 
+    /**
+    * @brief Gets the const values pointer storing the matrices non-zero elements.
+    * @return Const pointer to array of non-zero elements.
+    */
     [[nodiscard]] const T* values() const {
         return values_;
     }
@@ -252,21 +537,12 @@ private:
     int nnz_;
 };
 
-template<scalar T>
+template<scalar T = float>
 struct SparseMatrixView : SparseMatrixBase<T> {
     SparseMatrixView() = delete;
-
     SparseMatrixView(SparseMatrixView<T>&& other) noexcept = delete;
-
-    /**
-     * @brief Copy constructor for SparseMatrixView.
-     *
-     * Constructs a view with the same 'owner' as 'other'.
-     * Does not allocate new memory.
-     *
-     * @param other SparseMatrixView to copy from.
-     */
-    SparseMatrixView(const SparseMatrixView<T>& other) : SparseMatrixBase<T>(other.rows, other.columns), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {}
+    SparseMatrixView<T>& operator=(const SparseMatrixView<T>& other) = delete;
+    SparseMatrixView<T>& operator=(SparseMatrixView<T>&& other) noexcept = delete;
 
     /**
      * @brief Constructs a SparseMatrixView into an existing SparseMatrix.
@@ -282,6 +558,16 @@ struct SparseMatrixView : SparseMatrixBase<T> {
      * @param rowOffset Starting row offset in the 'owner' matrix.
      */
     SparseMatrixView(const SparseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : SparseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {}
+
+    /**
+     * @brief Copy constructor for SparseMatrixView.
+     *
+     * Constructs a view with the same 'owner' as 'other'.
+     * Does not allocate new memory.
+     *
+     * @param other SparseMatrixView to copy from.
+     */
+    SparseMatrixView(const SparseMatrixView<T>& other) : SparseMatrixBase<T>(other.rows, other.columns), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {}
 
     /**
     * @brief Trying to modify a SparseMatrix through a view is invalid.
@@ -314,16 +600,28 @@ struct SparseMatrixView : SparseMatrixBase<T> {
         return nnz;
     }
 
-    [[nodiscard]] const SparseMatrix<T>& owner() const {
-        return owner_;
-    }
-
+    /**
+    * @brief Gets the column offset relative to the 'owner'.
+    * @return The column offset.
+    */
     [[nodiscard]] int colOffset() const {
         return colOffset_;
     }
 
+    /**
+     * @brief Gets the row offset relative to the 'owner'.
+     * @return The row offset.
+     */
     [[nodiscard]] int rowOffset() const {
         return rowOffset_;
+    }
+
+    /**
+     * @brief Gets the const reference to the DenseMatrix owner.
+     * @return Const reference to denseMatrix owner.
+     */
+    [[nodiscard]] const SparseMatrix<T>& owner() const {
+        return owner_;
     }
 
     ~SparseMatrixView() override = default;
@@ -335,11 +633,13 @@ private:
     const SparseMatrix<T>& owner_;
 };
 
-template<scalar T>
+template<scalar T = float>
 struct CustomSparseMatrix : SparseMatrixBase<T> {
     CustomSparseMatrix() = delete;
     CustomSparseMatrix(const CustomSparseMatrix<T>& other) = delete;
     CustomSparseMatrix(CustomSparseMatrix<T>&& other) noexcept = delete;
+    CustomSparseMatrix<T>& operator=(const CustomSparseMatrix<T>& other) = delete;
+    CustomSparseMatrix<T>& operator=(CustomSparseMatrix<T>&& other) noexcept = delete;
 
     /**
      * Constructs a CustomSparseMatrix from the provided arrays of size 'rows x columns'.
@@ -452,34 +752,6 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         nnz_++;
     }
 
-    [[nodiscard]] int nnz() const override {
-        return nnz_;
-    }
-
-    [[nodiscard]] int*& colOffsets() {
-        return colOffsets_;
-    }
-
-    [[nodiscard]] const int* const& colOffsets() const {
-        return colOffsets_;
-    }
-
-    [[nodiscard]] int*& rowIndices() {
-        return rowIndices_;
-    }
-
-    [[nodiscard]] const int* const& rowIndices() const {
-        return rowIndices_;
-    }
-
-    [[nodiscard]] T*& values() {
-        return values_;
-    }
-
-    [[nodiscard]] const T* const& values() const {
-        return values_;
-    }
-
     [[nodiscard]] T get(const int c, const int r) const override {
         const int start = colOffsets_[c];
         const int end = colOffsets_[c + 1];
@@ -490,6 +762,58 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         }
 
         return 0;
+    }
+
+    [[nodiscard]] int nnz() const override {
+        return nnz_;
+    }
+
+    /**
+    * @brief Gets the reference to the pointer storing the column offsets.
+    * @return Reference to pointer containing the column offsets.
+    */
+    [[nodiscard]] int*& colOffsets() {
+        return colOffsets_;
+    }
+
+    /**
+    * @brief Gets the const reference to the const pointer storing the column offsets.
+    * @return Const reference to const pointer containing the column offsets.
+    */
+    [[nodiscard]] const int* const& colOffsets() const {
+        return colOffsets_;
+    }
+
+    /**
+    * @brief Gets the reference to the pointer storing the row indices.
+    * @return Reference to pointer containing the row indices.
+    */
+    [[nodiscard]] int*& rowIndices() {
+        return rowIndices_;
+    }
+
+    /**
+    * @brief Gets the const reference to the const pointer storing the row indices.
+    * @return Const reference to const pointer containing the row indices.
+    */
+    [[nodiscard]] const int* const& rowIndices() const {
+        return rowIndices_;
+    }
+
+    /**
+     * @brief Gets the reference to the pointer storing the matrices non-zero elements.
+     * @return Reference to pointer containing non-zero elements.
+     */
+    [[nodiscard]] T*& values() {
+        return values_;
+    }
+
+    /**
+    * @brief Gets the const reference to the const pointer storing the matrices non-zero elements.
+    * @return Const reference to const pointer containing non-zero elements.
+    */
+    [[nodiscard]] const T* const& values() const {
+        return values_;
     }
 
 private:

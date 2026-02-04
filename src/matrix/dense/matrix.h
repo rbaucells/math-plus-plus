@@ -181,7 +181,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
     /**
      * @brief Move constructor for DenseMatrix from same type DenseMatrix.
      *
-     * Constructs a 'other.rows' x 'other.columns' matrix and uses the same data_ pointer of 'other'.
+     * Constructs a 'other.rows' x 'other.columns' matrix and uses the same 'data' pointer of 'other'.
      * Does not allocate memory.
      *
      * @param other DenseMatrix to move from.
