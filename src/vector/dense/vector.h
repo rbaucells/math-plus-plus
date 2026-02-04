@@ -203,11 +203,9 @@ struct DenseVector : DenseVectorBase<T> {
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     DenseVector<T>& operator=(const DenseVector<OTHER_T>& other) {
-        if (data_ != other.data_) {
-            assert_same_size(*this, other, "copy assign");
-            for (int i = 0; i < this->n; i++) {
-                data_[i] = other.data_[i];
-            }
+        assert_same_size(*this, other, "copy assign");
+        for (int i = 0; i < this->n; i++) {
+            data_[i] = other.data_[i];
         }
 
         return *this;
@@ -261,7 +259,7 @@ struct DenseVector : DenseVectorBase<T> {
      * @throws InvalidDimensionException If 'other' does not have same size as this.
      * @note 'other' must be of same size as this.
      */
-    DenseVector& operator=(DenseVector<T>&& other) noexcept {
+    DenseVector<T>& operator=(DenseVector<T>&& other) noexcept {
         if (data_ != other.data_) {
             assert_same_size(*this, other, "move assign");
             delete[] data_;
@@ -308,8 +306,8 @@ template<scalar T = float>
 struct DenseVectorView : DenseVectorBase<T> {
     DenseVectorView() = delete;
     DenseVectorView(DenseVectorView<T>&& other) noexcept = delete;
-    DenseVectorView& operator=(const DenseVectorView<T>& other) = delete;
-    DenseVectorView& operator=(DenseVectorView<T>&& other) noexcept = delete;
+    DenseVectorView<T>& operator=(const DenseVectorView<T>& other) = delete;
+    DenseVectorView<T>& operator=(DenseVectorView<T>&& other) noexcept = delete;
 
     /**
      * @brief Constructs a DenseVectorView into an existing DenseVector.
@@ -356,7 +354,7 @@ struct DenseVectorView : DenseVectorBase<T> {
 
     /**
     * @brief Gets the const reference to the DenseMatrix owner.
-    * @return Const reference to denseMatrix owner.
+    * @return Const reference to DenseMatrix owner.
     */
     [[nodiscard]] const DenseVector<T>& owner() const {
         return owner_;
@@ -381,9 +379,9 @@ struct CustomDenseVector : DenseVectorBase<T> {
      * @brief Constructs a CustomDenseVector of size 'n'.
      * Does not allocate any memory on the heap.
      * CustomDenseMatrix instance does not own 'data' pointer.
-     * Think of it as a view on an arbitrary 'data' pointer
+     * Think of it as a view on an arbitrary 'data' pointer.
      * @param data Flat 1d array containing all vector elements.
-     * @param n Number of elements in vector.s
+     * @param n Number of elements in vector.
      * @param stride How many elements to skip when accessing elements.
      * @note Length of 'data' array must be greater than '(n - 1) x stride'.
      */

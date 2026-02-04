@@ -3,6 +3,8 @@
 #include "../../exceptions.h"
 #include "../../helper.h"
 
+#include "helper.h"
+
 template<scalar T = float>
 struct SparseVectorBase {
     const int n;
@@ -49,6 +51,8 @@ public:
 
 template<scalar T = float>
 struct SparseVector : SparseVectorBase<T> {
+    SparseVector() = delete;
+
     /**
      * @brief Constructs a SparseVector of size 'n'.
      *
@@ -63,10 +67,10 @@ struct SparseVector : SparseVectorBase<T> {
     }
 
     /**
-     * @brief Copy constructor for SparseVector.
+     * @brief Copy constructor for SparseVector from same type SparseVector.
      *
      * Constructs a vector of size 'n' and performs a deep copy of 'other'.
-     * Allocated 'nnz * sizeof(T) * 2' bytes of memory on the heap.
+     * Allocated 'nnz * sizeof(T) + nnz * sizeof(int)' bytes of memory on the heap.
      *
      * @param other SparseVector to copy from.
      */
@@ -74,19 +78,206 @@ struct SparseVector : SparseVectorBase<T> {
         values_ = new T[nnz_];
         memcpy(values_, other.values_, nnz_ * sizeof(T));
 
-        indexes_ = new T[nnz_];
-        memcpy(indexes_, other.values_, nnz_ * sizeof(T));
+        indexes_ = new int[nnz_];
+        memcpy(indexes_, other.indexes_, nnz_ * sizeof(int));
     }
 
+    /**
+    * @brief Copy constructor for SparseVector from different type SparseVector.
+    *
+    * Constructs a vector of size 'n' and performs a deep copy of 'other'.
+    * Allocates 'nnz * sizeof(T) + nnz * sizeof(int)' bytes on the heap.
+    *
+    * @param other SparseVector to copy from.
+    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+    * @tparam OTHER_T Scalar type of the 'other' SparseVector.
+    */
+    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
+    SparseVector(const SparseVector<OTHER_T>& other) : SparseVectorBase<T>(other.n), nnz_(other.nnz_) {
+        values_ = new T[nnz_];
+
+        for (int i = 0; i < nnz_; i++) {
+            values_[i] = other.values_[i];
+        }
+
+        indexes_ = new int[nnz_];
+        memcpy(indexes_, other.indexes_, nnz_ * sizeof(int));
+    }
+
+    /**
+    * @brief Copy constructor for SparseVector from same type SparseVectorBase.
+    *
+    * Constructs a vector of size 'n' and performs a deep copy of 'other'.
+    * Allocates 'nnz * sizeof(T) + nnz * sizeof(int)' bytes on the heap.
+    *
+    * @param other SparseVectorBase to copy from.
+    */
     SparseVector(const SparseVectorBase<T>& other) : SparseVectorBase<T>(other.n) {
         for (int i = 0; i < this->n; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
     }
 
-    SparseVector(SparseVector<T>&& other) noexcept : SparseVectorBase<T>(other.n), values_(other.values_), indexes_(other.indexes_), nnz_(other.nnz_) {
-        other.indexes_ = nullptr;
+    /**
+    * @brief Copy constructor for SparseVector from different type SparseVectorBase.
+    *
+    * Constructs a vector of size 'n' and performs a deep copy of 'other'.
+    * Allocates 'nnz * sizeof(T) + nnz * sizeof(int)' bytes on the heap.
+    *
+    * @param other SparseVectorBase to copy from.
+    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+    * @tparam OTHER_T Scalar type of the 'other' SparseVectorBase.
+    */
+    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
+    SparseVector(const SparseVectorBase<OTHER_T>& other) : SparseVectorBase<T>(other.n) {
+        for (int i = 0; i < this->n; i++) {
+            SparseVector<T>::set(i, other.get(i));
+        }
+    }
+
+    /**
+     * @brief Move constructor for SparseVector.
+     *
+     * Constructs a vector of size 'other.n' and performs a move from 'other'.
+     * Does not allocate any memory on the heap.
+     *
+     * @param other SparseVector to move from.
+     */
+    SparseVector(SparseVector<T>&& other) noexcept : SparseVectorBase<T>(other.n), nnz_(other.nnz_) {
+        values_ = other.values_;
         other.values_ = nullptr;
+
+        indexes_ = other.indexes_;
+        other.indexes_ = nullptr;
+    }
+
+    /**
+     * @brief Copy assignment operator for SparseVector from same type SparseVector.
+     * Replaces all elements with elements of 'other'.
+     * May allocate 'other.nnz * sizeof(T) + other.nnz * sizeof(int)' bytes of memory on the heap if number of non-zero elements here doesn't match number of non-zero elements in 'other'.
+     * @param other SparseVector to copy from.
+     * @return Reference to this.
+     * @throws InvalidDimensionException If 'other' does not have same size as this.
+     * @note 'other' must be of same size as this.
+     */
+    SparseVector<T>& operator=(const SparseVector<T>& other) {
+        if (values_ != other.values_ && indexes_ != other.indexes_) {
+            assert_same_size(*this, other, "copy assign");
+
+            if (nnz_ != other.nnz_) {
+                nnz_ = other.nnz_;
+
+                delete[] values_;
+                values_ = new T[nnz_];
+
+                delete[] indexes_;
+                indexes_ = new int[nnz_];
+            }
+
+            memcpy(values_, other.values_, nnz_ * sizeof(T));
+            memcpy(indexes_, other.values_, nnz_ * sizeof(int));
+        }
+
+        return *this;
+    }
+
+    /**
+     * @brief Copy assignment operator for SparseVector from different type SparseVector.
+     * Replaces all elements with elements of 'other'.
+     * May allocate 'other.nnz * sizeof(T) + other.nnz * sizeof(int)' bytes of memory on the heap if number of non-zero elements here doesn't match number of non-zero elements in 'other'.
+     * @param other SparseVector to copy from.
+     * @return Reference to this.
+     * @throws InvalidDimensionException If 'other' does not have same size as this.
+     * @note 'other' must be of same size as this.
+     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+     * @tparam OTHER_T Scalar type of the 'other' DenseVector.
+     */
+    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
+    SparseVector<T>& operator=(const SparseVector<OTHER_T>& other) {
+        assert_same_size(*this, other, "copy assign");
+
+        if (nnz_ != other.nnz_) {
+            nnz_ = other.nnz_;
+
+            delete[] values_;
+            values_ = new T[nnz_];
+
+            delete[] indexes_;
+            indexes_ = new int[nnz_];
+        }
+
+        for (int i = 0; i < nnz_; i++) {
+            values_[i] = other.values_[i];
+            indexes_[i] = other.indexes_[i];
+        }
+
+        return *this;
+    }
+
+    /**
+    * @brief Copy assignment operator for SparseVector from same type SparseVectorBase.
+    * Replaces all elements with elements of 'other'.
+    * Allocates 'other.nnz * sizeof(T) + other.nnz * sizeof(T)' bytes of memory on the heap.
+    * @param other SparseVectorBase to copy from.
+    * @return Reference to this.
+    * @throws InvalidDimensionException If 'other' does not have same size as this.
+    * @note 'other' must be of same size as this.
+    */
+    SparseVector<T>& operator=(const SparseVectorBase<T>& other) {
+        assert_same_size(*this, other, "copy assign");
+        for (int i = 0; i < this->n; i++) {
+            SparseVector<T>::set(i, other.get(i));
+        }
+
+        return *this;
+    }
+
+    /**
+    * @brief Copy assignment operator for SparseVector from different type SparseVectorBase.
+    * Replaces all elements with elements of 'other'.
+    * Allocates 'other.nnz * sizeof(T) + other.nnz * sizeof(T)' bytes of memory on the heap.
+    * @param other SparseVectorBase to copy from.
+    * @return Reference to this.
+    * @throws InvalidDimensionException If 'other' does not have same size as this.
+    * @note 'other' must be of same size as this.
+    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+    * @tparam OTHER_T Scalar type of the 'other' DenseVector.
+    */
+    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
+    SparseVector<T>& operator=(const SparseVectorBase<OTHER_T>& other) {
+        assert_same_size(*this, other, "copy assign");
+        for (int i = 0; i < this->n; i++) {
+            SparseVector<T>::set(i, other.get(i));
+        }
+
+        return *this;
+    }
+
+    /**
+    * @brief Move assignment operator for SparseVector from same type SparseVector.
+    * Takes ownership of 'other' data.
+    * Does not allocate memory on the heap.
+    * @param other SparseVector to move from.
+    * @return Reference to this.
+    * @throws InvalidDimensionException If 'other' does not have same size as this.
+    * @note 'other' must be of same size as this.
+    */
+    SparseVector<T>& operator=(SparseVector<T>&& other) noexcept {
+        if (values_ != other.values_ && indexes_ != other.indexes_) {
+            assert_same_size(*this, other, "move assign");
+
+            delete[] values_;
+            values_ = other.values_;
+            other.values_ = nullptr;
+
+            delete[] indexes_;
+            indexes_ = other.indexes_;
+            other.indexes_ = nullptr;
+
+            nnz_ = other.nnz_;
+        }
+
+        return *this;
     }
 
     void set(const int i, const T value) override {
@@ -187,18 +378,34 @@ struct SparseVector : SparseVectorBase<T> {
         return nnz_;
     }
 
+    /**
+     * @brief Gets the data pointer storing the vectors non-zero elements.
+     * @return Pointer to array of non-zero elements.
+     */
     [[nodiscard]] T* values() {
         return values_;
     }
 
+    /**
+     * @brief Gets the const data pointer storing the vectors non-zero elements.
+     * @return Const pointer to array of non-zero elements.
+     */
     [[nodiscard]] const T* values() const {
         return values_;
     }
 
+    /**
+     * @brief Gets the indexes pointer storing the indexes for the vectors non-zero elements.
+     * @return Pointer to array of indexes of non-zero elements.
+     */
     [[nodiscard]] int* indexes() {
         return indexes_;
     }
 
+    /**
+     * @brief Gets the const indexes pointer storing the indexes for the vectors non-zero elements.
+     * @return Const pointer to array of indexes of non-zero elements.
+     */
     [[nodiscard]] const int* indexes() const {
         return indexes_;
     }
@@ -214,18 +421,9 @@ private:
 template<scalar T = float>
 struct SparseVectorView : SparseVectorBase<T> {
     SparseVectorView() = delete;
-
     SparseVectorView(SparseVectorView<T>&& other) noexcept = delete;
-
-    /**
-     * @brief Copy constructor for SparseVectorView.
-     *
-     * Constructs a view with the same 'owner' as 'other'.
-     * Does not allocate new memory.
-     *
-     * @param other SparseVectorView to copy from.
-     */
-    SparseVectorView(const SparseVectorView<T>& other) : SparseVectorBase<T>(other.n), offset_(other.offset_), owner_(other.owner_) {}
+    SparseVectorView<T>& operator=(const SparseVectorView<T>& other) = delete;
+    SparseVectorView<T>& operator=(SparseVectorView<T>&& other) noexcept = delete;
 
     /**
      * @brief Constructs a SparseVectorView into an existing SparseVector.
@@ -241,6 +439,17 @@ struct SparseVectorView : SparseVectorBase<T> {
      */
     SparseVectorView(const SparseVector<T>& owner, const int n, const int offset) : SparseVectorBase<T>(n), offset_(offset), owner_(owner) {}
 
+
+    /**
+     * @brief Copy constructor for SparseVectorView.
+     *
+     * Constructs a view with the same 'owner' as 'other'.
+     * Does not allocate new memory.
+     *
+     * @param other SparseVectorView to copy from.
+     */
+    SparseVectorView(const SparseVectorView<T>& other) : SparseVectorBase<T>(other.n), offset_(other.offset_), owner_(other.owner_) {}
+
     /**
      * @brief Trying to modify a SparseVector through a view is invalid.
      * @throws InvalidOperationException You cannot modify owner through a view.
@@ -251,10 +460,6 @@ struct SparseVectorView : SparseVectorBase<T> {
 
     [[nodiscard]] T get(const int i) const override {
         return owner_.get(i + offset_);
-    }
-
-    [[nodiscard]] const SparseVector<T>& owner() const {
-        return owner_;
     }
 
     [[nodiscard]] int nnz() const override {
@@ -271,8 +476,20 @@ struct SparseVectorView : SparseVectorBase<T> {
         return nnz;
     }
 
+    /**
+     * @brief Gets the offset relative to the 'owner'.
+     * @return The offset.
+     */
     [[nodiscard]] int offset() const {
         return offset_;
+    }
+
+    /**
+    * @brief Gets the const reference to the SparseVector owner.
+    * @return Const reference to SparseVector owner.
+    */
+    [[nodiscard]] const SparseVector<T>& owner() const {
+        return owner_;
     }
 
     ~SparseVectorView() override = default;
@@ -288,7 +505,22 @@ struct CustomSparseVector : SparseVectorBase<T> {
     CustomSparseVector() = delete;
     CustomSparseVector(const CustomSparseVector<T>& other) = delete;
     CustomSparseVector(CustomSparseVector<T>&& other) noexcept = delete;
+    CustomSparseVector<T>& operator=(const CustomSparseVector<T>& other) = delete;
+    CustomSparseVector<T>& operator=(CustomSparseVector<T>&& other) noexcept = delete;
 
+    /**
+     * @brief Constructs a CustomSparseMatrix of size 'n'.
+     * Does not allocate any memory on the heap.
+     * CustomSparseVector instance does not own 'values' or 'indexes' pointer.
+     * Think of it as a view on an arbitrary 'values' and 'indexes' pointer.
+     * @param n Number of vector elements.
+     * @param values Reference to array containing non-zero elements of vector.
+     * @param indexes Reference to array containing indexes of non-zero elements of vector.
+     * @param nnz Reference to number of non-zero elements.
+     * @note Length of 'data' array must be greater than 'nnz - 1'.
+     * @note The array 'values' and 'indexes' are pointing to may change.
+     * @note Value of 'nnz' may change.
+     */
     CustomSparseVector(const int n, T*& values, int*& indexes, int& nnz) : SparseVectorBase<T>(n), values_(values), indexes_(indexes), nnz_(nnz) {}
 
     void set(const int i, const T value) override {
@@ -316,9 +548,9 @@ struct CustomSparseVector : SparseVectorBase<T> {
 
                     int* newIndices = new int[nnz_ - 1];
 
-                    memcpy(newIndices, indexes_, j * sizeof(T));
+                    memcpy(newIndices, indexes_, j * sizeof(int));
 
-                    memcpy(&newIndices[j], &values_[j + 1], (nnz_ - j - 1) * sizeof(int));
+                    memcpy(&newIndices[j], &indexes_[j + 1], (nnz_ - j - 1) * sizeof(int));
 
                     delete[] indexes_;
 
@@ -363,7 +595,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
 
         int* newIndices = new int[nnz_ + 1];
 
-        memcpy(newIndices, indexes_, j * sizeof(T));
+        memcpy(newIndices, indexes_, j * sizeof(int));
 
         memcpy(&newIndices[j + 1], &values_[j], (nnz_ - j) * sizeof(int));
 
@@ -389,18 +621,34 @@ struct CustomSparseVector : SparseVectorBase<T> {
         return nnz_;
     }
 
+    /**
+     * @brief Gets the reference to the pointer storing the vectors non-zero elements.
+     * @return Reference to pointer containing non-zero elements.
+     */
     T*& values() {
         return values_;
     }
 
+    /**
+    * @brief Gets the const reference to the const pointer storing the vectors non-zero elements.
+    * @return Const reference to const pointer containing non-zero elements.
+    */
     const T* const& values() const {
         return values_;
     }
 
+    /**
+    * @brief Gets the reference to the pointer storing the indexes of the vectors non-zero elements.
+    * @return Reference to pointer containing the indexes of the non-zero elements.
+    */
     int*& indexes() {
         return indexes_;
     }
 
+    /**
+    * @brief Gets the const reference to the const pointer storing the indexes of the vectors non-zero elements.
+    * @return Const reference to const pointer containing the indexes of the non-zero elements.
+    */
     const int* const& indexes() const {
         return indexes_;
     }
