@@ -1,0 +1,16 @@
+#pragma once
+
+#include "../../src/exceptions.h"
+#include "../../src/expression.h"
+#include "../../src/helper.h"
+#include "../../src/vector/exceptions.h"
+#include "../../src/vector/sparse/vector.h"
+#include "../../src/vector/sparse/helper.h"
+#include "../../src/vector/dense/vector.h"
+#include "../../src/vector/dense/helper.h"
+#include "../../src/matrix/exceptions.h"
+#include "../../src/matrix/sparse/matrix.h"
+#include "../../src/matrix/sparse/helper.h"
+#include "../../src/matrix/dense/matrix.h"
+#include "../../src/matrix/dense/helper.h"
+#include "../../src/matrix/dense/operators/add.h"

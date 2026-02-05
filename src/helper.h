@@ -37,7 +37,7 @@ using underlying_type_t = underlying_type<T>::value_type;
 
 // HasCommonType
 template<typename... T>
-concept HasCommonType = requires { typename std::common_type_t<T...>; };
+concept has_common_type = requires { typename std::common_type_t<T...>; };
 
 // rotations
 enum class RotationType {
@@ -83,7 +83,7 @@ template<scalar T = float>
                 case RotationType::degrees:
                     return value;
                 case RotationType::radians:
-                    return degreesToRadians(value);
+                    return degreesToRadians<T>(value);
             }
             break;
         case RotationType::radians:
@@ -91,7 +91,7 @@ template<scalar T = float>
                 case RotationType::radians:
                     return value;
                 case RotationType::degrees:
-                    return radiansToDegrees(value);
+                    return radiansToDegrees<T>(value);
             }
             break;
     }
@@ -105,11 +105,11 @@ template<scalar T = float>
  * @brief Returns at compile time the machine precision of type 'T'.
  * @tparam T Integer type.
  * @return The epsilon of type 'T'.
- * @note This is always 1 for integer types.
+ * @note This is always 0 for integer types.
  */
 template<std::integral T>
 [[nodiscard]] constexpr T epsilon() {
-    return 1;
+    return 0;
 }
 
 /**
@@ -142,9 +142,9 @@ template<complex T>
  * @return Whether 'a' and 'b' are equal up to 'precision'.
  * @note The underlying types of 'T' and 'U' must have a common type.
  */
-template<scalar T, scalar U> requires HasCommonType<underlying_type_t<T>, underlying_type_t<U>>
+template<scalar T, scalar U> requires has_common_type<underlying_type_t<T>, underlying_type_t<U>>
 [[nodiscard]] bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
-    return std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(b))) < precision && std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(b))) < precision;
+    return std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(b))) <= precision && std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(b))) <= precision;
 }
 
 /**
@@ -156,7 +156,7 @@ template<scalar T, scalar U> requires HasCommonType<underlying_type_t<T>, underl
  * @return Whether 'a' is less than 'b'.
  * @note Types 'T' and 'U' must have a common type.
  */
-template<real T, real U> requires HasCommonType<T, U>
+template<real T, real U> requires has_common_type<T, U>
 [[nodiscard]] bool lesser(const T a, const U b) {
     return static_cast<std::common_type_t<T, U>>(a) < static_cast<std::common_type_t<T, U>>(b);
 }
@@ -170,7 +170,7 @@ template<real T, real U> requires HasCommonType<T, U>
  * @return Whether the real part of 'a' is less than 'b' and 'a' is real (no imag part).
  * @note Underlying type of 'T' and 'U' must have a common type.
  */
-template<complex T, real U>  requires HasCommonType<underlying_type_t<T>, U>
+template<complex T, real U>  requires has_common_type<underlying_type_t<T>, U>
 [[nodiscard]] bool lesser(const T a, const U b) {
     return lesser(std::real(a), b) && compare(std::imag(a), 0);
 }
@@ -184,7 +184,7 @@ template<complex T, real U>  requires HasCommonType<underlying_type_t<T>, U>
  * @return Whether 'a' is greater than 'b'.
  * @note Types 'T' and 'U' must have a common type.
  */
-template<real T, real U> requires HasCommonType<T, U>
+template<real T, real U> requires has_common_type<T, U>
 [[nodiscard]] bool greater(const T a, const U b) {
     return static_cast<std::common_type_t<T, U>>(a) > static_cast<std::common_type_t<T, U>>(b);
 }
@@ -198,7 +198,7 @@ template<real T, real U> requires HasCommonType<T, U>
  * @return Whether the real part of 'a' is greater than 'b' and 'a' is real (no imag part).
  * @note Underlying type of 'T' and 'U' must have a common type.
  */
-template<complex T, real U> requires HasCommonType<underlying_type_t<T>, U>
+template<complex T, real U> requires has_common_type<underlying_type_t<T>, U>
 [[nodiscard]] bool greater(const T a, const U b) {
     return greater(std::real(a), b) && compare(std::imag(a), 0);
 }
