@@ -1,6 +1,6 @@
 #pragma once
 #include "matrix.h"
-#include "matrix_exceptions.h"
+#include "../src/old/matrix_exceptions.h"
 
 template< int ROWS, int COLUMNS, scalar T>
 template<int ITER>

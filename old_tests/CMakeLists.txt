@@ -20,7 +20,18 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # math-tests executable
-add_executable(mathpp-tests main.cpp)
+add_executable(mathpp-tests
+        main.cpp
+        matrix.operators.tests.cpp
+        matrix.checks.tests.cpp
+        matrix.general.tests.cpp
+        helper.tests.cpp
+        matrix.decompositions.tests.cpp
+        matrix.transformations.tests.cpp
+        vector.operators.tests.cpp
+        vector.general.tests.cpp
+        vector.checks.tests.cpp
+)
 
 # link with the math lib
 target_link_libraries(mathpp-tests PRIVATE mathpp GTest::gtest_main)

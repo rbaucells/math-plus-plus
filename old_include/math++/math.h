@@ -1,0 +1,18 @@
+#pragma once
+
+#include "../../src/curve.h"
+#include "../../src/exceptions.h"
+#include "../../old_src/helper.h"
+#include "../../old_src/matrix.h"
+#include "../../old_src/matrix_checks.h"
+#include "../../old_src/matrix_decompositions.h"
+#include "../../old_src/matrix_eigen.h"
+#include "../../src/old/matrix_exceptions.h"
+#include "../../old_src/matrix_general.h"
+#include "../../old_src/matrix_operators.h"
+#include "../../old_src/matrix_transformations.h"
+#include "../../old_src/vector.h"
+#include "../../src/vector_checks.h"
+#include "../../old_src/vector_general.h"
+#include "../../old_src/vector_operators.h"
+#include "../../old_src/vertex.h"

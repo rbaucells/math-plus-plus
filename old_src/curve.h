@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include "helper.h"
-#include "vector.h"
+#include "../src/old/helper.h"
+#include "../src/old/vector.h"
 
 template<scalar T = float>
 class Curve {
