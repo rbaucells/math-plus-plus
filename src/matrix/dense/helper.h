@@ -104,12 +104,11 @@ inline void assert_same_dimensions(const T& a, const OTHERS&... others) {
  * @brief Asserts that the 'm' matrix is square.
  * @tparam T Matrix type of 'm'.
  * @param m Dense matrix to test squareness of.
- * @param operation The name of the operation being done (e.g. "add", "multiply").
  * @throws InvalidDimensionException if the 'm' matrix is not square.
  */
 template<dense_matrix_base T>
-inline void assert_square(const T& m, const std::string& operation) {
+inline void assert_square(const T& m) {
     if (m.columns != m.rows) {
-        throw InvalidDimensionException(std::string("Cannot") + operation + " with non square matrix");
+        throw InvalidDimensionException("Dense matrix must be square");
     }
 }

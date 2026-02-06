@@ -128,3 +128,32 @@ TEST(assert_same_dimensions, given_sparse_matrixes_templated_on_float_int_and_co
     ASSERT_THROW(assert_same_dimensions(a, b, c), InvalidDimensionException);
 }
 #pragma endregion
+#pragma region assert_square
+TEST(assert_square, given_square_sparse_matrix_templated_on_float_should_return_true) {
+    // arrange
+    const SparseMatrix<float> a(3, 3);
+    // act / assert
+    ASSERT_NO_THROW(assert_square(a));
+}
+
+TEST(assert_square, given_square_sparse_matrix_templated_on_complex_float_should_return_true) {
+    // arrange
+    const SparseMatrix<std::complex<float>> a(3, 3);
+    // act / assert
+    ASSERT_NO_THROW(assert_square(a));
+}
+
+TEST(assert_square, given_non_square_sparse_matrix_templated_on_float_should_return_false) {
+    // arrange
+    const SparseMatrix<float> a(4, 3);
+    // act / assert
+    ASSERT_THROW(assert_square(a), InvalidDimensionException);
+}
+
+TEST(assert_square, given_non_square_sparse_matrix_templated_on_complex_float_should_return_false) {
+    // arrange
+    const SparseMatrix<std::complex<float>> a(3, 4);
+    // act / assert
+    ASSERT_THROW(assert_square(a), InvalidDimensionException);
+}
+#pragma endregion

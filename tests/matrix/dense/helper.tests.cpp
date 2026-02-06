@@ -128,3 +128,32 @@ TEST(assert_same_dimensions, given_dense_matrixes_templated_on_float_int_and_com
     ASSERT_THROW(assert_same_dimensions(a, b, c), InvalidDimensionException);
 }
 #pragma endregion
+#pragma region assert_square
+TEST(assert_square, given_square_dense_matrix_templated_on_float_should_return_true) {
+    // arrange
+    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5,6}, {7, 8, 9}};
+    // act / assert
+    ASSERT_NO_THROW(assert_square(a));
+}
+
+TEST(assert_square, given_square_dense_matrix_templated_on_complex_float_should_return_true) {
+    // arrange
+    const DenseMatrix<std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
+    // act / assert
+    ASSERT_NO_THROW(assert_square(a));
+}
+
+TEST(assert_square, given_non_square_dense_matrix_templated_on_float_should_return_false) {
+    // arrange
+    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5,6}, {7, 8, 9}, {10, 11, 12}};
+    // act / assert
+    ASSERT_THROW(assert_square(a), InvalidDimensionException);
+}
+
+TEST(assert_square, given_non_square_dense_matrix_templated_on_complex_float_should_return_false) {
+    // arrange
+    const DenseMatrix<std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}, {7, 8}}, {{9, 10}, {11, 12}, {13, 14}, {15, 16}}, {{17, 18}, {19, 20}, {21, 22}, {23, 24}}};
+    // act / assert
+    ASSERT_THROW(assert_square(a), InvalidDimensionException);
+}
+#pragma endregion
