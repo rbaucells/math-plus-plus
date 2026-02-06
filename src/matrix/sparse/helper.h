@@ -73,10 +73,10 @@ template<typename U>
 struct is_custom_sparse_matrix<CustomSparseMatrix<U>> : std::true_type {};
 
 template<typename T>
-inline constexpr bool is_custom_sparse_matrix_v = is_sparse_matrix_view<T>::value;
+inline constexpr bool is_custom_sparse_matrix_v = is_custom_sparse_matrix<T>::value;
 
 template<typename T>
-concept custom_sparse_matrix = is_sparse_matrix_view_v<T>;
+concept custom_sparse_matrix = is_custom_sparse_matrix_v<T>;
 
 
 template<sparse_matrix_base T>
