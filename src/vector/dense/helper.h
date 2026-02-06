@@ -82,22 +82,18 @@ struct underlying_type<T> {
     using value_type = T::ValueType;
 };
 
-template<dense_vector_base T, dense_vector_base U> requires has_common_type<underlying_type_t<T>, underlying_type_t<U>>
-[[nodiscard]] bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
-    return a.equals(b, precision);
-}
-
 /**
- * @brief Asserts that 'a' and 'b' have the same size.
- * @tparam T Vector type of 'a'.
- * @tparam U Vector type of 'b'.
- * @param a Dense vector to compare with 'b'.
- * @param b Dense vector to compare with 'a'.
+ * @brief Asserts that 'a' and 'others' have the same size.
+ * @tparam T Dense Vector type of 'a'.
+ * @tparam OTHERS Dense Vector types of 'others'.
+ * @param a Dense vector to compare size with 'others'.
+ * @param others Dense vectors to compare size with 'a'.
  * @param operation The name of the operation being done (e.g "add", "dot").
+ * @throws InvalidDimensionException If 'a' and 'others' are not all of same size.
  */
-template<dense_vector_base T, dense_vector_base U>
-inline void assert_same_size(const T& a, const U& b, const std::string& operation) {
-    if (a.n != b.n) {
+template<dense_vector_base T, dense_vector_base... OTHERS>
+inline void assert_same_size(const T& a, const OTHERS&... others, const std::string& operation) {
+    if (!((a.n == others.n) && ...)) {
         throw InvalidDimensionException(std::string("Cannot ") + operation + " with vectors of different size");
     }
 }

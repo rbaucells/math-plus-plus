@@ -133,18 +133,18 @@ template<complex T>
 }
 
 /**
- * @brief Checks if 'a' and 'b' are equal up to 'precision'.
+ * @brief Checks if 'a' and 'others' are equal up to 'precision'.
  * @tparam T Scalar type of 'a'.
- * @tparam U Scalar type of 'b'.
- * @param a Scalar to compare to 'b'.
- * @param b Scalar to compare to 'a'.
- * @param precision The precision to use when comparing 'a' and 'b'. Defaults to machine precision for 'common_type_t<underlying_type_t<T>, underlying_type_t<U>>'.
- * @return Whether 'a' and 'b' are equal up to 'precision'.
- * @note The underlying types of 'T' and 'U' must have a common type.
+ * @tparam OTHERS Scalar types of 'others'.
+ * @param a Scalar to compare to 'others'.
+ * @param others Scalars to compare to 'a'.
+ * @param precision The precision to use when comparing 'a' and 'others'. Defaults to machine precision for 'underlying type of common type of underlying types of a and others'.
+ * @return Whether 'a' and 'others' are all equal up to 'precision'.
+ * @note The underlying types of 'T' and 'OTHERS' must have a common type.
  */
-template<scalar T, scalar U> requires has_common_type<underlying_type_t<T>, underlying_type_t<U>>
-[[nodiscard]] bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
-    return std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::real(b))) <= precision && std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>(std::imag(b))) <= precision;
+template<scalar T, scalar... OTHERS> requires has_common_type<underlying_type_t<T>, underlying_type_t<OTHERS>...>
+[[nodiscard]] bool compare(const T a, const OTHERS... others, const std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>()) {
+    return ((std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>(std::real(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>(std::real(others))) <= precision && std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>(std::imag(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>(std::imag(others))) <= precision) && ...);
 }
 
 /**
@@ -170,7 +170,7 @@ template<real T, real U> requires has_common_type<T, U>
  * @return Whether the real part of 'a' is less than 'b' and 'a' is real (no imag part).
  * @note Underlying type of 'T' and 'U' must have a common type.
  */
-template<complex T, real U>  requires has_common_type<underlying_type_t<T>, U>
+template<complex T, real U> requires has_common_type<underlying_type_t<T>, U>
 [[nodiscard]] bool lesser(const T a, const U b) {
     return lesser(std::real(a), b) && compare(std::imag(a), 0);
 }

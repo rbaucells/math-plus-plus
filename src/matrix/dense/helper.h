@@ -85,24 +85,18 @@ struct underlying_type<T> {
     using value_type = T::ValueType;
 };
 
-
-template<dense_matrix_base T, dense_matrix_base U> requires has_common_type<underlying_type_t<T>, underlying_type_t<U>>
-[[nodiscard]] bool compare(const T a, const U b, const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>> precision = epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>()) {
-    return a.equals(b, precision);
-}
-
 /**
- * @brief Asserts that 'a' and 'b' have the same dimensions.
- * @tparam T Matrix type of 'a'.
- * @tparam U Matrix type of 'b'.
- * @param a Dense matrix to compare with 'b'.
- * @param b Dense matrix to compare with 'a'.
- * @param operation The name of the operation being done (e.g. "add", "multiply").
- * @throws InvalidDimensionException if the 'a' and 'b' matrices don't have the same dimensions.
+ * @brief Asserts that 'a' and 'others' have the same dimensions.
+ * @tparam T Dense Matrix type of 'a'.
+ * @tparam OTHERS Dense Matrix types of 'others'.
+ * @param a Dense matrix to compare dimensions with 'others'.
+ * @param others Dense matrices to compare dimensions with 'a'.
+ * @param operation The name of the operation being done (e.g "add", "multiply").
+ * @throws InvalidDimensionException If 'a' and 'others' are not all of same dimensions.
  */
-template<dense_matrix_base T, dense_matrix_base U>
-inline void assert_same_dimensions(const T& a, const U& b, const std::string& operation) {
-    if (a.columns != b.columns || a.rows != b.rows) {
+template<dense_matrix_base T, dense_matrix_base... OTHERS>
+inline void assert_same_dimensions(const T& a, const OTHERS&... others, const std::string& operation) {
+    if (!((a.columns == others.columns && a.rows == others.rows) && ...)) {
         throw InvalidDimensionException(std::string("Cannot ") + operation + " with matrices of different dimensions");
     }
 }

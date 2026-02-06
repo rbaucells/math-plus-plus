@@ -18,13 +18,13 @@ namespace Mathpp {
      * @return A DenseMatrix made from adding each element of each matrix together.
      */
     template<dense_matrix_base T, dense_matrix_base... OTHERS>
-    DenseMatrix<std::common_type_t<typename T::ValueType, typename OTHERS::ValueType...>> add(const T& a, const OTHERS&... others) {
-        (assert_same_dimensions(a, others, "add"), ...);
+    DenseMatrix<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>> add(const T& a, const OTHERS&... others) {
+        assert_same_dimensions(a, others..., "add");
 
         const int columns = a.columns;
         const int rows = a.rows;
 
-        DenseMatrix<std::common_type_t<typename T::ValueType, typename OTHERS::ValueType...>> result(a.columns, a.rows);
+        DenseMatrix<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>> result(a.columns, a.rows);
 
         std::cout << "looping" << std::endl;
 
