@@ -22,7 +22,8 @@ FetchContent_MakeAvailable(googletest)
 # math-tests executable
 add_executable(mathpp-tests main.cpp
         helper.tests.cpp
-        vector/dense/helper.tests.cpp)
+        vector/dense/helper.tests.cpp
+        vector/sparse/helper.tests.cpp)
 
 # link with the math lib
 target_link_libraries(mathpp-tests PRIVATE mathpp GTest::gtest_main)

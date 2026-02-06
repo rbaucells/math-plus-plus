@@ -91,3 +91,40 @@ TEST(underlying_type, given_custom_dense_vector_templated_on_float_should_return
     static_assert(std::is_same_v<underlying_type_t<CustomDenseVector<float>>, float>, "underlying_type_t is wrong, 'CustomDenseVector<float>' should be 'float'");
 }
 #pragma endregion
+#pragma region assert_same_size
+TEST(assert_same_size, given_same_sized_dense_vectors_templated_on_float_should_not_throw) {
+    // arrange
+    const DenseVector<float> a = {1, 2, 3};
+    const DenseVector<float> b = {1, 2, 3};
+    const DenseVector<float> c = {1, 2, 3};
+    // act / assert
+    ASSERT_NO_THROW(assert_same_size(a, b, c));
+}
+
+TEST(assert_same_size, given_same_sized_dense_vectors_templated_on_float_int_and_complex_float_should_not_throw) {
+    // arrange
+    const DenseVector<float> a = {1, 2, 3};
+    const DenseVector<int> b = {1, 2, 3};
+    const DenseVector<std::complex<float>> c = {{1, 2}, {3, 4}, {5, 6}};
+    // act / assert
+    ASSERT_NO_THROW(assert_same_size(a, b, c));
+}
+
+TEST(assert_same_size, given_different_sized_dense_vectors_templated_on_float_should_throw) {
+    // arrange
+    const DenseVector<float> a = {1, 2, 3};
+    const DenseVector<float> b = {1, 2, 3, 4};
+    const DenseVector<float> c = {1, 2, 3, 4, 5};
+    // act / assert
+    ASSERT_THROW(assert_same_size(a, b, c), InvalidDimensionException);
+}
+
+TEST(assert_same_size, given_different_sized_dense_vectors_templated_on_float_int_and_complex_float_should_throw) {
+    // arrange
+    const DenseVector<float> a = {1, 2, 3};
+    const DenseVector<int> b = {1, 2, 3, 4};
+    const DenseVector<std::complex<float>> c = {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}};
+    // act / assert
+    ASSERT_THROW(assert_same_size(a, b, c), InvalidDimensionException);
+}
+#pragma endregion

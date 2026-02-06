@@ -63,7 +63,7 @@ struct SparseVector : SparseVectorBase<T> {
     explicit SparseVector(const int n) : SparseVectorBase<T>(n) {
         nnz_ = 0;
         values_ = new T[nnz_];
-        indexes_ = new T[nnz_];
+        indexes_ = new int[nnz_];
     }
 
     /**

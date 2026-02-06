@@ -91,13 +91,12 @@ struct underlying_type<T> {
  * @tparam OTHERS Dense Matrix types of 'others'.
  * @param a Dense matrix to compare dimensions with 'others'.
  * @param others Dense matrices to compare dimensions with 'a'.
- * @param operation The name of the operation being done (e.g "add", "multiply").
  * @throws InvalidDimensionException If 'a' and 'others' are not all of same dimensions.
  */
 template<dense_matrix_base T, dense_matrix_base... OTHERS>
-inline void assert_same_dimensions(const T& a, const OTHERS&... others, const std::string& operation) {
+inline void assert_same_dimensions(const T& a, const OTHERS&... others) {
     if (!((a.columns == others.columns && a.rows == others.rows) && ...)) {
-        throw InvalidDimensionException(std::string("Cannot ") + operation + " with matrices of different dimensions");
+        throw InvalidDimensionException("Dense matrices must all have same dimensions");
     }
 }
 

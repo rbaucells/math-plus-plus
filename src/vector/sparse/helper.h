@@ -89,12 +89,11 @@ struct underlying_type<T> {
  * @tparam OTHERS Sparse Vector types of 'others'.
  * @param a Sparse vector to compare size with 'others'.
  * @param others Sparse vectors to compare size with 'a'.
- * @param operation The name of the operation being done (e.g "add", "dot").
  * @throws InvalidDimensionException If 'a' and 'others' are not all of same size.
  */
 template<sparse_vector_base T, sparse_vector_base... OTHERS>
-inline void assert_same_size(const T& a, const OTHERS&... others, const std::string& operation) {
+inline void assert_same_size(const T& a, const OTHERS&... others) {
     if (!((a.n == others.n) && ...)) {
-        throw InvalidDimensionException(std::string("Cannot ") + operation + " with vectors of different size");
+        throw InvalidDimensionException("Sparse vectors must all be of same size");
     }
 }

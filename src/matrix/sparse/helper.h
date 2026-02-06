@@ -90,13 +90,12 @@ struct underlying_type<T> {
  * @tparam OTHERS Sparse Matrix types of 'others'.
  * @param a Sparse matrix to compare dimensions with 'others'.
  * @param others Sparse matrices to compare dimensions with 'a'.
- * @param operation The name of the operation being done (e.g "add", "multiply").
  * @throws InvalidDimensionException If 'a' and 'others' are not all of same dimensions.
  */
 template<sparse_matrix_base T, sparse_matrix_base... OTHERS>
-inline void assert_same_dimensions(const T& a, const OTHERS&... others, const std::string& operation) {
+inline void assert_same_dimensions(const T& a, const OTHERS&... others) {
     if (!((a.columns == others.columns && a.rows == others.rows) && ...)) {
-        throw InvalidDimensionException(std::string("Cannot ") + operation + " with matrices of different dimensions");
+        throw InvalidDimensionException("Sparse matrices must all have same dimensions");
     }
 }
 
