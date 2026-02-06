@@ -162,20 +162,6 @@ template<real T, real U> requires has_common_type<T, U>
 }
 
 /**
- * @brief Checks if the real part of 'a' is less than 'b' and 'a' is real (no imag part).
- * @tparam T Complex type of 'a'.
- * @tparam U Real type of 'b'.
- * @param a Complex scalar to compare to 'b'.
- * @param b Real scalar to compare to 'a'.
- * @return Whether the real part of 'a' is less than 'b' and 'a' is real (no imag part).
- * @note Underlying type of 'T' and 'U' must have a common type.
- */
-template<complex T, real U> requires has_common_type<underlying_type_t<T>, U>
-[[nodiscard]] bool lesser(const T a, const U b) {
-    return lesser(std::real(a), b) && compare(std::imag(a), 0);
-}
-
-/**
  * @brief Checks if 'a' is greater than 'b'.
  * @tparam T Real type of 'a'.
  * @tparam U Real type of 'b'.
@@ -187,20 +173,6 @@ template<complex T, real U> requires has_common_type<underlying_type_t<T>, U>
 template<real T, real U> requires has_common_type<T, U>
 [[nodiscard]] bool greater(const T a, const U b) {
     return static_cast<std::common_type_t<T, U>>(a) > static_cast<std::common_type_t<T, U>>(b);
-}
-
-/**
- * @brief Checks if the real part of 'a' is greater than 'b' and 'a' is real (no imag part).
- * @tparam T Complex type of 'a'.
- * @tparam U Real type of 'b'.
- * @param a Complex scalar to compare to 'b'.
- * @param b Real scalar to compare to 'a'.
- * @return Whether the real part of 'a' is greater than 'b' and 'a' is real (no imag part).
- * @note Underlying type of 'T' and 'U' must have a common type.
- */
-template<complex T, real U> requires has_common_type<underlying_type_t<T>, U>
-[[nodiscard]] bool greater(const T a, const U b) {
-    return greater(std::real(a), b) && compare(std::imag(a), 0);
 }
 
 enum class DotProductConjugationBehavior {

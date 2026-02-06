@@ -315,12 +315,12 @@ TEST(compare, given_float_and_complex_float_and_custom_precision_return_false_2)
 }
 
 TEST(compare, given_float_and_complex_int_and_custom_precision_return_false_1) {
-    const bool result = compare<float,std::complex<int>>(2.2f, {2, 0}, 0.1f);
+    const bool result = compare<float, std::complex<int>>(2.2f, {2, 0}, 0.1f);
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_float_and_complex_int_and_custom_precision_return_false_2) {
-    const bool result = compare<float,std::complex<int>>(2, {2, 1}, 0.1f);
+    const bool result = compare<float, std::complex<int>>(2, {2, 1}, 0.1f);
     ASSERT_FALSE(result);
 }
 
@@ -350,23 +350,28 @@ TEST(lesser, given_floats_return_true) {
     ASSERT_TRUE(result);
 }
 
-TEST(lesser, given_complex_float_and_float_return_true) {
-    const bool result = lesser<std::complex<float>, float>({-2, 0}, 0);
+TEST(lesser, given_float_and_int_return_true) {
+    const bool result = lesser<float, int>(2.5f, 3);
     ASSERT_TRUE(result);
 }
 
-TEST(lesser, given_floats_return_false) {
-    const bool result = lesser<float, float>(3, 2);
+TEST(lesser, given_floats_return_false_1) {
+    const bool result = lesser<float, float>(3, 3);
     ASSERT_FALSE(result);
 }
 
-TEST(lesser, given_complex_float_and_float_return_false_1) {
-    const bool result = lesser<std::complex<float>, float>({2, 0}, 0);
+TEST(lesser, given_floats_return_false_2) {
+    const bool result = lesser<float, float>(4, 3);
     ASSERT_FALSE(result);
 }
 
-TEST(lesser, given_complex_float_and_float_return_false_2) {
-    const bool result = lesser<std::complex<float>, float>({-2, -1}, 0);
+TEST(lesser, given_float_and_int_return_false_1) {
+    const bool result = lesser<float, int>(3, 3);
+    ASSERT_FALSE(result);
+}
+
+TEST(lesser, given_float_and_int_return_false_2) {
+    const bool result = lesser<float, int>(4.1f, 3);
     ASSERT_FALSE(result);
 }
 #pragma endregion
@@ -376,23 +381,28 @@ TEST(greater, given_floats_return_true) {
     ASSERT_TRUE(result);
 }
 
-TEST(greater, given_complex_float_and_float_return_true) {
-    const bool result = greater<std::complex<float>, float>({2, 0}, 0);
+TEST(greater, given_float_and_int_return_true) {
+    const bool result = greater<int, float>(3, 2.5f);
     ASSERT_TRUE(result);
 }
 
-TEST(greater, given_floats_return_false) {
-    const bool result = greater<float, float>(2, 3);
+TEST(greater, given_floats_return_false_1) {
+    const bool result = greater<float, float>(3, 3);
     ASSERT_FALSE(result);
 }
 
-TEST(greater, given_complex_float_and_float_return_false_1) {
-    const bool result = greater<std::complex<float>, float>({-2, 0}, 0);
+TEST(greater, given_floats_return_false_2) {
+    const bool result = greater<float, float>(3, 4);
     ASSERT_FALSE(result);
 }
 
-TEST(greater, given_complex_float_and_float_return_false_2) {
-    const bool result = greater<std::complex<float>, float>({2, 1}, 0);
+TEST(greater, given_float_and_int_return_false_1) {
+    const bool result = greater<int, float>(3, 3);
+    ASSERT_FALSE(result);
+}
+
+TEST(greater, given_float_and_int_return_false_2) {
+    const bool result = greater<int, float>(3, 4.1f);
     ASSERT_FALSE(result);
 }
 #pragma endregion
