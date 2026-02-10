@@ -343,7 +343,7 @@ struct DenseVectorView : DenseVectorBase<T> {
     *
     * @param other DenseVectorView to copy from.
     */
-    DenseVectorView(const DenseVectorView<T>& other) : DenseVectorBase<T>(other.n), offset_(other.offset_), owner_(other.owner_) {};
+    DenseVectorView(const DenseVectorView<T>& other) : DenseVectorBase<T>(other.n), offset_(other.offset_), owner_(other.owner_) {}
 
     /**
      * @brief Trying to modify a DenseVector through a view is invalid.

@@ -536,7 +536,7 @@ TEST(dense_vector_view_const_indexing_operator, given_big_index_should_throw_2) 
 #pragma region offset
 TEST(dense_vector_view_offset, should_return_offset) {
     // arrange
-    const DenseVector<float> a = {1, 2, 3, 4 ,5};
+    const DenseVector<float> a = {1, 2, 3, 4, 5};
     const DenseVectorView<float> v(a, 3, 1);
     constexpr int expected = 1;
     // act
@@ -548,12 +548,305 @@ TEST(dense_vector_view_offset, should_return_offset) {
 #pragma region owner
 TEST(dense_vector_view_owner, should_return_owner) {
     // arrange
-    const DenseVector<float> a = {1, 2, 3, 4 ,5};
+    const DenseVector<float> a = {1, 2, 3, 4, 5};
     const DenseVectorView<float> v(a, 3, 1);
     // act
     const DenseVector<float>& owner = v.owner();
     // assert
     ASSERT_TRUE(&owner == &a);
+}
+#pragma endregion
+#pragma endregion
+#pragma region custom_dense_vector
+#pragma region constructor
+TEST(custom_dense_vector_constructor, given_f_pointer_and_size_should_construct) {
+    // arrange
+    float* data = new float[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    const DenseVector<float> expected = {1, 2, 3};
+    // act
+    const CustomDenseVector<float> v(data, 3, 1);
+    // assert
+    ASSERT_TRUE((compare<CustomDenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
+    // cleanup
+    delete[] data;
+}
+
+TEST(custom_dense_vector_constructor, given_f_pointer_and_size_and_stride_should_construct_1) {
+    // arrange
+    float* data = new float[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    const DenseVector<float> expected = {1, 1, 1};
+    // act
+    const CustomDenseVector<float> v(data, 3, 0);
+    // assert
+    ASSERT_TRUE((compare<CustomDenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
+    // cleanup
+    delete[] data;
+}
+
+TEST(custom_dense_vector_constructor, given_f_pointer_and_size_and_stride_should_construct_2) {
+    // arrange
+    float* data = new float[6];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    data[3] = 4;
+    data[4] = 5;
+    data[5] = 6;
+    const DenseVector<float> expected = {1, 3, 5};
+    // act
+    const CustomDenseVector<float> v(data, 3, 2);
+    // assert
+    ASSERT_TRUE((compare<CustomDenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
+    // cleanup
+    delete[] data;
+}
+
+TEST(custom_dense_vector_constructor, given_cf_pointer_and_size_should_construct) {
+    // arrange
+    std::complex<float>* data = new std::complex<float>[3];
+    data[0] = {1, 2};
+    data[1] = {3, 4};
+    data[2] = {5, 6};
+    const DenseVector<std::complex<float>> expected = {{1, 2}, {3, 4}, {5, 6}};
+    // act
+    const CustomDenseVector<std::complex<float>> v(data, 3, 1);
+    // assert
+    ASSERT_TRUE((compare<CustomDenseVector<std::complex<float>>, DenseVector<std::complex<float>>>(v, expected, 0.001f)));
+    // cleanup
+    delete[] data;
+}
+
+TEST(custom_dense_vector_constructor, given_cf_pointer_and_size_and_stride_should_construct_1) {
+    // arrange
+    std::complex<float>* data = new std::complex<float>[3];
+    data[0] = {1, 2};
+    data[1] = {3, 4};
+    data[2] = {5, 6};
+    const DenseVector<std::complex<float>> expected = {{1, 2}, {1, 2}, {1, 2}};
+    // act
+    const CustomDenseVector<std::complex<float>> v(data, 3, 0);
+    // assert
+    ASSERT_TRUE((compare<CustomDenseVector<std::complex<float>>, DenseVector<std::complex<float>>>(v, expected, 0.001f)));
+    // cleanup
+    delete[] data;
+}
+
+TEST(custom_dense_vector_constructor, given_cf_pointer_and_size_and_stride_should_construct_2) {
+    // arrange
+    std::complex<float>* data = new std::complex<float>[6];
+    data[0] = {1, 2};
+    data[1] = {3, 4};
+    data[2] = {5, 6};
+    data[3] = {7, 8};
+    data[4] = {9, 10};
+    data[5] = {11, 12};
+    const DenseVector<std::complex<float>> expected = {{1, 2}, {5, 6}, {9, 10}};
+    // act
+    const CustomDenseVector<std::complex<float>> v(data, 3, 2);
+    // assert
+    ASSERT_TRUE((compare<CustomDenseVector<std::complex<float>>, DenseVector<std::complex<float>>>(v, expected, 0.001f)));
+    // cleanup
+    delete[] data;
+}
+#pragma endregion
+#pragma region index_operator
+TEST(custom_dense_vector_index_operator, given_index_should_return_reference_f) {
+    // arrange
+    float* data = new float[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    CustomDenseVector<float> v(data, 3, 1);
+    // act
+    float& v0 = v[0];
+    float& v1 = v[1];
+    float& v2 = v[2];
+    // assert
+    ASSERT_TRUE((compare<float, float>(v0, 1, 0.001f)));
+    v0 = 4;
+    ASSERT_TRUE((compare<float, float>(v0, 4, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(v1, 2, 0.001f)));
+    v1 = 5;
+    ASSERT_TRUE((compare<float, float>(v1, 5, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(v2, 3, 0.001f)));
+    v2 = 6;
+    ASSERT_TRUE((compare<float, float>(v2, 6, 0.001f)));
+}
+
+TEST(custom_dense_vector_index_operator, given_index_should_return_reference_cf) {
+    // arrange
+    std::complex<float>* data = new std::complex<float>[3];
+    data[0] = {1, 2};
+    data[1] = {3, 4};
+    data[2] = {5, 6};
+    CustomDenseVector<std::complex<float>> v(data, 3, 1);
+    // act
+    std::complex<float>& v0 = v[0];
+    std::complex<float>& v1 = v[1];
+    std::complex<float>& v2 = v[2];
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v0, {1, 2}, 0.001f)));
+    v0 = {7, 8};
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v0, {7, 8}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v1, {3, 4}, 0.001f)));
+    v1 = {9, 10};
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v1, {9, 10}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v2, {5, 6}, 0.001f)));
+    v2 = {11, 12};
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v2, {11, 12}, 0.001f)));
+}
+
+TEST(custom_dense_vector_index_operator, given_big_index_should_throw_1) {
+    // arrange
+    float* data = new float[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    CustomDenseVector<float> v(data, 3, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v[3], InvalidIndexException);
+}
+
+TEST(custom_dense_vector_index_operator, given_big_index_should_throw_2) {
+    // arrange
+    float* data = new float[5];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    data[3] = 4;
+    data[4] = 5;
+    CustomDenseVector<float> v(data, 3, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v[3], InvalidIndexException);
+}
+
+TEST(custom_dense_vector_index_operator, given_negative_index_should_throw_2) {
+    // arrange
+    float* data = new float[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    CustomDenseVector<float> v(data, 3, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v[-1], InvalidIndexException);
+}
+#pragma endregion
+#pragma region const_index_operator
+TEST(custom_dense_vector_const_index_operator, given_index_should_return_const_reference_f) {
+    // arrange
+    float* data = new float[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    const CustomDenseVector<float> v(data, 3, 1);
+    // act
+    const float& v0 = v[0];
+    const float& v1 = v[1];
+    const float& v2 = v[2];
+    // assert
+    ASSERT_TRUE((compare<float, float>(v0, 1, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(v1, 2, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(v2, 3, 0.001f)));
+}
+
+TEST(custom_dense_vector_const_index_operator, given_index_should_return_const_reference_cf) {
+    // arrange
+    std::complex<float>* data = new std::complex<float>[3];
+    data[0] = {1, 2};
+    data[1] = {3, 4};
+    data[2] = {5, 6};
+    const CustomDenseVector<std::complex<float>> v(data, 3, 1);
+    // act
+    const std::complex<float>& v0 = v[0];
+    const std::complex<float>& v1 = v[1];
+    const std::complex<float>& v2 = v[2];
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v0, {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v1, {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v2, {5, 6}, 0.001f)));
+}
+
+TEST(custom_dense_vector_const_index_operator, given_big_index_should_throw_1) {
+    // arrange
+    float* data = new float[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    const CustomDenseVector<float> v(data, 3, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v[3], InvalidIndexException);
+}
+
+TEST(custom_dense_vector_const_index_operator, given_big_index_should_throw_2) {
+    // arrange
+    float* data = new float[5];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    data[3] = 4;
+    data[4] = 5;
+    const CustomDenseVector<float> v(data, 3, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v[3], InvalidIndexException);
+}
+
+TEST(custom_dense_vector_const_index_operator, given_negative_index_should_throw_2) {
+    // arrange
+    float* data = new float[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    const CustomDenseVector<float> v(data, 3, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v[-1], InvalidIndexException);
+}
+#pragma endregion
+#pragma region stride
+TEST(custom_dense_vector_stride, should_return_stride) {
+    // arrange
+    float* data = new float[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    const CustomDenseVector<float> v(data, 3, 1);
+    // act
+    const int stride = v.stride();
+    // assert
+    ASSERT_TRUE((compare<int, int>(stride, 1)));
+}
+#pragma endregion
+#pragma region data
+TEST(custom_dense_vector_data, should_return_data) {
+    // arrange
+    float* data = new float[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    CustomDenseVector<float> v(data, 3, 1);
+    // act
+    float* vectorData = v.data();
+    // assert
+    ASSERT_TRUE(data == vectorData);
+}
+#pragma endregion
+#pragma region const_data
+TEST(custom_dense_vector_const_data, should_return_const_data) {
+    // arrange
+    float* data = new float[3];
+    data[0] = 1;
+    data[1] = 2;
+    data[2] = 3;
+    const CustomDenseVector<float> v(data, 3, 1);
+    // act
+    const float* vectorData = v.data();
+    // assert
+    ASSERT_TRUE(data == vectorData);
 }
 #pragma endregion
 #pragma endregion

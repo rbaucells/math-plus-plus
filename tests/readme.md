@@ -1,5 +1,6 @@
 # Run-Time Tests.
 - Use 'arrange', 'act', and 'assert' comments only.
+  - 'cleanup' comments may also be used if using heap allocated memory
 - Must at least test with 'float' and 'std::complex<float>' unless not applicable (e.g. unitary matrix only applies to complex).
 - Assert something is equal to another through the 'compare' function.
 - Assert something is greater than another through the 'greater' function.

@@ -1,6 +1,4 @@
 #pragma once
-#include <string>
-
 #include "../../exceptions.h"
 #include "../../helper.h"
 
@@ -40,7 +38,7 @@ template<typename T>
 concept sparse_matrix_base = is_sparse_matrix_base_v<T>;
 
 // is_sparse_matrix, is_sparse_matrix_v, sparse_matrix
-template<typename T>
+template<typename>
 struct is_sparse_matrix : std::false_type {};
 
 template<typename U>
@@ -53,7 +51,7 @@ template<typename T>
 concept sparse_matrix = is_sparse_matrix_v<T>;
 
 // is_sparse_matrix_view, is_sparse_matrix_view_v, sparse_matrix_view
-template<typename T>
+template<typename>
 struct is_sparse_matrix_view : std::false_type {};
 
 template<typename U>
@@ -66,7 +64,7 @@ template<typename T>
 concept sparse_matrix_view = is_sparse_matrix_view_v<T>;
 
 // is_custom_sparse_matrix, is_custom_sparse_matrix_v, custom_sparse_matrix
-template<typename T>
+template<typename>
 struct is_custom_sparse_matrix : std::false_type {};
 
 template<typename U>

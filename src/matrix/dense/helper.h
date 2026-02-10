@@ -1,6 +1,4 @@
 #pragma once
-#include <string>
-
 #include "../../exceptions.h"
 #include "../../helper.h"
 
@@ -40,7 +38,7 @@ template<typename T>
 concept dense_matrix_base = is_dense_matrix_base_v<T>;
 
 // is_dense_matrix, is_dense_matrix_v, dense_matrix
-template<typename T>
+template<typename>
 struct is_dense_matrix : std::false_type {};
 
 template<typename U>
@@ -54,7 +52,7 @@ concept dense_matrix = is_dense_matrix_v<T>;
 
 
 // is_dense_matrix_view, is_dense_matrix_view_v, dense_matrix_view
-template<typename T>
+template<typename>
 struct is_dense_matrix_view : std::false_type {};
 
 template<typename U>
@@ -67,7 +65,7 @@ template<typename T>
 concept dense_matrix_view = is_dense_matrix_view_v<T>;
 
 // is_custom_dense_matrix, is_custom_dense_matrix_v, custom_dense_matrix
-template<typename T>
+template<typename>
 struct is_custom_dense_matrix : std::false_type {};
 
 template<typename U>

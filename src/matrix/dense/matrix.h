@@ -110,7 +110,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
     /**
      * @brief Copy constructor for DenseMatrix from same type DenseMatrix.
      *
-     * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+     * Constructs an 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
      * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
      *
      * @param other DenseMatrix to copy from.
@@ -123,7 +123,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
     /**
     * @brief Copy constructor for DenseMatrix from different type DenseMatrix.
     *
-    * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+    * Constructs an 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
     * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
     *
     * @tparam OTHER_T Scalar type of the 'other' DenseMatrix.
@@ -142,7 +142,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
     /**
      * @brief Copy constructor for DenseMatrix from same type DenseMatrixBase.
      *
-     * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+     * Constructs an 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
      * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
      *
      * @param other DenseMatrixBase to copy from.
@@ -160,7 +160,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
     /**
     * @brief Copy constructor for DenseMatrix from different type DenseMatrixBase.
     *
-    * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+    * Constructs an 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
     * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
     *
     * @tparam OTHER_T Scalar type of the 'other' DenseMatrixBase.
@@ -181,7 +181,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
     /**
      * @brief Move constructor for DenseMatrix from same type DenseMatrix.
      *
-     * Constructs a 'other.rows' x 'other.columns' matrix and uses the same 'data' pointer of 'other'.
+     * Constructs an 'other.rows' x 'other.columns' matrix and uses the same 'data' pointer of 'other'.
      * Does not allocate memory.
      *
      * @param other DenseMatrix to move from.
