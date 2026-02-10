@@ -3,7 +3,7 @@
 #include <type_traits>
 
 // is_complex and is_complex_v and complex and real and scalar
-template<typename T>
+template<typename>
 struct is_complex : std::false_type {};
 
 template<typename T>

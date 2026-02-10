@@ -365,9 +365,7 @@ struct SparseVector : SparseVectorBase<T> {
 
     [[nodiscard]] T get(const int i) const override {
         for (int j = 0; j < nnz_; j++) {
-            const int curIndex = indexes_[j];
-
-            if (curIndex == i)
+            if (indexes_[j] == i)
                 return values_[j];
         }
 
@@ -608,9 +606,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
 
     [[nodiscard]] T get(const int i) const override {
         for (int j = 0; j < nnz_; j++) {
-            const int curIndex = indexes_[j];
-
-            if (curIndex == i)
+            if (indexes_[j] == i)
                 return values_[j];
         }
 
@@ -625,7 +621,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
      * @brief Gets the reference to the pointer storing the vectors non-zero elements.
      * @return Reference to pointer containing non-zero elements.
      */
-    T*& values() {
+    [[nodiscard]] T*& values() {
         return values_;
     }
 
@@ -633,7 +629,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
     * @brief Gets the const reference to the const pointer storing the vectors non-zero elements.
     * @return Const reference to const pointer containing non-zero elements.
     */
-    const T* const& values() const {
+    [[nodiscard]] const T* const& values() const {
         return values_;
     }
 
@@ -641,7 +637,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
     * @brief Gets the reference to the pointer storing the indexes of the vectors non-zero elements.
     * @return Reference to pointer containing the indexes of the non-zero elements.
     */
-    int*& indexes() {
+    [[nodiscard]] int*& indexes() {
         return indexes_;
     }
 
@@ -649,7 +645,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
     * @brief Gets the const reference to the const pointer storing the indexes of the vectors non-zero elements.
     * @return Const reference to const pointer containing the indexes of the non-zero elements.
     */
-    const int* const& indexes() const {
+    [[nodiscard]] const int* const& indexes() const {
         return indexes_;
     }
 
