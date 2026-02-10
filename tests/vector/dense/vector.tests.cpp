@@ -98,7 +98,7 @@ TEST(dense_vector_const_indexing_operator, given_big_index_should_throw) {
 }
 #pragma endregion
 #pragma region default_constructor
-TEST(dense_vector_default_constructor, given_size_and_fill_should_initialize_data_and_size_f) {
+TEST(dense_vector_default_constructor, given_size_and_fill_should_construct_f) {
     // arrange / act
     const DenseVector<float> v(3, true);
     const DenseVector<float> expected = {0, 0, 0};
@@ -106,7 +106,7 @@ TEST(dense_vector_default_constructor, given_size_and_fill_should_initialize_dat
     ASSERT_TRUE((compare<DenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_default_constructor, given_size_and_fill_should_initialize_data_and_size_cf) {
+TEST(dense_vector_default_constructor, given_size_and_fill_should_construct_cf) {
     // arrange / act
     const DenseVector<std::complex<float>> v(3, true);
     const DenseVector<std::complex<float>> expected = {{0, 0}, {0, 0}, {0, 0}};
@@ -115,8 +115,7 @@ TEST(dense_vector_default_constructor, given_size_and_fill_should_initialize_dat
 }
 #pragma endregion
 #pragma region initializer_list_constructor
-TEST(dense_vector_initializer_list_constructor,
-     given_initializer_list_of_floats_should_initialize_size_and_elements_f) {
+TEST(dense_vector_initializer_list_constructor, given_initializer_list_should_construct_f) {
     // arrange / act
     const DenseVector<float> v = {1, 2, 3};
     DenseVector<float> expected(3, false);
@@ -127,8 +126,7 @@ TEST(dense_vector_initializer_list_constructor,
     ASSERT_TRUE((compare<DenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_initializer_list_constructor,
-     given_initializer_list_of_floats_should_initialize_size_and_elements_cf) {
+TEST(dense_vector_initializer_list_constructor, given_initializer_list_should_construct_cf) {
     // arrange / act
     const DenseVector<std::complex<float>> v = {{1, 2}, {3, 4}, {5, 6}};
     DenseVector<std::complex<float>> expected(3, false);
@@ -140,29 +138,26 @@ TEST(dense_vector_initializer_list_constructor,
 }
 #pragma endregion
 #pragma region copy_constructor_from_same_type_dense_vector
-TEST(dense_vector_copy_constructor_from_same_type_dense_vector,
-     given_templated_on_float_should_initialize_size_and_elements) {
+TEST(dense_vector_copy_constructor_from_same_type_dense_vector, given_f_dense_vector_should_copy_construct) {
     // arrange
     const DenseVector<float> expected = {1, 2, 3};
     // act
-    const DenseVector<float> v = expected; // NOLINT(*-unnecessary-copy-initialization)
+    const DenseVector<float> v = expected;
     // assert
     ASSERT_TRUE((compare<DenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_copy_constructor_from_same_type_dense_vector,
-     given_templated_on_complex_float_should_initialize_size_and_elements) {
+TEST(dense_vector_copy_constructor_from_same_type_dense_vector, given_cf_dense_vector_should_copy_construct) {
     // arrange
     const DenseVector<std::complex<float>> expected = {{1, 2}, {3, 4}, {5, 6}};
     // act
-    const DenseVector<std::complex<float>> v = expected; // NOLINT(*-unnecessary-copy-initialization)
+    const DenseVector<std::complex<float>> v = expected;
     // assert
     ASSERT_TRUE((compare<DenseVector<std::complex<float>>, DenseVector<std::complex<float>>>(v, expected, 0.001f)));
 }
 #pragma endregion
 #pragma region copy_constructor_from_different_type_dense_vector
-TEST(dense_vector_copy_constructor_from_different_type_dense_vector,
-     given_templated_on_float_should_initialize_size_and_elements) {
+TEST(dense_vector_copy_constructor_from_different_type_dense_vector, given_f_dense_vector_should_copy_construct) {
     // arrange
     const DenseVector<float> expected = {1, 2, 3};
     // act
@@ -171,9 +166,8 @@ TEST(dense_vector_copy_constructor_from_different_type_dense_vector,
     ASSERT_TRUE((compare<DenseVector<std::complex<float>>, DenseVector<float>>(v, expected, 0.001f)));
 }
 #pragma endregion
-#pragma region copy_constructor_from_same_type_base
-TEST(dense_vector_copy_constructor_from_same_type_base,
-     given_base_templated_on_float_should_initialize_size_and_elements) {
+#pragma region copy_constructor_from_same_type_dense_vector_base
+TEST(dense_vector_copy_constructor_from_same_type_dense_vector_base, given_f_dense_vector_base_should_copy_construct) {
     // arrange
     const DenseVector<float> expected = {1, 2, 3};
     // act
@@ -182,8 +176,7 @@ TEST(dense_vector_copy_constructor_from_same_type_base,
     ASSERT_TRUE((compare<DenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_copy_constructor_from_same_type_base,
-     given_base_templated_on_complex_float_should_initialize_size_and_elements) {
+TEST(dense_vector_copy_constructor_from_same_type_dense_vector_base, given_cf_dense_vector_base_should_copy_construct) {
     // arrange
     const DenseVector<std::complex<float>> expected = {1, 2, 3};
     // act
@@ -192,9 +185,8 @@ TEST(dense_vector_copy_constructor_from_same_type_base,
     ASSERT_TRUE((compare<DenseVector<std::complex<float>>, DenseVector<std::complex<float>>>(v, expected, 0.001f)));
 }
 #pragma endregion
-#pragma region copy_constructor_from_different_type_base
-TEST(dense_vector_copy_constructor_from_different_type_base,
-     given_base_templated_on_float_should_initialize_size_and_elements) {
+#pragma region copy_constructor_from_different_type_dense_vector_base
+TEST(dense_vector_copy_constructor_from_different_type_dense_vector_base, given_f_dense_vector_base_should_copy_construct) {
     // arrange
     const DenseVector<float> expected = {1, 2, 3};
     // act
@@ -204,8 +196,7 @@ TEST(dense_vector_copy_constructor_from_different_type_base,
 }
 #pragma endregion
 #pragma region move_constructor
-TEST(dense_vector_move_constructor,
-     given_templated_on_float_should_initialize_size_and_elements_and_invalidate_other_data) {
+TEST(dense_vector_move_constructor, given_f_dense_vector_should_move_construct_and_invalidate_other_data) {
     // arrange
     DenseVector<float> a = {1, 2, 3};
     const DenseVector<float> expected = {1, 2, 3};
@@ -216,8 +207,7 @@ TEST(dense_vector_move_constructor,
     ASSERT_TRUE((compare<DenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_move_constructor,
-     given_templated_on_complex_float_should_initialize_size_and_elements_and_invalidate_other_data) {
+TEST(dense_vector_move_constructor, given_cf_dense_vector_should_move_construct_and_invalidate_other_data) {
     // arrange
     DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
     const DenseVector<std::complex<float>> expected = {{1, 2}, {3, 4}, {5, 6}};
@@ -229,7 +219,7 @@ TEST(dense_vector_move_constructor,
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_same_type_dense_vector
-TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_templated_on_float_should_copy_elements) {
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_f_dense_vector_should_copy_assign) {
     // arrange
     const DenseVector<float> expected = {1, 2, 3};
     DenseVector<float> v(3, true);
@@ -239,8 +229,7 @@ TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_te
     ASSERT_TRUE((compare<DenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector,
-     given_templated_on_float_of_different_size_should_throw) {
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_f_dense_vector_of_different_size_should_throw) {
     // arrange
     const DenseVector<float> expected = {1, 2, 3};
     DenseVector<float> v(2, true);
@@ -248,8 +237,7 @@ TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector,
     ASSERT_THROW(v = expected, InvalidDimensionException);
 }
 
-TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector,
-     given_templated_on_complex_float_should_copy_elements) {
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_cf_dense_vector_should_copy_assign) {
     // arrange
     const DenseVector<std::complex<float>> expected = {{1, 2}, {3, 4}, {5, 6}};
     DenseVector<std::complex<float>> v(3, true);
@@ -259,8 +247,7 @@ TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector,
     ASSERT_TRUE((compare<DenseVector<std::complex<float>>, DenseVector<std::complex<float>>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector,
-     given_templated_on_complex_float_of_different_size_should_throw) {
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_cf_dense_vector_of_different_size_should_throw) {
     // arrange
     const DenseVector<std::complex<float>> expected = {{1, 2}, {3, 4}, {5, 6}};
     DenseVector<std::complex<float>> v(2, true);
@@ -269,8 +256,7 @@ TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector,
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_different_type_dense_vector
-TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector,
-     given_templated_on_float_should_copy_elements) {
+TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector, given_f_dense_vector_should_copy_assign) {
     // arrange
     const DenseVector<float> expected = {1, 2, 3};
     DenseVector<std::complex<float>> v(3, true);
@@ -280,8 +266,7 @@ TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector,
     ASSERT_TRUE((compare<DenseVector<std::complex<float>>, DenseVector<float>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector,
-     given_templated_on_float_of_different_size_should_throw) {
+TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector, given_f_dense_vector_of_different_size_should_throw) {
     // arrange
     const DenseVector<float> expected = {1, 2, 3};
     DenseVector<std::complex<float>> v(2, true);
@@ -289,8 +274,8 @@ TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector,
     ASSERT_THROW(v = expected, InvalidDimensionException);
 }
 #pragma endregion
-#pragma region copy_assignment_operator_from_same_type_base
-TEST(dense_vector_copy_assignment_operator_from_same_type_base, given_base_templated_on_float_should_copy_elements) {
+#pragma region copy_assignment_operator_from_same_type_dense_vector_base
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector_base, given_f_dense_vector_base_should_copy_assign) {
     // arrange
     const DenseVector<float> expected = {1, 2, 3};
     DenseVector<float> v(3, true);
@@ -300,8 +285,7 @@ TEST(dense_vector_copy_assignment_operator_from_same_type_base, given_base_templ
     ASSERT_TRUE((compare<DenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_copy_assignment_operator_from_same_type_base,
-     given_base_templated_on_complex_float_should_copy_elements) {
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector_base, given_cf_dense_vector_base_should_copy_assign) {
     // arrange
     const DenseVector<std::complex<float>> expected = {{1, 2}, {3, 4}, {5, 6}};
     DenseVector<std::complex<float>> v(3, true);
@@ -312,8 +296,7 @@ TEST(dense_vector_copy_assignment_operator_from_same_type_base,
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_different_type_base
-TEST(dense_vector_copy_assignment_operator_from_different_type_base,
-     given_base_templated_on_float_should_copy_elements) {
+TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector_base, given_f_dense_vector_base_should_copy_assign) {
     // arrange
     const DenseVector<float> expected = {1, 2, 3};
     DenseVector<std::complex<float>> v(3, true);
@@ -324,7 +307,7 @@ TEST(dense_vector_copy_assignment_operator_from_different_type_base,
 }
 #pragma endregion
 #pragma region move_assignment_operator
-TEST(dense_vector_move_assignment_operator, given_templated_on_float_should_copy_data) {
+TEST(dense_vector_move_assignment_operator, given_f_dense_vector_should_move_assign) {
     // arrange
     DenseVector<float> a = {1, 2, 3};
     const DenseVector<float> expected = {1, 2, 3};
@@ -336,7 +319,7 @@ TEST(dense_vector_move_assignment_operator, given_templated_on_float_should_copy
     ASSERT_TRUE((compare<DenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_move_assignment_operator, given_templated_on_complex_float_should_copy_data) {
+TEST(dense_vector_move_assignment_operator, given_cf_dense_vector_should_move_assign) {
     // arrange
     DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
     const DenseVector<std::complex<float>> expected = {{1, 2}, {3, 4}, {5, 6}};
@@ -348,7 +331,7 @@ TEST(dense_vector_move_assignment_operator, given_templated_on_complex_float_sho
     ASSERT_TRUE((compare<DenseVector<std::complex<float>>, DenseVector<std::complex<float>>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_move_assignment_operator, given_of_different_size_should_throw) {
+TEST(dense_vector_move_assignment_operator, given_dense_vector_of_different_size_should_throw) {
     // arrange
     DenseVector<float> a = {1, 2, 3};
     DenseVector<float> v(2, true);
@@ -357,7 +340,7 @@ TEST(dense_vector_move_assignment_operator, given_of_different_size_should_throw
 }
 #pragma endregion
 #pragma region data
-TEST(dense_vector_data, given_templated_on_float_should_give_data_pointer) {
+TEST(dense_vector_data, should_return_data_pointer_f) {
     // arrange
     DenseVector<float> a = {1, 2, 3};
     // act
@@ -368,7 +351,7 @@ TEST(dense_vector_data, given_templated_on_float_should_give_data_pointer) {
     ASSERT_TRUE((compare<float, float>(data[2], 3, 0.001f)));
 }
 
-TEST(dense_vector_data, given_templated_on_complex_float_should_give_data_pointer) {
+TEST(dense_vector_data, should_return_data_pointer_cf) {
     // arrange
     DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
     // act
@@ -380,7 +363,7 @@ TEST(dense_vector_data, given_templated_on_complex_float_should_give_data_pointe
 }
 #pragma endregion
 #pragma region const_data
-TEST(dense_vector_const_data, given_templated_on_float_should_give_const_data_pointer) {
+TEST(dense_vector_const_data, should_return_const_data_pointer_f) {
     // arrange
     DenseVector<float> a = {1, 2, 3};
     // act
@@ -391,7 +374,7 @@ TEST(dense_vector_const_data, given_templated_on_float_should_give_const_data_po
     ASSERT_TRUE((compare<float, float>(data[2], 3, 0.001f)));
 }
 
-TEST(dense_vector_const_data, given_templated_on_complex_float_should_give_const_data_pointer) {
+TEST(dense_vector_const_data, should_return_const_data_pointer_cf) {
     // arrange
     DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
     // act
@@ -405,7 +388,7 @@ TEST(dense_vector_const_data, given_templated_on_complex_float_should_give_const
 #pragma endregion
 #pragma region dense_vector_view
 #pragma region constructor
-TEST(dense_vector_view_constructor, given_dense_vector_templated_on_float_should_construct) {
+TEST(dense_vector_view_constructor, given_f_dense_vector_should_construct) {
     // arrange
     const DenseVector<float> a = {1, 2, 3, 4, 5};
     const DenseVector<float> expected = {2, 3, 4};
@@ -415,7 +398,7 @@ TEST(dense_vector_view_constructor, given_dense_vector_templated_on_float_should
     ASSERT_TRUE((compare<DenseVectorView<float>, DenseVector<float>>(view, expected, 0.001f)));
 }
 
-TEST(dense_vector_view_constructor, given_dense_vector_templated_on_complex_float_should_construct) {
+TEST(dense_vector_view_constructor, given_cf_dense_vector_should_construct) {
     // arrange
     const DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}};
     const DenseVector<std::complex<float>> expected = {{3, 4}, {5, 6}, {7, 8}};
