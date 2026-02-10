@@ -38,3 +38,13 @@ static_assert(dense_vector_view<DenseVectorView<float>>, "dense_vector_view is w
   - When doing these multiple tests, suffix the test name with a 1, 2, 3, etc.
     - For example, 'given_set_of_non_orthogonal_vectors_return_false_1' and 'given_set_of_non_orthogonal_vectors_return_false_2'
 - Prefer mathematical condition coverage over code coverage (but still aim for 100% code coverage)
+- When naming types, use (replace '*' with matrix or vector, and 't' with the name of the type its templated on [f, cf, i, d, etc.]):
+  - t_dense_*_base
+  - t_dense_*
+  - t_dense_*_view
+  - t_custom_dense_*
+  - t_sparse_*_base
+  - t_sparse_*
+  - t_sparse_*_view
+  - t_custom_sparse_*
+- If creating multiple tests of similar function or with similar params like testing equality between complex numbers where in one case the imaginary part differs and in the other the real part differs. You may append a '_1', '_2', etc. to the end of the test name.
