@@ -223,4 +223,16 @@ TEST(sparse_vector_copy_constructor_from_same_type_sparse_vector, given_cf_spars
     ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<std::complex<float>>>(v, expected, 0.001f)));
 }
 #pragma endregion
+#pragma region copy_constructor_from_different_type_sparse_vector
+TEST(sparse_vector_copy_constructor_from_different_type_sparse_vector, given_f_sparse_vector_should_copy_construct) {
+    // arrange
+    SparseVector<float> expected(3);
+    expected.set(0, 1);
+    expected.set(2, 2);
+    // act
+    const SparseVector<std::complex<float>> v = expected;
+    // assert
+    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<float>>(v, expected, 0.001f)));
+}
+#pragma endregion
 #pragma endregion

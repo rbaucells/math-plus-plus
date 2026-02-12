@@ -93,15 +93,20 @@ struct SparseVector : SparseVectorBase<T> {
     * @tparam OTHER_T Scalar type of the 'other' SparseVector.
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseVector(const SparseVector<OTHER_T>& other) : SparseVectorBase<T>(other.n), nnz_(other.nnz_) {
+    SparseVector(const SparseVector<OTHER_T>& other) : SparseVectorBase<T>(other.n), nnz_(other.nnz()) {
         values_ = new T[nnz_];
 
+        const OTHER_T* otherValues = other.values();
+
         for (int i = 0; i < nnz_; i++) {
-            values_[i] = other.values_[i];
+            values_[i] = otherValues[i];
         }
 
         indexes_ = new int[nnz_];
-        memcpy(indexes_, other.indexes_, nnz_ * sizeof(int));
+
+        const int* otherIndexes = other.indexes();
+
+        memcpy(indexes_, otherIndexes, nnz_ * sizeof(int));
     }
 
     /**
