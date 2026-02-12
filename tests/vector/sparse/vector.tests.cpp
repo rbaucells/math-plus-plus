@@ -270,4 +270,37 @@ TEST(sparse_vector_copy_constructor_from_different_type_sparse_vector_base, give
     ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<float>>(v, expected, 0.001f)));
 }
 #pragma endregion
+#pragma region move_constructor
+TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct_and_invalidate_other) {
+    // arrange
+    SparseVector<float> a(3);
+    a.set(0, 3);
+    a.set(2, 1);
+    SparseVector<float> expected(3);
+    expected.set(0, 3);
+    expected.set(2, 1);
+    // act
+    const SparseVector<float> v = std::move(a);
+    // assert
+    ASSERT_TRUE(a.values() == nullptr);
+    ASSERT_TRUE(a.indexes() == nullptr);
+    ASSERT_TRUE((compare<SparseVector<float>, SparseVector<float>>(v, expected, 0.001f)));
+}
+
+TEST(sparse_vector_move_constructor, given_cf_sparse_vector_should_move_construct_and_invalidate_other) {
+    // arrange
+    SparseVector<std::complex<float>> a(3);
+    a.set(0, {3, 4});
+    a.set(2, {1, 2});
+    SparseVector<std::complex<float>> expected(3);
+    expected.set(0, {3, 4});
+    expected.set(2, {1, 2});
+    // act
+    const SparseVector<std::complex<float>> v = std::move(a);
+    // assert
+    ASSERT_TRUE(a.values() == nullptr);
+    ASSERT_TRUE(a.indexes() == nullptr);
+    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<std::complex<float>>>(v, expected, 0.001f)));
+}
+#pragma endregion
 #pragma endregion
