@@ -46,10 +46,18 @@ public:
     [[nodiscard]] virtual const T& at(int c, int r) const = 0;
 
     [[nodiscard]] T& operator[](const int c, const int r) {
+        if (c > columns - 1 || c < 0 || r > rows - 1 || r < 0) {
+            throw InvalidIndexException("Cannot access matrix at invalid index");
+        }
+
         return at(c, r);
     }
 
     [[nodiscard]] const T& operator[](const int c, const int r) const {
+        if (c > columns - 1 || c < 0 || r > rows - 1 || r < 0) {
+            throw InvalidIndexException("Cannot access matrix at invalid index");
+        }
+
         return at(c, r);
     }
 
@@ -134,8 +142,10 @@ struct DenseMatrix : DenseMatrixBase<T> {
     DenseMatrix(const DenseMatrix<OTHER_T>& other) : DenseMatrixBase<T>(other.rows, other.columns) {
         data_ = new T[this->columns * this->rows];
 
-        for (int i = 0; i < this->columns * this->rows; i++) {
-            data_[i] = other.data_[i];
+        for (int c = 0; c < this->columns; c++) {
+            for (int r = 0; r < this->rows; r++) {
+                DenseMatrix<T>::at(c, r) = other[c, r];
+            }
         }
     }
 
@@ -202,7 +212,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
      */
     DenseMatrix<T>& operator=(const DenseMatrix<T>& other) {
         if (data_ != other.data_) {
-            assert_same_dimensions(*this, other, "copy assign");
+            assert_same_dimensions(*this, other);
             memcpy(data_, other.data_, this->columns * this->rows * sizeof(T));
         }
 
@@ -222,9 +232,12 @@ struct DenseMatrix : DenseMatrixBase<T> {
     */
     template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
     DenseMatrix<T>& operator=(const DenseMatrix<OTHER_T>& other) {
-        assert_same_dimensions(*this, other, "copy assign");
+        assert_same_dimensions(*this, other);
+
+        const OTHER_T* otherData = other.data();
+
         for (int i = 0; i < this->columns * this->rows; i++) {
-            data_[i] = other.data_[i];
+            data_[i] = otherData[i];
         }
 
         return *this;
@@ -240,7 +253,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @note 'other' must be of same dimensions as this.
      */
     DenseMatrix<T>& operator=(const DenseMatrixBase<T>& other) {
-        assert_same_dimensions(*this, other, "copy assign");
+        assert_same_dimensions(*this, other);
         for (int c = 0; c < this->columns; c++) {
             for (int r = 0; r < this->rows; r++) {
                 DenseMatrix<T>::at(c, r) = other[c, r];
@@ -263,7 +276,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     DenseMatrix<T>& operator=(const DenseMatrixBase<OTHER_T>& other) {
-        assert_same_dimensions(*this, other, "copy assign");
+        assert_same_dimensions(*this, other);
         for (int c = 0; c < this->columns; c++) {
             for (int r = 0; r < this->rows; r++) {
                 DenseMatrix<T>::at(c, r) = other[c, r];
@@ -282,9 +295,9 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
      * @note 'other' must be of same dimensions as this.
      */
-    DenseMatrix<T>& operator=(DenseMatrix<T>&& other) noexcept {
+    DenseMatrix<T>& operator=(DenseMatrix<T>&& other) {
         if (data_ != other.data_) {
-            assert_same_dimensions(*this, other, "move assign");
+            assert_same_dimensions(*this, other);
             delete[] data_;
             data_ = other.data_;
             other.data_ = nullptr;

@@ -52,7 +52,8 @@ add_library(mathpp INTERFACE
         src/matrix/dense/matrix.h
         src/matrix/dense/helper.h
         src/matrix/dense/operators/add.h
-        src/vector/dense/operators/compare.h)
+        src/vector/dense/operators/compare.h
+        src/matrix/dense/operators/compare.h)
 
 target_include_directories(mathpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 

@@ -3,7 +3,7 @@
 #include "../../../helper.h"
 
 template<dense_vector_base T, dense_vector_base... OTHERS>
-[[nodiscard]] bool compare(const T& a, const OTHERS&... others, const underlying_type_t<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>> precision = epsilon<underlying_type_t<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>>()) {
+[[nodiscard]] bool compare(const T& a, const OTHERS&... others, const underlying_type_t<std::common_type_t<typename T::ValueType, typename OTHERS::ValueType...>> precision = epsilon<underlying_type_t<std::common_type_t<typename T::ValueType, typename OTHERS::ValueType...>>>()) {
     assert_same_size(a, others...);
 
     const int n = a.n;

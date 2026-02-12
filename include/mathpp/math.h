@@ -15,3 +15,4 @@
 #include "../../src/matrix/dense/helper.h"
 #include "../../src/matrix/dense/operators/add.h"
 #include "../../src/vector/dense/operators/compare.h"
+#include "../../src/matrix/dense/operators/compare.h"
