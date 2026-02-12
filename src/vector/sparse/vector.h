@@ -173,7 +173,7 @@ struct SparseVector : SparseVectorBase<T> {
      */
     SparseVector<T>& operator=(const SparseVector<T>& other) {
         if (values_ != other.values_ && indexes_ != other.indexes_) {
-            assert_same_size(*this, other, "copy assign");
+            assert_same_size(*this, other);
 
             if (nnz_ != other.nnz_) {
                 nnz_ = other.nnz_;
@@ -186,7 +186,7 @@ struct SparseVector : SparseVectorBase<T> {
             }
 
             memcpy(values_, other.values_, nnz_ * sizeof(T));
-            memcpy(indexes_, other.values_, nnz_ * sizeof(int));
+            memcpy(indexes_, other.indexes_, nnz_ * sizeof(int));
         }
 
         return *this;
