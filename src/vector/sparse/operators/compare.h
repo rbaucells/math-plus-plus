@@ -14,7 +14,7 @@ template<sparse_vector_base T, sparse_vector_base... OTHERS>
     const int n = a.n;
 
     for (int i = 0; i < n; i++) {
-        if (!compare<typename T::ValueType, typename OTHERS::ValueType...>(a[i], others[i]..., precision)) {
+        if (!compare<typename T::ValueType, typename OTHERS::ValueType...>(a.get(i), others.get(i)..., precision)) {
             return false;
         }
     }
