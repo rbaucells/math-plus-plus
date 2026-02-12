@@ -97,8 +97,8 @@ TEST(dense_vector_const_indexing_operator, given_big_index_should_throw) {
     ASSERT_THROW(std::ignore = v[4], InvalidIndexException);
 }
 #pragma endregion
-#pragma region default_constructor
-TEST(dense_vector_default_constructor, given_size_and_fill_should_construct_f) {
+#pragma region constructor
+TEST(dense_vector_constructor, given_size_and_fill_should_construct_f) {
     // arrange / act
     const DenseVector<float> v(3, true);
     const DenseVector<float> expected = {0, 0, 0};
@@ -106,7 +106,7 @@ TEST(dense_vector_default_constructor, given_size_and_fill_should_construct_f) {
     ASSERT_TRUE((compare<DenseVector<float>, DenseVector<float>>(v, expected, 0.001f)));
 }
 
-TEST(dense_vector_default_constructor, given_size_and_fill_should_construct_cf) {
+TEST(dense_vector_constructor, given_size_and_fill_should_construct_cf) {
     // arrange / act
     const DenseVector<std::complex<float>> v(3, true);
     const DenseVector<std::complex<float>> expected = {{0, 0}, {0, 0}, {0, 0}};

@@ -89,4 +89,31 @@ TEST(sparse_vector_get, given_index_to_zero_value_should_return_zero) {
     ASSERT_TRUE((compare<float, float>(value, expectedValue, 0.001f)));
 }
 #pragma endregion
+#pragma region constructor
+TEST(sparse_vector_constructor, given_size_should_construct_f) {
+    // arrange
+    constexpr int expectedNnz = 0;
+    constexpr int expectedN = 3;
+    // act
+    const SparseVector<float> v(3);
+    // assert
+    const int vNnz = v.nnz();
+    const int vN = v.n;
+    ASSERT_TRUE((compare<int, int>(vNnz, expectedNnz)));
+    ASSERT_TRUE((compare<int, int>(vN, expectedN)));
+}
+
+TEST(sparse_vector_constructor, given_size_should_construct_cf) {
+    // arrange
+    constexpr int expectedNnz = 0;
+    constexpr int expectedN = 3;
+    // act
+    const SparseVector<std::complex<float>> v(3);
+    // assert
+    const int vNnz = v.nnz();
+    const int vN = v.n;
+    ASSERT_TRUE((compare<int, int>(vNnz, expectedNnz)));
+    ASSERT_TRUE((compare<int, int>(vN, expectedN)));
+}
+#pragma endregion
 #pragma endregion
