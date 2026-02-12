@@ -27,7 +27,8 @@ add_executable(mathpp-tests main.cpp
         matrix/dense/helper.tests.cpp
         matrix/sparse/helper.tests.cpp
         vector/dense/vector.tests.cpp
-        matrix/dense/matrix.tests.cpp)
+        matrix/dense/matrix.tests.cpp
+        vector/sparse/vector.tests.cpp)
 
 # link with the math lib
 target_link_libraries(mathpp-tests PRIVATE mathpp GTest::gtest_main)

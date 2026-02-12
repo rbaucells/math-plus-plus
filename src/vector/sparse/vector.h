@@ -288,7 +288,7 @@ struct SparseVector : SparseVectorBase<T> {
 
             if (curIndex == i) {
                 // there is currently a non-zero element there and we are placing a zero so we remove a non-zero element;
-                if (compare(value, 0)) {
+                if (compare<T, int>(value, 0)) {
                     T* newValues = new T[nnz_ - 1];
 
                     // copy everything before us
@@ -305,9 +305,9 @@ struct SparseVector : SparseVectorBase<T> {
 
                     int* newIndices = new int[nnz_ - 1];
 
-                    memcpy(newIndices, indexes_, j * sizeof(T));
+                    memcpy(newIndices, indexes_, j * sizeof(int));
 
-                    memcpy(&newIndices[j], &values_[j + 1], (nnz_ - j - 1) * sizeof(T));
+                    memcpy(&newIndices[j], &indexes_[j + 1], (nnz_ - j - 1) * sizeof(int));
 
                     delete[] indexes_;
 
@@ -331,7 +331,7 @@ struct SparseVector : SparseVectorBase<T> {
         }
 
         // there is currently a zero element, and we are setting another zero element
-        if (compare(value, 0)) {
+        if (compare<T, int>(value, 0)) {
             return;
         }
 
@@ -352,9 +352,11 @@ struct SparseVector : SparseVectorBase<T> {
 
         int* newIndices = new int[nnz_ + 1];
 
-        memcpy(newIndices, indexes_, j * sizeof(T));
+        memcpy(newIndices, indexes_, j * sizeof(int));
 
-        memcpy(&newIndices[j + 1], &values_[j], (nnz_ - j) * sizeof(T));
+        newIndices[j] = i;
+
+        memcpy(&newIndices[j + 1], &indexes_[j], (nnz_ - j) * sizeof(int));
 
         delete[] indexes_;
 
