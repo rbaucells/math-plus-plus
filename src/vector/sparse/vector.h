@@ -118,6 +118,9 @@ struct SparseVector : SparseVectorBase<T> {
     * @param other SparseVectorBase to copy from.
     */
     SparseVector(const SparseVectorBase<T>& other) : SparseVectorBase<T>(other.n) {
+        nnz_ = 0;
+        values_ = new T[nnz_];
+        indexes_ = new int[nnz_];
         for (int i = 0; i < this->n; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
@@ -135,6 +138,9 @@ struct SparseVector : SparseVectorBase<T> {
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseVector(const SparseVectorBase<OTHER_T>& other) : SparseVectorBase<T>(other.n) {
+        nnz_ = 0;
+        values_ = new T[nnz_];
+        indexes_ = new int[nnz_];
         for (int i = 0; i < this->n; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
