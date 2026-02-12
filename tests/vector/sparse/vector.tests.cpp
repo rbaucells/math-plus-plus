@@ -67,7 +67,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_do_not
 }
 #pragma endregion
 #pragma region get
-TEST(sparse_vector_get, given_index_to_non_zero_value_should_return_value) {
+TEST(sparse_vector_get, given_index_to_non_zero_value_should_return_value_f) {
     // arrange
     SparseVector<float> v(3);
     constexpr float expectedValue = 2;
@@ -78,7 +78,7 @@ TEST(sparse_vector_get, given_index_to_non_zero_value_should_return_value) {
     ASSERT_TRUE((compare<float, float>(value, expectedValue, 0.001f)));
 }
 
-TEST(sparse_vector_get, given_index_to_zero_value_should_return_zero) {
+TEST(sparse_vector_get, given_index_to_zero_value_should_return_zero_f) {
     // arrange
     SparseVector<float> v(3);
     constexpr float expectedValue = 0;
@@ -87,6 +87,28 @@ TEST(sparse_vector_get, given_index_to_zero_value_should_return_zero) {
     const float value = v.get(2);
     // assert
     ASSERT_TRUE((compare<float, float>(value, expectedValue, 0.001f)));
+}
+
+TEST(sparse_vector_get, given_index_to_non_zero_value_should_return_value_cf) {
+    // arrange
+    SparseVector<std::complex<float>> v(3);
+    constexpr std::complex<float> expectedValue = {3, 4};
+    v.set(1, {3, 4});
+    // act
+    const std::complex<float> value = v.get(1);
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, expectedValue, 0.001f)));
+}
+
+TEST(sparse_vector_get, given_index_to_zero_value_should_return_zero_cf) {
+    // arrange
+    SparseVector<std::complex<float>> v(3);
+    constexpr std::complex<float> expectedValue = {0, 0};
+    v.set(1, {1, 2});
+    // act
+    const std::complex<float> value = v.get(2);
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, expectedValue, 0.001f)));
 }
 #pragma endregion
 #pragma region constructor
