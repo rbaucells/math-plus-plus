@@ -205,10 +205,12 @@ struct SparseVector : SparseVectorBase<T> {
      */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseVector<T>& operator=(const SparseVector<OTHER_T>& other) {
-        assert_same_size(*this, other, "copy assign");
+        assert_same_size(*this, other);
 
-        if (nnz_ != other.nnz_) {
-            nnz_ = other.nnz_;
+        const int otherNnz = other.nnz();
+
+        if (nnz_ != otherNnz) {
+            nnz_ = otherNnz;
 
             delete[] values_;
             values_ = new T[nnz_];
@@ -217,10 +219,13 @@ struct SparseVector : SparseVectorBase<T> {
             indexes_ = new int[nnz_];
         }
 
+        const OTHER_T* otherValues = other.values();
+
         for (int i = 0; i < nnz_; i++) {
-            values_[i] = other.values_[i];
-            indexes_[i] = other.indexes_[i];
+            values_[i] = otherValues[i];
         }
+
+        memcpy(indexes(), other.indexes(), nnz_ * sizeof(int));
 
         return *this;
     }

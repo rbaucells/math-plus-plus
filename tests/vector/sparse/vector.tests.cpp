@@ -319,13 +319,26 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_
 TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_cf_sparse_vector_should_copy_assign) {
     // arrange
     SparseVector<std::complex<float>> expected(3);
+    expected.set(0, {3, 4});
+    expected.set(2, {1, 2});
+    SparseVector<std::complex<float>> v(3);
+    // act
+    v = expected;
+    // assert
+    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<std::complex<float>>>(v, expected, 0.001f)));
+}
+#pragma endregion
+#pragma region copy_assignment_operator_from_different_type_sparse_vector
+TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_should_copy_assign) {
+    // arrange
+    SparseVector<float> expected(3);
     expected.set(0, 3);
     expected.set(2, 1);
     SparseVector<std::complex<float>> v(3);
     // act
     v = expected;
     // assert
-    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<std::complex<float>>>(v, expected, 0.001f)));
+    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<float>>(v, expected, 0.001f)));
 }
 #pragma endregion
 #pragma endregion
