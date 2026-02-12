@@ -303,7 +303,7 @@ struct SparseVector : SparseVectorBase<T> {
             const int curIndex = indexes_[j];
 
             if (curIndex == i) {
-                // there is currently a non-zero element there and we are placing a zero so we remove a non-zero element;
+                // there is currently a non-zero element there, and we are placing a zero so we remove a non-zero element;
                 if (compare<T, int>(value, 0)) {
                     T* newValues = new T[nnz_ - 1];
 
@@ -334,7 +334,7 @@ struct SparseVector : SparseVectorBase<T> {
                     return;
                 }
 
-                // there is a non-zero element and we are setting another non-zero element, indices do not need to change
+                // there is a non-zero element, and we are setting another non-zero element, indices do not need to change
                 values_[j] = value;
 
                 return;
@@ -577,7 +577,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
                     return;
                 }
 
-                // there is a non-zero element and we are setting another non-zero element, indices do not need to change
+                // there is a non-zero element, and we are setting another non-zero element, indices do not need to change
                 values_[j] = value;
 
                 return;

@@ -397,4 +397,64 @@ TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_should_move_a
     ASSERT_TRUE((compare<SparseVector<float>, SparseVector<float>>(v, expected, 0.001f)));
 }
 #pragma endregion
+#pragma region nnz
+TEST(sparse_vector_nnz, should_return_nnz) {
+    // arrange
+    SparseVector<float> v(3);
+    v.set(0, 2);
+    constexpr int expectedNnz = 1;
+    // act
+    const int nnz = v.nnz();
+    // assert
+    ASSERT_TRUE((compare<int, int>(nnz, expectedNnz)));
+}
+#pragma endregion
+#pragma region values
+TEST(sparse_vectors_values, should_return_values) {
+    // arrange
+    SparseVector<float> v(3);
+    v.set(1, 5);
+    // act
+    float* values = v.values();
+    // assert
+    ASSERT_TRUE((compare<float, float>(values[0], 5, 0.001f)));
+    values[0] = 6;
+    ASSERT_TRUE((compare<float, float>(values[0], 6, 0.001f)));
+}
+#pragma endregion
+#pragma region const_values
+TEST(sparse_vectors_const_values, should_return_const_values) {
+    // arrange
+    SparseVector<float> v(3);
+    v.set(1, 5);
+    // act
+    const float* values = v.values();
+    // assert
+    ASSERT_TRUE((compare<float, float>(values[0], 5, 0.001f)));
+}
+#pragma endregion
+#pragma region indexes
+TEST(sparse_vectors_indexes, should_return_indexes) {
+    // arrange
+    SparseVector<float> v(3);
+    v.set(1, 5);
+    // act
+    int* indexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<float, float>(indexes[0], 1, 0.001f)));
+    indexes[0] = 3;
+    ASSERT_TRUE((compare<float, float>(indexes[0], 3, 0.001f)));
+}
+#pragma endregion
+#pragma region const_indexes
+TEST(sparse_vectors_const_indexes, should_return_const_indexes) {
+    // arrange
+    SparseVector<float> v(3);
+    v.set(1, 5);
+    // act
+    const int* indexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<float, float>(indexes[0], 1, 0.001f)));
+}
+#pragma endregion
 #pragma endregion
