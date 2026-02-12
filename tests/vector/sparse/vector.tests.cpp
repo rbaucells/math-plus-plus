@@ -66,4 +66,27 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_do_not
     ASSERT_TRUE((compare<int, int>(expectedNnz, vNnz)));
 }
 #pragma endregion
+#pragma region get
+TEST(sparse_vector_get, given_index_to_non_zero_value_should_return_value) {
+    // arrange
+    SparseVector<float> v(3);
+    constexpr float expectedValue = 2;
+    v.set(1, 2);
+    // act
+    const float value = v.get(1);
+    // assert
+    ASSERT_TRUE((compare<float, float>(value, expectedValue, 0.001f)));
+}
+
+TEST(sparse_vector_get, given_index_to_zero_value_should_return_zero) {
+    // arrange
+    SparseVector<float> v(3);
+    constexpr float expectedValue = 0;
+    v.set(1, 2);
+    // act
+    const float value = v.get(2);
+    // assert
+    ASSERT_TRUE((compare<float, float>(value, expectedValue, 0.001f)));
+}
+#pragma endregion
 #pragma endregion
