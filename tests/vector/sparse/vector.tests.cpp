@@ -379,4 +379,22 @@ TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector_ba
     ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<float>>(v, expected, 0.001f)));
 }
 #pragma endregion
+#pragma region move_assignment_operator
+TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_should_move_assign_and_invalidate_other) {
+    // arrange
+    SparseVector<float> a(3);
+    a.set(0, 3);
+    a.set(2, 1);
+    SparseVector<float> expected(3);
+    expected.set(0, 3);
+    expected.set(2, 1);
+    SparseVector<float> v(3);
+    // act
+    v = std::move(a);
+    // assert
+    ASSERT_TRUE(a.values() == nullptr);
+    ASSERT_TRUE(a.indexes() == nullptr);
+    ASSERT_TRUE((compare<SparseVector<float>, SparseVector<float>>(v, expected, 0.001f)));
+}
+#pragma endregion
 #pragma endregion

@@ -280,7 +280,7 @@ struct SparseVector : SparseVectorBase<T> {
     */
     SparseVector<T>& operator=(SparseVector<T>&& other) noexcept {
         if (values_ != other.values_ && indexes_ != other.indexes_) {
-            assert_same_size(*this, other, "move assign");
+            assert_same_size(*this, other);
 
             delete[] values_;
             values_ = other.values_;
