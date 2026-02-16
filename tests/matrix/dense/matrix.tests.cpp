@@ -171,6 +171,8 @@ TEST(dense_matrix_default_constructor, given_size_and_fill_should_construct_f) {
     const DenseMatrix<float> v(3, 3, true);
     const float* vData = v.data();
     // assert
+    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
     for (int i = 0; i < 8; i++) {
         ASSERT_TRUE((compare<float, float>(vData[i], 0, 0.001f)));
     }
@@ -181,6 +183,8 @@ TEST(dense_matrix_default_constructor, given_size_and_fill_should_construct_cf) 
     const DenseMatrix<std::complex<float>> v(3, 3, true);
     const std::complex<float>* vData = v.data();
     // assert
+    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
     for (int i = 0; i < 8; i++) {
         ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[i], {0, 0}, 0.001f)));
     }
@@ -192,6 +196,8 @@ TEST(dense_matrix_initializer_list_constructor, given_initializer_list_should_co
     const DenseMatrix<float> v = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     const float* vData = v.data();
     // assert
+    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
     ASSERT_TRUE((compare<float, float>(vData[0], 1, 0.001f)));
     ASSERT_TRUE((compare<float, float>(vData[1], 4, 0.001f)));
     ASSERT_TRUE((compare<float, float>(vData[2], 7, 0.001f)));
@@ -208,6 +214,8 @@ TEST(dense_matrix_initializer_list_constructor, given_initializer_list_should_co
     const DenseMatrix<std::complex<float>> v = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
     const std::complex<float>* vData = v.data();
     // assert
+    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[0], {1, 2}, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[1], {7, 8}, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[2], {13, 14}, 0.001f)));
@@ -232,6 +240,8 @@ TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix, given_f_dense_ma
     const DenseMatrix<float> b = a;
     const float* bData = b.data();
     // assert
+    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
     ASSERT_TRUE((compare<float, float>(bData[0], 1, 0.001f)));
     ASSERT_TRUE((compare<float, float>(bData[1], 4, 0.001f)));
     ASSERT_TRUE((compare<float, float>(bData[2], 7, 0.001f)));
@@ -250,6 +260,8 @@ TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix, given_cf_dense_m
     const DenseMatrix<std::complex<float>> b = a;
     const std::complex<float>* bData = b.data();
     // assert
+    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[0], {1, 2}, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[1], {7, 8}, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[2], {13, 14}, 0.001f)));
@@ -269,6 +281,8 @@ TEST(dense_matrix_copy_constructor_from_different_type_dense_matrix, given_f_den
     const DenseMatrix<std::complex<float>> b = a;
     const std::complex<float>* bData = b.data();
     // assert
+    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
     ASSERT_TRUE((compare<std::complex<float>, float>(bData[0], 1, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, float>(bData[1], 4, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, float>(bData[2], 7, 0.001f)));
@@ -288,6 +302,8 @@ TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix_base, given_f_den
     const DenseMatrix<float> b = static_cast<const DenseMatrixBase<float>&>(a);
     const float* bData = b.data();
     // assert
+    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
     ASSERT_TRUE((compare<float, float>(bData[0], 1, 0.001f)));
     ASSERT_TRUE((compare<float, float>(bData[1], 4, 0.001f)));
     ASSERT_TRUE((compare<float, float>(bData[2], 7, 0.001f)));
@@ -306,6 +322,8 @@ TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix_base, given_cf_de
     const DenseMatrix<std::complex<float>> b = static_cast<const DenseMatrixBase<std::complex<float>>&>(a);
     const std::complex<float>* bData = b.data();
     // assert
+    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[0], {1, 2}, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[1], {7, 8}, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[2], {13, 14}, 0.001f)));
@@ -325,6 +343,8 @@ TEST(dense_matrix_copy_constructor_from_different_type_dense_matrix_base, given_
     const DenseMatrix<std::complex<float>> b = static_cast<const DenseMatrixBase<float>&>(a);
     const std::complex<float>* bData = b.data();
     // assert
+    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
     ASSERT_TRUE((compare<std::complex<float>, float>(bData[0], 1, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, float>(bData[1], 4, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, float>(bData[2], 7, 0.001f)));
@@ -345,6 +365,8 @@ TEST(dense_matrix_move_constructor, given_f_dense_matrix_should_move_construct_a
     const float* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
+    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
     ASSERT_TRUE((compare<float, float>(bData[0], 1, 0.001f)));
     ASSERT_TRUE((compare<float, float>(bData[1], 4, 0.001f)));
     ASSERT_TRUE((compare<float, float>(bData[2], 7, 0.001f)));
@@ -364,6 +386,8 @@ TEST(dense_matrix_move_constructor, given_cf_dense_matrix_should_move_construct_
     const std::complex<float>* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
+    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[0], {1, 2}, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[1], {7, 8}, 0.001f)));
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[2], {13, 14}, 0.001f)));
@@ -624,6 +648,10 @@ TEST(dense_matrix_view_constructor, given_f_dense_matrix_should_construct) {
     // act
     const DenseMatrixView<float> view = DenseMatrixView<float>(a, 3, 3, 1, 1);
     // assert
+    ASSERT_TRUE((compare<int, int>(view.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(view.columns, 3)));
+    ASSERT_TRUE((compare<int, int>(view.rowOffset(), 1)));
+    ASSERT_TRUE((compare<int, int>(view.colOffset(), 1)));
     ASSERT_TRUE((compare<DenseMatrixView<float>, DenseMatrix<float>>(view, expected, 0.001f)));
 }
 
@@ -634,6 +662,10 @@ TEST(dense_matrix_view_constructor, given_cf_dense_matrix_should_construct) {
     // act
     const DenseMatrixView<std::complex<float>> view = DenseMatrixView<std::complex<float>>(a, 3, 3, 1, 1);
     // assert
+    ASSERT_TRUE((compare<int, int>(view.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(view.columns, 3)));
+    ASSERT_TRUE((compare<int, int>(view.rowOffset(), 1)));
+    ASSERT_TRUE((compare<int, int>(view.colOffset(), 1)));
     ASSERT_TRUE((compare<DenseMatrixView<std::complex<float>>, DenseMatrix<std::complex<float>>>(view, expected, 0.001f)));
 }
 #pragma endregion
@@ -645,6 +677,10 @@ TEST(dense_matrix_view_copy_constructor, given_f_dense_matrix_view_should_copy) 
     // act
     const DenseMatrixView<float> newView = view;
     // assert
+    ASSERT_TRUE((compare<int, int>(newView.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(newView.columns, 3)));
+    ASSERT_TRUE((compare<int, int>(newView.rowOffset(), 2)));
+    ASSERT_TRUE((compare<int, int>(newView.colOffset(), 2)));
     ASSERT_TRUE(&view.owner() == &newView.owner());
     ASSERT_TRUE((compare<DenseMatrixView<float>, DenseMatrixView<float>>(view, newView, 0.001f)));
 }
@@ -656,6 +692,10 @@ TEST(dense_matrix_view_copy_constructor, given_cf_dense_matrix_view_should_copy)
     // act
     const DenseMatrixView<std::complex<float>> newView = view;
     // assert
+    ASSERT_TRUE((compare<int, int>(newView.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(newView.columns, 3)));
+    ASSERT_TRUE((compare<int, int>(newView.rowOffset(), 2)));
+    ASSERT_TRUE((compare<int, int>(newView.colOffset(), 2)));
     ASSERT_TRUE(&view.owner() == &newView.owner());
     ASSERT_TRUE((compare<DenseMatrixView<std::complex<float>>, DenseMatrixView<std::complex<float>>>(view, newView, 0.001f)));
 }
