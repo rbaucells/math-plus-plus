@@ -49,3 +49,5 @@ static_assert(dense_vector_view<DenseVectorView<float>>, "dense_vector_view is w
   - t_sparse_*_view
   - t_custom_sparse_*
 - If creating multiple tests of similar function or with similar params like testing equality between complex numbers where in one case the imaginary part differs and in the other the real part differs. You may append a '_1', '_2', etc. to the end of the test name.
+- When possible, test internal data structures to minimize dependence on other things.
+  - e.g. When testing initilializer constructor, test that the data pointer at the correct index is correct.
