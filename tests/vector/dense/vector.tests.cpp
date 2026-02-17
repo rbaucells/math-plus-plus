@@ -419,8 +419,7 @@ TEST(dense_vector_view_constructor, given_cf_dense_vector_should_construct) {
     // assert
     ASSERT_TRUE((compare<int, int>(view.n, 3)));
     ASSERT_TRUE((compare<int, int>(view.offset(), 1)));
-    ASSERT_TRUE(
-        (compare<DenseVectorView<std::complex<float>>, DenseVector<std::complex<float>>>(view, expected, 0.001f)));
+    ASSERT_TRUE((compare<DenseVectorView<std::complex<float>>, DenseVector<std::complex<float>>>(view, expected, 0.001f)));
 }
 #pragma endregion
 #pragma region copy_constructor

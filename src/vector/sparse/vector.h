@@ -30,6 +30,7 @@ public:
      * @brief Sets the value of the element at index 'i'
      * @param i Index of element
      * @param value The value to set at index 'i'
+     * @throws InvalidIndexException If 'i' is negative or greater than 'n - 1'
      */
     virtual void set(int i, T value) = 0;
 
@@ -37,8 +38,10 @@ public:
      * @brief Gets the value of the element at index 'i'
      * @param i Index of element
      * @return The value at index 'i'
+     * @throws InvalidIndexException If 'i' is negative or greater than 'n - 1'
      */
     [[nodiscard]] virtual T get(int i) const = 0;
+
 
     /**
     * @brief Gets the number of non-zero elements in the sparse vector.
@@ -392,6 +395,7 @@ struct SparseVector : SparseVectorBase<T> {
         if (i < 0 || i > this->n - 1) {
             throw InvalidIndexException("Cannot get from SparseVector with invalid index");
         }
+
         for (int j = 0; j < nnz_; j++) {
             if (indexes_[j] == i) {
                 return values_[j];
@@ -480,12 +484,21 @@ struct SparseVectorView : SparseVectorBase<T> {
     /**
      * @brief Trying to modify a SparseVector through a view is invalid.
      * @throws InvalidOperationException You cannot modify owner through a view.
+     * @throws InvalidIndexException If 'i' is negative or greater than 'n - 1'
      */
-    void set(const int, const T) override {
+    void set(const int i, const T) override {
+        if (i > this->n - 1|| i < 0) {
+            throw InvalidIndexException("Cannot set on view with invalid index");
+        }
+
         throw InvalidOperationException("Cannot modify owner through view");
     }
 
     [[nodiscard]] T get(const int i) const override {
+        if (i < 0 || i > this->n - 1) {
+            throw InvalidIndexException("Cannot get from SparseVectorView with invalid index");
+        }
+
         return owner_.get(i + offset_);
     }
 

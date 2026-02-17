@@ -1073,3 +1073,177 @@ TEST(sparse_vector_move_assignment_operator, given_sparse_vector_of_different_si
 }
 #pragma endregion
 #pragma endregion
+#pragma region sparse_vector_view
+#pragma region constructor
+TEST(sparse_vector_view_constructor, given_f_sparse_vector_should_construct) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(1, 1);
+    a.set(2, 2);
+    a.set(3, 3);
+    SparseVector<float> expected(3);
+    expected.set(0, 1);
+    expected.set(1, 2);
+    expected.set(2, 3);
+    // act
+    const SparseVectorView<float> v(a, 3, 1);
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.n, 3)));
+    ASSERT_TRUE((compare<int, int>(v.offset(), 1)));
+    ASSERT_TRUE((compare<SparseVectorView<float>, SparseVector<float>>(v, expected, 0.001f)));
+}
+
+TEST(sparse_vector_view_constructor, given_cf_sparse_vector_should_construct) {
+    // arrange
+    SparseVector<std::complex<float>> a(5);
+    a.set(1, {1, 2});
+    a.set(2, {3, 4});
+    a.set(3, {5, 6});
+    SparseVector<std::complex<float>> expected(3);
+    expected.set(0, {1, 2});
+    expected.set(1, {3, 4});
+    expected.set(2, {5, 6});
+    // act
+    const SparseVectorView<std::complex<float>> v(a, 3, 1);
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.n, 3)));
+    ASSERT_TRUE((compare<int, int>(v.offset(), 1)));
+    ASSERT_TRUE((compare<SparseVectorView<std::complex<float>>, SparseVector<std::complex<float>>>(v, expected, 0.001f)));
+}
+#pragma endregion
+#pragma region copy_constructor
+TEST(sparse_vector_view_copy_constructor, given_f_sparse_vector_view_should_copy) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(1, 1);
+    a.set(2, 2);
+    a.set(3, 3);
+    const SparseVectorView<float> v(a, 3, 1);
+    // act
+    const SparseVectorView<float> newView = v;
+    // assert
+    ASSERT_TRUE((compare<int, int>(newView.n, 3)));
+    ASSERT_TRUE((compare<int, int>(newView.offset(), 1)));
+    ASSERT_TRUE(&v.owner() == &newView.owner());
+    ASSERT_TRUE((compare<SparseVectorView<float>, SparseVectorView<float>>(v, newView, 0.001f)));
+}
+
+TEST(sparse_vector_view_copy_constructor, given_cf_sparse_vector_view_should_copy) {
+    // arrange
+    SparseVector<std::complex<float>> a(5);
+    a.set(1, {1, 2});
+    a.set(2, {3, 4});
+    a.set(3, {5, 6});
+    const SparseVectorView<std::complex<float>> v(a, 3, 1);
+    // act
+    const SparseVectorView<std::complex<float>> newView = v;
+    // assert
+    ASSERT_TRUE((compare<int, int>(newView.n, 3)));
+    ASSERT_TRUE((compare<int, int>(newView.offset(), 1)));
+    ASSERT_TRUE(&v.owner() == &newView.owner());
+    ASSERT_TRUE((compare<SparseVectorView<std::complex<float>>, SparseVectorView<std::complex<float>>>(v, newView, 0.001f)));
+}
+#pragma endregion
+#pragma region set
+TEST(sparse_vector_view_set, given_index_should_throw) {
+    // arrange
+    SparseVector<float> a(5);
+    SparseVectorView<float> v(a, 3, 1);
+    // act
+    ASSERT_THROW(v.set(0, 1) ,InvalidOperationException);
+}
+TEST(sparse_vector_view_set, given_negative_index_should_throw) {
+    // arrange
+    SparseVector<float> a(5);
+    SparseVectorView<float> v(a, 3, 1);
+    // act
+    ASSERT_THROW(v.set(-1, 1) ,InvalidIndexException);
+}
+
+TEST(sparse_vector_view_set, given_negative_index_should_throw_1) {
+    // arrange
+    SparseVector<float> a(5);
+    SparseVectorView<float> v(a, 3, 2);
+    // act
+    ASSERT_THROW(v.set(3, 1) ,InvalidIndexException);
+}
+
+TEST(sparse_vector_view_set, given_negative_index_should_throw_2) {
+    // arrange
+    SparseVector<float> a(5);
+    SparseVectorView<float> v(a, 3, 1);
+    // act
+    ASSERT_THROW(v.set(3, 1) ,InvalidIndexException);
+}
+#pragma endregion
+#pragma region get
+TEST(sparse_vector_view_get, given_index_should_return_value_f) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(2, 1);
+    SparseVectorView<float> v(a, 3, 1);
+    // act
+    const float value = v.get(1);
+    // assert
+    ASSERT_TRUE((compare<float, float>(value, 1, 0.001f)));
+}
+
+TEST(sparse_vector_view_get, given_index_should_return_value_cf) {
+    // arrange
+    SparseVector<std::complex<float>> a(5);
+    a.set(2, {1, 2});
+    SparseVectorView<std::complex<float>> v(a, 3, 1);
+    // act
+    const std::complex<float> value = v.get(1);
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, {1, 2}, 0.001f)));
+}
+
+TEST(sparse_vector_view_get, given_negative_index_should_throw_f) {
+    // arrange
+    SparseVector<float> a(5);
+    SparseVectorView<float> v(a, 3, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v.get(-1),InvalidIndexException);
+}
+
+TEST(sparse_vector_view_get, given_big_index_should_throw_f_1) {
+    // arrange
+    SparseVector<float> a(5);
+    SparseVectorView<float> v(a, 3, 2);
+    // act / assert
+    ASSERT_THROW(std::ignore = v.get(3),InvalidIndexException);
+}
+
+TEST(sparse_vector_view_get, given_big_index_should_throw_f_2) {
+    // arrange
+    SparseVector<float> a(5);
+    SparseVectorView<float> v(a, 3, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v.get(3),InvalidIndexException);
+}
+#pragma endregion
+#pragma region offset
+TEST(sparse_vector_view_offset, should_return_offset) {
+    // arrange
+    const SparseVector<float> a(5);
+    const SparseVectorView<float> v(a, 3, 1);
+    constexpr int expected = 1;
+    // act
+    const int offset = v.offset();
+    // assert
+    ASSERT_TRUE((compare<int, int>(offset, expected)));
+}
+#pragma endregion
+#pragma region owner
+TEST(sparse_vector_view_owner, should_return_owner) {
+    // arrange
+    const SparseVector<float> a(5);
+    const SparseVectorView<float> v(a, 3, 1);
+    // act
+    const SparseVector<float>& owner = v.owner();
+    // assert
+    ASSERT_TRUE(&owner == &a);
+}
+#pragma endregion
+#pragma endregion
