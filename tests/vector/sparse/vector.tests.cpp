@@ -1223,6 +1223,51 @@ TEST(sparse_vector_view_get, given_big_index_should_throw_f_2) {
     ASSERT_THROW(std::ignore = v.get(3),InvalidIndexException);
 }
 #pragma endregion
+#pragma region nnz
+TEST(sparse_vector_nnz, should_return_nnz_1) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(1, 1);
+    SparseVectorView<float> v(a, 3, 1);
+    // act
+    const int nnz = v.nnz();
+    // assert
+    ASSERT_TRUE((compare<int, int>(nnz, 1)));
+}
+
+TEST(sparse_vector_nnz, should_return_nnz_2) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(1, 1);
+    a.set(0, 2);
+    SparseVectorView<float> v(a, 3, 1);
+    // act
+    const int nnz = v.nnz();
+    // assert
+    ASSERT_TRUE((compare<int, int>(nnz, 1)));
+}
+
+TEST(sparse_vector_nnz, should_return_zero_1) {
+    // arrange
+    SparseVector<float> a(5);
+    SparseVectorView<float> v(a, 3, 1);
+    // act
+    const int nnz = v.nnz();
+    // assert
+    ASSERT_TRUE((compare<int, int>(nnz, 0)));
+}
+
+TEST(sparse_vector_nnz, should_return_zero_2) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 2);
+    SparseVectorView<float> v(a, 3, 1);
+    // act
+    const int nnz = v.nnz();
+    // assert
+    ASSERT_TRUE((compare<int, int>(nnz, 0)));
+}
+#pragma endregion
 #pragma region offset
 TEST(sparse_vector_view_offset, should_return_offset) {
     // arrange
