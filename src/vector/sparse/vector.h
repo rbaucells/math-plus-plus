@@ -61,6 +61,10 @@ struct SparseVector : SparseVectorBase<T> {
      * @param n Size of vector.
      */
     explicit SparseVector(const int n) : SparseVectorBase<T>(n) {
+        if (n < 0) {
+            throw InvalidIndexException("Cannot construct SparseVector of negative size");
+        }
+
         nnz_ = 0;
         values_ = new T[nnz_];
         indexes_ = new int[nnz_];
@@ -240,7 +244,7 @@ struct SparseVector : SparseVectorBase<T> {
     * @note 'other' must be of same size as this.
     */
     SparseVector<T>& operator=(const SparseVectorBase<T>& other) {
-        assert_same_size(*this, other, "copy assign");
+        assert_same_size(*this, other);
         for (int i = 0; i < this->n; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
@@ -261,7 +265,7 @@ struct SparseVector : SparseVectorBase<T> {
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseVector<T>& operator=(const SparseVectorBase<OTHER_T>& other) {
-        assert_same_size(*this, other, "copy assign");
+        assert_same_size(*this, other);
         for (int i = 0; i < this->n; i++) {
             SparseVector<T>::set(i, other.get(i));
         }

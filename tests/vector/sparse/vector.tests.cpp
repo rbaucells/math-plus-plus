@@ -4,457 +4,593 @@
 
 #pragma region sparse_vector
 #pragma region set
-TEST(sparse_vector_set, given_index_to_zero_value_and_non_zero_value_should_set_f) {
+TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_f_1) {
     // arrange
-    SparseVector<float> v(3);
-    float* expectedValues = new float[1];
-    expectedValues[0] = 2;
-    int* expectedIndices = new int[1];
-    expectedIndices[0] = 1;
-    constexpr int expectedNnz = 1;
+    SparseVector<float> v(5);
     // act
-    v.set(1, 2);
-    // assert
-    const int vNnz = v.nnz();
+    v.set(3, 1);
     const float* vValues = v.values();
-    const int* vIndices = v.indexes();
-    ASSERT_TRUE((compare<int, int>(expectedNnz, vNnz)));
-    ASSERT_TRUE((compare<float, float>(vValues[0], expectedValues[0], 0.001f)));
-    ASSERT_TRUE((compare<int, int>(vIndices[0], expectedIndices[0])));
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE((compare<float, float>(vValues[0], 1, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 3)));
 }
 
-TEST(sparse_vector_set, given_index_to_non_zero_value_and_non_zero_value_should_set_f) {
+TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_f_2) {
     // arrange
-    SparseVector<float> v(3);
-    float* expectedValues = new float[1];
-    expectedValues[0] = 2;
-    int* expectedIndices = new int[1];
-    expectedIndices[0] = 1;
-    constexpr int expectedNnz = 1;
+    SparseVector<float> v(5);
+    v.set(2, 1);
     // act
-    v.set(1, 4);
-    v.set(1, 2);
-    // assert
-    const int vNnz = v.nnz();
+    v.set(3, 2);
     const float* vValues = v.values();
-    const int* vIndices = v.indexes();
-    ASSERT_TRUE((compare<int, int>(expectedNnz, vNnz)));
-    ASSERT_TRUE((compare<float, float>(vValues[0], expectedValues[0], 0.001f)));
-    ASSERT_TRUE((compare<int, int>(vIndices[0], expectedIndices[0])));
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE((compare<float, float>(vValues[0], 1, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(vValues[1], 2, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 3)));
 }
 
-TEST(sparse_vector_set, given_index_to_non_zero_value_and_zero_value_should_set_f) {
+TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_f_3) {
     // arrange
-    SparseVector<float> v(3);
-    constexpr int expectedNnz = 0;
+    SparseVector<float> v(5);
+    v.set(2, 1);
+    v.set(4, 2);
     // act
-    v.set(1, 4);
-    v.set(1, 0);
+    v.set(3, 3);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
     // assert
-    const int vNnz = v.nnz();
-    ASSERT_TRUE((compare<int, int>(expectedNnz, vNnz)));
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 3)));
+    ASSERT_TRUE((compare<float, float>(vValues[0], 1, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(vValues[1], 3, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(vValues[2], 2, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 3)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[2], 4)));
 }
 
-TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_do_nothing_f) {
+TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_f_4) {
     // arrange
-    SparseVector<float> v(3);
-    constexpr int expectedNnz = 0;
+    SparseVector<float> v(5);
+    v.set(2, 1);
     // act
-    v.set(1, 0);
-    // assert
-    const int vNnz = v.nnz();
-    ASSERT_TRUE((compare<int, int>(expectedNnz, vNnz)));
-}
-
-TEST(sparse_vector_set, given_index_to_zero_value_and_non_zero_value_should_set_cf) {
-    // arrange
-    SparseVector<std::complex<float>> v(3);
-    std::complex<float>* expectedValues = new std::complex<float>[1];
-    expectedValues[0] = {2, 3};
-    int* expectedIndices = new int[1];
-    expectedIndices[0] = 1;
-    constexpr int expectedNnz = 1;
-    // act
-    v.set(1, {2, 3});
-    // assert
-    const int vNnz = v.nnz();
-    const std::complex<float>* vValues = v.values();
-    const int* vIndices = v.indexes();
-    ASSERT_TRUE((compare<int, int>(expectedNnz, vNnz)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], expectedValues[0], 0.001f)));
-    ASSERT_TRUE((compare<int, int>(vIndices[0], expectedIndices[0])));
-}
-
-TEST(sparse_vector_set, given_index_to_non_zero_value_and_non_zero_value_should_set_cf) {
-    // arrange
-    SparseVector<std::complex<float>> v(3);
-    std::complex<float>* expectedValues = new std::complex<float>[1];
-    expectedValues[0] = {2, 3};
-    int* expectedIndices = new int[1];
-    expectedIndices[0] = 1;
-    constexpr int expectedNnz = 1;
-    // act
-    v.set(1, {4, 5});
-    v.set(1, {2, 3});
-    // assert
-    const int vNnz = v.nnz();
-    const std::complex<float>* vValues = v.values();
-    const int* vIndices = v.indexes();
-    ASSERT_TRUE((compare<int, int>(expectedNnz, vNnz)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], expectedValues[0], 0.001f)));
-    ASSERT_TRUE((compare<int, int>(vIndices[0], expectedIndices[0])));
-}
-
-TEST(sparse_vector_set, given_index_to_non_zero_value_and_zero_value_should_set_cf) {
-    // arrange
-    SparseVector<std::complex<float>> v(3);
-    constexpr int expectedNnz = 0;
-    // act
-    v.set(1, {4, 5});
-    v.set(1, {0, 0});
-    // assert
-    const int vNnz = v.nnz();
-    ASSERT_TRUE((compare<int, int>(expectedNnz, vNnz)));
-}
-
-TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_do_nothing_cf) {
-    // arrange
-    SparseVector<std::complex<float>> v(3);
-    constexpr int expectedNnz = 0;
-    // act
-    v.set(1, {0, 0});
-    // assert
-    const int vNnz = v.nnz();
-    ASSERT_TRUE((compare<int, int>(expectedNnz, vNnz)));
-}
-#pragma endregion
-#pragma region get
-TEST(sparse_vector_get, given_index_to_non_zero_value_should_return_value_f) {
-    // arrange
-    SparseVector<float> v(3);
-    constexpr float expectedValue = 2;
     v.set(1, 2);
-    // act
-    const float value = v.get(1);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
     // assert
-    ASSERT_TRUE((compare<float, float>(value, expectedValue, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE((compare<float, float>(vValues[0], 2, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(vValues[1], 1, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 2)));
 }
 
-TEST(sparse_vector_get, given_index_to_zero_value_should_return_zero_f) {
+TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_1) {
     // arrange
-    SparseVector<float> v(3);
-    constexpr float expectedValue = 0;
+    SparseVector<float> v(5);
+    const float* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(2, 0);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 0)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+}
+
+TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_2) {
+    // arrange
+    SparseVector<float> v(5);
+    v.set(0,1);
+    const float* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(2, 0);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<float, float>(vValues[0], 1, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 0)));
+}
+
+TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_3) {
+    // arrange
+    SparseVector<float> v(5);
+    v.set(0,1);
+    v.set(2,2);
+    const float* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(1, 0);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<float, float>(vValues[0], 1, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(vValues[1], 2, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 0)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 2)));
+}
+
+TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_4) {
+    // arrange
+    SparseVector<float> v(5);
+    v.set(3,1);
+    const float* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(2, 0);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<float, float>(vValues[0], 1, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 3)));
+}
+
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_1) {
+    // arrange
+    SparseVector<float> v(5);
+    v.set(2, 1);
+    const float* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(2, 3);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<float, float>(vValues[0], 3, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 2)));
+}
+
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_2) {
+    // arrange
+    SparseVector<float> v(5);
     v.set(1, 2);
+    v.set(2, 1);
+    const float* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
     // act
-    const float value = v.get(2);
+    v.set(2, 3);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
     // assert
-    ASSERT_TRUE((compare<float, float>(value, expectedValue, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<float, float>(vValues[0], 2, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(vValues[1], 3, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 2)));
 }
 
-TEST(sparse_vector_get, given_index_to_non_zero_value_should_return_value_cf) {
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_3) {
     // arrange
-    SparseVector<std::complex<float>> v(3);
-    constexpr std::complex<float> expectedValue = {3, 4};
+    SparseVector<float> v(5);
+    v.set(1, 2);
+    v.set(2, 1);
+    v.set(3, 4);
+    const float* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(2, 3);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 3)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<float, float>(vValues[0], 2, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(vValues[1], 3, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(vValues[2], 4, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 2)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[2], 3)));
+}
+
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_4) {
+    // arrange
+    SparseVector<float> v(5);
+    v.set(2, 1);
+    v.set(3, 2);
+    const float* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(2, 3);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<float, float>(vValues[0], 3, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(vValues[1], 2, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 3)));
+}
+
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_f_1) {
+    // arrange
+    SparseVector<float> v(5);
+    v.set(2, 1);
+    // act
+    v.set(2, 0);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 0)));
+    ASSERT_TRUE(vValues != nullptr);
+    ASSERT_TRUE(vIndexes != nullptr);
+}
+
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_f_2) {
+    // arrange
+    SparseVector<float> v(5);
+    v.set(1, 2);
+    v.set(2, 1);
+    // act
+    v.set(2, 0);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE((compare<float, float>(vValues[0], 2, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 1)));
+}
+
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_f_3) {
+    // arrange
+    SparseVector<float> v(5);
+    v.set(1, 3);
+    v.set(2, 1);
+    v.set(3, 2);
+    // act
+    v.set(2, 0);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE((compare<float, float>(vValues[0], 3, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(vValues[1], 2, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 3)));
+}
+
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_f_4) {
+    // arrange
+    SparseVector<float> v(5);
+    v.set(2, 1);
+    v.set(3, 2);
+    // act
+    v.set(2, 0);
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE((compare<float, float>(vValues[0], 2, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 3)));
+}
+
+TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_1) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
+    // act
+    v.set(3, {1, 2});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 3)));
+}
+
+TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_2) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
+    v.set(2, {1, 2});
+    // act
+    v.set(3, {3, 4});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[1], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 3)));
+}
+
+TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_3) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
+    v.set(2, {1, 2});
+    v.set(4, {3, 4});
+    // act
+    v.set(3, {5, 6});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 3)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[1], {5, 6}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[2], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 3)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[2], 4)));
+}
+
+TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_4) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
+    v.set(2, {1, 2});
+    // act
     v.set(1, {3, 4});
-    // act
-    const std::complex<float> value = v.get(1);
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
     // assert
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, expectedValue, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[1], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 2)));
 }
 
-TEST(sparse_vector_get, given_index_to_zero_value_should_return_zero_cf) {
+TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf_1) {
     // arrange
-    SparseVector<std::complex<float>> v(3);
-    constexpr std::complex<float> expectedValue = {0, 0};
+    SparseVector<std::complex<float>> v(5);
+    const std::complex<float>* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(2, {0, 0});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 0)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+}
+
+TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf_2) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
+    v.set(0, {1, 2});
+    const std::complex<float>* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(2, {0, 0});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 0)));
+}
+
+TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf_3) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
+    v.set(0, {1, 2});
+    v.set(2, {3, 4});
+    const std::complex<float>* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(1, {0, 0});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[1], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 0)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 2)));
+}
+
+TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf_4) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
+    v.set(3, {1, 2});
+    const std::complex<float>* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(2, {0, 0});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 3)));
+}
+
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_1) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
+    v.set(2, {1, 2});
+    const std::complex<float>* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
+    // act
+    v.set(2, {3, 4});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 2)));
+}
+
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_2) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
     v.set(1, {1, 2});
+    v.set(2, {3, 4});
+    const std::complex<float>* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
     // act
-    const std::complex<float> value = v.get(2);
+    v.set(2, {5, 6});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
     // assert
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, expectedValue, 0.001f)));
-}
-#pragma endregion
-#pragma region constructor
-TEST(sparse_vector_constructor, given_size_should_construct_f) {
-    // arrange
-    constexpr int expectedNnz = 0;
-    constexpr int expectedN = 3;
-    // act
-    const SparseVector<float> v(3);
-    // assert
-    const int vNnz = v.nnz();
-    const int vN = v.n;
-    ASSERT_TRUE((compare<int, int>(vNnz, expectedNnz)));
-    ASSERT_TRUE((compare<int, int>(vN, expectedN)));
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[1], {5, 6}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 2)));
 }
 
-TEST(sparse_vector_constructor, given_size_should_construct_cf) {
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_3) {
     // arrange
-    constexpr int expectedNnz = 0;
-    constexpr int expectedN = 3;
+    SparseVector<std::complex<float>> v(5);
+    v.set(1, {1, 2});
+    v.set(2, {3, 4});
+    v.set(3, {5, 6});
+    const std::complex<float>* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
     // act
-    const SparseVector<std::complex<float>> v(3);
+    v.set(2, {7, 8});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
     // assert
-    const int vNnz = v.nnz();
-    const int vN = v.n;
-    ASSERT_TRUE((compare<int, int>(vNnz, expectedNnz)));
-    ASSERT_TRUE((compare<int, int>(vN, expectedN)));
-}
-#pragma endregion
-#pragma region copy_constructor_from_same_type_sparse_vector
-TEST(sparse_vector_copy_constructor_from_same_type_sparse_vector, given_f_sparse_vector_should_copy_construct) {
-    // arrange
-    SparseVector<float> expected(3);
-    expected.set(0, 1);
-    expected.set(2, 2);
-    // act
-    const SparseVector<float> v = expected;
-    // assert
-    ASSERT_TRUE((compare<SparseVector<float>, SparseVector<float>>(v, expected, 0.001f)));
-}
-
-TEST(sparse_vector_copy_constructor_from_same_type_sparse_vector, given_cf_sparse_vector_should_copy_construct) {
-    // arrange
-    SparseVector<std::complex<float>> expected(3);
-    expected.set(0, {1, 2});
-    expected.set(2, {3, 4});
-    // act
-    const SparseVector<std::complex<float>> v = expected;
-    // assert
-    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<std::complex<float>>>(v, expected, 0.001f)));
-}
-#pragma endregion
-#pragma region copy_constructor_from_different_type_sparse_vector
-TEST(sparse_vector_copy_constructor_from_different_type_sparse_vector, given_f_sparse_vector_should_copy_construct) {
-    // arrange
-    SparseVector<float> expected(3);
-    expected.set(0, 1);
-    expected.set(2, 2);
-    // act
-    const SparseVector<std::complex<float>> v = expected;
-    // assert
-    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<float>>(v, expected, 0.001f)));
-}
-#pragma endregion
-#pragma region copy_constructor_from_same_type_sparse_vector_base
-TEST(sparse_vector_copy_constructor_from_same_type_sparse_vector_base, given_f_sparse_vector_base_should_copy_construct) {
-    // arrange
-    SparseVector<float> expected(3);
-    expected.set(0, 1);
-    expected.set(2, 2);
-    // act
-    const SparseVector<float> v = static_cast<const SparseVectorBase<float>&>(expected);
-    // assert
-    ASSERT_TRUE((compare<SparseVector<float>, SparseVector<float>>(v, expected, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 3)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[1], {7, 8}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[2], {5, 6}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 2)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[2], 3)));
 }
 
-TEST(sparse_vector_copy_constructor_from_same_type_sparse_vector_base, given_cf_sparse_vector_base_should_copy_construct) {
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_4) {
     // arrange
-    SparseVector<std::complex<float>> expected(3);
-    expected.set(0, {1, 2});
-    expected.set(2, {3, 4});
+    SparseVector<std::complex<float>> v(5);
+    v.set(2, {1, 2});
+    v.set(3, {3, 4});
+    const std::complex<float>* oldVValues = v.values();
+    const int* oldVIndexes = v.indexes();
     // act
-    const SparseVector<std::complex<float>> v = static_cast<const SparseVectorBase<std::complex<float>>&>(expected);
+    v.set(2, {5, 6});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
     // assert
-    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<std::complex<float>>>(v, expected, 0.001f)));
-}
-#pragma endregion
-#pragma region copy_constructor_from_different_type_sparse_vector_base
-TEST(sparse_vector_copy_constructor_from_different_type_sparse_vector_base, given_f_sparse_vector_base_should_copy_construct) {
-    // arrange
-    SparseVector<float> expected(3);
-    expected.set(0, 1);
-    expected.set(2, 2);
-    // act
-    const SparseVector<std::complex<float>> v = static_cast<const SparseVectorBase<float>&>(expected);
-    // assert
-    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<float>>(v, expected, 0.001f)));
-}
-#pragma endregion
-#pragma region move_constructor
-TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct_and_invalidate_other) {
-    // arrange
-    SparseVector<float> a(3);
-    a.set(0, 3);
-    a.set(2, 1);
-    SparseVector<float> expected(3);
-    expected.set(0, 3);
-    expected.set(2, 1);
-    // act
-    const SparseVector<float> v = std::move(a);
-    // assert
-    ASSERT_TRUE(a.values() == nullptr);
-    ASSERT_TRUE(a.indexes() == nullptr);
-    ASSERT_TRUE((compare<SparseVector<float>, SparseVector<float>>(v, expected, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE(vValues == oldVValues);
+    ASSERT_TRUE(vIndexes == oldVIndexes);
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {5, 6}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[1], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 3)));
 }
 
-TEST(sparse_vector_move_constructor, given_cf_sparse_vector_should_move_construct_and_invalidate_other) {
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_1) {
     // arrange
-    SparseVector<std::complex<float>> a(3);
-    a.set(0, {3, 4});
-    a.set(2, {1, 2});
-    SparseVector<std::complex<float>> expected(3);
-    expected.set(0, {3, 4});
-    expected.set(2, {1, 2});
+    SparseVector<std::complex<float>> v(5);
+    v.set(2, {1, 2});
     // act
-    const SparseVector<std::complex<float>> v = std::move(a);
+    v.set(2, {0, 0});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
     // assert
-    ASSERT_TRUE(a.values() == nullptr);
-    ASSERT_TRUE(a.indexes() == nullptr);
-    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<std::complex<float>>>(v, expected, 0.001f)));
-}
-#pragma endregion
-#pragma region copy_assignment_operator_from_same_type_sparse_vector
-TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_sparse_vector_should_copy_assign) {
-    // arrange
-    SparseVector<float> expected(3);
-    expected.set(0, 3);
-    expected.set(2, 1);
-    SparseVector<float> v(3);
-    // act
-    v = expected;
-    // assert
-    ASSERT_TRUE((compare<SparseVector<float>, SparseVector<float>>(v, expected, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 0)));
+    ASSERT_TRUE(vValues != nullptr);
+    ASSERT_TRUE(vIndexes != nullptr);
 }
 
-TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_cf_sparse_vector_should_copy_assign) {
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_2) {
     // arrange
-    SparseVector<std::complex<float>> expected(3);
-    expected.set(0, {3, 4});
-    expected.set(2, {1, 2});
-    SparseVector<std::complex<float>> v(3);
+    SparseVector<std::complex<float>> v(5);
+    v.set(1, {1, 2});
+    v.set(2, {3, 4});
     // act
-    v = expected;
+    v.set(2, {0, 0});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
     // assert
-    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<std::complex<float>>>(v, expected, 0.001f)));
-}
-#pragma endregion
-#pragma region copy_assignment_operator_from_different_type_sparse_vector
-TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_should_copy_assign) {
-    // arrange
-    SparseVector<float> expected(3);
-    expected.set(0, 3);
-    expected.set(2, 1);
-    SparseVector<std::complex<float>> v(3);
-    // act
-    v = expected;
-    // assert
-    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<float>>(v, expected, 0.001f)));
-}
-#pragma endregion
-#pragma region copy_assignment_operator_from_same_type_sparse_vector_base
-TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, given_f_sparse_vector_base_should_copy_assign) {
-    // arrange
-    SparseVector<float> expected(3);
-    expected.set(0, 3);
-    expected.set(2, 1);
-    SparseVector<float> v(3);
-    // act
-    v = static_cast<const SparseVector<float>&>(expected);
-    // assert
-    ASSERT_TRUE((compare<SparseVector<float>, SparseVector<float>>(v, expected, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 1)));
 }
 
-TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, given_cf_sparse_vector_base_should_copy_assign) {
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_3) {
     // arrange
-    SparseVector<std::complex<float>> expected(3);
-    expected.set(0, {3, 4});
-    expected.set(2, {1, 2});
-    SparseVector<std::complex<float>> v(3);
+    SparseVector<std::complex<float>> v(5);
+    v.set(1, {1, 2});
+    v.set(2, {3, 4});
+    v.set(3, {5, 6});
     // act
-    v = static_cast<const SparseVector<std::complex<float>>&>(expected);
+    v.set(2, {0, 0});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
     // assert
-    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<std::complex<float>>>(v, expected, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[1], {5, 6}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[1], 3)));
+}
+
+TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_4) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
+    v.set(2, {1, 2});
+    v.set(3, {3, 4});
+    // act
+    v.set(2, {0, 0});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 1)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(vIndexes[0], 3)));
 }
 #pragma endregion
-#pragma region copy_assignment_operator_from_different_type_sparse_vector_base
-TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector_base, given_f_sparse_vector_base_should_copy_assign) {
-    // arrange
-    SparseVector<float> expected(3);
-    expected.set(0, 3);
-    expected.set(2, 1);
-    SparseVector<std::complex<float>> v(3);
+#pragma region default_constructor
+TEST(sparse_vector_default_constructor, given_size_should_construct_f) {
     // act
-    v = static_cast<const SparseVector<float>&>(expected);;
+    SparseVector<float> a(5);
     // assert
-    ASSERT_TRUE((compare<SparseVector<std::complex<float>>, SparseVector<float>>(v, expected, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(a.n, 5)));
+    ASSERT_TRUE((compare<int, int>(a.nnz(), 0)));
+    ASSERT_TRUE(a.values() != nullptr);
+    ASSERT_TRUE(a.indexes() != nullptr);
 }
-#pragma endregion
-#pragma region move_assignment_operator
-TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_should_move_assign_and_invalidate_other) {
-    // arrange
-    SparseVector<float> a(3);
-    a.set(0, 3);
-    a.set(2, 1);
-    SparseVector<float> expected(3);
-    expected.set(0, 3);
-    expected.set(2, 1);
-    SparseVector<float> v(3);
+
+TEST(sparse_vector_default_constructor, given_size_should_construct_cf) {
     // act
-    v = std::move(a);
+    SparseVector<std::complex<float>> a(5);
     // assert
-    ASSERT_TRUE(a.values() == nullptr);
-    ASSERT_TRUE(a.indexes() == nullptr);
-    ASSERT_TRUE((compare<SparseVector<float>, SparseVector<float>>(v, expected, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(a.n, 5)));
+    ASSERT_TRUE((compare<int, int>(a.nnz(), 0)));
+    ASSERT_TRUE(a.values() != nullptr);
+    ASSERT_TRUE(a.indexes() != nullptr);
 }
-#pragma endregion
-#pragma region nnz
-TEST(sparse_vector_nnz, should_return_nnz) {
-    // arrange
-    SparseVector<float> v(3);
-    v.set(0, 2);
-    constexpr int expectedNnz = 1;
-    // act
-    const int nnz = v.nnz();
-    // assert
-    ASSERT_TRUE((compare<int, int>(nnz, expectedNnz)));
+
+TEST(sparse_vector_default_constructor, given_negative_size_should_throw) {
+    // act / assert
+    ASSERT_THROW(std::ignore = SparseVector<std::complex<float>>(-1), InvalidIndexException);
 }
-#pragma endregion
-#pragma region values
-TEST(sparse_vectors_values, should_return_values) {
-    // arrange
-    SparseVector<float> v(3);
-    v.set(1, 5);
-    // act
-    float* values = v.values();
-    // assert
-    ASSERT_TRUE((compare<float, float>(values[0], 5, 0.001f)));
-    values[0] = 6;
-    ASSERT_TRUE((compare<float, float>(values[0], 6, 0.001f)));
-}
-#pragma endregion
-#pragma region const_values
-TEST(sparse_vectors_const_values, should_return_const_values) {
-    // arrange
-    SparseVector<float> v(3);
-    v.set(1, 5);
-    // act
-    const float* values = v.values();
-    // assert
-    ASSERT_TRUE((compare<float, float>(values[0], 5, 0.001f)));
-}
-#pragma endregion
-#pragma region indexes
-TEST(sparse_vectors_indexes, should_return_indexes) {
-    // arrange
-    SparseVector<float> v(3);
-    v.set(1, 5);
-    // act
-    int* indexes = v.indexes();
-    // assert
-    ASSERT_TRUE((compare<float, float>(indexes[0], 1, 0.001f)));
-    indexes[0] = 3;
-    ASSERT_TRUE((compare<float, float>(indexes[0], 3, 0.001f)));
-}
-#pragma endregion
-#pragma region const_indexes
-TEST(sparse_vectors_const_indexes, should_return_const_indexes) {
-    // arrange
-    SparseVector<float> v(3);
-    v.set(1, 5);
-    // act
-    const int* indexes = v.indexes();
-    // assert
-    ASSERT_TRUE((compare<float, float>(indexes[0], 1, 0.001f)));
-}
-#pragma endregion
 #pragma endregion
