@@ -282,7 +282,7 @@ struct SparseVector : SparseVectorBase<T> {
     * @throws InvalidDimensionException If 'other' does not have same size as this.
     * @note 'other' must be of same size as this.
     */
-    SparseVector<T>& operator=(SparseVector<T>&& other) noexcept {
+    SparseVector<T>& operator=(SparseVector<T>&& other) {
         if (values_ != other.values_ && indexes_ != other.indexes_) {
             assert_same_size(*this, other);
 
@@ -393,8 +393,9 @@ struct SparseVector : SparseVectorBase<T> {
             throw InvalidIndexException("Cannot get from SparseVector with invalid index");
         }
         for (int j = 0; j < nnz_; j++) {
-            if (indexes_[j] == i)
+            if (indexes_[j] == i) {
                 return values_[j];
+            }
         }
 
         return 0;
