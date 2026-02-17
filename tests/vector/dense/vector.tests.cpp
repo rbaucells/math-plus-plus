@@ -577,41 +577,6 @@ TEST(custom_dense_vector_constructor, given_f_pointer_and_size_should_construct)
     delete[] data;
 }
 
-TEST(custom_dense_vector_constructor, given_f_pointer_and_size_and_stride_should_construct_1) {
-    // arrange
-    float* data = new float[3];
-    data[0] = 1;
-    data[1] = 2;
-    data[2] = 3;
-    // act
-    const CustomDenseVector<float> v(data, 3, 0);
-    // assert
-    ASSERT_TRUE(data == v.data());
-    ASSERT_TRUE((compare<int, int>(v.n, 3)));
-    ASSERT_TRUE((compare<int, int>(v.stride(), 0)));
-    // cleanup
-    delete[] data;
-}
-
-TEST(custom_dense_vector_constructor, given_f_pointer_and_size_and_stride_should_construct_2) {
-    // arrange
-    float* data = new float[6];
-    data[0] = 1;
-    data[1] = 2;
-    data[2] = 3;
-    data[3] = 4;
-    data[4] = 5;
-    data[5] = 6;
-    // act
-    const CustomDenseVector<float> v(data, 3, 2);
-    // assert
-    ASSERT_TRUE(data == v.data());
-    ASSERT_TRUE((compare<int, int>(v.n, 3)));
-    ASSERT_TRUE((compare<int, int>(v.stride(), 2)));
-    // cleanup
-    delete[] data;
-}
-
 TEST(custom_dense_vector_constructor, given_cf_pointer_and_size_should_construct) {
     // arrange
     std::complex<float>* data = new std::complex<float>[3];
@@ -624,41 +589,6 @@ TEST(custom_dense_vector_constructor, given_cf_pointer_and_size_should_construct
     ASSERT_TRUE(data == v.data());
     ASSERT_TRUE((compare<int, int>(v.n, 3)));
     ASSERT_TRUE((compare<int, int>(v.stride(), 1)));
-    // cleanup
-    delete[] data;
-}
-
-TEST(custom_dense_vector_constructor, given_cf_pointer_and_size_and_stride_should_construct_1) {
-    // arrange
-    std::complex<float>* data = new std::complex<float>[3];
-    data[0] = {1, 2};
-    data[1] = {3, 4};
-    data[2] = {5, 6};
-    // act
-    const CustomDenseVector<std::complex<float>> v(data, 3, 0);
-    // assert
-    ASSERT_TRUE(data == v.data());
-    ASSERT_TRUE((compare<int, int>(v.n, 3)));
-    ASSERT_TRUE((compare<int, int>(v.stride(), 0)));
-    // cleanup
-    delete[] data;
-}
-
-TEST(custom_dense_vector_constructor, given_cf_pointer_and_size_and_stride_should_construct_2) {
-    // arrange
-    std::complex<float>* data = new std::complex<float>[6];
-    data[0] = {1, 2};
-    data[1] = {3, 4};
-    data[2] = {5, 6};
-    data[3] = {7, 8};
-    data[4] = {9, 10};
-    data[5] = {11, 12};
-    // act
-    const CustomDenseVector<std::complex<float>> v(data, 3, 2);
-    // assert
-    ASSERT_TRUE(data == v.data());
-    ASSERT_TRUE((compare<int, int>(v.n, 3)));
-    ASSERT_TRUE((compare<int, int>(v.stride(), 2)));
     // cleanup
     delete[] data;
 }

@@ -557,13 +557,15 @@ struct CustomSparseVector : SparseVectorBase<T> {
      * @param values Reference to array containing non-zero elements of vector.
      * @param indexes Reference to array containing indexes of non-zero elements of vector.
      * @param nnz Reference to number of non-zero elements.
-     * @note Length of 'data' array must be greater than 'nnz - 1'.
      * @note The array 'values' and 'indexes' are pointing to may change.
      * @note Value of 'nnz' may change.
      */
     CustomSparseVector(const int n, T*& values, int*& indexes, int& nnz) : SparseVectorBase<T>(n), values_(values), indexes_(indexes), nnz_(nnz) {}
 
     void set(const int i, const T value) override {
+        if (i < 0 || i > this->n - 1) {
+            throw InvalidIndexException("Cannot set on CustomSparseVector with invalid index");
+        }
         int j;
 
         for (j = 0; j < nnz_; j++) {
@@ -571,7 +573,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
 
             if (curIndex == i) {
                 // there is currently a non-zero element there, and we are placing a zero so we remove a non-zero element;
-                if (compare(value, 0)) {
+                if (compare<T, int>(value, 0)) {
                     T* newValues = new T[nnz_ - 1];
 
                     // copy everything before us
@@ -614,7 +616,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
         }
 
         // there is currently a zero element, and we are setting another zero element
-        if (compare(value, 0)) {
+        if (compare<T, int>(value, 0)) {
             return;
         }
 
@@ -637,7 +639,9 @@ struct CustomSparseVector : SparseVectorBase<T> {
 
         memcpy(newIndices, indexes_, j * sizeof(int));
 
-        memcpy(&newIndices[j + 1], &values_[j], (nnz_ - j) * sizeof(int));
+        newIndices[j] = i;
+
+        memcpy(&newIndices[j + 1], &indexes_[j], (nnz_ - j) * sizeof(int));
 
         delete[] indexes_;
 
@@ -647,9 +651,14 @@ struct CustomSparseVector : SparseVectorBase<T> {
     }
 
     [[nodiscard]] T get(const int i) const override {
+        if (i < 0 || i > this->n - 1) {
+            throw InvalidIndexException("Cannot get from CustomSparseVector with invalid index");
+        }
+
         for (int j = 0; j < nnz_; j++) {
-            if (indexes_[j] == i)
+            if (indexes_[j] == i) {
                 return values_[j];
+            }
         }
 
         return 0;
