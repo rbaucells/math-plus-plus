@@ -567,6 +567,75 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_se
     ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vValues[0], {3, 4}, 0.001f)));
     ASSERT_TRUE((compare<int, int>(vIndexes[0], 3)));
 }
+
+TEST(sparse_vector_set, given_negative_index_should_throw) {
+    // arrange
+    SparseVector<float> v(5);
+    // act / assert
+    ASSERT_THROW(v.set(-1, 0), InvalidIndexException);
+}
+
+TEST(sparse_vector_set, given_big_index_should_throw) {
+    // arrange
+    SparseVector<float> v(5);
+    // act / assert
+    ASSERT_THROW(v.set(5, 0), InvalidIndexException);
+}
+#pragma endregion
+#pragma region get
+TEST(sparse_vector_get, given_index_should_return_value_f) {
+    // arrange
+    SparseVector<float> v(5);
+    v.set(2, 1);
+    // act
+    const float value = v.get(2);
+    // assert
+    ASSERT_TRUE((compare<float, float>(value, 1, 0.001f)));
+}
+
+TEST(sparse_vector_get, given_index_should_return_zero_f) {
+    // arrange
+    SparseVector<float> v(5);
+    v.set(2, 1);
+    // act
+    const float value = v.get(1);
+    // assert
+    ASSERT_TRUE((compare<float, float>(value, 0, 0.001f)));
+}
+
+TEST(sparse_vector_get, given_index_should_return_value_cf) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
+    v.set(2, {1, 2});
+    // act
+    const std::complex<float> value = v.get(2);
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, {1, 2}, 0.001f)));
+}
+
+TEST(sparse_vector_get, given_index_should_return_zero_cf) {
+    // arrange
+    SparseVector<std::complex<float>> v(5);
+    v.set(2, {1, 2});
+    // act
+    const std::complex<float> value = v.get(1);
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, {0, 0}, 0.001f)));
+}
+
+TEST(sparse_vector_get, given_negative_index_should_throw) {
+    // arrange
+    const SparseVector<float> v(5);
+    // act / assert
+    ASSERT_THROW(std::ignore = v.get(-1),InvalidIndexException);
+}
+
+TEST(sparse_vector_get, given_big_index_should_throw) {
+    // arrange
+    const SparseVector<float> v(5);
+    // act / assert
+    ASSERT_THROW(std::ignore = v.get(5),InvalidIndexException);
+}
 #pragma endregion
 #pragma region default_constructor
 TEST(sparse_vector_default_constructor, given_size_should_construct_f) {
@@ -593,4 +662,5 @@ TEST(sparse_vector_default_constructor, given_negative_size_should_throw) {
     // act / assert
     ASSERT_THROW(std::ignore = SparseVector<std::complex<float>>(-1), InvalidIndexException);
 }
+#pragma endregion
 #pragma endregion

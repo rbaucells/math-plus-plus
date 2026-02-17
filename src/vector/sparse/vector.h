@@ -301,6 +301,9 @@ struct SparseVector : SparseVectorBase<T> {
     }
 
     void set(const int i, const T value) override {
+        if (i < 0 || i > this->n - 1) {
+            throw InvalidIndexException("Cannot set on SparseVector with invalid index");
+        }
         int j;
 
         for (j = 0; j < nnz_; j++) {
@@ -386,6 +389,9 @@ struct SparseVector : SparseVectorBase<T> {
     }
 
     [[nodiscard]] T get(const int i) const override {
+        if (i < 0 || i > this->n - 1) {
+            throw InvalidIndexException("Cannot get from SparseVector with invalid index");
+        }
         for (int j = 0; j < nnz_; j++) {
             if (indexes_[j] == i)
                 return values_[j];
