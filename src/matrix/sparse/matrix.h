@@ -110,17 +110,27 @@ struct SparseMatrix : SparseMatrixBase<T> {
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseMatrix(const SparseMatrix<OTHER_T>& other) : SparseMatrixBase<T>(other.rows, other.columns) {
         colOffsets_ = new int[this->columns + 1];
-        memcpy(colOffsets_, other.colOffsets_, (this->columns + 1) * sizeof(int));
 
+        const int* otherColOffsets = other.colOffsets();
 
-        nnz_ = other.nnz_;
+        memcpy(colOffsets_, otherColOffsets, (this->columns + 1) * sizeof(int));
+
+        const int otherNnz = other.nnz();
+
+        nnz_ = otherNnz;
 
         rowIndices_ = new int[nnz_];
-        memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(int));
+
+        const int* otherRowIndices = other.rowIndices();
+
+        memcpy(rowIndices_, otherRowIndices, nnz_ * sizeof(int));
 
         values_ = new T[nnz_];
+
+        const OTHER_T* otherValues = other.values();
+
         for (int i = 0; i < nnz_; i++) {
-            values_[i] = other.values_[i];
+            values_[i] = otherValues[i];
         }
     }
 
@@ -248,9 +258,16 @@ struct SparseMatrix : SparseMatrixBase<T> {
     SparseMatrix<T>& operator=(const SparseMatrix<OTHER_T>& other) {
         assert_same_dimensions(*this, other, "copy assign");
 
-        if (colOffsets_ != other.colOffsets_ && rowIndices_ != other.rowIndices_) {
-            if (nnz_ != other.nnz_) {
-                nnz_ = other.nnz_;
+        const int* otherColOffsets = other.colOffsets();
+        const int* otherRowIndices = other.rowIndices();
+
+        const OTHER_T* otherValues = other.values();
+
+        const int otherNnz = other.nnz();
+
+        if (colOffsets_ != otherColOffsets && rowIndices_ != otherRowIndices) {
+            if (nnz_ != otherNnz) {
+                nnz_ = otherNnz;
 
                 delete[] values_;
                 values_ = new T[nnz_];
@@ -260,11 +277,11 @@ struct SparseMatrix : SparseMatrixBase<T> {
             }
 
             for (int i = 0; i < nnz_; i++) {
-                values_[i] = other.values_[i];
+                values_[i] = otherValues[i];
             }
 
-            memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(int));
-            memcpy(colOffsets_, other.colOffsets_, (this->columns + 1) * sizeof(int));
+            memcpy(rowIndices_, otherRowIndices, nnz_ * sizeof(int));
+            memcpy(colOffsets_, otherColOffsets, (this->columns + 1) * sizeof(int));
         }
 
         return *this;
