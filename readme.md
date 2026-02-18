@@ -7,6 +7,10 @@
 - Build and install using CMake.
   - To only build library and not tests, specify '-DMATHPP_BUILD_TESTS=OFF'.
 - #include "mathpp/math.h"
+- Dependencies:
+  - The math library itself has no dependencies.
+  - To build tests, CMake will download GoogleTest.
+  - To build python bindings, CMake will download PYBIND11.
 
 # What is included
 - 4 main types: 
