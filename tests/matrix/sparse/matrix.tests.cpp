@@ -2322,4 +2322,3 @@ TEST(custom_sparse_matrix_nnz, should_return_zero_when_empty) {
 }
 #pragma endregion
 #pragma endregion
-#pragma endregion

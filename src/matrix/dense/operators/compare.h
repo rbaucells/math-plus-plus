@@ -19,3 +19,26 @@ template<dense_matrix_base T, dense_matrix_base... OTHERS>
 
     return true;
 }
+
+template<typename... OTHERS>
+struct DenseMatrixCompareExpr : Expression<bool, OTHERS...> {
+    using Expression<bool, OTHERS...>::Expression;
+
+    bool evaluate() const override {
+        return std::apply([](const auto&... args) {
+            return compare<OTHERS...>(args...);
+        }, this->others);
+    }
+
+    template<typename OTHER>
+    DenseMatrixCompareExpr<OTHER, OTHERS...> operator+(const OTHER& other) const {
+        return std::apply([&](const auto&... args) {
+            return DenseMatrixSumExpr<OTHER, OTHERS...>(other, args...);
+        }, this->others);
+    }
+};
+
+template<dense_matrix_base T, dense_matrix_base U>
+DenseMatrixCompareExpr<T, U> operator==(const T& a, const U& b) {
+    return DenseMatrixCompareExpr<T, U>(a, b);
+}

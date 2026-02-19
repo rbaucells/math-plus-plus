@@ -8,34 +8,30 @@
 #include "../../../expression.h"
 #include "../matrix.h"
 
-namespace Mathpp {
-    /**
-     * @brief Adds together all the matrices supplied.
-     * @tparam T Matrix type of 'a'.
-     * @tparam OTHERS The types of the other matrices being added.
-     * @param a The first matrix param.
-     * @param others All the other matrices to be added to 'a'.
-     * @return A DenseMatrix made from adding each element of each matrix together.
-     */
-    template<dense_matrix_base T, dense_matrix_base... OTHERS>
-    DenseMatrix<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>> add(const T& a, const OTHERS&... others) {
-        assert_same_dimensions(a, others..., "add");
+/**
+ * @brief Adds together all the matrices supplied.
+ * @tparam T Matrix type of 'a'.
+ * @tparam OTHERS The types of the other matrices being added.
+ * @param a The first matrix param.
+ * @param others All the other matrices to be added to 'a'.
+ * @return A DenseMatrix made from adding each element of each matrix together.
+ */
+template<dense_matrix_base T, dense_matrix_base... OTHERS>
+DenseMatrix<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>> add(const T& a, const OTHERS&... others) {
+    assert_same_dimensions(a, others..., "add");
 
-        const int columns = a.columns;
-        const int rows = a.rows;
+    const int columns = a.columns;
+    const int rows = a.rows;
 
-        DenseMatrix<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>> result(a.columns, a.rows);
+    DenseMatrix<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>> result(a.columns, a.rows);
 
-        std::cout << "looping" << std::endl;
-
-        for (int c = 0; c < columns; c++) {
-            for (int r = 0; r < rows; r++) {
-                result[c, r] = (a[c, r] + ... + others[c, r]);
-            }
+    for (int c = 0; c < columns; c++) {
+        for (int r = 0; r < rows; r++) {
+            result[c, r] = (a[c, r] + ... + others[c, r]);
         }
-
-        return result;
     }
+
+    return result;
 }
 
 template<typename... OTHERS>
@@ -44,7 +40,7 @@ struct DenseMatrixSumExpr : Expression<DenseMatrix<std::common_type_t<typename O
 
     DenseMatrix<std::common_type_t<typename OTHERS::ValueType...>> evaluate() const override {
         return std::apply([](const auto&... args) {
-            return Mathpp::add(args...);
+            return add(args...);
         }, this->others);
     }
 
