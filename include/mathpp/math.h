@@ -17,3 +17,4 @@
 #include "../../src/vector/dense/operators/compare.h"
 #include "../../src/matrix/dense/operators/compare.h"
 #include "../../src/vector/sparse/operators/compare.h"
+#include "../../src/matrix/sparse/operators/compare.h"

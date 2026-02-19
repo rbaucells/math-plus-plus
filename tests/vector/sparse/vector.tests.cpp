@@ -1161,18 +1161,10 @@ TEST(sparse_vector_view_set, given_negative_index_should_throw) {
     ASSERT_THROW(v.set(-1, 1), InvalidIndexException);
 }
 
-TEST(sparse_vector_view_set, given_negative_index_should_throw_1) {
+TEST(sparse_vector_view_set, given_big_index_should_throw_1) {
     // arrange
     SparseVector<float> a(5);
     SparseVectorView<float> v(a, 3, 2);
-    // act
-    ASSERT_THROW(v.set(3, 1), InvalidIndexException);
-}
-
-TEST(sparse_vector_view_set, given_negative_index_should_throw_2) {
-    // arrange
-    SparseVector<float> a(5);
-    SparseVectorView<float> v(a, 3, 1);
     // act
     ASSERT_THROW(v.set(3, 1), InvalidIndexException);
 }

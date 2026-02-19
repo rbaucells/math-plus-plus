@@ -1400,3 +1400,242 @@ TEST(sparse_matrix_move_assignment_operator, given_sparse_matrix_of_different_si
 }
 #pragma endregion
 #pragma endregion
+#pragma region sparse_matrix_view
+#pragma region constructor
+TEST(sparse_matrix_view_constructor, given_f_sparse_matrix_should_construct) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    a.set(2, 2, 1);
+    a.set(3, 2, 2);
+    a.set(0, 0, 3);
+    SparseMatrix<float> expected(3, 3);
+    expected.set(1, 1, 1);
+    expected.set(2, 1, 2);
+    // act
+    const SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
+    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
+    ASSERT_TRUE((compare<SparseMatrixView<float>, SparseMatrix<float>>(v, expected, 0.001f)));
+}
+
+TEST(sparse_matrix_view_constructor, given_cf_sparse_matrix_should_construct) {
+    // arrange
+    SparseMatrix<std::complex<float>> a(5, 5);
+    a.set(2, 2, {1, 2});
+    a.set(3, 2, {3, 4});
+    a.set(0, 0, {5, 6});
+    SparseMatrix<std::complex<float>> expected(3, 3);
+    expected.set(1, 1, {1, 2});
+    expected.set(2, 1, {3, 4});
+    // act
+    const SparseMatrixView<std::complex<float>> v(a, 3, 3, 1, 1);
+    // assert
+    ASSERT_TRUE((compare<int, int>(v.nnz(), 2)));
+    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
+    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
+    ASSERT_TRUE((compare<SparseMatrixView<std::complex<float>>, SparseMatrix<std::complex<float>>>(v, expected, 0.001f)));
+}
+#pragma endregion
+#pragma region copy_constructor
+TEST(sparse_matrix_view_copy_constructor, given_f_sparse_matrix_view_should_copy_construct) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    a.set(2, 2, 1);
+    a.set(3, 2, 2);
+    a.set(0, 0, 3);
+    const SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act
+    const SparseMatrixView<float> newView = v;
+    // assert
+    ASSERT_TRUE((compare<int, int>(newView.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(newView.columns, 3)));
+    ASSERT_TRUE((compare<int, int>(newView.rowOffset(), 1)));
+    ASSERT_TRUE((compare<int, int>(newView.colOffset(), 1)));
+    ASSERT_TRUE(&v.owner() == &newView.owner());
+    ASSERT_TRUE((compare<SparseMatrixView<float>, SparseMatrixView<float>>(v, newView, 0.001f)));
+}
+
+TEST(sparse_matrix_view_copy_constructor, given_cf_sparse_matrix_view_should_copy_construct) {
+    // arrange
+    SparseMatrix<std::complex<float>> a(5, 5);
+    a.set(2, 2, {1, 2});
+    a.set(3, 2, {3, 4});
+    a.set(0, 0, {5, 6});
+    const SparseMatrixView<std::complex<float>> v(a, 3, 3, 1, 1);
+    // act
+    const SparseMatrixView<std::complex<float>> newView = v;
+    // assert
+    ASSERT_TRUE((compare<int, int>(newView.rows, 3)));
+    ASSERT_TRUE((compare<int, int>(newView.columns, 3)));
+    ASSERT_TRUE((compare<int, int>(newView.rowOffset(), 1)));
+    ASSERT_TRUE((compare<int, int>(newView.colOffset(), 1)));
+    ASSERT_TRUE(&v.owner() == &newView.owner());
+    ASSERT_TRUE((compare<SparseMatrixView<std::complex<float>>, SparseMatrixView<std::complex<float>>>(v, newView, 0.001f)));
+}
+#pragma endregion
+#pragma region set
+TEST(sparse_matrix_view_set, given_index_should_throw) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act / assert
+    ASSERT_THROW(v.set(0, 0, 1), InvalidOperationException);
+}
+
+TEST(sparse_matrix_view_set, given_negative_column_index_should_throw) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act / assert
+    ASSERT_THROW(v.set(-1, 0, 1), InvalidIndexException);
+}
+
+TEST(sparse_matrix_view_set, given_negative_row_index_should_throw) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act / assert
+    ASSERT_THROW(v.set(0, -1, 1), InvalidIndexException);
+}
+
+TEST(sparse_matrix_view_set, given_big_column_index_should_throw_1) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 2, 2);
+    // act / assert
+    ASSERT_THROW(v.set(3, 0, 1), InvalidIndexException);
+}
+
+TEST(sparse_matrix_view_set, given_big_row_index_should_throw_1) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 2, 2);
+    // act / assert
+    ASSERT_THROW(v.set(0, 3, 1), InvalidIndexException);
+}
+
+TEST(sparse_matrix_view_set, given_big_column_index_should_throw_2) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act / assert
+    ASSERT_THROW(v.set(3, 0, 1), InvalidIndexException);
+}
+
+TEST(sparse_matrix_view_set, given_big_row_index_should_throw_2) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act / assert
+    ASSERT_THROW(v.set(0, 3, 1), InvalidIndexException);
+}
+#pragma endregion
+#pragma region get
+TEST(sparse_matrix_view_get, given_index_should_return_value_f) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    a.set(2, 2, 1);
+    const SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act
+    const float value = v.get(1, 1);
+    // assert
+    ASSERT_TRUE((compare<float, float>(value, 1, 0.001f)));
+}
+
+TEST(sparse_matrix_view_get, given_index_should_return_value_cf) {
+    // arrange
+    SparseMatrix<std::complex<float>> a(5, 5);
+    a.set(2, 2, {1, 2});
+    const SparseMatrixView<std::complex<float>> v(a, 3, 3, 1, 1);
+    // act
+    const std::complex<float> value = v.get(1, 1);
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, {1, 2}, 0.001f)));
+}
+
+TEST(sparse_matrix_view_get, given_negative_column_index_should_throw) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v.get(-1, 0), InvalidIndexException);
+}
+
+TEST(sparse_matrix_view_get, given_negative_row_index_should_throw) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v.get(0, -1), InvalidIndexException);
+}
+
+TEST(sparse_matrix_view_get, given_big_column_index_should_throw_1) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 2, 2);
+    // act / assert
+    ASSERT_THROW(std::ignore = v.get(3, 0), InvalidIndexException);
+}
+
+TEST(sparse_matrix_view_get, given_big_row_index_should_throw_1) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 2, 2);
+    // act / assert
+    ASSERT_THROW(std::ignore = v.get(0, 3), InvalidIndexException);
+}
+
+TEST(sparse_matrix_view_get, given_big_column_index_should_throw_2) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v.get(3, 0), InvalidIndexException);
+}
+
+TEST(sparse_matrix_view_get, given_big_row_index_should_throw_2) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act / assert
+    ASSERT_THROW(std::ignore = v.get(0, 3), InvalidIndexException);
+}
+#pragma endregion
+#pragma region col_offset
+TEST(sparse_matrix_view_col_offset, should_return_col_offset) {
+    // arrange
+    const SparseMatrix<float> a(5, 5);
+    const SparseMatrixView<float> v(a, 3, 3, 1, 2);
+    constexpr int expected = 1;
+    // act
+    const int colOffset = v.colOffset();
+    // assert
+    ASSERT_TRUE((compare<int, int>(colOffset, expected)));
+}
+#pragma endregion
+#pragma region row_offset
+TEST(sparse_matrix_view_row_offset, should_return_row_offset) {
+    // arrange
+    const SparseMatrix<float> a(5, 5);
+    const SparseMatrixView<float> v(a, 3, 3, 1, 2);
+    constexpr int expected = 2;
+    // act
+    const int rowOffset = v.rowOffset();
+    // assert
+    ASSERT_TRUE((compare<int, int>(rowOffset, expected)));
+}
+#pragma endregion
+#pragma region owner
+TEST(sparse_matrix_view_owner, should_return_owner) {
+    // arrange
+    const SparseMatrix<float> a(5, 5);
+    const SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    // act
+    const SparseMatrix<float>& owner = v.owner();
+    // assert
+    ASSERT_TRUE(&owner == &a);
+}
+#pragma endregion
+#pragma endregion

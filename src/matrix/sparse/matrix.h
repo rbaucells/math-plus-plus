@@ -601,11 +601,18 @@ struct SparseMatrixView : SparseMatrixBase<T> {
     * @brief Trying to modify a SparseMatrix through a view is invalid.
     * @throws InvalidOperationException You cannot modify owner through a view.
     */
-    void set(const int, const int, const T) override {
+    void set(const int c, const int r, const T) override {
+        if (c < 0 || c > this->columns - 1 || r < 0 || r > this->rows - 1) {
+            throw InvalidIndexException("Cannot set on view with invalid index");
+        }
         throw InvalidOperationException("Cannot modify owner through view");
     }
 
     [[nodiscard]] T get(const int c, const int r) const override {
+        if (c < 0 || c > this->columns - 1 || r < 0 || r > this->rows - 1) {
+            throw InvalidIndexException("Cannot get on view with invalid index");
+        }
+
         return owner_.get(c + colOffset_, r + rowOffset_);
     }
 
@@ -785,8 +792,9 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         const int end = colOffsets_[c + 1];
 
         for (int i = start; i < end; i++) {
-            if (rowIndices_[i] == r)
+            if (rowIndices_[i] == r) {
                 return values_[i];
+            }
         }
 
         return 0;
