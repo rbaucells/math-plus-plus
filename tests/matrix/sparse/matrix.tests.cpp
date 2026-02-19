@@ -746,4 +746,73 @@ TEST(sparse_matrix_set, given_big_column_index_should_throw) {
     ASSERT_THROW(m.set(2, 5, 1), InvalidIndexException);
 }
 #pragma endregion
+#pragma region get
+TEST(sparse_matrix_get, given_index_should_return_value_f) {
+    // arrange
+    SparseMatrix<float> m(5, 5);
+    m.set(2, 3, 1);
+    // act
+    const float value = m.get(2, 3);
+    // assert
+    ASSERT_TRUE((compare<float, float>(value, 1, 0.001f)));
+}
+
+TEST(sparse_matrix_get, given_index_should_return_zero_f) {
+    // arrange
+    SparseMatrix<float> m(5, 5);
+    m.set(2, 3, 1);
+    // act
+    const float value = m.get(1, 2);
+    // assert
+    ASSERT_TRUE((compare<float, float>(value, 0, 0.001f)));
+}
+
+TEST(sparse_matrix_get, given_index_should_return_value_cf) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(2, 3, {1, 2});
+    // act
+    const std::complex<float> value = m.get(2, 3);
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, {1, 2}, 0.001f)));
+}
+
+TEST(sparse_matrix_get, given_index_should_return_zero_cf) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(2, 3, {1, 2});
+    // act
+    const std::complex<float> value = m.get(1, 2);
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, {0, 0}, 0.001f)));
+}
+
+TEST(sparse_matrix_get, given_negative_row_index_should_throw) {
+    // arrange
+    const SparseMatrix<float> m(5, 5);
+    // act / assert
+    ASSERT_THROW(std::ignore = m.get(-1, 2), InvalidIndexException);
+}
+
+TEST(sparse_matrix_get, given_negative_column_index_should_throw) {
+    // arrange
+    const SparseMatrix<float> m(5, 5);
+    // act / assert
+    ASSERT_THROW(std::ignore = m.get(2, -1), InvalidIndexException);
+}
+
+TEST(sparse_matrix_get, given_big_row_index_should_throw) {
+    // arrange
+    const SparseMatrix<float> m(5, 5);
+    // act / assert
+    ASSERT_THROW(std::ignore = m.get(5, 2), InvalidIndexException);
+}
+
+TEST(sparse_matrix_get, given_big_column_index_should_throw) {
+    // arrange
+    const SparseMatrix<float> m(5, 5);
+    // act / assert
+    ASSERT_THROW(std::ignore = m.get(2, 5), InvalidIndexException);
+}
+#pragma endregion
 #pragma endregion

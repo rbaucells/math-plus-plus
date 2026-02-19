@@ -479,12 +479,17 @@ struct SparseMatrix : SparseMatrixBase<T> {
     }
 
     [[nodiscard]] T get(const int c, const int r) const override {
+        if (c < 0 || c > this->columns - 1 || r < 0 || r > this->rows - 1) {
+            throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
+        }
+
         const int start = colOffsets_[c];
         const int end = colOffsets_[c + 1];
 
         for (int i = start; i < end; i++) {
-            if (rowIndices_[i] == r)
+            if (rowIndices_[i] == r) {
                 return values_[i];
+            }
         }
 
         return 0;
