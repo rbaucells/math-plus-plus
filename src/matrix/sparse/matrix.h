@@ -700,6 +700,9 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     CustomSparseMatrix(const int rows, const int columns, int*& colOffsets, int*& rowIndices, T*& values, int& nnz) : SparseMatrixBase<T>(rows, columns), colOffsets_(colOffsets), rowIndices_(rowIndices), values_(values), nnz_(nnz) {}
 
     void set(const int c, const int r, const T value) override {
+        if (c < 0 || c > this->columns - 1 || r < 0 || r > this->rows - 1) {
+            throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
+        }
         const int start = colOffsets_[c];
         const int end = colOffsets_[c + 1];
 
@@ -708,12 +711,12 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
             const int curIndex = rowIndices_[i];
 
             if (curIndex == r) {
-                if (compare(value, 0)) {
+                if (compare<T, int>(value, 0)) {
                     int* newRowIndices = new int[nnz_ - 1];
 
-                    memcpy(newRowIndices, rowIndices_, i * sizeof(T));
+                    memcpy(newRowIndices, rowIndices_, i * sizeof(int));
 
-                    memcpy(&newRowIndices[i], &rowIndices_[i + 1], (nnz_ - i - 1) * sizeof(T));
+                    memcpy(&newRowIndices[i], &rowIndices_[i + 1], (nnz_ - i - 1) * sizeof(int));
 
                     delete[] rowIndices_;
 
@@ -731,7 +734,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
                     values_ = newValues;
 
                     // fix column offsets
-                    for (int j = c; j < this->columns + 1; j++) {
+                    for (int j = c + 1; j < this->columns + 1; j++) {
                         colOffsets_[j]--;
                     }
 
@@ -750,17 +753,17 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
             }
         }
 
-        if (compare(value, 0)) {
+        if (compare<T, int>(value, 0)) {
             return;
         }
 
         int* newRowIndices = new int[nnz_ + 1];
 
-        memcpy(newRowIndices, rowIndices_, i * sizeof(T));
+        memcpy(newRowIndices, rowIndices_, i * sizeof(int));
 
         newRowIndices[i] = r;
 
-        memcpy(&newRowIndices[i + 1], &rowIndices_[i], (nnz_ - i) * sizeof(T));
+        memcpy(&newRowIndices[i + 1], &rowIndices_[i], (nnz_ - i) * sizeof(int));
 
         delete[] rowIndices_;
 
@@ -780,7 +783,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         values_ = newValues;
 
         // fix column offsets
-        for (int j = c; j < this->columns + 1; j++) {
+        for (int j = c + 1; j < this->columns + 1; j++) {
             colOffsets_[j]++;
         }
 
@@ -788,6 +791,10 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     }
 
     [[nodiscard]] T get(const int c, const int r) const override {
+        if (c < 0 || c > this->columns - 1 || r < 0 || r > this->rows - 1) {
+            throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
+        }
+
         const int start = colOffsets_[c];
         const int end = colOffsets_[c + 1];
 

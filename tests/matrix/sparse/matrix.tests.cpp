@@ -1639,3 +1639,687 @@ TEST(sparse_matrix_view_owner, should_return_owner) {
 }
 #pragma endregion
 #pragma endregion
+#pragma region custom_sparse_matrix
+#pragma region constructor
+TEST(custom_sparse_matrix_constructor, given_f_pointers_and_size_should_construct) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 1;
+    colOffsets[4] = 1;
+    colOffsets[5] = 1;
+    int* rowIndices = new int[1];
+    rowIndices[0] = 2;
+    float* values = new float[1];
+    values[0] = 3;
+    int nnz = 1;
+    // act
+    const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.rows, 5)));
+    ASSERT_TRUE((compare<int, int>(m.columns, 5)));
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE(colOffsets == m.colOffsets());
+    ASSERT_TRUE(rowIndices == m.rowIndices());
+    ASSERT_TRUE(values == m.values());
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_constructor, given_cf_pointers_and_size_should_construct) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 1;
+    colOffsets[4] = 1;
+    colOffsets[5] = 1;
+    int* rowIndices = new int[1];
+    rowIndices[0] = 2;
+    std::complex<float>* values = new std::complex<float>[1];
+    values[0] = {1, 2};
+    int nnz = 1;
+    // act
+    const CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.rows, 5)));
+    ASSERT_TRUE((compare<int, int>(m.columns, 5)));
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE(colOffsets == m.colOffsets());
+    ASSERT_TRUE(rowIndices == m.rowIndices());
+    ASSERT_TRUE(values == m.values());
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+#pragma endregion
+#pragma region set
+TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_1) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    float* values = new float[0];
+    int nnz = 0;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    m.set(2, 2, 3);
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE((compare<int, int>(m.rows, 5)));
+    ASSERT_TRUE((compare<int, int>(m.columns, 5)));
+    ASSERT_TRUE((compare<float, float>(values[0], 3, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(rowIndices[0], 2)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[2], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[3], 1)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[4], 1)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[5], 1)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_2) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 1;
+    colOffsets[4] = 1;
+    colOffsets[5] = 1;
+    int* rowIndices = new int[1];
+    rowIndices[0] = 1;
+    float* values = new float[1];
+    values[0] = 4;
+    int nnz = 1;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    m.set(2, 2, 3);
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 2)));
+    ASSERT_TRUE((compare<int, int>(m.rows, 5)));
+    ASSERT_TRUE((compare<int, int>(m.columns, 5)));
+    ASSERT_TRUE((compare<float, float>(values[0], 4, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(values[1], 3, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(rowIndices[0], 1)));
+    ASSERT_TRUE((compare<int, int>(rowIndices[1], 2)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[2], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[3], 2)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[4], 2)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[5], 2)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_3) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 1;
+    colOffsets[3] = 2;
+    colOffsets[4] = 2;
+    colOffsets[5] = 2;
+    int* rowIndices = new int[2];
+    rowIndices[0] = 2;
+    rowIndices[1] = 1;
+    float* values = new float[2];
+    values[0] = 4;
+    values[1] = 5;
+    int nnz = 2;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    m.set(2, 2, 3);
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 3)));
+    ASSERT_TRUE((compare<int, int>(m.rows, 5)));
+    ASSERT_TRUE((compare<int, int>(m.columns, 5)));
+    ASSERT_TRUE((compare<float, float>(values[0], 4, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(values[1], 5, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(values[2], 3, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(rowIndices[0], 2)));
+    ASSERT_TRUE((compare<int, int>(rowIndices[1], 1)));
+    ASSERT_TRUE((compare<int, int>(rowIndices[2], 2)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[2], 1)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[3], 3)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[4], 3)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[5], 3)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_4) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 1;
+    colOffsets[3] = 2;
+    colOffsets[4] = 2;
+    colOffsets[5] = 2;
+    int* rowIndices = new int[2];
+    rowIndices[0] = 2;
+    rowIndices[1] = 2;
+    float* values = new float[2];
+    values[0] = 4;
+    values[1] = 3;
+    int nnz = 2;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    m.set(2, 2, 5);
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 2)));
+    ASSERT_TRUE((compare<int, int>(m.rows, 5)));
+    ASSERT_TRUE((compare<int, int>(m.columns, 5)));
+    ASSERT_TRUE((compare<float, float>(values[0], 4, 0.001f)));
+    ASSERT_TRUE((compare<float, float>(values[1], 5, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(rowIndices[0], 2)));
+    ASSERT_TRUE((compare<int, int>(rowIndices[1], 2)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[2], 1)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[3], 2)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[4], 2)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[5], 2)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_not_add_f_1) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    float* values = new float[0];
+    int nnz = 0;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    m.set(2, 2, 0);
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 0)));
+    ASSERT_TRUE((compare<int, int>(m.rows, 5)));
+    ASSERT_TRUE((compare<int, int>(m.columns, 5)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_not_add_f_2) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 1;
+    colOffsets[4] = 1;
+    colOffsets[5] = 1;
+    int* rowIndices = new int[1];
+    rowIndices[0] = 1;
+    float* values = new float[1];
+    values[0] = 4;
+    int nnz = 1;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    m.set(2, 2, 0);
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE((compare<int, int>(m.rows, 5)));
+    ASSERT_TRUE((compare<int, int>(m.columns, 5)));
+    ASSERT_TRUE((compare<float, float>(values[0], 4, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(rowIndices[0], 1)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[2], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[3], 1)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[4], 1)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[5], 1)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_remove_f_1) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 1;
+    colOffsets[4] = 1;
+    colOffsets[5] = 1;
+    int* rowIndices = new int[1];
+    rowIndices[0] = 2;
+    float* values = new float[1];
+    values[0] = 3;
+    int nnz = 1;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    m.set(2, 2, 0);
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 0)));
+    ASSERT_TRUE((compare<int, int>(m.rows, 5)));
+    ASSERT_TRUE((compare<int, int>(m.columns, 5)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_remove_f_2) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 2;
+    colOffsets[4] = 2;
+    colOffsets[5] = 2;
+    int* rowIndices = new int[2];
+    rowIndices[0] = 1;
+    rowIndices[1] = 2;
+    float* values = new float[2];
+    values[0] = 4;
+    values[1] = 3;
+    int nnz = 2;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    m.set(2, 2, 0);
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE((compare<int, int>(m.rows, 5)));
+    ASSERT_TRUE((compare<int, int>(m.columns, 5)));
+    ASSERT_TRUE((compare<float, float>(values[0], 4, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(rowIndices[0], 1)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[2], 0)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[3], 1)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[4], 1)));
+    ASSERT_TRUE((compare<int, int>(colOffsets[5], 1)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_1) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    std::complex<float>* values = new std::complex<float>[0];
+    int nnz = 0;
+    CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    m.set(2, 2, {1, 2});
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE((compare<int, int>(m.rows, 5)));
+    ASSERT_TRUE((compare<int, int>(m.columns, 5)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(values[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(rowIndices[0], 2)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_negative_row_index_should_throw) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    float* values = new float[0];
+    int nnz = 0;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act / assert
+    ASSERT_THROW(m.set(-1, 2, 1), InvalidIndexException);
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_negative_column_index_should_throw) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    float* values = new float[0];
+    int nnz = 0;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act / assert
+    ASSERT_THROW(m.set(2, -1, 1), InvalidIndexException);
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_big_row_index_should_throw) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    float* values = new float[0];
+    int nnz = 0;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act / assert
+    ASSERT_THROW(m.set(5, 2, 1), InvalidIndexException);
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_set, given_big_column_index_should_throw) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    float* values = new float[0];
+    int nnz = 0;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act / assert
+    ASSERT_THROW(m.set(2, 5, 1), InvalidIndexException);
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+#pragma endregion
+#pragma region get
+TEST(custom_sparse_matrix_get, given_index_should_return_value_f) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 1;
+    colOffsets[4] = 1;
+    colOffsets[5] = 1;
+    int* rowIndices = new int[1];
+    rowIndices[0] = 3;
+    float* values = new float[1];
+    values[0] = 1;
+    int nnz = 1;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    const float value = m.get(2, 3);
+    // assert
+    ASSERT_TRUE((compare<float, float>(value, 1, 0.001f)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_get, given_index_should_return_zero_f) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 1;
+    colOffsets[4] = 1;
+    colOffsets[5] = 1;
+    int* rowIndices = new int[1];
+    rowIndices[0] = 3;
+    float* values = new float[1];
+    values[0] = 1;
+    int nnz = 1;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    const float value = m.get(1, 2);
+    // assert
+    ASSERT_TRUE((compare<float, float>(value, 0, 0.001f)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_get, given_index_should_return_value_cf) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 1;
+    colOffsets[4] = 1;
+    colOffsets[5] = 1;
+    int* rowIndices = new int[1];
+    rowIndices[0] = 3;
+    std::complex<float>* values = new std::complex<float>[1];
+    values[0] = {1, 2};
+    int nnz = 1;
+    CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    const std::complex<float> value = m.get(2, 3);
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, {1, 2}, 0.001f)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_get, given_index_should_return_zero_cf) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 1;
+    colOffsets[4] = 1;
+    colOffsets[5] = 1;
+    int* rowIndices = new int[1];
+    rowIndices[0] = 3;
+    std::complex<float>* values = new std::complex<float>[1];
+    values[0] = {1, 2};
+    int nnz = 1;
+    CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    const std::complex<float> value = m.get(1, 2);
+    // assert
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(value, {0, 0}, 0.001f)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_get, given_negative_row_index_should_throw) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    float* values = new float[0];
+    int nnz = 0;
+    const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act / assert
+    ASSERT_THROW(std::ignore = m.get(-1, 2), InvalidIndexException);
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_get, given_negative_column_index_should_throw) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    float* values = new float[0];
+    int nnz = 0;
+    const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act / assert
+    ASSERT_THROW(std::ignore = m.get(2, -1), InvalidIndexException);
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_get, given_big_row_index_should_throw) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    float* values = new float[0];
+    int nnz = 0;
+    const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act / assert
+    ASSERT_THROW(std::ignore = m.get(5, 2), InvalidIndexException);
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_get, given_big_column_index_should_throw) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    float* values = new float[0];
+    int nnz = 0;
+    const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act / assert
+    ASSERT_THROW(std::ignore = m.get(2, 5), InvalidIndexException);
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+#pragma endregion
+#pragma region nnz
+TEST(custom_sparse_matrix_nnz, should_return_nnz) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 1;
+    colOffsets[3] = 2;
+    colOffsets[4] = 2;
+    colOffsets[5] = 2;
+    int* rowIndices = new int[2];
+    rowIndices[0] = 1;
+    rowIndices[1] = 3;
+    float* values = new float[2];
+    values[0] = 1;
+    values[1] = 2;
+    int nnz = 2;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    const int result = m.nnz();
+    // assert
+    ASSERT_TRUE((compare<int, int>(result, 2)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+
+TEST(custom_sparse_matrix_nnz, should_return_zero_when_empty) {
+    // arrange
+    int* colOffsets = new int[6];
+    colOffsets[0] = 0;
+    colOffsets[1] = 0;
+    colOffsets[2] = 0;
+    colOffsets[3] = 0;
+    colOffsets[4] = 0;
+    colOffsets[5] = 0;
+    int* rowIndices = new int[0];
+    float* values = new float[0];
+    int nnz = 0;
+    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    // act
+    const int result = m.nnz();
+    // assert
+    ASSERT_TRUE((compare<int, int>(result, 0)));
+    // cleanup
+    delete[] colOffsets;
+    delete[] rowIndices;
+    delete[] values;
+}
+#pragma endregion
+#pragma endregion
+#pragma endregion
