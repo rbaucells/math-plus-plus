@@ -388,6 +388,9 @@ struct SparseMatrix : SparseMatrixBase<T> {
     }
 
     void set(const int c, const int r, const T value) override {
+        if (c < 0 || c > this->columns - 1 || r < 0 || r > this->rows - 1) {
+            throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
+        }
         const int start = colOffsets_[c];
         const int end = colOffsets_[c + 1];
 

@@ -360,5 +360,390 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
     ASSERT_TRUE((compare<float, float>(mColOffsets[4], 1, 0.001f)));
     ASSERT_TRUE((compare<float, float>(mColOffsets[5], 1, 0.001f)));
 }
+
+TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_1) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    // act
+    m.set(2, 2, {1, 2});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 1)));
+}
+
+TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_2) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(2, 1, {1, 2});
+    // act
+    m.set(2, 2, {3, 4});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 2)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[1], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[1], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 2)));
+}
+
+TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_3) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(1, 2, {1, 2});
+    m.set(2, 1, {3, 4});
+    // act
+    m.set(2, 2, {5, 6});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 3)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[1], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[2], {5, 6}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[1], 1)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[2], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 3)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 3)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 3)));
+}
+
+TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_4) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(1, 2, {1, 2});
+    // act
+    m.set(2, 2, {3, 4});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 2)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[1], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[1], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 2)));
+}
+
+TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf_1) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    const std::complex<float>* oldMValues = m.values();
+    const int* oldMRowIndexes = m.rowIndices();
+    const int* oldMColOffsets = m.colOffsets();
+    // act
+    m.set(2, 2, {0, 0});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 0)));
+    ASSERT_TRUE(mValues == oldMValues);
+    ASSERT_TRUE(mRowIndexes == oldMRowIndexes);
+    ASSERT_TRUE(mColOffsets == oldMColOffsets);
+}
+
+TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf_2) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(2, 1, {1, 2});
+    // act
+    m.set(2, 2, {0, 0});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 1)));
+}
+
+TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf_3) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(1, 2, {1, 2});
+    // act
+    m.set(2, 2, {0, 0});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 1)));
+}
+
+TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf_4) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(2, 1, {1, 2});
+    m.set(1, 2, {3, 4});
+    // act
+    m.set(2, 2, {0, 0});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 2)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[1], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[1], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 2)));
+}
+
+TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_1) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(2, 2, {1, 2});
+    // act
+    m.set(2, 2, {3, 4});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 1)));
+}
+
+TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_2) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(2, 1, {1, 2});
+    m.set(2, 2, {3, 4});
+    // act
+    m.set(2, 2, {5, 6});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 2)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[1], {5, 6}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[1], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 2)));
+}
+
+TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_3) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(1, 2, {1, 2});
+    m.set(2, 1, {3, 4});
+    m.set(2, 2, {5, 6});
+    // act
+    m.set(2, 2, {7, 8});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 3)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[1], {3, 4}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[2], {7, 8}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[1], 1)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[2], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 3)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 3)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 3)));
+}
+
+TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_4) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(1, 2, {1, 2});
+    m.set(2, 2, {3, 4});
+    // act
+    m.set(2, 2, {5, 6});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 2)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[1], {5, 6}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[1], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 2)));
+}
+
+TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_1) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(2, 2, {1, 2});
+    // act
+    m.set(2, 2, {0, 0});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 0)));
+    ASSERT_TRUE(mValues != nullptr);
+    ASSERT_TRUE(mRowIndexes != nullptr);
+    ASSERT_TRUE(mColOffsets != nullptr);
+}
+
+TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_2) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(2, 1, {1, 2});
+    m.set(2, 2, {3, 4});
+    // act
+    m.set(2, 2, {0, 0});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 1)));
+}
+
+TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_3) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(1, 2, {1, 2});
+    m.set(2, 2, {3, 4});
+    m.set(2, 1, {5, 6});
+    // act
+    m.set(2, 2, {0, 0});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 2)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[1], {5, 6}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[1], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 2)));
+}
+
+TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_4) {
+    // arrange
+    SparseMatrix<std::complex<float>> m(5, 5);
+    m.set(1, 2, {1, 2});
+    m.set(2, 2, {3, 4});
+    // act
+    m.set(2, 2, {0, 0});
+    const std::complex<float>* mValues = m.values();
+    const int* mRowIndexes = m.rowIndices();
+    const int* mColOffsets = m.colOffsets();
+    // assert
+    ASSERT_TRUE((compare<int, int>(m.nnz(), 1)));
+    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(mValues[0], {1, 2}, 0.001f)));
+    ASSERT_TRUE((compare<int, int>(mRowIndexes[0], 2)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[0], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[1], 0)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[2], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[3], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[4], 1)));
+    ASSERT_TRUE((compare<int, int>(mColOffsets[5], 1)));
+}
+
+TEST(sparse_matrix_set, given_negative_row_index_should_throw) {
+    // arrange
+    SparseMatrix<float> m(5, 5);
+    // act / assert
+    ASSERT_THROW(m.set(-1, 2, 1), InvalidIndexException);
+}
+
+TEST(sparse_matrix_set, given_negative_column_index_should_throw) {
+    // arrange
+    SparseMatrix<float> m(5, 5);
+    // act / assert
+    ASSERT_THROW(m.set(2, -1, 1), InvalidIndexException);
+}
+
+TEST(sparse_matrix_set, given_big_row_index_should_throw) {
+    // arrange
+    SparseMatrix<float> m(5, 5);
+    // act / assert
+    ASSERT_THROW(m.set(5, 2, 1), InvalidIndexException);
+}
+
+TEST(sparse_matrix_set, given_big_column_index_should_throw) {
+    // arrange
+    SparseMatrix<float> m(5, 5);
+    // act / assert
+    ASSERT_THROW(m.set(2, 5, 1), InvalidIndexException);
+}
 #pragma endregion
 #pragma endregion
