@@ -64,6 +64,9 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * @param columns Number of columns.
      */
     SparseMatrix(const int rows, const int columns) : SparseMatrixBase<T>(rows, columns) {
+        if (rows < 0 || columns < 0) {
+            throw InvalidIndexException("Cannot create SparseMatrix with negative size");
+        }
         colOffsets_ = new int[columns + 1];
 
         for (int i = 0; i < columns + 1; i++) {
@@ -222,7 +225,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * @note 'other' must be of same dimensions as this.
      */
     SparseMatrix<T>& operator=(const SparseMatrix<T>& other) {
-        assert_same_dimensions(*this, other, "copy assign");
+        assert_same_dimensions(*this, other);
 
         if (values_ != other.values_ && colOffsets_ != other.colOffsets_ && rowIndices_ != other.rowIndices_) {
             if (nnz_ != other.nnz_) {
@@ -256,7 +259,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
      */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseMatrix<T>& operator=(const SparseMatrix<OTHER_T>& other) {
-        assert_same_dimensions(*this, other, "copy assign");
+        assert_same_dimensions(*this, other);
 
         const int* otherColOffsets = other.colOffsets();
         const int* otherRowIndices = other.rowIndices();
@@ -297,7 +300,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * @note 'other' must be of same dimensions as this.
      */
     SparseMatrix<T>& operator=(const SparseMatrixBase<T>& other) {
-        assert_same_dimensions(*this, other, "copy assign");
+        assert_same_dimensions(*this, other);
 
         for (int i = 0; i < this->columns + 1; i++) {
             colOffsets_[i] = 0;
@@ -333,7 +336,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
      */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseMatrix<T>& operator=(const SparseMatrixBase<OTHER_T>& other) {
-        assert_same_dimensions(*this, other, "copy assign");
+        assert_same_dimensions(*this, other);
 
         for (int i = 0; i < this->columns + 1; i++) {
             colOffsets_[i] = 0;
@@ -365,9 +368,9 @@ struct SparseMatrix : SparseMatrixBase<T> {
     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
     * @note 'other' must be of same dimensions as this.
     */
-    SparseMatrix<T>& operator=(SparseMatrix<T>&& other) noexcept {
+    SparseMatrix<T>& operator=(SparseMatrix<T>&& other) {
         if (values_ != other.values_ && rowIndices_ != other.rowIndices_ && colOffsets_ != other.colOffsets_) {
-            assert_same_dimensions(*this, other, "move assign");
+            assert_same_dimensions(*this, other);
 
             delete[] values_;
             values_ = other.values_;
