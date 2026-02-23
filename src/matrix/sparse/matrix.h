@@ -402,7 +402,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
             const int curIndex = rowIndices_[i];
 
             if (curIndex == r) {
-                if (compare<T, int>(value, 0)) {
+                if (compare(value, 0)) {
                     int* newRowIndices = new int[nnz_ - 1];
 
                     memcpy(newRowIndices, rowIndices_, i * sizeof(int));
@@ -444,7 +444,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
             }
         }
 
-        if (compare<T, int>(value, 0)) {
+        if (compare(value, 0)) {
             return;
         }
 
@@ -711,7 +711,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
             const int curIndex = rowIndices_[i];
 
             if (curIndex == r) {
-                if (compare<T, int>(value, 0)) {
+                if (compare(value, 0)) {
                     int* newRowIndices = new int[nnz_ - 1];
 
                     memcpy(newRowIndices, rowIndices_, i * sizeof(int));
@@ -753,7 +753,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
             }
         }
 
-        if (compare<T, int>(value, 0)) {
+        if (compare(value, 0)) {
             return;
         }
 

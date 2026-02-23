@@ -55,7 +55,7 @@ enum class RotationType {
  */
 template<scalar T = float>
 [[nodiscard]] T radiansToDegrees(const T radians) {
-    return radians * (static_cast<T>(180) / static_cast<T>(M_PI));
+    return radians * (static_cast<T>(180) / static_cast<T>(std::numbers::pi));
 }
 
 /**
@@ -66,7 +66,7 @@ template<scalar T = float>
  */
 template<scalar T = float>
 [[nodiscard]] T degreesToRadians(const T degrees) {
-    return degrees * (static_cast<T>(M_PI) / static_cast<T>(180));
+    return degrees * (static_cast<T>(std::numbers::pi) / static_cast<T>(180));
 }
 
 /**

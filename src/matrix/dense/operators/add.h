@@ -1,6 +1,4 @@
 #pragma once
-#include <iostream>
-#include <ostream>
 #include <type_traits>
 
 #include "../helper.h"
@@ -18,7 +16,7 @@
  */
 template<dense_matrix_base T, dense_matrix_base... OTHERS>
 DenseMatrix<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>> add(const T& a, const OTHERS&... others) {
-    assert_same_dimensions(a, others..., "add");
+    assert_same_dimensions(a, others...);
 
     const int columns = a.columns;
     const int rows = a.rows;
