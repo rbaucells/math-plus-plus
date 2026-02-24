@@ -150,47 +150,47 @@ TEST(compare, given_complex_int_and_complex_float_return_true) {
 }
 
 TEST(compare, given_ints_and_custom_precision_return_true) {
-    const bool result = compare(Precision<int>(1), 2, 3);
+    const bool result = compare(Precision(1), 2, 3);
     ASSERT_TRUE(result);
 }
 
 TEST(compare, given_int_and_complex_int_and_custom_precision_return_true) {
-    const bool result = compare(Precision<int>(1), 2, std::complex<int>(3, 0));
+    const bool result = compare(Precision(1), 2, std::complex<int>(3, 0));
     ASSERT_TRUE(result);
 }
 
 TEST(compare, given_int_and_float_and_custom_precision_return_true) {
-    const bool result = compare(Precision<float>(0.5f), 3, 2.75f);
+    const bool result = compare(Precision(0.5f), 3, 2.75f);
     ASSERT_TRUE(result);
 }
 
 TEST(compare, given_int_and_complex_float_and_custom_precision_return_true) {
-    const bool result = compare(Precision<float>(0.5f), 4, std::complex<float>(3.5f, 0.25f));
+    const bool result = compare(Precision(0.5f), 4, std::complex<float>(3.5f, 0.25f));
     ASSERT_TRUE(result);
 }
 
 TEST(compare, given_floats_and_custom_precision_return_true) {
-    const bool result = compare(Precision<float>(0.5f), 2.0f, 1.5f);
+    const bool result = compare(Precision(0.5f), 2.0f, 1.5f);
     ASSERT_TRUE(result);
 }
 
 TEST(compare, given_float_and_complex_float_and_custom_precision_return_true) {
-    const bool result = compare(Precision<float>(0.5f), 2.0f, std::complex<float>(1.6f, 0));
+    const bool result = compare(Precision(0.5f), 2.0f, std::complex<float>(1.6f, 0));
     ASSERT_TRUE(result);
 }
 
 TEST(compare, given_float_and_complex_int_and_custom_precision_return_true) {
-    const bool result = compare(Precision<float>(0.5f), 2.5f, std::complex<int>(3, 0));
+    const bool result = compare(Precision(0.5f), 2.5f, std::complex<int>(3, 0));
     ASSERT_TRUE(result);
 }
 
 TEST(compare, given_complex_float_and_complex_float_and_custom_precision_return_true) {
-    const bool result = compare(Precision<float>(0.3f), std::complex<float>(1, 2), std::complex<float>(0.75f, 1.75f));
+    const bool result = compare(Precision(0.3f), std::complex<float>(1, 2), std::complex<float>(0.75f, 1.75f));
     ASSERT_TRUE(result);
 }
 
 TEST(compare, given_complex_int_and_complex_float_and_custom_precision_return_true) {
-    const bool result = compare(Precision<float>(0.25f), std::complex<int>(2, 3), std::complex<float>(1.75f, 2.8f));
+    const bool result = compare(Precision(0.25f), std::complex<int>(2, 3), std::complex<float>(1.75f, 2.8f));
     ASSERT_TRUE(result);
 }
 
@@ -270,77 +270,77 @@ TEST(compare, given_complex_int_and_complex_float_return_false_2) {
 }
 
 TEST(compare, given_ints_and_custom_precision_return_false) {
-    const bool result = compare(Precision<int>(1), 2, 4);
+    const bool result = compare(Precision(1), 2, 4);
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_int_and_complex_int_and_custom_precision_return_false_1) {
-    const bool result = compare(Precision<int>(1), 1, std::complex<int>(3, 0));
+    const bool result = compare(Precision(1), 1, std::complex<int>(3, 0));
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_int_and_complex_int_and_custom_precision_return_false_2) {
-    const bool result = compare(Precision<int>(1), 1, std::complex<int>(1, 2));
+    const bool result = compare(Precision(1), 1, std::complex<int>(1, 2));
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_int_and_float_and_custom_precision_return_false) {
-    const bool result = compare(Precision<float>(0.25f), 2, 2.5f);
+    const bool result = compare(Precision(0.25f), 2, 2.5f);
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_int_and_complex_float_and_custom_precision_return_false_1) {
-    const bool result = compare(Precision<float>(0.25f), 2, std::complex<float>(1.5f, 0));
+    const bool result = compare(Precision(0.25f), 2, std::complex<float>(1.5f, 0));
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_int_and_complex_float_and_custom_precision_return_false_2) {
-    const bool result = compare(Precision<float>(0.25f), 2, std::complex<float>(2, 0.5f));
+    const bool result = compare(Precision(0.25f), 2, std::complex<float>(2, 0.5f));
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_floats_and_custom_precision_return_false) {
-    const bool result = compare(Precision<float>(0.05f), 2.1f, 2.2f);
+    const bool result = compare(Precision(0.05f), 2.1f, 2.2f);
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_float_and_complex_float_and_custom_precision_return_false_1) {
-    const bool result = compare(Precision<float>(0.1f), 2.2f, std::complex<float>(2.0f, 0));
+    const bool result = compare(Precision(0.1f), 2.2f, std::complex<float>(2.0f, 0));
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_float_and_complex_float_and_custom_precision_return_false_2) {
-    const bool result = compare(Precision<float>(0.1f), 2.2f, std::complex<float>(2.2f, 0.15f));
+    const bool result = compare(Precision(0.1f), 2.2f, std::complex<float>(2.2f, 0.15f));
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_float_and_complex_int_and_custom_precision_return_false_1) {
-    const bool result = compare(Precision<float>(0.1f), 2.2f, std::complex<int>(2, 0));
+    const bool result = compare(Precision(0.1f), 2.2f, std::complex<int>(2, 0));
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_float_and_complex_int_and_custom_precision_return_false_2) {
-    const bool result = compare(Precision<float>(0.1f), 2.0f, std::complex<int>(2, 1));
+    const bool result = compare(Precision(0.1f), 2.0f, std::complex<int>(2, 1));
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_complex_float_and_complex_float_and_custom_precision_return_false_1) {
-    const bool result = compare(Precision<float>(0.1f), std::complex<float>(2.5f, 1.2f), std::complex<float>(2.5f, 1));
+    const bool result = compare(Precision(0.1f), std::complex<float>(2.5f, 1.2f), std::complex<float>(2.5f, 1));
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_complex_float_and_complex_float_and_custom_precision_return_false_2) {
-    const bool result = compare(Precision<float>(0.1f), std::complex<float>(2.5f, 1.2f), std::complex<float>(2.3f, 1.2f));
+    const bool result = compare(Precision(0.1f), std::complex<float>(2.5f, 1.2f), std::complex<float>(2.3f, 1.2f));
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_complex_int_and_complex_float_and_custom_precision_return_false_1) {
-    const bool result = compare(Precision<float>(0.1f), std::complex<int>(2, 1), std::complex<float>(2.2f, 1));
+    const bool result = compare(Precision(0.1f), std::complex<int>(2, 1), std::complex<float>(2.2f, 1));
     ASSERT_FALSE(result);
 }
 
 TEST(compare, given_complex_int_and_complex_float_and_custom_precision_return_false_2) {
-    const bool result = compare(Precision<float>(0.1f), std::complex<int>(2, 1), std::complex<float>(2, 1.2f));
+    const bool result = compare(Precision(0.1f), std::complex<int>(2, 1), std::complex<float>(2, 1.2f));
     ASSERT_FALSE(result);
 }
 #pragma endregion
