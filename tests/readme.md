@@ -16,7 +16,7 @@ constexpr float expected = 3.74166f;
 // act
 const float euclidianNorm = euclidianNorm(a);
 // assert
-ASSERT_TRUE(compare<float, float>(euclidianNorm, expected, 0.001f))
+ASSERT_TRUE(compare(Precision(0.001f), euclidianNorm, expected))
 ```
 
 # Compile-Time Tests:

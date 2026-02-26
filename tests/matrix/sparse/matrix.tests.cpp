@@ -1435,7 +1435,7 @@ TEST(sparse_matrix_view_constructor, given_cf_sparse_matrix_should_construct) {
     ASSERT_TRUE((compare(v.nnz(), 2)));
     ASSERT_TRUE((compare(v.columns, 3)));
     ASSERT_TRUE((compare(v.rows, 3)));
-    ASSERT_TRUE((compare<SparseMatrixView<std::complex<float>>, SparseMatrix<std::complex<float>>>(Precision(0.001f),v, expected)));
+    ASSERT_TRUE((compare(Precision(0.001f),v, expected)));
 }
 #pragma endregion
 #pragma region copy_constructor
