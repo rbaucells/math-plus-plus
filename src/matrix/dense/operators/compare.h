@@ -27,25 +27,38 @@ template<dense_matrix_base T, dense_matrix_base... OTHERS>
 
 template<typename... OTHERS>
 struct DenseMatrixCompareExpr : Expression<bool, OTHERS...> {
-    using Expression<bool, OTHERS...>::Expression;
+    Precision<underlying_type_t<std::common_type_t<underlying_type_t<OTHERS>...>>> precision;
+
+    DenseMatrixCompareExpr(const Precision<underlying_type_t<std::common_type_t<underlying_type_t<OTHERS>...>>> precision, const OTHERS&... args) : Expression<bool, OTHERS...>(args...), precision(precision) {}
+
 
     [[nodiscard]] bool evaluate() const override {
-        return std::apply([](const auto&... args) {
-            return compare<OTHERS...>(args...);
+        return std::apply([this](const auto&... args) {
+            return compare(Precision(precision), args...);
         }, this->others);
     }
 
     template<typename OTHER>
-    DenseMatrixCompareExpr<OTHER, OTHERS...> operator+(const OTHER& other) const {
+    DenseMatrixCompareExpr<OTHER, OTHERS...> operator==(const OTHER& other) const {
         return std::apply([&](const auto&... args) {
-            return DenseMatrixSumExpr<OTHER, OTHERS...>(other, args...);
+            return DenseMatrixCompareExpr<OTHER, OTHERS...>(Precision(precision), other, args...);
         }, this->others);
+    }
+
+    DenseMatrixCompareExpr<OTHERS...>& operator==(const Precision<underlying_type_t<std::common_type_t<underlying_type_t<OTHERS>...>>>& newPrecision) {
+        precision.value = newPrecision.value;
+        return *this;
+    }
+
+    DenseMatrixCompareExpr<OTHERS...>& operator+(const Precision<underlying_type_t<std::common_type_t<underlying_type_t<OTHERS>...>>>& newPrecision) {
+        precision.value = newPrecision.value;
+        return *this;
     }
 };
 
 template<dense_matrix_base T, dense_matrix_base U>
 DenseMatrixCompareExpr<T, U> operator==(const T& a, const U& b) {
-    return DenseMatrixCompareExpr<T, U>(a, b);
+    return DenseMatrixCompareExpr<T, U>(Precision(epsilon<underlying_type_t<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>>()), a, b);
 }
 
 /// TODO:

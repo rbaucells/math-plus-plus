@@ -140,7 +140,7 @@ template<complex T>
  */
 template<real T>
 struct Precision {
-    const T value;
+    T value;
 };
 
 
