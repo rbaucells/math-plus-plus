@@ -65,12 +65,12 @@ TEST(has_common_type, given_string_and_float_should_return_false) {
 #pragma endregion
 #pragma region radians_to_degrees
 TEST(radians_to_degrees, given_pi_2_should_return_90) {
-    ASSERT_FLOAT_EQ(radiansToDegrees<float>(M_PI_2), 90);
+    ASSERT_FLOAT_EQ(radiansToDegrees<float>(std::numbers::pi / 2), 90);
 }
 #pragma endregion
 #pragma region degrees_to_radians
 TEST(degrees_to_radians, given_90_should_return_pi_2) {
-    ASSERT_FLOAT_EQ(degreesToRadians<float>(90), M_PI_2);
+    ASSERT_FLOAT_EQ(degreesToRadians<float>(90), std::numbers::pi / 2);
 }
 #pragma endregion
 #pragma region convert
@@ -79,15 +79,15 @@ TEST(convert, given_degrees_should_return_degrees) {
 }
 
 TEST(convert, given_radians_should_return_radians) {
-    ASSERT_FLOAT_EQ(convert<float>(RotationType::radians, RotationType::radians, M_PI_2), M_PI_2);
+    ASSERT_FLOAT_EQ(convert<float>(RotationType::radians, RotationType::radians, std::numbers::pi / 2), std::numbers::pi / 2);
 }
 
 TEST(convert, given_degrees_should_return_radians) {
-    ASSERT_FLOAT_EQ(convert<float>(RotationType::degrees, RotationType::radians, 90), M_PI_2);
+    ASSERT_FLOAT_EQ(convert<float>(RotationType::degrees, RotationType::radians, 90), std::numbers::pi / 2);
 }
 
 TEST(convert, given_radians_should_return_degrees) {
-    ASSERT_FLOAT_EQ(convert<float>(RotationType::radians, RotationType::degrees, M_PI_2), 90);
+    ASSERT_FLOAT_EQ(convert<float>(RotationType::radians, RotationType::degrees, std::numbers::pi / 2), 90);
 }
 #pragma endregion
 #pragma region epsilon

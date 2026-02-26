@@ -170,7 +170,7 @@ template<scalar T, scalar... OTHERS> requires has_common_type<underlying_type_t<
  */
 template<scalar T, scalar... OTHERS> requires has_common_type<underlying_type_t<T>, underlying_type_t<OTHERS>...>
 [[nodiscard]] bool compare(const T a, const OTHERS... others) {
-    return compare(epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>(), a, others...);
+    return compare(Precision(epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>()), a, others...);
 }
 
 /**

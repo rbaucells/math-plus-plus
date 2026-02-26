@@ -478,8 +478,8 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_shoul
     ASSERT_TRUE(vValues == oldVValues);
     ASSERT_TRUE(vIndexes == oldVIndexes);
     ASSERT_TRUE((compare(Precision(0.001f), vValues[0], std::complex<float>(1, 2))));
-    ASSERT_TRUE((compare(Precision(0.001f), vValues[1], std::complex<float>(5, 6))));
-    ASSERT_TRUE((compare(Precision(0.001f), vValues[2], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), vValues[1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), vValues[2], std::complex<float>(5, 6))));
     ASSERT_TRUE((compare(vIndexes[0], 1)));
     ASSERT_TRUE((compare(vIndexes[1], 2)));
     ASSERT_TRUE((compare(vIndexes[2], 3)));

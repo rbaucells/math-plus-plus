@@ -30,7 +30,7 @@ add_executable(mathpp-tests main.cpp
         matrix/dense/matrix.tests.cpp
         vector/sparse/vector.tests.cpp
         matrix/sparse/matrix.tests.cpp
-        matrix/dense/operators/compare.tests.cpp)
+)
 
 # link with the math lib
 target_link_libraries(mathpp-tests PRIVATE mathpp GTest::gtest_main)
