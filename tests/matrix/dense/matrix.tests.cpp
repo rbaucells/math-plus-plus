@@ -28,17 +28,17 @@ TEST(dense_matrix_indexing_operator, given_index_should_return_reference_f) {
     v22 = 9;
     const float* data = v.data();
     // assert
-    ASSERT_TRUE((compare<float, float>(data[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[2], 7, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[2], 7)));
 
-    ASSERT_TRUE((compare<float, float>(data[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[5], 8, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[5], 8)));
 
-    ASSERT_TRUE((compare<float, float>(data[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[8], 9)));
 }
 
 TEST(dense_matrix_indexing_operator, given_index_should_return_reference_cf) {
@@ -65,17 +65,17 @@ TEST(dense_matrix_indexing_operator, given_index_should_return_reference_cf) {
     v22 = {17, 18};
     std::complex<float>* data = v.data();
     // assert
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[0], {1, 2}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[1], {7, 8}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[2], {13, 14}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[0], std::complex<float>(1, 2))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[2], std::complex<float>(13, 14))));
 
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[3], {3, 4}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[4], {9, 10}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[5], {15, 16}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[3], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[4], std::complex<float>(9, 10))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[5], std::complex<float>(15, 16))));
 
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[6], {5, 6}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[7], {11, 12}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[8], {17, 18}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[6], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[7], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[8], std::complex<float>(17, 18))));
 }
 
 TEST(dense_matrix_indexing_operator, given_negative_index_should_throw_1) {
@@ -111,30 +111,30 @@ TEST(dense_matrix_const_indexing_operator, given_index_should_return_const_refer
     // arrange
     const DenseMatrix<float> v = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act / assert
-    ASSERT_TRUE((compare<float, float>(v[0, 0], 1, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[1, 0], 2, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[2, 0], 3, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[0, 1], 4, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[1, 1], 5, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[2, 1], 6, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[0, 2], 7, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[1, 2], 8, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[2, 2], 9, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], 9)));
 }
 
 TEST(dense_matrix_const_indexing_operator, given_index_should_return_const_reference_cf) {
     // arrange
     const DenseMatrix<std::complex<float>> v = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
     // act / assert
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[0, 0], {1, 2}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[1, 0], {3, 4}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[2, 0], {5, 6}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[0, 1], {7, 8}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[1, 1], {9, 10}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[2, 1], {11, 12}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[0, 2], {13, 14}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[1, 2], {15, 16}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[2, 2], {17, 18}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], std::complex<float>(1, 2))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], std::complex<float>(9, 10))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], std::complex<float>(13, 14))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], std::complex<float>(15, 16))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], std::complex<float>(17, 18))));
 }
 
 TEST(dense_matrix_const_indexing_operator, given_negative_index_should_throw_1) {
@@ -171,10 +171,10 @@ TEST(dense_matrix_default_constructor, given_size_and_fill_should_construct_f) {
     const DenseMatrix<float> v(3, 3, true);
     const float* vData = v.data();
     // assert
-    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
+    ASSERT_TRUE((compare(v.rows, 3)));
+    ASSERT_TRUE((compare(v.columns, 3)));
     for (int i = 0; i < 8; i++) {
-        ASSERT_TRUE((compare<float, float>(vData[i], 0, 0.001f)));
+        ASSERT_TRUE((compare(Precision(0.001f), vData[i], 0)));
     }
 }
 
@@ -183,10 +183,10 @@ TEST(dense_matrix_default_constructor, given_size_and_fill_should_construct_cf) 
     const DenseMatrix<std::complex<float>> v(3, 3, true);
     const std::complex<float>* vData = v.data();
     // assert
-    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
+    ASSERT_TRUE((compare(v.rows, 3)));
+    ASSERT_TRUE((compare(v.columns, 3)));
     for (int i = 0; i < 8; i++) {
-        ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[i], {0, 0}, 0.001f)));
+        ASSERT_TRUE((compare(Precision(0.001f), vData[i], std::complex<float>(0, 0))));
     }
 }
 #pragma endregion
@@ -196,17 +196,17 @@ TEST(dense_matrix_initializer_list_constructor, given_initializer_list_should_co
     const DenseMatrix<float> v = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     const float* vData = v.data();
     // assert
-    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
-    ASSERT_TRUE((compare<float, float>(vData[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(vData[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(vData[2], 7, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(vData[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(vData[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(vData[5], 8, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(vData[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(vData[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(vData[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(v.rows, 3)));
+    ASSERT_TRUE((compare(v.columns, 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[5], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[8], 9)));
 }
 
 TEST(dense_matrix_initializer_list_constructor, given_initializer_list_should_construct_cf) {
@@ -214,17 +214,17 @@ TEST(dense_matrix_initializer_list_constructor, given_initializer_list_should_co
     const DenseMatrix<std::complex<float>> v = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
     const std::complex<float>* vData = v.data();
     // assert
-    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[0], {1, 2}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[1], {7, 8}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[2], {13, 14}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[3], {3, 4}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[4], {9, 10}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[5], {15, 16}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[6], {5, 6}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[7], {11, 12}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(vData[8], {17, 18}, 0.001f)));
+    ASSERT_TRUE((compare(v.rows, 3)));
+    ASSERT_TRUE((compare(v.columns, 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[0], std::complex<float>(1, 2))));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[2], std::complex<float>(13, 14))));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[3], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[4], std::complex<float>(9, 10))));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[5], std::complex<float>(15, 16))));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[6], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[7], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), vData[8], std::complex<float>(17, 18))));
 }
 
 TEST(dense_matrix_initializer_list_constructor, given_initializer_list_with_different_sized_rows_should_throw) {
@@ -240,17 +240,17 @@ TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix, given_f_dense_ma
     const DenseMatrix<float> b = a;
     const float* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
-    ASSERT_TRUE((compare<float, float>(bData[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[2], 7, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[5], 8, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(b.rows, 3)));
+    ASSERT_TRUE((compare(b.columns, 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 
 TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix, given_cf_dense_matrix_should_copy_construct) {
@@ -260,17 +260,17 @@ TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix, given_cf_dense_m
     const DenseMatrix<std::complex<float>> b = a;
     const std::complex<float>* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[0], {1, 2}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[1], {7, 8}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[2], {13, 14}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[3], {3, 4}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[4], {9, 10}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[5], {15, 16}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[6], {5, 6}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[7], {11, 12}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[8], {17, 18}, 0.001f)));
+    ASSERT_TRUE((compare(b.rows, 3)));
+    ASSERT_TRUE((compare(b.columns, 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(13, 14))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], std::complex<float>(9, 10))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], std::complex<float>(15, 16))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], std::complex<float>(17, 18))));
 }
 #pragma endregion
 #pragma region copy_constructor_from_different_type_dense_matrix
@@ -281,17 +281,17 @@ TEST(dense_matrix_copy_constructor_from_different_type_dense_matrix, given_f_den
     const DenseMatrix<std::complex<float>> b = a;
     const std::complex<float>* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[2], 7, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[5], 8, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(b.rows, 3)));
+    ASSERT_TRUE((compare(b.columns, 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 #pragma endregion
 #pragma region copy_constructor_from_same_type_dense_matrix_base
@@ -302,17 +302,17 @@ TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix_base, given_f_den
     const DenseMatrix<float> b = static_cast<const DenseMatrixBase<float>&>(a);
     const float* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
-    ASSERT_TRUE((compare<float, float>(bData[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[2], 7, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[5], 8, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(b.rows, 3)));
+    ASSERT_TRUE((compare(b.columns, 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 
 TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix_base, given_cf_dense_matrix_base_should_copy_construct) {
@@ -322,17 +322,17 @@ TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix_base, given_cf_de
     const DenseMatrix<std::complex<float>> b = static_cast<const DenseMatrixBase<std::complex<float>>&>(a);
     const std::complex<float>* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[0], {1, 2}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[1], {7, 8}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[2], {13, 14}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[3], {3, 4}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[4], {9, 10}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[5], {15, 16}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[6], {5, 6}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[7], {11, 12}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[8], {17, 18}, 0.001f)));
+    ASSERT_TRUE((compare(b.rows, 3)));
+    ASSERT_TRUE((compare(b.columns, 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(13, 14))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], std::complex<float>(9, 10))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], std::complex<float>(15, 16))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], std::complex<float>(17, 18))));
 }
 #pragma endregion
 #pragma region copy_constructor_from_different_type_dense_matrix_base
@@ -343,17 +343,17 @@ TEST(dense_matrix_copy_constructor_from_different_type_dense_matrix_base, given_
     const DenseMatrix<std::complex<float>> b = static_cast<const DenseMatrixBase<float>&>(a);
     const std::complex<float>* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[2], 7, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[5], 8, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(b.rows, 3)));
+    ASSERT_TRUE((compare(b.columns, 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 #pragma endregion
 #pragma region move_constructor
@@ -365,17 +365,17 @@ TEST(dense_matrix_move_constructor, given_f_dense_matrix_should_move_construct_a
     const float* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
-    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
-    ASSERT_TRUE((compare<float, float>(bData[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[2], 7, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[5], 8, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(b.rows, 3)));
+    ASSERT_TRUE((compare(b.columns, 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 
 TEST(dense_matrix_move_constructor, given_cf_dense_matrix_should_move_construct_and_invalidate_other_data) {
@@ -386,17 +386,17 @@ TEST(dense_matrix_move_constructor, given_cf_dense_matrix_should_move_construct_
     const std::complex<float>* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
-    ASSERT_TRUE((compare<int, int>(b.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(b.columns, 3)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[0], {1, 2}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[1], {7, 8}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[2], {13, 14}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[3], {3, 4}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[4], {9, 10}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[5], {15, 16}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[6], {5, 6}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[7], {11, 12}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[8], {17, 18}, 0.001f)));
+    ASSERT_TRUE((compare(b.rows, 3)));
+    ASSERT_TRUE((compare(b.columns, 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(13, 14))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], std::complex<float>(9, 10))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], std::complex<float>(15, 16))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], std::complex<float>(17, 18))));
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_same_type_dense_matrix
@@ -408,15 +408,15 @@ TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix, given_f_
     b = a;
     const float* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<float, float>(bData[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[2], 7, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[5], 8, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 
 TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix, given_cf_dense_matrix_should_copy_assign) {
@@ -427,15 +427,15 @@ TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix, given_cf
     b = a;
     const std::complex<float>* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[0], {1, 2}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[1], {7, 8}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[2], {13, 14}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[3], {3, 4}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[4], {9, 10}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[5], {15, 16}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[6], {5, 6}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[7], {11, 12}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[8], {17, 18}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(13, 14))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], std::complex<float>(9, 10))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], std::complex<float>(15, 16))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], std::complex<float>(17, 18))));
 }
 
 TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix, given_dense_matrix_of_different_size_should_throw_1) {
@@ -463,15 +463,15 @@ TEST(dense_matrix_copy_assignment_operator_from_different_type_dense_matrix, giv
     b = a;
     const std::complex<float>* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[2], 7, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[5], 8, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 
 TEST(dense_matrix_copy_assignment_operator_from_different_type_dense_matrix, given_f_dense_matrix_of_different_size_should_throw_1) {
@@ -499,15 +499,15 @@ TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, giv
     b = static_cast<const DenseMatrixBase<float>&>(a);
     const float* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<float, float>(bData[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[2], 7, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[5], 8, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 
 TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_cf_dense_matrix_base_should_copy_assign) {
@@ -518,15 +518,15 @@ TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, giv
     b = static_cast<const DenseMatrixBase<std::complex<float>>&>(a);
     const std::complex<float>* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[0], {1, 2}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[1], {7, 8}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[2], {13, 14}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[3], {3, 4}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[4], {9, 10}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[5], {15, 16}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[6], {5, 6}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[7], {11, 12}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[8], {17, 18}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(13, 14))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], std::complex<float>(9, 10))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], std::complex<float>(15, 16))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], std::complex<float>(17, 18))));
 }
 
 TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_dense_vector_base_of_different_size_should_throw_1) {
@@ -554,15 +554,15 @@ TEST(dense_matrix_copy_assignment_operator_from_different_type_dense_matrix_base
     b = static_cast<const DenseMatrixBase<float>&>(a);
     const std::complex<float>* bData = b.data();
     // assert
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[2], 7, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[5], 8, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, float>(bData[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 
 TEST(dense_matrix_copy_assignment_operator_from_different_type_dense_matrix_base, given_dense_vector_base_of_different_size_should_throw_1) {
@@ -591,15 +591,15 @@ TEST(dense_matrix_move_assignment_operator, given_f_dense_matrix_should_move_ass
     const float* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
-    ASSERT_TRUE((compare<float, float>(bData[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[2], 7, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[5], 8, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(bData[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 
 TEST(dense_matrix_move_assignment_operator, given_cf_dense_matrix_should_move_assign) {
@@ -611,15 +611,15 @@ TEST(dense_matrix_move_assignment_operator, given_cf_dense_matrix_should_move_as
     const std::complex<float>* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[0], {1, 2}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[1], {7, 8}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[2], {13, 14}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[3], {3, 4}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[4], {9, 10}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[5], {15, 16}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[6], {5, 6}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[7], {11, 12}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(bData[8], {17, 18}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(13, 14))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[3], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[4], std::complex<float>(9, 10))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[5], std::complex<float>(15, 16))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[6], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[7], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[8], std::complex<float>(17, 18))));
 }
 
 TEST(dense_matrix_move_assignment_operator, given_dense_matrix_of_different_size_should_throw_1) {
@@ -648,11 +648,11 @@ TEST(dense_matrix_view_constructor, given_f_dense_matrix_should_construct) {
     // act
     const DenseMatrixView<float> view = DenseMatrixView<float>(a, 3, 3, 1, 1);
     // assert
-    ASSERT_TRUE((compare<int, int>(view.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(view.columns, 3)));
-    ASSERT_TRUE((compare<int, int>(view.rowOffset(), 1)));
-    ASSERT_TRUE((compare<int, int>(view.colOffset(), 1)));
-    ASSERT_TRUE((compare<DenseMatrixView<float>, DenseMatrix<float>>(view, expected, 0.001f)));
+    ASSERT_TRUE((compare(view.rows, 3)));
+    ASSERT_TRUE((compare(view.columns, 3)));
+    ASSERT_TRUE((compare(view.rowOffset(), 1)));
+    ASSERT_TRUE((compare(view.colOffset(), 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), view, expected)));
 }
 
 TEST(dense_matrix_view_constructor, given_cf_dense_matrix_should_construct) {
@@ -662,11 +662,11 @@ TEST(dense_matrix_view_constructor, given_cf_dense_matrix_should_construct) {
     // act
     const DenseMatrixView<std::complex<float>> view = DenseMatrixView<std::complex<float>>(a, 3, 3, 1, 1);
     // assert
-    ASSERT_TRUE((compare<int, int>(view.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(view.columns, 3)));
-    ASSERT_TRUE((compare<int, int>(view.rowOffset(), 1)));
-    ASSERT_TRUE((compare<int, int>(view.colOffset(), 1)));
-    ASSERT_TRUE((compare<DenseMatrixView<std::complex<float>>, DenseMatrix<std::complex<float>>>(view, expected, 0.001f)));
+    ASSERT_TRUE((compare(view.rows, 3)));
+    ASSERT_TRUE((compare(view.columns, 3)));
+    ASSERT_TRUE((compare(view.rowOffset(), 1)));
+    ASSERT_TRUE((compare(view.colOffset(), 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), view, expected)));
 }
 #pragma endregion
 #pragma region copy_constructor
@@ -677,12 +677,12 @@ TEST(dense_matrix_view_copy_constructor, given_f_dense_matrix_view_should_copy) 
     // act
     const DenseMatrixView<float> newView = view;
     // assert
-    ASSERT_TRUE((compare<int, int>(newView.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(newView.columns, 3)));
-    ASSERT_TRUE((compare<int, int>(newView.rowOffset(), 2)));
-    ASSERT_TRUE((compare<int, int>(newView.colOffset(), 2)));
+    ASSERT_TRUE((compare(newView.rows, 3)));
+    ASSERT_TRUE((compare(newView.columns, 3)));
+    ASSERT_TRUE((compare(newView.rowOffset(), 2)));
+    ASSERT_TRUE((compare(newView.colOffset(), 2)));
     ASSERT_TRUE(&view.owner() == &newView.owner());
-    ASSERT_TRUE((compare<DenseMatrixView<float>, DenseMatrixView<float>>(view, newView, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), view, newView)));
 }
 
 TEST(dense_matrix_view_copy_constructor, given_cf_dense_matrix_view_should_copy) {
@@ -692,12 +692,12 @@ TEST(dense_matrix_view_copy_constructor, given_cf_dense_matrix_view_should_copy)
     // act
     const DenseMatrixView<std::complex<float>> newView = view;
     // assert
-    ASSERT_TRUE((compare<int, int>(newView.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(newView.columns, 3)));
-    ASSERT_TRUE((compare<int, int>(newView.rowOffset(), 2)));
-    ASSERT_TRUE((compare<int, int>(newView.colOffset(), 2)));
+    ASSERT_TRUE((compare(newView.rows, 3)));
+    ASSERT_TRUE((compare(newView.columns, 3)));
+    ASSERT_TRUE((compare(newView.rowOffset(), 2)));
+    ASSERT_TRUE((compare(newView.colOffset(), 2)));
     ASSERT_TRUE(&view.owner() == &newView.owner());
-    ASSERT_TRUE((compare<DenseMatrixView<std::complex<float>>, DenseMatrixView<std::complex<float>>>(view, newView, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), view, newView)));
 }
 #pragma endregion
 #pragma region indexing_operator
@@ -763,15 +763,15 @@ TEST(dense_matrix_view_const_indexing_operator, given_index_should_return_const_
     const DenseMatrix<float> a = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}, {16, 17, 18, 19, 20}, {21, 22, 23, 24, 25}};
     const DenseMatrixView<float> v(a, 3, 3, 2, 2);
     // act / assert
-    ASSERT_TRUE((compare<float, float>(v[0, 0], 13, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[1, 0], 14, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[2, 0], 15, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[0, 1], 18, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[1, 1], 19, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[2, 1], 20, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[0, 2], 23, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[1, 2], 24, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[2, 2], 25, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], 13)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], 14)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], 15)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], 18)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], 19)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], 20)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], 23)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], 24)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], 25)));
 }
 
 TEST(dense_matrix_view_const_indexing_operator, given_index_should_return_const_reference_cf) {
@@ -779,17 +779,17 @@ TEST(dense_matrix_view_const_indexing_operator, given_index_should_return_const_
     const DenseMatrix<std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}}, {{11, 12}, {13, 14}, {15, 16}, {17, 18}, {19, 20}}, {{21, 22}, {23, 24}, {25, 26}, {27, 28}, {29, 30}}, {{31, 32}, {33, 34}, {35, 36}, {37, 38}, {39, 40}}, {{41, 42}, {43, 44}, {45, 46}, {47, 48}, {49, 50}}};
     const DenseMatrixView<std::complex<float>> v(a, 3, 3, 2, 2);
     // act / assert
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[0, 0], {25, 26}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[1, 0], {27, 28}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[2, 0], {29, 30}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], std::complex<float>(25, 26))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], std::complex<float>(27, 28))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], std::complex<float>(29, 30))));
 
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[0, 1], {35, 36}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[1, 1], {37, 38}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[2, 1], {39, 40}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], std::complex<float>(35, 36))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], std::complex<float>(37, 38))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], std::complex<float>(39, 40))));
 
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[0, 2], {45, 46}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[1, 2], {47, 48}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[2, 2], {49, 50}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], std::complex<float>(45, 46))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], std::complex<float>(47, 48))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], std::complex<float>(49, 50))));
 }
 
 TEST(dense_matrix_view_const_indexing_operator, given_negative_index_should_throw_1) {
@@ -849,7 +849,7 @@ TEST(dense_matrix_view_col_offset, should_return_col_offset) {
     // act
     const int colOffset = v.colOffset();
     // assert
-    ASSERT_TRUE((compare<int, int>(colOffset, expected)));
+    ASSERT_TRUE((compare(colOffset, expected)));
 }
 #pragma endregion
 #pragma region row_offset
@@ -861,7 +861,7 @@ TEST(dense_matrix_view_row_offset, should_return_row_offset) {
     // act
     const int rowOffset = v.rowOffset();
     // assert
-    ASSERT_TRUE((compare<int, int>(rowOffset, expected)));
+    ASSERT_TRUE((compare(rowOffset, expected)));
 }
 #pragma endregion
 #pragma region owner
@@ -894,9 +894,9 @@ TEST(custom_dense_matrix_constructor, given_f_pointer_and_size_should_construct)
     const CustomDenseMatrix<float> v(data, 3, 3, 3);
     // assert
     ASSERT_TRUE(data == v.data());
-    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
-    ASSERT_TRUE((compare<int, int>(v.stride(), 3)));
+    ASSERT_TRUE((compare(v.rows, 3)));
+    ASSERT_TRUE((compare(v.columns, 3)));
+    ASSERT_TRUE((compare(v.stride(), 3)));
     // cleanup
     delete[] data;
 }
@@ -917,9 +917,9 @@ TEST(custom_dense_matrix_constructor, given_f_pointer_and_size_and_stride_should
     const CustomDenseMatrix<float> v(data, 3, 3, 0);
     // assert
     ASSERT_TRUE(data == v.data());
-    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
-    ASSERT_TRUE((compare<int, int>(v.stride(), 0)));
+    ASSERT_TRUE((compare(v.rows, 3)));
+    ASSERT_TRUE((compare(v.columns, 3)));
+    ASSERT_TRUE((compare(v.stride(), 0)));
     // cleanup
     delete[] data;
 }
@@ -940,9 +940,9 @@ TEST(custom_dense_matrix_constructor, given_f_pointer_and_size_and_stride_should
     const CustomDenseMatrix<float> v(data, 2, 2, 2);
     // assert
     ASSERT_TRUE(data == v.data());
-    ASSERT_TRUE((compare<int, int>(v.rows, 2)));
-    ASSERT_TRUE((compare<int, int>(v.columns, 2)));
-    ASSERT_TRUE((compare<int, int>(v.stride(), 2)));
+    ASSERT_TRUE((compare(v.rows, 2)));
+    ASSERT_TRUE((compare(v.columns, 2)));
+    ASSERT_TRUE((compare(v.stride(), 2)));
     // cleanup
     delete[] data;
 }
@@ -963,9 +963,9 @@ TEST(custom_dense_matrix_constructor, given_cf_pointer_and_size_should_construct
     const CustomDenseMatrix<std::complex<float>> v(data, 3, 3, 3);
     // assert
     ASSERT_TRUE(data == v.data());
-    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
-    ASSERT_TRUE((compare<int, int>(v.stride(), 3)));
+    ASSERT_TRUE((compare(v.rows, 3)));
+    ASSERT_TRUE((compare(v.columns, 3)));
+    ASSERT_TRUE((compare(v.stride(), 3)));
     // cleanup
     delete[] data;
 }
@@ -986,9 +986,9 @@ TEST(custom_dense_matrix_constructor, given_cf_pointer_and_size_and_stride_shoul
     const CustomDenseMatrix<std::complex<float>> v(data, 3, 3, 0);
     // assert
     ASSERT_TRUE(data == v.data());
-    ASSERT_TRUE((compare<int, int>(v.rows, 3)));
-    ASSERT_TRUE((compare<int, int>(v.columns, 3)));
-    ASSERT_TRUE((compare<int, int>(v.stride(), 0)));
+    ASSERT_TRUE((compare(v.rows, 3)));
+    ASSERT_TRUE((compare(v.columns, 3)));
+    ASSERT_TRUE((compare(v.stride(), 0)));
     // cleanup
     delete[] data;
 }
@@ -1009,9 +1009,9 @@ TEST(custom_dense_matrix_constructor, given_cf_pointer_and_size_and_stride_shoul
     const CustomDenseMatrix<std::complex<float>> v(data, 2, 2, 2);
     // assert
     ASSERT_TRUE(data == v.data());
-    ASSERT_TRUE((compare<int, int>(v.rows, 2)));
-    ASSERT_TRUE((compare<int, int>(v.columns, 2)));
-    ASSERT_TRUE((compare<int, int>(v.stride(), 2)));
+    ASSERT_TRUE((compare(v.rows, 2)));
+    ASSERT_TRUE((compare(v.columns, 2)));
+    ASSERT_TRUE((compare(v.stride(), 2)));
     // cleanup
     delete[] data;
 }
@@ -1042,17 +1042,17 @@ TEST(custom_dense_matrix_index_operator, given_index_should_return_reference_f) 
     float& v22 = v[2, 2];
     v22 = 9;
     // assert
-    ASSERT_TRUE((compare<float, float>(data[0], 1, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[1], 4, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[2], 7, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[2], 7)));
 
-    ASSERT_TRUE((compare<float, float>(data[3], 2, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[4], 5, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[5], 8, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[3], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[4], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[5], 8)));
 
-    ASSERT_TRUE((compare<float, float>(data[6], 3, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[7], 6, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(data[8], 9, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[6], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[7], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[8], 9)));
 }
 
 TEST(custom_dense_matrix_index_operator, given_index_should_return_reference_cf) {
@@ -1079,17 +1079,17 @@ TEST(custom_dense_matrix_index_operator, given_index_should_return_reference_cf)
     std::complex<float>& v22 = v[2, 2];
     v22 = {17, 18};
     // assert
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[0], {1, 2}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[1], {7, 8}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[2], {13, 14}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[0], std::complex<float>(1, 2))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[2], std::complex<float>(13, 14))));
 
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[3], {3, 4}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[4], {9, 10}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[5], {15, 16}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[3], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[4], std::complex<float>(9, 10))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[5], std::complex<float>(15, 16))));
 
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[6], {5, 6}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[7], {11, 12}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(data[8], {17, 18}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), data[6], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[7], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), data[8], std::complex<float>(17, 18))));
 }
 
 TEST(custom_dense_matrix_index_operator, given_big_index_should_throw_1) {
@@ -1155,15 +1155,15 @@ TEST(custom_dense_matrix_const_index_operator, given_index_should_return_referen
     data[8] = 9;
     const CustomDenseMatrix<float> v(data, 3, 3, 3);
     // act / assert
-    ASSERT_TRUE((compare<float, float>(v[0, 0], 1, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[1, 0], 2, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[2, 0], 3, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[0, 1], 4, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[1, 1], 5, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[2, 1], 6, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[0, 2], 7, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[1, 2], 8, 0.001f)));
-    ASSERT_TRUE((compare<float, float>(v[2, 2], 9, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], 9)));
 }
 
 TEST(custom_dense_matrix_const_index_operator, given_index_should_return_reference_cf) {
@@ -1180,15 +1180,15 @@ TEST(custom_dense_matrix_const_index_operator, given_index_should_return_referen
     data[8] = {17, 18};
     const CustomDenseMatrix<std::complex<float>> v(data, 3, 3, 3);
     // act / assert
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[0, 0], {1, 2}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[1, 0], {3, 4}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[2, 0], {5, 6}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[0, 1], {7, 8}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[1, 1], {9, 10}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[2, 1], {11, 12}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[0, 2], {13, 14}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[1, 2], {15, 16}, 0.001f)));
-    ASSERT_TRUE((compare<std::complex<float>, std::complex<float>>(v[2, 2], {17, 18}, 0.001f)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], std::complex<float>(1, 2))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], std::complex<float>(9, 10))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], std::complex<float>(13, 14))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], std::complex<float>(15, 16))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], std::complex<float>(17, 18))));
 }
 
 TEST(custom_dense_matrix_const_index_operator, given_big_index_should_throw_1) {
@@ -1256,7 +1256,7 @@ TEST(custom_dense_matrix_stride, should_return_stride) {
     // act
     const int stride = v.stride();
     // assert
-    ASSERT_TRUE((compare<int, int>(stride, 3)));
+    ASSERT_TRUE((compare(stride, 3)));
 }
 #pragma endregion
 #pragma endregion
