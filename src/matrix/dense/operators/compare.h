@@ -45,11 +45,6 @@ struct DenseMatrixCompareExpr : Expression<bool, OTHERS...> {
         }, this->others);
     }
 
-    DenseMatrixCompareExpr<OTHERS...>& operator==(const Precision<underlying_type_t<std::common_type_t<underlying_type_t<OTHERS>...>>>& newPrecision) {
-        precision.value = newPrecision.value;
-        return *this;
-    }
-
     DenseMatrixCompareExpr<OTHERS...>& operator+(const Precision<underlying_type_t<std::common_type_t<underlying_type_t<OTHERS>...>>>& newPrecision) {
         precision.value = newPrecision.value;
         return *this;
