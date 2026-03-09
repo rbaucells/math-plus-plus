@@ -145,32 +145,48 @@ struct Precision {
 
 
 /**
- * @brief Checks if 'a' and 'others' are equal up to 'precision'.
- * @tparam T Scalar type of 'a'.
- * @tparam OTHERS Scalar types of 'others'.
- * @param precision The precision to use when comparing 'a' and 'others'
- * @param a Scalar to compare to 'others'.
- * @param others Scalars to compare to 'a'.
- * @return Whether 'a' and 'others' are all equal up to 'precision'.
- * @note The underlying types of 'T' and 'OTHERS' must have a common type.
+ * @brief Checks if 'args' are all equal up to 'precision'.
+ * @return Whether 'args' are all equal up to 'precision'.
+ * @tparam ARGS Scalar types of args.
+ * @note The underlying types of 'ARGS' must have a common type.
  */
-template<scalar T, scalar... OTHERS> requires has_common_type<underlying_type_t<T>, underlying_type_t<OTHERS>...>
-[[nodiscard]] bool compare(const Precision<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>> precision, const T a, const OTHERS... others) {
-    return ((std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>(std::real(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>(std::real(others))) <= precision.value && std::abs(static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>(std::imag(a)) - static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>(std::imag(others))) <= precision.value) && ...);
+template<scalar... ARGS> requires has_common_type<underlying_type_t<ARGS>...>
+[[nodiscard]] bool compare(const Precision<std::common_type_t<underlying_type_t<ARGS>...>> precision, const ARGS... args) {
+    // they are all real
+    if constexpr ((real<ARGS> && ...)) {
+        std::common_type_t<ARGS...> min = std::min({(static_cast<std::common_type_t<ARGS...>>(args))...});
+        std::common_type_t<ARGS...> max = std::max({(static_cast<std::common_type_t<ARGS...>>(args))...});
+
+        return std::abs(max - min) <= precision.value;
+    }
+    else {
+        std::common_type_t<underlying_type_t<ARGS>...> realMin = std::min({(static_cast<std::common_type_t<underlying_type_t<ARGS>...>>(std::real(args)))...});
+        std::common_type_t<underlying_type_t<ARGS>...> realMax = std::max({(static_cast<std::common_type_t<underlying_type_t<ARGS>...>>(std::real(args)))...});
+
+        if (std::abs(realMax - realMin) > precision.value) {
+            return false;
+        }
+
+        std::common_type_t<underlying_type_t<ARGS>...> imagMin = std::min({(static_cast<std::common_type_t<underlying_type_t<ARGS>...>>(std::imag(args)))...});
+        std::common_type_t<underlying_type_t<ARGS>...> imagMax = std::max({(static_cast<std::common_type_t<underlying_type_t<ARGS>...>>(std::imag(args)))...});
+
+        if (std::abs(imagMax - imagMin) > precision.value) {
+            return false;
+        }
+
+        return true;
+    }
 }
 
 /**
- * @brief Checks if 'a' and 'others' are equal up to machine precision.
- * @tparam T Scalar type of 'a'.
- * @tparam OTHERS Scalar types of 'others'.
- * @param a Scalar to compare to 'others'.
- * @param others Scalars to compare to 'a'.
- * @return Whether 'a' and 'others' are all equal up to machine precision.
- * @note The underlying types of 'T' and 'OTHERS' must have a common type.
+ * @brief Checks if 'args' are all equal up to machine precision.
+ * @return Whether 'args' are all equal up to machine precision.
+ * @tparam ARGS Scalar types of args.
+ * @note The underlying types of 'ARGS' must have a common type.
  */
-template<scalar T, scalar... OTHERS> requires has_common_type<underlying_type_t<T>, underlying_type_t<OTHERS>...>
-[[nodiscard]] bool compare(const T a, const OTHERS... others) {
-    return compare(Precision(epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<OTHERS>...>>()), a, others...);
+template<scalar... ARGS> requires has_common_type<underlying_type_t<ARGS>...>
+[[nodiscard]] bool compare(const ARGS... args) {
+    return compare(Precision(epsilon<std::common_type_t<underlying_type_t<ARGS>...>>()), args...);
 }
 
 /**

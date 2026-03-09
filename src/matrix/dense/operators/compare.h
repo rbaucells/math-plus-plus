@@ -4,7 +4,7 @@
 
 template<dense_matrix_base T, dense_matrix_base... OTHERS>
 [[nodiscard]] bool compare(const T& a, const OTHERS&... others) {
-    return compare(Precision(epsilon<underlying_type_t<std::common_type_t<typename T::ValueType, typename OTHERS::ValueType...>>>(), a, others...));
+    return compare(Precision(epsilon<underlying_type_t<std::common_type_t<typename T::ValueType, typename OTHERS::ValueType...>>>()), a, others...);
 }
 
 template<dense_matrix_base T, dense_matrix_base... OTHERS>
@@ -34,14 +34,14 @@ struct DenseMatrixCompareExpr : Expression<bool, OTHERS...> {
 
     [[nodiscard]] bool evaluate() const override {
         return std::apply([this](const auto&... args) {
-            return compare(Precision(precision), args...);
+            return compare(precision, args...);
         }, this->others);
     }
 
     template<typename OTHER>
     DenseMatrixCompareExpr<OTHER, OTHERS...> operator==(const OTHER& other) const {
         return std::apply([&](const auto&... args) {
-            return DenseMatrixCompareExpr<OTHER, OTHERS...>(Precision(precision), other, args...);
+            return DenseMatrixCompareExpr<OTHER, OTHERS...>(precision, other, args...);
         }, this->others);
     }
 
@@ -55,15 +55,3 @@ template<dense_matrix_base T, dense_matrix_base U>
 DenseMatrixCompareExpr<T, U> operator==(const T& a, const U& b) {
     return DenseMatrixCompareExpr<T, U>(Precision(epsilon<underlying_type_t<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>>()), a, b);
 }
-
-/// TODO:
-///
-/// What if instead of 'a == b == c' always just using epsilon
-/// If you do 'a == b == c == Precision(0.001f)' or '(a == b == c) + Precision(0.001f)'
-/// And you can choose the precision
-/// You would have to add a operator+(const Precision precision) const
-/// or
-/// operator==(const Precision precision) const
-///
-/// And this can work for all equality operators (matrix/vector)
-///
