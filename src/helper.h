@@ -202,34 +202,6 @@ template<scalar T, scalar U, scalar... ARGS> requires has_common_type<underlying
     return compare(Precision(epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>()), a, b, args...);
 }
 
-/**
- * @brief Checks if 'a' is less than 'b'.
- * @tparam T Real type of 'a'.
- * @tparam U Real type of 'b'.
- * @param a Real scalar to compare to 'b'.
- * @param b Real scalar to compare to 'a'.
- * @return Whether 'a' is less than 'b'.
- * @note Types 'T' and 'U' must have a common type.
- */
-template<real T, real U> requires has_common_type<T, U>
-[[nodiscard]] bool lesser(const T a, const U b) {
-    return static_cast<std::common_type_t<T, U>>(a) < static_cast<std::common_type_t<T, U>>(b);
-}
-
-/**
- * @brief Checks if 'a' is greater than 'b'.
- * @tparam T Real type of 'a'.
- * @tparam U Real type of 'b'.
- * @param a Real scalar to compare to 'b'.
- * @param b Real scalar to compare to 'a'.
- * @return Whether 'a' is greater than 'b'.
- * @note Types 'T' and 'U' must have a common type.
- */
-template<real T, real U> requires has_common_type<T, U>
-[[nodiscard]] bool greater(const T a, const U b) {
-    return static_cast<std::common_type_t<T, U>>(a) > static_cast<std::common_type_t<T, U>>(b);
-}
-
 enum class DotProductConjugationBehavior {
     first_argument,
     second_argument,
