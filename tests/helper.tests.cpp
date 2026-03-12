@@ -129,7 +129,7 @@ TEST(compare, given_floats_should_return_false) {
 }
 
 TEST(compare, given_floats_and_precision_should_return_true) {
-    // Precision(0.11f) instead of Precision(0.1f) because 1.1f is not actually 1.1, its 1.099999999
+    // Precision(0.11f) instead of Precision(0.1f) because 1.1f is not actually 1.1
     ASSERT_TRUE(compare(Precision(0.11f), 1.0f, 1.1f, 1.0f));
 }
 
@@ -138,28 +138,125 @@ TEST(compare, given_floats_and_precision_should_return_false) {
 }
 
 TEST(compare, given_complex_floats_should_return_true) {
-    ASSERT_TRUE(compare(std::complex<float>(1.0f, 2.0f),std::complex<float>(1.0f, 2.0f),std::complex<float>(1.0f, 2.0f)));
+    ASSERT_TRUE(compare(std::complex<float>(1.0f, 2.0f), std::complex<float>(1.0f, 2.0f), std::complex<float>(1.0f, 2.0f)));
 }
 
 TEST(compare, given_complex_floats_should_return_false_1) {
-    ASSERT_FALSE(compare(std::complex<float>(1.0f, 2.0f),std::complex<float>(2.0f, 2.0f),std::complex<float>(1.0f, 2.0f)));
+    ASSERT_FALSE(compare(std::complex<float>(1.0f, 2.0f), std::complex<float>(2.0f, 2.0f), std::complex<float>(1.0f, 2.0f)));
 }
 
 TEST(compare, given_complex_floats_should_return_false_2) {
-    ASSERT_FALSE(compare(std::complex<float>(1.0f, 2.0f),std::complex<float>(1.0f, 3.0f),std::complex<float>(1.0f, 2.0f)));
+    ASSERT_FALSE(compare(std::complex<float>(1.0f, 2.0f), std::complex<float>(1.0f, 3.0f), std::complex<float>(1.0f, 2.0f)));
 }
 
 TEST(compare, given_complex_floats_and_precision_should_return_true) {
-    // Precision(0.11f) instead of Precision(0.1f) because 1.1f is not actually 1.1, its 1.099999999
-    ASSERT_TRUE(compare(Precision(0.11f),std::complex<float>(1.0f, 2.0f),std::complex<float>(1.1f, 2.1f),std::complex<float>(1.0f, 2.0f)));
+    // Precision(0.11f) instead of Precision(0.1f) because 1.1f is not actually 1.1
+    ASSERT_TRUE(compare(Precision(0.11f), std::complex<float>(1.0f, 2.0f), std::complex<float>(1.1f, 2.1f), std::complex<float>(1.0f, 2.0f)));
 }
 
 TEST(compare, given_complex_floats_and_precision_should_return_false_1) {
-    ASSERT_FALSE(compare(Precision(0.1f),std::complex<float>(1.0f, 2.0f),std::complex<float>(1.1f, 2.0f),std::complex<float>(0.9f, 2.0f)));
+    ASSERT_FALSE(compare(Precision(0.1f), std::complex<float>(1.0f, 2.0f), std::complex<float>(1.1f, 2.0f), std::complex<float>(0.9f, 2.0f)));
 }
 
 TEST(compare, given_complex_floats_and_precision_should_return_false_2) {
-    ASSERT_FALSE(compare(Precision(0.1f),std::complex<float>(1.0f, 2.0f),std::complex<float>(1.0f, 2.1f),std::complex<float>(1.0f, 1.9f)));
+    ASSERT_FALSE(compare(Precision(0.1f), std::complex<float>(1.0f, 2.0f), std::complex<float>(1.0f, 2.1f), std::complex<float>(1.0f, 1.9f)));
+}
+
+TEST(compare, given_int_and_float_should_return_true) {
+    ASSERT_TRUE(compare(1, 1.0f));
+}
+
+TEST(compare, given_int_and_float_should_return_false) {
+    ASSERT_FALSE(compare(1, 1.1f));
+}
+
+TEST(compare, given_int_and_float_and_precision_should_return_true) {
+    // Precision(0.11f) instead of Precision(0.1f) because 1.1f is not actually 1.1
+    ASSERT_TRUE(compare(Precision(0.11f), 1, 1.1f));
+}
+
+TEST(compare, given_int_and_float_and_precision_should_return_false) {
+    ASSERT_FALSE(compare(Precision(0.1f), 1, 1.2f));
+}
+
+TEST(compare, given_float_and_complex_float_should_return_true) {
+    ASSERT_TRUE(compare(1.0f, std::complex<float>(1.0f, 0.0f)));
+}
+
+TEST(compare, given_float_and_complex_float_should_return_false_1) {
+    ASSERT_FALSE(compare(1.0f, std::complex<float>(1.0f, 0.1f)));
+}
+
+TEST(compare, given_float_and_complex_float_should_return_false_2) {
+    ASSERT_FALSE(compare(1.0f, std::complex<float>(1.1f, 0.0f)));
+}
+
+TEST(compare, given_float_and_complex_float_and_precision_should_return_true_1) {
+    // Precision(0.11f) instead of Precision(0.1f) because 1.1f is not actually 1.1
+    ASSERT_TRUE(compare(Precision(0.11f), 1.0f, std::complex<float>(1.1f, 0.0f)));
+}
+
+TEST(compare, given_float_and_complex_float_and_precision_should_return_true_2) {
+    ASSERT_TRUE(compare(Precision(0.1f), 1.0f, std::complex<float>(1.0f, 0.1f)));
+}
+
+TEST(compare, given_float_and_complex_float_and_precision_should_return_false_1) {
+    ASSERT_FALSE(compare(Precision(0.1f), 1.0f, std::complex<float>(1.0f, 0.2f)));
+}
+
+TEST(compare, given_float_and_complex_float_and_precision_should_return_false_2) {
+    ASSERT_FALSE(compare(Precision(0.1f), 1.0f, std::complex<float>(1.2f, 0.0f)));
+}
+
+TEST(compare, given_int_and_complex_float_should_return_true) {
+    ASSERT_TRUE(compare(1, std::complex<float>(1.0f, 0.0f)));
+}
+
+TEST(compare, given_int_and_complex_float_should_return_false_1) {
+    ASSERT_FALSE(compare(1, std::complex<float>(1.0f, 0.1f)));
+}
+
+TEST(compare, given_int_and_complex_float_should_return_false_2) {
+    ASSERT_FALSE(compare(1, std::complex<float>(1.1f, 0.0f)));
+}
+
+TEST(compare, given_int_and_complex_float_and_precision_should_return_true_1) {
+    // Precision(0.11f) instead of Precision(0.1f) because 1.1f is not actually 1.1
+    ASSERT_TRUE(compare(Precision(0.11f), 1, std::complex<float>(1.1f, 0.0f)));
+}
+
+TEST(compare, given_int_and_complex_float_and_precision_should_return_true_2) {
+    ASSERT_TRUE(compare(Precision(0.1f), 1, std::complex<float>(1.0f, 0.1f)));
+}
+
+TEST(compare, given_int_and_complex_float_and_precision_should_return_false_1) {
+    ASSERT_FALSE(compare(Precision(0.1f), 1, std::complex<float>(1.0f, 0.2f)));
+}
+
+TEST(compare, given_int_and_complex_float_and_precision_should_return_false_2) {
+    ASSERT_FALSE(compare(Precision(0.1f), 1, std::complex<float>(1.2f, 0.0f)));
+}
+
+TEST(compare, given_int_float_and_complex_float_shoud_return_true_1) {
+    ASSERT_TRUE(compare(1, 1.0f, std::complex<float>(1.0f, 0.0f)));
+}
+TEST(compare, given_int_float_and_complex_float_shoud_return_false_1) {
+    ASSERT_FALSE(compare(1, 1.0f, std::complex<float>(1.1f, 0.0f)));
+}
+TEST(compare, given_int_float_and_complex_float_shoud_return_false_2) {
+    ASSERT_FALSE(compare(1, 1.0f, std::complex<float>(1.0f, 0.1f)));
+}
+TEST(compare, given_int_float_and_complex_float_precision_should_return_true_1) {
+    ASSERT_TRUE(compare(Precision(0.11f), 1, 1.0f, std::complex<float>(1.1f, 0.0f)));
+}
+TEST(compare, given_int_float_and_complex_float_precision_should_return_true_2) {
+    ASSERT_TRUE(compare(Precision(0.1f), 1, 1.0f, std::complex<float>(1.0f,  0.1f)));
+}
+TEST(compare, given_int_float_and_complex_float_precision_should_return_false_1) {
+    ASSERT_FALSE(compare(Precision(0.1f), 1, 1.0f, std::complex<float>(1.0f, 0.2f)));
+}
+TEST(compare, given_int_float_and_complex_float_precision_should_return_false_2) {
+    ASSERT_FALSE(compare(Precision(0.1f), 1, 1.0f, std::complex<float>(0.8f, 0.0f)));
 }
 #pragma endregion
 #pragma region lesser
