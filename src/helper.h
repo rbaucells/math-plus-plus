@@ -146,30 +146,37 @@ struct Precision {
 
 
 /**
- * @brief Checks if 'args' are all equal up to 'precision'.
- * @return Whether 'args' are all equal up to 'precision'.
- * @tparam ARGS Scalar types of args.
- * @note The underlying types of 'ARGS' must have a common type.
+ * @brief Checks if 'a, b, and args' are all equal within 'precision'.
+ * @return Whether 'a, b, and args' are all equal within 'precision'.
+ * @param precision Precision type on real scalar of precision to compare numbers within.
+ * @param a First argument to compare.
+ * @param b Second argument to compare.
+ * @param args Optional rest of arguments to compare.
+ * @tparam T Scalar types of 'a'.
+ * @tparam U Scalar types of 'b'.
+ * @tparam ARGS Scalar types of 'args'.
+ * @note The underlying types of 'T, U, and ARGS' must have a common type.
+ * @note compare(Precision(0.1f), 1.0f, 1.1f) will return true. (inclusive).
  */
-template<scalar... ARGS> requires has_common_type<underlying_type_t<ARGS>...>
-[[nodiscard]] bool compare(const Precision<std::common_type_t<underlying_type_t<ARGS>...>> precision, const ARGS... args) {
+template<scalar T, scalar U, scalar... ARGS> requires has_common_type<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>
+[[nodiscard]] bool compare(const Precision<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>> precision, const T a, const U b, const ARGS... args) {
     // they are all real
-    if constexpr ((real<ARGS> && ...)) {
-        std::common_type_t<ARGS...> min = std::min({(static_cast<std::common_type_t<ARGS...>>(args))...});
-        std::common_type_t<ARGS...> max = std::max({(static_cast<std::common_type_t<ARGS...>>(args))...});
+    if constexpr (real<T> && real<U> && (real<ARGS> && ...)) {
+        const std::common_type_t<T, U, ARGS...> min = std::min({static_cast<std::common_type_t<T, U, ARGS...>>(a), static_cast<std::common_type_t<T, U, ARGS...>>(b), (static_cast<std::common_type_t<T, U, ARGS...>>(args))...});
+        const std::common_type_t<T, U, ARGS...> max = std::max({static_cast<std::common_type_t<T, U, ARGS...>>(a), static_cast<std::common_type_t<T, U, ARGS...>>(b), (static_cast<std::common_type_t<T, U, ARGS...>>(args))...});
 
         return std::abs(max - min) <= precision.value;
     }
     else {
-        std::common_type_t<underlying_type_t<ARGS>...> realMin = std::min({(static_cast<std::common_type_t<underlying_type_t<ARGS>...>>(std::real(args)))...});
-        std::common_type_t<underlying_type_t<ARGS>...> realMax = std::max({(static_cast<std::common_type_t<underlying_type_t<ARGS>...>>(std::real(args)))...});
+        const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...> realMin = std::min({static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::real(a)), static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::real(b)), (static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::real(args)))...});
+        const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...> realMax = std::max({static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::real(a)), static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::real(b)), (static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::real(args)))...});
 
         if (std::abs(realMax - realMin) > precision.value) {
             return false;
         }
 
-        std::common_type_t<underlying_type_t<ARGS>...> imagMin = std::min({(static_cast<std::common_type_t<underlying_type_t<ARGS>...>>(std::imag(args)))...});
-        std::common_type_t<underlying_type_t<ARGS>...> imagMax = std::max({(static_cast<std::common_type_t<underlying_type_t<ARGS>...>>(std::imag(args)))...});
+        const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...> imagMin = std::min({static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::imag(a)), static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::imag(b)), (static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::imag(args)))...});
+        const std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...> imagMax = std::max({static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::imag(a)), static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::imag(b)), (static_cast<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>(std::imag(args)))...});
 
         if (std::abs(imagMax - imagMin) > precision.value) {
             return false;
@@ -180,14 +187,19 @@ template<scalar... ARGS> requires has_common_type<underlying_type_t<ARGS>...>
 }
 
 /**
- * @brief Checks if 'args' are all equal up to machine precision.
- * @return Whether 'args' are all equal up to machine precision.
- * @tparam ARGS Scalar types of args.
- * @note The underlying types of 'ARGS' must have a common type.
+ * @brief Checks if 'a, b, and args' are all equal within machine precision.
+ * @return Whether 'a, b, and args' are all equal within machine precision.
+ * @param a First argument to compare.
+ * @param b Second argument to compare.
+ * @param args Optional rest of arguments to compare.
+ * @tparam T Scalar types of 'a'.
+ * @tparam U Scalar types of 'b'.
+ * @tparam ARGS Scalar types of 'args'.
+ * @note The underlying types of 'T, U, and ARGS' must have a common type.
  */
-template<scalar... ARGS> requires has_common_type<underlying_type_t<ARGS>...>
-[[nodiscard]] bool compare(const ARGS... args) {
-    return compare(Precision(epsilon<std::common_type_t<underlying_type_t<ARGS>...>>()), args...);
+template<scalar T, scalar U, scalar... ARGS> requires has_common_type<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>
+[[nodiscard]] bool compare(const T a, const U b, const ARGS... args) {
+    return compare(Precision(epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>()), a, b, args...);
 }
 
 /**
