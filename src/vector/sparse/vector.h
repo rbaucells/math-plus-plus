@@ -74,6 +74,32 @@ struct SparseVector : SparseVectorBase<T> {
     }
 
     /**
+     * @brief Constructs a SparseVector of size 'n' with elements 'initializerList'.
+     *
+     * @param n Size of vector.
+     * @param initializerList Initializer list of T, int tuples. Representing value and index.
+     *
+     * @note 'initializerList' must be sorted in increasing indexes.
+     */
+    SparseVector(const int n, std::initializer_list<std::tuple<T, int>> initializerList) : SparseVector<T>(n) {
+        if (n < 0) {
+            throw InvalidIndexException("Cannot construct SparseVector of negative size");
+        }
+
+        nnz_ = initializerList.size();
+        values_ = new T[nnz_];
+        indexes_ = new int[nnz_];
+
+        int i = 0;
+        for (const auto& nonZeroElement : initializerList) {
+            values_[i] = std::get<0>(nonZeroElement);
+            indexes_[i] = std::get<1>(nonZeroElement);
+
+            ++i;
+        }
+    }
+
+    /**
      * @brief Copy constructor for SparseVector from same type SparseVector.
      *
      * Constructs a vector of size 'n' and performs a deep copy of 'other'.

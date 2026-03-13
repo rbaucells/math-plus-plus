@@ -663,6 +663,39 @@ TEST(sparse_vector_default_constructor, given_negative_size_should_throw) {
     ASSERT_THROW(std::ignore = SparseVector<std::complex<float>>(-1), InvalidIndexException);
 }
 #pragma endregion
+#pragma region initializer_list_constructor
+TEST(sparse_vector_initializer_list_constructor, given_n_and_value_index_pairs_should_construct_f) {
+    // arrange / act
+    const SparseVector<float> v(5, {{1, 0}, {3, 2}, {5, 4}});
+    const float* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare(v.n, 5)));
+    ASSERT_TRUE((compare(v.nnz(), 3)));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[0], 1));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[1], 3));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[2], 5));
+    ASSERT_TRUE((compare(vIndexes[0], 0)));
+    ASSERT_TRUE((compare(vIndexes[1], 2)));
+    ASSERT_TRUE((compare(vIndexes[2], 4)));
+}
+
+TEST(sparse_vector_initializer_list_constructor, given_n_and_value_index_pairs_should_construct_cf) {
+    // arrange / act
+    const SparseVector<std::complex<float>> v(5, {{{1, 2}, 0}, {{5, 6}, 2}, {{9, 10}, 4}});
+    const std::complex<float>* vValues = v.values();
+    const int* vIndexes = v.indexes();
+    // assert
+    ASSERT_TRUE((compare(v.n, 5)));
+    ASSERT_TRUE((compare(v.nnz(), 3)));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[0], std::complex<float>(1, 2)));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[1], std::complex<float>(5, 6)));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[2], std::complex<float>(9, 10)));
+    ASSERT_TRUE((compare(vIndexes[0], 0)));
+    ASSERT_TRUE((compare(vIndexes[1], 2)));
+    ASSERT_TRUE((compare(vIndexes[2], 4)));
+}
+#pragma endregion
 #pragma region copy_constructor_from_same_type_sparse_vector
 TEST(sparse_vector_copy_constructor_from_same_type_sparse_vector, given_f_sparse_vector_should_copy_construct) {
     // arrange
