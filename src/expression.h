@@ -2,18 +2,17 @@
 #include <tuple>
 
 /**
- * Base class for all math Expressions.
+ * Base class for all math expressions.
  * To be used for operators ONLY.
  * Common uses are + and - operators, where you do all additions and subtractions in one loop instead of multiple.
- * @tparam RESULT What the Expression will get turned into implicitly.
- * @tparam OTHERS The types of all the other parameters.
+ * @tparam RESULT What the expression will get turned into implicitly.
+ * @tparam ARGS The types of all the parameters.
  */
-template<typename RESULT, typename... OTHERS>
+template<typename RESULT, typename... ARGS>
 struct Expression {
-    // All the parameters being passed to the main function
-    const std::tuple<const OTHERS&...> others;
+    const std::tuple<const ARGS&...> args;
 
-    Expression(const OTHERS&... args) : others(args...) {}
+    Expression(const ARGS&... args) : args(args...) {}
 
     operator RESULT() const {
         return this->evaluate();
