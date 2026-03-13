@@ -83,16 +83,18 @@ struct underlying_type<T> {
 };
 
 /**
- * @brief Asserts that 'a' and 'others' have the same dimensions.
- * @tparam T Sparse Matrix type of 'a'.
- * @tparam OTHERS Sparse Matrix types of 'others'.
- * @param a Sparse matrix to compare dimensions with 'others'.
- * @param others Sparse matrices to compare dimensions with 'a'.
- * @throws InvalidDimensionException If 'a' and 'others' are not all of same dimensions.
+ * @brief Asserts that 'a', 'b', and 'others' have the same dimensions.
+ * @tparam T Sparse matrix type of 'a'.
+ * @tparam U Sparse matrix type of 'b'.
+ * @tparam ARGS Sparse matrix types of 'args'.
+ * @param a First sparse matrix to compare dimensions.
+ * @param b Second sparse matrix to compare dimensions.
+ * @param args Rest of sparse matrices to compare dimensions.
+ * @throws InvalidDimensionException If 'a', 'b', and 'others' are not all of same dimensions.
  */
-template<sparse_matrix_base T, sparse_matrix_base... OTHERS>
-inline void assert_same_dimensions(const T& a, const OTHERS&... others) {
-    if (!((a.columns == others.columns && a.rows == others.rows) && ...)) {
+template<sparse_matrix_base T, sparse_matrix_base U, sparse_matrix_base... ARGS>
+inline void assert_same_dimensions(const T& a, const U& b, const ARGS&... args) {
+    if (!(a.columns == b.columns && a.rows == b.rows && ((a.columns == args.columns && a.rows == args.rows) && ...))) {
         throw InvalidDimensionException("Sparse matrices must all have same dimensions");
     }
 }

@@ -84,16 +84,18 @@ struct underlying_type<T> {
 };
 
 /**
- * @brief Asserts that 'a' and 'others' have the same dimensions.
- * @tparam T Dense Matrix type of 'a'.
- * @tparam OTHERS Dense Matrix types of 'others'.
- * @param a Dense matrix to compare dimensions with 'others'.
- * @param others Dense matrices to compare dimensions with 'a'.
- * @throws InvalidDimensionException If 'a' and 'others' are not all of same dimensions.
+ * @brief Asserts that 'a', 'b', and 'others' have the same dimensions.
+ * @tparam T Dense matrix type of 'a'.
+ * @tparam U Dense matrix type of 'b'.
+ * @tparam ARGS Dense matrix types of 'args'.
+ * @param a First dense matrix to compare dimensions.
+ * @param b Second dense matrix to compare dimensions.
+ * @param args Rest of dense matrices to compare dimensions.
+ * @throws InvalidDimensionException If 'a', 'b', and 'others' are not all of same dimensions.
  */
-template<dense_matrix_base T, dense_matrix_base... OTHERS>
-inline void assert_same_dimensions(const T& a, const OTHERS&... others) {
-    if (!((a.columns == others.columns && a.rows == others.rows) && ...)) {
+template<dense_matrix_base T, dense_matrix_base U, dense_matrix_base... ARGS>
+inline void assert_same_dimensions(const T& a, const U& b, const ARGS&... args) {
+    if (!(a.columns == b.columns && a.rows == b.rows && ((a.columns == args.columns && a.rows == args.rows) && ...))) {
         throw InvalidDimensionException("Dense matrices must all have same dimensions");
     }
 }
