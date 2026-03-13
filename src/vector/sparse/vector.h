@@ -70,7 +70,7 @@ struct SparseVector : SparseVectorBase<T> {
 
         nnz_ = 0;
         values_ = new T[nnz_];
-        indexes_ = new int[nnz_];
+        indices_ = new int[nnz_];
     }
 
     /**
@@ -79,7 +79,7 @@ struct SparseVector : SparseVectorBase<T> {
      * @param n Size of vector.
      * @param initializerList Initializer list of T, int tuples. Representing value and index.
      *
-     * @note 'initializerList' must be sorted in increasing indexes.
+     * @note 'initializerList' must be sorted in increasing indices.
      */
     SparseVector(const int n, std::initializer_list<std::tuple<T, int>> initializerList) : SparseVector<T>(n) {
         if (n < 0) {
@@ -88,12 +88,12 @@ struct SparseVector : SparseVectorBase<T> {
 
         nnz_ = initializerList.size();
         values_ = new T[nnz_];
-        indexes_ = new int[nnz_];
+        indices_ = new int[nnz_];
 
         int i = 0;
         for (const auto& nonZeroElement : initializerList) {
             values_[i] = std::get<0>(nonZeroElement);
-            indexes_[i] = std::get<1>(nonZeroElement);
+            indices_[i] = std::get<1>(nonZeroElement);
 
             ++i;
         }
@@ -111,8 +111,8 @@ struct SparseVector : SparseVectorBase<T> {
         values_ = new T[nnz_];
         memcpy(values_, other.values_, nnz_ * sizeof(T));
 
-        indexes_ = new int[nnz_];
-        memcpy(indexes_, other.indexes_, nnz_ * sizeof(int));
+        indices_ = new int[nnz_];
+        memcpy(indices_, other.indices_, nnz_ * sizeof(int));
     }
 
     /**
@@ -135,11 +135,11 @@ struct SparseVector : SparseVectorBase<T> {
             values_[i] = otherValues[i];
         }
 
-        indexes_ = new int[nnz_];
+        indices_ = new int[nnz_];
 
-        const int* otherIndexes = other.indexes();
+        const int* otherIndices = other.indices();
 
-        memcpy(indexes_, otherIndexes, nnz_ * sizeof(int));
+        memcpy(indices_, otherIndices, nnz_ * sizeof(int));
     }
 
     /**
@@ -153,7 +153,7 @@ struct SparseVector : SparseVectorBase<T> {
     SparseVector(const SparseVectorBase<T>& other) : SparseVectorBase<T>(other.n) {
         nnz_ = 0;
         values_ = new T[nnz_];
-        indexes_ = new int[nnz_];
+        indices_ = new int[nnz_];
         for (int i = 0; i < this->n; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
@@ -173,7 +173,7 @@ struct SparseVector : SparseVectorBase<T> {
     SparseVector(const SparseVectorBase<OTHER_T>& other) : SparseVectorBase<T>(other.n) {
         nnz_ = 0;
         values_ = new T[nnz_];
-        indexes_ = new int[nnz_];
+        indices_ = new int[nnz_];
         for (int i = 0; i < this->n; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
@@ -191,8 +191,8 @@ struct SparseVector : SparseVectorBase<T> {
         values_ = other.values_;
         other.values_ = nullptr;
 
-        indexes_ = other.indexes_;
-        other.indexes_ = nullptr;
+        indices_ = other.indices_;
+        other.indices_ = nullptr;
     }
 
     /**
@@ -205,7 +205,7 @@ struct SparseVector : SparseVectorBase<T> {
      * @note 'other' must be of same size as this.
      */
     SparseVector<T>& operator=(const SparseVector<T>& other) {
-        if (values_ != other.values_ && indexes_ != other.indexes_) {
+        if (values_ != other.values_ && indices_ != other.indices_) {
             assert_same_size(*this, other);
 
             if (nnz_ != other.nnz_) {
@@ -214,12 +214,12 @@ struct SparseVector : SparseVectorBase<T> {
                 delete[] values_;
                 values_ = new T[nnz_];
 
-                delete[] indexes_;
-                indexes_ = new int[nnz_];
+                delete[] indices_;
+                indices_ = new int[nnz_];
             }
 
             memcpy(values_, other.values_, nnz_ * sizeof(T));
-            memcpy(indexes_, other.indexes_, nnz_ * sizeof(int));
+            memcpy(indices_, other.indices_, nnz_ * sizeof(int));
         }
 
         return *this;
@@ -248,8 +248,8 @@ struct SparseVector : SparseVectorBase<T> {
             delete[] values_;
             values_ = new T[nnz_];
 
-            delete[] indexes_;
-            indexes_ = new int[nnz_];
+            delete[] indices_;
+            indices_ = new int[nnz_];
         }
 
         const OTHER_T* otherValues = other.values();
@@ -258,7 +258,7 @@ struct SparseVector : SparseVectorBase<T> {
             values_[i] = otherValues[i];
         }
 
-        memcpy(indexes(), other.indexes(), nnz_ * sizeof(int));
+        memcpy(indices(), other.indices(), nnz_ * sizeof(int));
 
         return *this;
     }
@@ -312,16 +312,16 @@ struct SparseVector : SparseVectorBase<T> {
     * @note 'other' must be of same size as this.
     */
     SparseVector<T>& operator=(SparseVector<T>&& other) {
-        if (values_ != other.values_ && indexes_ != other.indexes_) {
+        if (values_ != other.values_ && indices_ != other.indices_) {
             assert_same_size(*this, other);
 
             delete[] values_;
             values_ = other.values_;
             other.values_ = nullptr;
 
-            delete[] indexes_;
-            indexes_ = other.indexes_;
-            other.indexes_ = nullptr;
+            delete[] indices_;
+            indices_ = other.indices_;
+            other.indices_ = nullptr;
 
             nnz_ = other.nnz_;
         }
@@ -336,7 +336,7 @@ struct SparseVector : SparseVectorBase<T> {
         int j;
 
         for (j = 0; j < nnz_; j++) {
-            const int curIndex = indexes_[j];
+            const int curIndex = indices_[j];
 
             if (curIndex == i) {
                 // there is currently a non-zero element there, and we are placing a zero so we remove a non-zero element;
@@ -357,13 +357,13 @@ struct SparseVector : SparseVectorBase<T> {
 
                     int* newIndices = new int[nnz_ - 1];
 
-                    memcpy(newIndices, indexes_, j * sizeof(int));
+                    memcpy(newIndices, indices_, j * sizeof(int));
 
-                    memcpy(&newIndices[j], &indexes_[j + 1], (nnz_ - j - 1) * sizeof(int));
+                    memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(int));
 
-                    delete[] indexes_;
+                    delete[] indices_;
 
-                    indexes_ = newIndices;
+                    indices_ = newIndices;
 
                     nnz_--;
 
@@ -404,15 +404,15 @@ struct SparseVector : SparseVectorBase<T> {
 
         int* newIndices = new int[nnz_ + 1];
 
-        memcpy(newIndices, indexes_, j * sizeof(int));
+        memcpy(newIndices, indices_, j * sizeof(int));
 
         newIndices[j] = i;
 
-        memcpy(&newIndices[j + 1], &indexes_[j], (nnz_ - j) * sizeof(int));
+        memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(int));
 
-        delete[] indexes_;
+        delete[] indices_;
 
-        indexes_ = newIndices;
+        indices_ = newIndices;
 
         nnz_++;
     }
@@ -423,7 +423,7 @@ struct SparseVector : SparseVectorBase<T> {
         }
 
         for (int j = 0; j < nnz_; j++) {
-            if (indexes_[j] == i) {
+            if (indices_[j] == i) {
                 return values_[j];
             }
         }
@@ -452,26 +452,26 @@ struct SparseVector : SparseVectorBase<T> {
     }
 
     /**
-     * @brief Gets the indexes pointer storing the indexes for the vectors non-zero elements.
-     * @return Pointer to array of indexes of non-zero elements.
+     * @brief Gets the indices pointer storing the indices for the vectors non-zero elements.
+     * @return Pointer to array of indices of non-zero elements.
      */
-    [[nodiscard]] int* indexes() {
-        return indexes_;
+    [[nodiscard]] int* indices() {
+        return indices_;
     }
 
     /**
-     * @brief Gets the const indexes pointer storing the indexes for the vectors non-zero elements.
-     * @return Const pointer to array of indexes of non-zero elements.
+     * @brief Gets the const indices pointer storing the indices for the vectors non-zero elements.
+     * @return Const pointer to array of indices of non-zero elements.
      */
-    [[nodiscard]] const int* indexes() const {
-        return indexes_;
+    [[nodiscard]] const int* indices() const {
+        return indices_;
     }
 
     ~SparseVector() override = default;
 
 private:
     T* values_;
-    int* indexes_;
+    int* indices_;
     int nnz_;
 };
 
@@ -532,7 +532,7 @@ struct SparseVectorView : SparseVectorBase<T> {
         int nnz = 0;
 
         for (int i = 0; i < owner_.nnz(); i++) {
-            const int curIndex = owner_.indexes()[i];
+            const int curIndex = owner_.indices()[i];
 
             if (curIndex >= offset_ && curIndex < offset_ + this->n) {
                 nnz++;
@@ -577,16 +577,16 @@ struct CustomSparseVector : SparseVectorBase<T> {
     /**
      * @brief Constructs a CustomSparseMatrix of size 'n'.
      * Does not allocate any memory on the heap.
-     * CustomSparseVector instance does not own 'values' or 'indexes' pointer.
-     * Think of it as a view on an arbitrary 'values' and 'indexes' pointer.
+     * CustomSparseVector instance does not own 'values' or 'indices' pointer.
+     * Think of it as a view on an arbitrary 'values' and 'indices' pointer.
      * @param n Number of vector elements.
      * @param values Reference to array containing non-zero elements of vector.
-     * @param indexes Reference to array containing indexes of non-zero elements of vector.
+     * @param indices Reference to array containing indices of non-zero elements of vector.
      * @param nnz Reference to number of non-zero elements.
-     * @note The array 'values' and 'indexes' are pointing to may change.
+     * @note The array 'values' and 'indices' are pointing to may change.
      * @note Value of 'nnz' may change.
      */
-    CustomSparseVector(const int n, T*& values, int*& indexes, int& nnz) : SparseVectorBase<T>(n), values_(values), indexes_(indexes), nnz_(nnz) {}
+    CustomSparseVector(const int n, T*& values, int*& indices, int& nnz) : SparseVectorBase<T>(n), values_(values), indices_(indices), nnz_(nnz) {}
 
     void set(const int i, const T value) override {
         if (i < 0 || i > this->n - 1) {
@@ -595,7 +595,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
         int j;
 
         for (j = 0; j < nnz_; j++) {
-            const int curIndex = indexes_[j];
+            const int curIndex = indices_[j];
 
             if (curIndex == i) {
                 // there is currently a non-zero element there, and we are placing a zero so we remove a non-zero element;
@@ -616,13 +616,13 @@ struct CustomSparseVector : SparseVectorBase<T> {
 
                     int* newIndices = new int[nnz_ - 1];
 
-                    memcpy(newIndices, indexes_, j * sizeof(int));
+                    memcpy(newIndices, indices_, j * sizeof(int));
 
-                    memcpy(&newIndices[j], &indexes_[j + 1], (nnz_ - j - 1) * sizeof(int));
+                    memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(int));
 
-                    delete[] indexes_;
+                    delete[] indices_;
 
-                    indexes_ = newIndices;
+                    indices_ = newIndices;
 
                     nnz_--;
 
@@ -663,15 +663,15 @@ struct CustomSparseVector : SparseVectorBase<T> {
 
         int* newIndices = new int[nnz_ + 1];
 
-        memcpy(newIndices, indexes_, j * sizeof(int));
+        memcpy(newIndices, indices_, j * sizeof(int));
 
         newIndices[j] = i;
 
-        memcpy(&newIndices[j + 1], &indexes_[j], (nnz_ - j) * sizeof(int));
+        memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(int));
 
-        delete[] indexes_;
+        delete[] indices_;
 
-        indexes_ = newIndices;
+        indices_ = newIndices;
 
         nnz_++;
     }
@@ -682,7 +682,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
         }
 
         for (int j = 0; j < nnz_; j++) {
-            if (indexes_[j] == i) {
+            if (indices_[j] == i) {
                 return values_[j];
             }
         }
@@ -711,25 +711,25 @@ struct CustomSparseVector : SparseVectorBase<T> {
     }
 
     /**
-    * @brief Gets the reference to the pointer storing the indexes of the vectors non-zero elements.
-    * @return Reference to pointer containing the indexes of the non-zero elements.
+    * @brief Gets the reference to the pointer storing the indices of the vectors non-zero elements.
+    * @return Reference to pointer containing the indices of the non-zero elements.
     */
-    [[nodiscard]] int*& indexes() {
-        return indexes_;
+    [[nodiscard]] int*& indices() {
+        return indices_;
     }
 
     /**
-    * @brief Gets the const reference to the const pointer storing the indexes of the vectors non-zero elements.
-    * @return Const reference to const pointer containing the indexes of the non-zero elements.
+    * @brief Gets the const reference to the const pointer storing the indices of the vectors non-zero elements.
+    * @return Const reference to const pointer containing the indices of the non-zero elements.
     */
-    [[nodiscard]] const int* const& indexes() const {
-        return indexes_;
+    [[nodiscard]] const int* const& indices() const {
+        return indices_;
     }
 
     ~CustomSparseVector() override = default;
 
 private:
     T*& values_;
-    int*& indexes_;
+    int*& indices_;
     int& nnz_;
 };
