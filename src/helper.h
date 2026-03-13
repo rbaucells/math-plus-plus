@@ -192,8 +192,8 @@ template<scalar T, scalar U, scalar... ARGS> requires has_common_type<underlying
  * @param a First argument to compare.
  * @param b Second argument to compare.
  * @param args Optional rest of arguments to compare.
- * @tparam T Scalar types of 'a'.
- * @tparam U Scalar types of 'b'.
+ * @tparam T Scalar type of 'a'.
+ * @tparam U Scalar type of 'b'.
  * @tparam ARGS Scalar types of 'args'.
  * @note The underlying types of 'T, U, and ARGS' must have a common type.
  */
