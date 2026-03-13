@@ -84,14 +84,14 @@ struct underlying_type<T> {
 };
 
 /**
- * @brief Asserts that 'a', 'b', and 'others' have the same dimensions.
+ * @brief Asserts that 'a', 'b', and 'args' have the same dimensions.
  * @tparam T Dense matrix type of 'a'.
  * @tparam U Dense matrix type of 'b'.
  * @tparam ARGS Dense matrix types of 'args'.
  * @param a First dense matrix to compare dimensions.
  * @param b Second dense matrix to compare dimensions.
  * @param args Rest of dense matrices to compare dimensions.
- * @throws InvalidDimensionException If 'a', 'b', and 'others' are not all of same dimensions.
+ * @throws InvalidDimensionException If 'a', 'b', and 'args' are not all of same dimensions.
  */
 template<dense_matrix_base T, dense_matrix_base U, dense_matrix_base... ARGS>
 inline void assert_same_dimensions(const T& a, const U& b, const ARGS&... args) {

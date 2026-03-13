@@ -84,14 +84,14 @@ struct underlying_type<T> {
 };
 
 /**
- * @brief Asserts that 'a', 'b', and 'others' have the same size.
+ * @brief Asserts that 'a', 'b', and 'args' have the same size.
  * @tparam T Dense vector type of 'a'.
  * @tparam U Dense vector type of 'b'.
  * @tparam ARGS Dense vector types of 'args'.
  * @param a First dense vector to compare dimensions.
  * @param b Second dense vector to compare dimensions.
  * @param args Rest of dense vectors to compare dimensions.
- * @throws InvalidDimensionException If 'a', 'b', and 'others' are not all of same size.
+ * @throws InvalidDimensionException If 'a', 'b', and 'args' are not all of same size.
  */
 template<sparse_vector_base T, sparse_vector_base U, sparse_vector_base... ARGS>
 inline void assert_same_size(const T& a, const U& b, const ARGS&... args) {
