@@ -92,7 +92,7 @@ TEST(underlying_type, given_custom_sparse_matrix_templated_on_float_should_retur
 }
 #pragma endregion
 #pragma region assert_same_dimensions
-TEST(assert_same_dimensions, given_sparse_matrixes_templated_on_float_of_same_dimensions_should_not_throw) {
+TEST(assert_same_dimensions, given_sparse_matrices_templated_on_float_of_same_dimensions_should_not_throw) {
     // arrange
     const SparseMatrix<float> a(3, 3);
     const SparseMatrix<float> b(3, 3);
@@ -101,7 +101,7 @@ TEST(assert_same_dimensions, given_sparse_matrixes_templated_on_float_of_same_di
     ASSERT_NO_THROW(assert_same_dimensions(a, b, c));
 }
 
-TEST(assert_same_dimensions, given_sparse_matrixes_templated_on_float_int_and_complex_float_of_same_dimensions_should_not_throw) {
+TEST(assert_same_dimensions, given_sparse_matrices_templated_on_float_int_and_complex_float_of_same_dimensions_should_not_throw) {
     // arrange
     const SparseMatrix<float> a(3, 3);
     const SparseMatrix<int> b(3, 3);
@@ -110,7 +110,7 @@ TEST(assert_same_dimensions, given_sparse_matrixes_templated_on_float_int_and_co
     ASSERT_NO_THROW(assert_same_dimensions(a, b, c));
 }
 
-TEST(assert_same_dimensions, given_sparse_matrixes_templated_on_float_of_same_dimensions_should_throw) {
+TEST(assert_same_dimensions, given_sparse_matrices_templated_on_float_of_same_dimensions_should_throw) {
     // arrange
     const SparseMatrix<float> a(3, 3);
     const SparseMatrix<float> b(3, 4);
@@ -119,7 +119,7 @@ TEST(assert_same_dimensions, given_sparse_matrixes_templated_on_float_of_same_di
     ASSERT_THROW(assert_same_dimensions(a, b, c), InvalidDimensionException);
 }
 
-TEST(assert_same_dimensions, given_sparse_matrixes_templated_on_float_int_and_complex_float_of_different_dimensions_should_throw) {
+TEST(assert_same_dimensions, given_sparse_matrices_templated_on_float_int_and_complex_float_of_different_dimensions_should_throw) {
     // arrange
     const SparseMatrix<float> a(3, 3);
     const SparseMatrix<int> b(3, 4);

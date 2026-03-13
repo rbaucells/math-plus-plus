@@ -92,7 +92,7 @@ TEST(underlying_type, given_custom_dense_matrix_templated_on_float_should_return
 }
 #pragma endregion
 #pragma region assert_same_dimensions
-TEST(assert_same_dimensions, given_dense_matrixes_templated_on_float_of_same_dimensions_should_not_throw) {
+TEST(assert_same_dimensions, given_dense_matrices_templated_on_float_of_same_dimensions_should_not_throw) {
     // arrange
     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     const DenseMatrix<float> b = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
@@ -101,7 +101,7 @@ TEST(assert_same_dimensions, given_dense_matrixes_templated_on_float_of_same_dim
     ASSERT_NO_THROW(assert_same_dimensions(a, b, c));
 }
 
-TEST(assert_same_dimensions, given_dense_matrixes_templated_on_float_int_and_complex_float_of_same_dimensions_should_not_throw) {
+TEST(assert_same_dimensions, given_dense_matrices_templated_on_float_int_and_complex_float_of_same_dimensions_should_not_throw) {
     // arrange
     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     const DenseMatrix<int> b = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
@@ -110,7 +110,7 @@ TEST(assert_same_dimensions, given_dense_matrixes_templated_on_float_int_and_com
     ASSERT_NO_THROW(assert_same_dimensions(a, b, c));
 }
 
-TEST(assert_same_dimensions, given_dense_matrixes_templated_on_float_of_same_dimensions_should_throw) {
+TEST(assert_same_dimensions, given_dense_matrices_templated_on_float_of_same_dimensions_should_throw) {
     // arrange
     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     const DenseMatrix<float> b = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
@@ -119,7 +119,7 @@ TEST(assert_same_dimensions, given_dense_matrixes_templated_on_float_of_same_dim
     ASSERT_THROW(assert_same_dimensions(a, b, c), InvalidDimensionException);
 }
 
-TEST(assert_same_dimensions, given_dense_matrixes_templated_on_float_int_and_complex_float_of_different_dimensions_should_throw) {
+TEST(assert_same_dimensions, given_dense_matrices_templated_on_float_int_and_complex_float_of_different_dimensions_should_throw) {
     // arrange
     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     const DenseMatrix<int> b = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
