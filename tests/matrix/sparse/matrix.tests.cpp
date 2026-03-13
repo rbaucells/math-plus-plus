@@ -850,6 +850,55 @@ TEST(sparse_matrix_default_constructor, given_negative_cols_should_throw) {
     ASSERT_THROW(std::ignore = SparseMatrix<float>(5, -1), InvalidIndexException);
 }
 #pragma endregion
+#pragma region intializer_list_constructor
+TEST(sparse_matrix_initializer_list_constructor, given_rows_cols_and_value_col_index_row_index_tuples_should_construct_f) {
+    // arrange / act
+    SparseMatrix<float> v(3, 3, {{1, 0, 0}, {5, 1, 1}, {6, 2, 1}, {9, 2, 2}});
+    const int* vColOffsets = v.colOffsets();
+    const int* vRowIndices = v.rowIndices();
+    const float* vValues = v.values();
+    // assert
+    ASSERT_TRUE(compare(v.rows, 3));
+    ASSERT_TRUE(compare(v.columns, 3));
+    ASSERT_TRUE(compare(v.nnz(), 4));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[0], 1));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[1],  5));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[2], 6));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[3], 9));
+    ASSERT_TRUE(compare(vRowIndices[0], 0));
+    ASSERT_TRUE(compare(vRowIndices[1], 1));
+    ASSERT_TRUE(compare(vRowIndices[2], 1));
+    ASSERT_TRUE(compare(vRowIndices[3], 2));
+    ASSERT_TRUE(compare(vColOffsets[0], 0));
+    ASSERT_TRUE(compare(vColOffsets[1], 1));
+    ASSERT_TRUE(compare(vColOffsets[2], 2));
+    ASSERT_TRUE(compare(vColOffsets[3], 4));
+}
+
+TEST(sparse_matrix_initializer_list_constructor, given_rows_cols_and_value_col_index_row_index_tuples_should_construct_cf) {
+    // arrange / act
+    SparseMatrix<std::complex<float>> v(3, 3, {{{1, 2}, 0, 0}, {{5, 6}, 1, 1}, {{6, 7}, 2, 1}, {{9, 10}, 2, 2}});
+    const int* vColOffsets = v.colOffsets();
+    const int* vRowIndices = v.rowIndices();
+    const std::complex<float>* vValues = v.values();
+    // assert
+    ASSERT_TRUE(compare(v.rows, 3));
+    ASSERT_TRUE(compare(v.columns, 3));
+    ASSERT_TRUE(compare(v.nnz(), 4));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[0], std::complex<float>(1, 2)));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[1],  std::complex<float>(5, 6)));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[2], std::complex<float>(6, 7)));
+    ASSERT_TRUE(compare(Precision(0.001f), vValues[3], std::complex<float>(9, 10)));
+    ASSERT_TRUE(compare(vRowIndices[0], 0));
+    ASSERT_TRUE(compare(vRowIndices[1], 1));
+    ASSERT_TRUE(compare(vRowIndices[2], 1));
+    ASSERT_TRUE(compare(vRowIndices[3], 2));
+    ASSERT_TRUE(compare(vColOffsets[0], 0));
+    ASSERT_TRUE(compare(vColOffsets[1], 1));
+    ASSERT_TRUE(compare(vColOffsets[2], 2));
+    ASSERT_TRUE(compare(vColOffsets[3], 4));
+}
+#pragma endregion
 #pragma region copy_constructor_from_same_type_sparse_matrix
 TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix, given_f_sparse_matrix_should_copy_construct) {
     // arrange

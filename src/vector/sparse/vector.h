@@ -75,7 +75,7 @@ struct SparseVector : SparseVectorBase<T> {
 
     /**
      * @brief Constructs a SparseVector of size 'n' with elements 'initializerList'.
-     *
+     * Allocates 'initializerList.size() x sizeof(T) + initializerList.size() x sizeof(int)' bytes of memory on the heap.
      * @param n Size of vector.
      * @param initializerList Initializer list of T, int tuples. Representing value and index.
      *

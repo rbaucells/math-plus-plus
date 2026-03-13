@@ -80,6 +80,44 @@ struct SparseMatrix : SparseMatrixBase<T> {
     }
 
     /**
+     * @brief Constructs a SparseMatrix of size 'rows x columns'.
+     * Allocates '(columns + 1) x sizeof(int) + initializerList.size() x sizeof(int) + initializerList.size() x sizeof(T)'.
+     * @param rows Number of rows.
+     * @param columns Number of columns.
+     * @param initializerList Initializer list of T, int, int tuples representing value, column index, row index.
+     *
+     * @note 'initializerList' must be sorted within each row, and between rows
+     */
+    SparseMatrix(const int rows, const int columns, std::initializer_list<std::tuple<T, int, int>> initializerList) : SparseMatrixBase<T>(rows, columns) {
+        if (rows < 0 || columns < 0) {
+            throw InvalidIndexException("Cannot create SparseMatrix with negative size");
+        }
+
+        colOffsets_ = new int[columns + 1];
+
+        for (int i = 0; i < columns + 1; i++) {
+            colOffsets_[i] = 0;
+        }
+
+        nnz_ = initializerList.size();
+
+        rowIndices_ = new int[nnz_];
+        values_ = new T[nnz_];
+
+        int i = 0;
+        for (const auto nonZeroElement : initializerList) {
+            rowIndices_[i] = std::get<2>(nonZeroElement);
+            values_[i] = std::get<0>(nonZeroElement);
+
+            for (int j = std::get<1>(nonZeroElement) + 1; j < columns + 1; ++j) {
+                ++colOffsets_[j];
+            }
+
+            ++i;
+        }
+    }
+
+    /**
      * @brief Copy constructor for SparseMatrix from same type SparseMatrix.
      *
      * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
