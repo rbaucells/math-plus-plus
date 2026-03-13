@@ -2,21 +2,21 @@
 #include "../matrix.h"
 #include "../../../helper.h"
 
-template<dense_matrix_base T, dense_matrix_base... OTHERS>
-[[nodiscard]] bool compare(const T& a, const OTHERS&... others) {
-    return compare(Precision(epsilon<underlying_type_t<std::common_type_t<typename T::ValueType, typename OTHERS::ValueType...>>>()), a, others...);
+template<dense_matrix_base T, dense_matrix_base U, dense_matrix_base... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
+[[nodiscard]] bool compare(const T& a, const U& b, const ARGS&... args) {
+    return compare(Precision(epsilon<underlying_type_t<std::common_type_t<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>>>()), a, b, args...);
 }
 
-template<dense_matrix_base T, dense_matrix_base... OTHERS>
-[[nodiscard]] bool compare(const Precision<underlying_type_t<std::common_type_t<typename T::ValueType, typename OTHERS::ValueType...>>> precision, const T&a, const OTHERS&... others) {
-    assert_same_dimensions(a, others...);
+template<dense_matrix_base T, dense_matrix_base U, dense_matrix_base... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
+[[nodiscard]] bool compare(const Precision<underlying_type_t<std::common_type_t<typename T::ValueType, typename ARGS::ValueType...>>> precision, const T& a, const U& b, const ARGS&... args) {
+    assert_same_dimensions(a, b, args...);
 
     const int columns = a.columns;
     const int rows = a.rows;
 
     for (int c = 0; c < columns; c++) {
         for (int r = 0; r < rows; r++) {
-            if (!compare(precision, a[c, r], others[c, r]...)) {
+            if (!compare(precision, a[c, r], b[c, r], args[c, r]...)) {
                 return false;
             }
         }
@@ -25,27 +25,27 @@ template<dense_matrix_base T, dense_matrix_base... OTHERS>
     return true;
 }
 
-template<typename... OTHERS>
-struct DenseMatrixCompareExpr : Expression<bool, OTHERS...> {
-    Precision<underlying_type_t<std::common_type_t<underlying_type_t<OTHERS>...>>> precision;
+template<dense_matrix_base... ARGS> requires has_common_type<typename ARGS::ValueType...>
+struct DenseMatrixCompareExpr : Expression<bool, ARGS...> {
+    Precision<underlying_type_t<std::common_type_t<typename ARGS::ValueType...>>> precision;
 
-    DenseMatrixCompareExpr(const Precision<underlying_type_t<std::common_type_t<underlying_type_t<OTHERS>...>>> precision, const OTHERS&... args) : Expression<bool, OTHERS...>(args...), precision(precision) {}
+    DenseMatrixCompareExpr(const Precision<underlying_type_t<std::common_type_t<typename ARGS::ValueType...>>> precision, const ARGS&... args) : Expression<bool, ARGS...>(args...), precision(precision) {}
 
 
     [[nodiscard]] bool evaluate() const override {
         return std::apply([this](const auto&... args) {
             return compare(precision, args...);
-        }, this->others);
+        }, this->args);
     }
 
-    template<typename OTHER>
-    DenseMatrixCompareExpr<OTHER, OTHERS...> operator==(const OTHER& other) const {
+    template<dense_matrix_base OTHER> requires has_common_type<typename ARGS::ValueType..., typename OTHER::ValueType>
+    DenseMatrixCompareExpr<ARGS..., OTHER> operator==(const OTHER& other) const {
         return std::apply([&](const auto&... args) {
-            return DenseMatrixCompareExpr<OTHER, OTHERS...>(precision, other, args...);
-        }, this->others);
+            return DenseMatrixCompareExpr<ARGS..., OTHER>(precision, args..., other);
+        }, this->args);
     }
 
-    DenseMatrixCompareExpr<OTHERS...>& operator+(const Precision<underlying_type_t<std::common_type_t<underlying_type_t<OTHERS>...>>>& newPrecision) {
+    DenseMatrixCompareExpr<ARGS...>& operator+(const Precision<underlying_type_t<std::common_type_t<typename ARGS::ValueType...>>>& newPrecision) {
         precision.value = newPrecision.value;
         return *this;
     }
@@ -53,5 +53,5 @@ struct DenseMatrixCompareExpr : Expression<bool, OTHERS...> {
 
 template<dense_matrix_base T, dense_matrix_base U>
 DenseMatrixCompareExpr<T, U> operator==(const T& a, const U& b) {
-    return DenseMatrixCompareExpr<T, U>(Precision(epsilon<underlying_type_t<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>>>>()), a, b);
+    return DenseMatrixCompareExpr<T, U>(Precision(epsilon<underlying_type_t<std::common_type_t<typename T::ValueType, typename U::ValueType>>>()), a, b);
 }
