@@ -638,6 +638,25 @@ TEST(dense_matrix_move_assignment_operator, given_dense_matrix_of_different_size
     ASSERT_THROW(b = std::move(a), InvalidDimensionException);
 }
 #pragma endregion
+#pragma region identity
+TEST(dense_matrix_identity, given_3_should_make_identity_matrix_f) {
+    // arrange
+    const DenseMatrix<float> expected = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    // act
+    const DenseMatrix<float> m = DenseMatrix<float>::identity(3);
+    // assert
+    ASSERT_TRUE(compare(Precision(0.001f), m, expected));
+}
+
+TEST(dense_matrix_identity, given_3_should_make_identity_matrix_cf) {
+    // arrange
+    const DenseMatrix<std::complex<float>> expected = {{{1, 0}, {0, 0}, {0, 0}}, {{0, 0}, {1, 0}, {0, 0}}, {{0, 0}, {0, 0}, {1, 0}}};
+    // act
+    const DenseMatrix<std::complex<float>> m = DenseMatrix<std::complex<float>>::identity(3);
+    // assert
+    ASSERT_TRUE(compare(Precision(0.001f), m, expected));
+}
+#pragma endregion
 #pragma endregion
 #pragma region dense_matrix_view
 #pragma region constructor

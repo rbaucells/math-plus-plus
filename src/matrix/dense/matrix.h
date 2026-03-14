@@ -306,6 +306,23 @@ struct DenseMatrix : DenseMatrixBase<T> {
         return *this;
     }
 
+    static DenseMatrix<T> identity(const int n) {
+        DenseMatrix<T> m(n, n, false);
+
+        for (int c = 0; c < n; c++) {
+            for (int r = 0; r < n; r++) {
+                if (c == r) {
+                    m[c, r] = 1;
+                }
+                else {
+                    m[c, r] = 0;
+                }
+            }
+        }
+
+        return std::move(m);
+    }
+
     [[nodiscard]] T& at(const int c, const int r) override {
         return data_[c * this->rows + r];
     }
