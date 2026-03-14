@@ -23,11 +23,11 @@ add_library(mathpp INTERFACE
         src/matrix/sparse/helper.h
         src/matrix/dense/matrix.h
         src/matrix/dense/helper.h
-        src/matrix/dense/operators/add.h
         src/vector/dense/operators/compare.h
         src/matrix/dense/operators/compare.h
         src/vector/sparse/operators/compare.h
-        src/matrix/sparse/operators/compare.h)
+        src/matrix/sparse/operators/compare.h
+        src/matrix/dense/decompositions/lu.h)
 
 target_include_directories(mathpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 

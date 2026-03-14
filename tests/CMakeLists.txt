@@ -34,6 +34,7 @@ add_executable(mathpp-tests main.cpp
         vector/dense/operators/compare.tests.cpp
         vector/sparse/operators/compare.tests.cpp
         matrix/sparse/operators/compare.tests.cpp
+        matrix/dense/decompositions/lu.tests.cpp
 )
 
 # link with the math lib
