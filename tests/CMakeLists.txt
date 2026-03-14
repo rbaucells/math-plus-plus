@@ -33,6 +33,7 @@ add_executable(mathpp-tests main.cpp
         matrix/dense/operators/compare.tests.cpp
         vector/dense/operators/compare.tests.cpp
         vector/sparse/operators/compare.tests.cpp
+        matrix/sparse/operators/compare.tests.cpp
 )
 
 # link with the math lib
