@@ -1,4 +1,8 @@
+import numbers
+
 import lldb
+
+precision: int = 2
 
 def __lldb_init_module(debugger: lldb.SBDebugger, dict):
     debugger.HandleCommand(f'type summary add -x "^DenseMatrix<.*>$" -F dense_matrix_lldb_formatter.dense_matrix_summary')
@@ -45,6 +49,8 @@ def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
                 raise RuntimeError(f"cur_element at (c = {c}, r = {r}, index = {index}) is not valid")
 
             value: str = cur_element.GetValue()
+
+            value = value[0:value.find(".") + precision + 1]
 
             if c != columns_int - 1:
                 summary += f"{value}, "
