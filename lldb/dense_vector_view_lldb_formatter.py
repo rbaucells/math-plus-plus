@@ -1,7 +1,5 @@
-import lldb
-from enum import Enum
-
 from utils import *
+import lldb
 
 def dense_vector_view_summary(valobj: lldb.SBValue, internal_dict):
     valobj = valobj.GetNonSyntheticValue()

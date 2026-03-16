@@ -1,7 +1,5 @@
-import lldb
-from enum import Enum
-
 from utils import *
+import lldb
 
 def dense_vector_summary(valobj: lldb.SBValue, internal_dict):
     valobj = valobj.GetNonSyntheticValue()
@@ -111,19 +109,19 @@ def to_string_dv(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommand
 
     if not target.IsValid():
         result.PutError("target was invalid")
-        return "target was invalid"
+        return
 
     frame: lldb.SBFrame = target.GetProcess().GetSelectedThread().GetSelectedFrame()
 
     if not frame.IsValid():
         result.PutError("frame was invalid")
-        return "frame was invalid"
+        return
 
     valobj: lldb.SBValue = frame.FindVariable(command)
 
     if not valobj.IsValid():
         result.PutError("valobj was invalid")
-        return "valobj was invalid"
+        return
 
     valobj = valobj.GetNonSyntheticValue()
 
