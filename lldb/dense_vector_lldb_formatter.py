@@ -3,9 +3,6 @@ from enum import Enum
 
 from utils import *
 
-to_string_orientation: str = "horizontal"
-# to_string_orientation: str = "vertical"
-
 def dense_vector_summary(valobj: lldb.SBValue, internal_dict):
     valobj = valobj.GetNonSyntheticValue()
 
@@ -132,7 +129,7 @@ def to_string_dv(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommand
 
     summary = dense_vector_summary(valobj, internal_dict)
 
-    if to_string_orientation == "vertical":
+    if vector_to_string_orientation == "vertical":
         summary = summary.replace("{", "{\n ")
         summary = summary.replace("}", "\n}")
         summary = summary.replace(",", "\n")
