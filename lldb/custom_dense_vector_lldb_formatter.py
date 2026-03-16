@@ -3,17 +3,17 @@ from enum import Enum
 
 from utils import *
 
-def dense_vector_view_summary(valobj: lldb.SBValue, internal_dict):
+def custom_dense_vector_summary(valobj: lldb.SBValue, internal_dict):
     valobj = valobj.GetNonSyntheticValue()
 
-    dense_vector_view_type: lldb.SBType = valobj.GetType()
+    custom_dense_vector_type: lldb.SBType = valobj.GetType()
 
-    if not dense_vector_view_type.IsValid():
-        raise RuntimeError("dense_vector_view_type is invalid")
+    if not custom_dense_vector_type.IsValid():
+        raise RuntimeError("custom_dense_vector_type is invalid")
 
-    dense_vector_view_type = get_real_type(dense_vector_view_type)
+    custom_dense_vector_type = get_real_type(custom_dense_vector_type)
 
-    t_type = dense_vector_view_type.GetTemplateArgumentType(0)
+    t_type = custom_dense_vector_type.GetTemplateArgumentType(0)
 
     if not t_type.IsValid():
         raise RuntimeError("t_type is invalid")
@@ -27,40 +27,31 @@ def dense_vector_view_summary(valobj: lldb.SBValue, internal_dict):
 
     n_int = n.GetValueAsUnsigned()
 
-    print(f"n_int = {n_int}")
-
     if n_int == 0:
-        raise RuntimeError("empty dense vector view")
+        raise RuntimeError("empty custom dense vector")
 
     if n_int > 7:
         return ""
 
-    offset: lldb.SBValue = valobj.GetChildMemberWithName("offset_")
+    stride: lldb.SBValue = valobj.GetChildMemberWithName("stride_")
 
-    if not offset.IsValid():
-        raise RuntimeError("offset is invalid")
+    if not stride.IsValid():
+        raise RuntimeError("stride is invalid")
 
-    offset_int = offset.GetValueAsUnsigned()
+    stride_int = stride.GetValueAsUnsigned()
 
-    print(f"offset_int = {offset_int}")
-
-    owner: lldb.SBValue = valobj.GetChildMemberWithName("owner_")
-
-    if not owner.IsValid():
-        raise RuntimeError("owner is invalid")
-
-    data: lldb.SBValue = owner.GetChildMemberWithName("data_")
+    data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
 
     if not data.IsValid():
-        raise RuntimeError("owner's data member is not valid")
+        raise RuntimeError("data member is not valid")
 
     if data.GetValueAsSigned() == 0:
-        raise RuntimeError("owner's data member is nullptr")
+        raise RuntimeError("data member is nullptr")
 
     summary: str = "{"
 
     for i in range(0, n_int):
-        cur_element_data: lldb.SBValue = iterate_data_array(data, i + offset_int)
+        cur_element_data: lldb.SBValue = iterate_data_array(data, i * stride_int)
 
         if not cur_element_data.IsValid():
             raise RuntimeError(f"cur_element at index = {i}) is not valid")
@@ -76,7 +67,7 @@ def dense_vector_view_summary(valobj: lldb.SBValue, internal_dict):
 
     return summary
 
-class DenseVectorViewSyntheticChildrenProvider:
+class CustomDenseVectorSyntheticChildrenProvider:
     def __init__(self, valobj: lldb.SBValue, internal_dict):
         self.n = valobj.GetChildMemberWithName("n")
 
@@ -85,50 +76,37 @@ class DenseVectorViewSyntheticChildrenProvider:
 
         self.n_int = self.n.GetValueAsUnsigned()
 
-        self.offset = valobj.GetChildMemberWithName("offset_")
+        self.stride = valobj.GetChildMemberWithName("stride_")
 
-        if not self.offset.IsValid():
-            raise RuntimeError("offset_ is invalid")
+        if not self.stride.IsValid():
+            raise RuntimeError("offset is invalid")
 
-        self.offset_int = self.offset.GetValueAsUnsigned()
+        self.stride_int = self.stride.GetValueAsUnsigned()
 
         self.valobj = valobj
 
-        owner: lldb.SBValue = valobj.GetChildMemberWithName("owner_")
-
-        if not owner.IsValid():
-            raise RuntimeError("owner is invalid")
-
-        self.owner = owner
-
-        data: lldb.SBValue = owner.GetChildMemberWithName("data_")
+        data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
 
         if not data.IsValid():
-            raise RuntimeError("owner's data member is not valid")
-
-        if data.GetValueAsSigned() == 0:
-            raise RuntimeError("owner's data member is nullptr")
+            raise RuntimeError("data member is not valid")
 
         self.data = data
 
         self.element_type = self.data.GetType().GetPointeeType()
-        self.array_type = self.element_type.GetArrayType(self.n_int)
+        self.array_type = self.element_type.GetArrayType(self.n_int * self.stride_int)
 
     def num_children(self, max_children: int) -> int:
-        return 4
+        return 3
 
     def get_child_index(self, name: str) -> int:
         if name == "n":
             return 0
 
-        if name == "offset_":
+        if name == "stride_":
             return 1
 
-        if name == "view":
+        if name == "data_":
             return 2
-
-        if name == "owner_":
-            return 3
 
         return -1
 
@@ -137,21 +115,18 @@ class DenseVectorViewSyntheticChildrenProvider:
             return self.n
 
         if index == 1:
-            return self.offset
+            return self.stride
 
         if index == 2:
             return self.data.CreateValueFromAddress(
-                "view",
+                "data_",
                 self.data.GetValueAsUnsigned(),
                 self.array_type
             )
 
-        if index == 3:
-            return self.owner
-
         return None
 
-def to_string_dvv(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
+def to_string_cdv(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
     target: lldb.SBTarget = debugger.GetSelectedTarget()
 
     if not target.IsValid():
@@ -172,7 +147,7 @@ def to_string_dvv(debugger: lldb.SBDebugger, command: str, result: lldb.SBComman
 
     valobj = valobj.GetNonSyntheticValue()
 
-    summary = dense_vector_view_summary(valobj, internal_dict)
+    summary = custom_dense_vector_summary(valobj, internal_dict)
 
     if vector_to_string_orientation == "vertical":
         summary = summary.replace("{", "{\n ")
@@ -180,4 +155,3 @@ def to_string_dvv(debugger: lldb.SBDebugger, command: str, result: lldb.SBComman
         summary = summary.replace(",", "\n")
 
     result.PutCString(summary)
-    return None

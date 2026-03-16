@@ -11,6 +11,10 @@ int main(int argc, char** argv) {
     const DenseVector<float>& f = e;
     DenseVector<int>* g = &e;
     const DenseVectorView<int> h(e, 3, 1);
+
+    float data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    CustomDenseVector<float> i(data, 3, 3);
+
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
