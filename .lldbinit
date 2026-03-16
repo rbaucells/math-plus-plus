@@ -1,1 +1,3 @@
+settings set interpreter.require-overwrite false
 command script import /Users/ricardo/Projects/math-plus-plus/dense_matrix_lldb_formatter.py
+command script import /Users/ricardo/Projects/math-plus-plus/dense_vector_lldb_formatter.py

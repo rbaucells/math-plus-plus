@@ -3,11 +3,13 @@ from enum import Enum
 
 precision: int = 2
 imag_char: str = 'i'
+to_string_orientation: str = "horizontal"
+# to_string_orientation: str = "vertical"
 
 def __lldb_init_module(debugger: lldb.SBDebugger, dict):
-    debugger.HandleCommand(f'type summary add -x "^DenseMatrix<.*>$" -F dense_matrix_lldb_formatter.dense_matrix_summary')
-    debugger.HandleCommand(f'type synthetic add -x "^DenseMatrix<.*>$" --python-class dense_matrix_lldb_formatter.DenseMatrixSyntheticChildrenProvider')
-    debugger.HandleCommand(f'command script add -f dense_matrix_lldb_formatter.to_string_dm to_string_dm')
+    debugger.HandleCommand(f'type summary add -x "^DenseVector<.*>$" -F dense_vector_lldb_formatter.dense_vector_summary')
+    debugger.HandleCommand(f'type synthetic add -x "^DenseVector<.*>$" --python-class dense_vector_lldb_formatter.DenseVectorSyntheticChildrenProvider')
+    debugger.HandleCommand(f'command script add -f dense_vector_lldb_formatter.to_string_dv to_string_dv')
 
 
 class ScalarType(Enum):
@@ -109,50 +111,43 @@ def iterate_data_array(data_ptr: lldb.SBValue, index: int) -> lldb.SBValue:
     return data_ptr.CreateChildAtOffset(f"[{index}]", offset, element_type)
 
 
-def get_real_type(dense_matrix_type: lldb.SBType) -> lldb.SBType:
-    if dense_matrix_type.IsPointerType():
-        return dense_matrix_type.GetPointeeType()
+def get_real_type(dense_vector_type: lldb.SBType) -> lldb.SBType:
+    if dense_vector_type.IsPointerType():
+        return dense_vector_type.GetPointeeType()
 
-    if dense_matrix_type.IsReferenceType():
-        return dense_matrix_type.GetDereferencedType()
+    if dense_vector_type.IsReferenceType():
+        return dense_vector_type.GetDereferencedType()
 
-    return dense_matrix_type
+    return dense_vector_type
 
-def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
+def dense_vector_summary(valobj: lldb.SBValue, internal_dict):
     valobj = valobj.GetNonSyntheticValue()
 
-    dense_matrix_type: lldb.SBType = valobj.GetType()
+    dense_vector_type: lldb.SBType = valobj.GetType()
 
-    if not dense_matrix_type.IsValid():
-        raise RuntimeError("dense_matrix_type is invalid")
+    if not dense_vector_type.IsValid():
+        raise RuntimeError("dense_vector_type is invalid")
 
-    dense_matrix_type = get_real_type(dense_matrix_type)
+    dense_vector_type = get_real_type(dense_vector_type)
 
-    t_type = dense_matrix_type.GetTemplateArgumentType(0)
+    t_type = dense_vector_type.GetTemplateArgumentType(0)
 
     if not t_type.IsValid():
         raise RuntimeError("t_type is invalid")
 
     scalar_type = scalar_type_from_type(t_type)
 
-    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+    n: lldb.SBValue = valobj.GetChildMemberWithName("n")
 
-    if not columns.IsValid():
-        raise RuntimeError("columns member is not valid")
+    if not n.IsValid():
+        raise RuntimeError("n is invalid")
 
-    columns_int: int = columns.GetValueAsSigned()
+    n_int = n.GetValueAsUnsigned()
 
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
+    if n_int == 0:
+        raise RuntimeError("empty dense vector")
 
-    if not rows.IsValid():
-        raise RuntimeError("rows member is not valid")
-
-    rows_int: int = rows.GetValueAsSigned()
-
-    if columns_int == 0 or rows_int == 0:
-        raise RuntimeError("empty dense matrix")
-
-    if columns_int > 5 or rows_int > 5:
+    if n_int > 7:
         return ""
 
     data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
@@ -165,49 +160,31 @@ def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
 
     summary: str = "{"
 
-    for r in range(0, rows_int):
-        summary += "{"
-        for c in range(0, columns_int):
-            index: int = c * rows_int + r
+    for i in range(0, n_int):
+        cur_element_data: lldb.SBValue = iterate_data_array(data, i)
 
-            cur_element_data: lldb.SBValue = iterate_data_array(data, index)
+        if not cur_element_data.IsValid():
+            raise RuntimeError(f"cur_element at index = {i}) is not valid")
 
-            if not cur_element_data.IsValid():
-                raise RuntimeError(f"cur_element at (c = {c}, r = {r}, index = {index}) is not valid")
+        cur_element = get_str_from_value(cur_element_data, scalar_type)
 
-            cur_element = get_str_from_value(cur_element_data, scalar_type)
-
-            if c != columns_int - 1:
-                summary += f"{cur_element}, "
-            else:
-                summary += cur_element
-
-        if r != rows_int - 1:
-            summary += "}, "
+        if i != n_int - 1:
+            summary += f"{cur_element}, "
         else:
-            summary += "}"
+            summary += cur_element
 
     summary += "}"
 
     return summary
 
-class DenseMatrixSyntheticChildrenProvider:
+class DenseVectorSyntheticChildrenProvider:
     def __init__(self, valobj: lldb.SBValue, internal_dict):
-        columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+        self.n = valobj.GetChildMemberWithName("n")
 
-        if not columns.IsValid():
-            raise RuntimeError("columns member is not valid")
+        if not self.n.IsValid():
+            raise RuntimeError("n is invalid")
 
-        rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
-
-        if not rows.IsValid():
-            raise RuntimeError("rows member is not valid")
-
-        self.columns = columns
-        self.rows = rows
-
-        self.columns_int = columns.GetValueAsSigned()
-        self.rows_int = rows.GetValueAsSigned()
+        self.n_int = self.n.GetValueAsUnsigned()
 
         self.valobj = valobj
 
@@ -217,34 +194,27 @@ class DenseMatrixSyntheticChildrenProvider:
             raise RuntimeError("data member is not valid")
 
         self.data = data
-        self.element_type = self.data.GetType().GetPointeeType()
 
-        self.total_elements = self.rows_int * self.columns_int
-        self.array_type = self.element_type.GetArrayType(self.total_elements)
+        self.element_type = self.data.GetType().GetPointeeType()
+        self.array_type = self.element_type.GetArrayType(self.n_int)
 
     def num_children(self, max_children: int) -> int:
-        return 3
+        return 2
 
     def get_child_index(self, name: str) -> int:
-        if name == "columns":
+        if name == "n":
             return 0
 
-        if name == "rows":
-            return 1
-
         if name == "data":
-            return 2
+            return 1
 
         return -1
 
     def get_child_at_index(self, index: int):
         if index == 0:
-            return self.columns
+            return self.n
 
         if index == 1:
-            return self.rows
-
-        if index == 2:
             return self.data.CreateValueFromAddress(
                 "data",
                 self.data.GetValueAsUnsigned(),
@@ -253,31 +223,32 @@ class DenseMatrixSyntheticChildrenProvider:
 
         return None
 
-def to_string_dm(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
+def to_string_dv(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
     target: lldb.SBTarget = debugger.GetSelectedTarget()
 
     if not target.IsValid():
         result.PutError("target was invalid")
-        return
+        return "target was invalid"
 
     frame: lldb.SBFrame = target.GetProcess().GetSelectedThread().GetSelectedFrame()
 
     if not frame.IsValid():
         result.PutError("frame was invalid")
-        return
+        return "frame was invalid"
 
     valobj: lldb.SBValue = frame.FindVariable(command)
 
     if not valobj.IsValid():
         result.PutError("valobj was invalid")
-        return
+        return "valobj was invalid"
 
     valobj = valobj.GetNonSyntheticValue()
 
-    summary = dense_matrix_summary(valobj, internal_dict)
+    summary = dense_vector_summary(valobj, internal_dict)
 
-    summary = summary.replace("}, {", "},\n     {")
+    if to_string_orientation == "vertical":
+        summary = summary.replace("{", "{\n ")
+        summary = summary.replace("}", "\n}")
+        summary = summary.replace(",", "\n")
 
-    summary = summary[1:-1]
-
-    result.PutCString("{\n     " + summary + "\n}")
+    result.PutCString(summary)
