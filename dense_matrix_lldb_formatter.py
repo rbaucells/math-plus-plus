@@ -59,22 +59,14 @@ def get_str_from_value(value: lldb.SBValue, scalar_type: ScalarType) -> str:
     if scalar_type == ScalarType.Floating:
         value_as_float: float = float(value.value)
 
-        print(f"Got value_as_float = {value_as_float}")
-
         value_as_float_rounded: float = round(value_as_float, precision)
 
-        print(f"Got value_as_float_rounded = {value_as_float_rounded}")
-
         value_as_str: str = str(value_as_float_rounded)
-
-        print(f"Got value_as_str = {value_as_str}")
 
         return value_as_str
 
     if scalar_type == ScalarType.Integer:
         value_as_str: str = value.value
-
-        print(f"Got value_as_str = {value_as_str}")
 
         return value_as_str
 
@@ -123,18 +115,12 @@ def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
     if not dense_matrix_type.IsValid():
         raise RuntimeError("dense_matrix_type is invalid")
 
-    print(f"Got dense_matrix_type = {dense_matrix_type}")
-
     t_type = dense_matrix_type.GetTemplateArgumentType(0)
 
     if not t_type.IsValid():
         raise RuntimeError("t_type is invalid")
 
-    print(f"Got t_type = {t_type}")
-
     scalar_type = scalar_type_from_type(t_type)
-
-    print(f"Got scalar_type = {scalar_type}")
 
     columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
 
@@ -143,8 +129,6 @@ def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
 
     columns_int: int = columns.GetValueAsSigned()
 
-    print(f"Got columns_int = {columns_int}")
-
     rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
 
     if not rows.IsValid():
@@ -152,13 +136,10 @@ def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
 
     rows_int: int = rows.GetValueAsSigned()
 
-    print(f"Got rows_int = {rows_int}")
-
     if columns_int == 0 or rows_int == 0:
         raise RuntimeError("empty dense matrix")
 
     if columns_int > 5 or rows_int > 5:
-        print("matrix was too big")
         return ""
 
     data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
@@ -169,8 +150,6 @@ def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
     if data.GetValueAsSigned() == 0:
         raise RuntimeError("data member is nullptr")
 
-    print(f"Got data = {data}")
-
     summary: str = "{"
 
     for r in range(0, rows_int):
@@ -178,18 +157,12 @@ def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
         for c in range(0, columns_int):
             index: int = c * rows_int + r
 
-            print(f"Got index = {index}")
-
             cur_element_data: lldb.SBValue = iterate_data_array(data, index)
 
             if not cur_element_data.IsValid():
                 raise RuntimeError(f"cur_element at (c = {c}, r = {r}, index = {index}) is not valid")
 
-            print(f"Got cur_element_data = {cur_element_data}")
-
             cur_element = get_str_from_value(cur_element_data, scalar_type)
-
-            print(f"Got cur_element = {cur_element}")
 
             if c != columns_int - 1:
                 summary += f"{cur_element}, "
