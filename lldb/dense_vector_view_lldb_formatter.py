@@ -46,20 +46,20 @@ def dense_vector_view_summary(valobj: lldb.SBValue, internal_dict):
 
 class DenseVectorViewSyntheticChildrenProvider:
     def __init__(self, valobj: lldb.SBValue, internal_dict):
-        self.valobj = valobj
+        self.valobj: lldb.SBValue = valobj
 
-        self.n = valobj.GetChildMemberWithName("n")
-        self.n_int = self.n.GetValueAsUnsigned()
+        self.n: lldb.SBValue = valobj.GetChildMemberWithName("n")
+        self.n_int: int = self.n.GetValueAsUnsigned()
 
-        self.offset = valobj.GetChildMemberWithName("offset_")
-        self.offset_int = self.offset.GetValueAsUnsigned()
+        self.offset: lldb.SBValue = valobj.GetChildMemberWithName("offset_")
+        self.offset_int: int = self.offset.GetValueAsUnsigned()
 
-        self.owner = valobj.GetChildMemberWithName("owner_")
+        self.owner: lldb.SBValue = valobj.GetChildMemberWithName("owner_")
 
-        self.data = self.owner.GetChildMemberWithName("data_")
+        self.data: lldb.SBValue = self.owner.GetChildMemberWithName("data_")
 
-        self.element_type = self.data.GetType().GetPointeeType()
-        self.array_type = self.element_type.GetArrayType(self.n_int)
+        self.element_type: lldb.SBType = self.data.GetType().GetPointeeType()
+        self.array_type: lldb.SBType = self.element_type.GetArrayType(self.n_int)
 
     def num_children(self, max_children: int) -> int:
         return 4
