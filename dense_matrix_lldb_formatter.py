@@ -103,6 +103,36 @@ def get_str_from_value(value: lldb.SBValue, scalar_type: ScalarType) -> str:
         else:
             return real_str + " + " + imag_str + "i"
 
+    if scalar_type == ScalarType.ComplexInteger:
+        print(f"get_str_from_value value ={value} ")
+
+        real: lldb.SBValue = value.GetChildMemberWithName("__re_")
+
+        if real is None or not real.IsValid():
+            return "N/A real invalid"
+
+        print(f"Got real as {real}")
+
+        imag: lldb.SBValue = value.GetChildMemberWithName("__im_")
+
+        if imag is None or not imag.IsValid():
+            return "N/A imag invalid"
+
+        print(f"Got imag as {imag}")
+
+        real_str = get_str_from_value(real, ScalarType.Integer)
+
+        print(f"Got real_str as {real_str}")
+
+        imag_str = get_str_from_value(imag, ScalarType.Integer)
+
+        print(f"Got imag_str as {imag_str}")
+
+        if imag_str.startswith('-'):
+            return real_str + " - " + imag_str.removeprefix('-') + "i"
+        else:
+            return real_str + " + " + imag_str + "i"
+
     return "N/A"
 
 
