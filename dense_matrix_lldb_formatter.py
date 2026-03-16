@@ -2,7 +2,7 @@ import lldb
 from enum import Enum
 
 precision: int = 2
-
+imag_char: str = 'i'
 
 def __lldb_init_module(debugger: lldb.SBDebugger, dict):
     debugger.HandleCommand(
@@ -49,6 +49,11 @@ def scalar_type_from_type(t_type: lldb.SBType):
 
     raise RuntimeError(f"could not get ScalarType for {type_name}")
 
+def is_zero(val: lldb.SBValue) -> bool:
+    try:
+        return float(val.value) == 0.0
+    except:
+        return False
 
 def get_str_from_value(value: lldb.SBValue, scalar_type: ScalarType) -> str:
     if scalar_type == ScalarType.Floating:
@@ -73,65 +78,34 @@ def get_str_from_value(value: lldb.SBValue, scalar_type: ScalarType) -> str:
 
         return value_as_str
 
-    if scalar_type == ScalarType.ComplexFloating:
-        print(f"get_str_from_value value ={value} ")
-
+    if scalar_type in [ScalarType.ComplexFloating, ScalarType.ComplexInteger]:
         real: lldb.SBValue = value.GetChildMemberWithName("__re_")
-
-        if real is None or not real.IsValid():
-            return "N/A real invalid"
-
-        print(f"Got real as {real}")
-
         imag: lldb.SBValue = value.GetChildMemberWithName("__im_")
 
-        if imag is None or not imag.IsValid():
-            return "N/A imag invalid"
+        if not real.IsValid() or not imag.IsValid():
+            return "N/A invalid"
 
-        print(f"Got imag as {imag}")
+        inner_type: ScalarType = ScalarType.Floating if scalar_type == ScalarType.ComplexFloating else ScalarType.Integer
 
-        real_str = get_str_from_value(real, ScalarType.Floating)
+        real_is_zero: bool = is_zero(real)
+        imag_is_zero: bool = is_zero(imag)
 
-        print(f"Got real_str as {real_str}")
+        if real_is_zero and imag_is_zero:
+            return "0"
 
-        imag_str = get_str_from_value(imag, ScalarType.Floating)
+        if imag_is_zero:
+            return get_str_from_value(real, inner_type)
 
-        print(f"Got imag_str as {imag_str}")
+        if real_is_zero:
+            return get_str_from_value(imag, inner_type) + imag_char
 
-        if imag_str.startswith('-'):
-            return real_str + " - " + imag_str.removeprefix('-') + "i"
-        else:
-            return real_str + " + " + imag_str + "i"
-
-    if scalar_type == ScalarType.ComplexInteger:
-        print(f"get_str_from_value value ={value} ")
-
-        real: lldb.SBValue = value.GetChildMemberWithName("__re_")
-
-        if real is None or not real.IsValid():
-            return "N/A real invalid"
-
-        print(f"Got real as {real}")
-
-        imag: lldb.SBValue = value.GetChildMemberWithName("__im_")
-
-        if imag is None or not imag.IsValid():
-            return "N/A imag invalid"
-
-        print(f"Got imag as {imag}")
-
-        real_str = get_str_from_value(real, ScalarType.Integer)
-
-        print(f"Got real_str as {real_str}")
-
-        imag_str = get_str_from_value(imag, ScalarType.Integer)
-
-        print(f"Got imag_str as {imag_str}")
+        real_str = get_str_from_value(real, inner_type)
+        imag_str = get_str_from_value(imag, inner_type)
 
         if imag_str.startswith('-'):
-            return real_str + " - " + imag_str.removeprefix('-') + "i"
+            return f"{real_str} - {imag_str.removeprefix('-')}{imag_char}"
         else:
-            return real_str + " + " + imag_str + "i"
+            return f"{real_str} + {imag_str}{imag_char}"
 
     return "N/A"
 
