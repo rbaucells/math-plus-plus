@@ -5,9 +5,9 @@ def dense_vector_summary(valobj: lldb.SBValue, internal_dict):
     valobj = valobj.GetNonSyntheticValue()
 
     dense_vector_type: lldb.SBType = get_real_type(valobj.GetType())
-    scalar_type = scalar_type_from_type(dense_vector_type.GetTemplateArgumentType(0))
+    scalar_type: ScalarType = scalar_type_from_type(dense_vector_type.GetTemplateArgumentType(0))
     n: lldb.SBValue = valobj.GetChildMemberWithName("n")
-    n_int = n.GetValueAsUnsigned()
+    n_int: int = n.GetValueAsUnsigned()
 
     if n_int == 0:
         return "Empty Vector (n = 0)"
@@ -43,10 +43,6 @@ def dense_vector_summary(valobj: lldb.SBValue, internal_dict):
 class DenseVectorSyntheticChildrenProvider:
     def __init__(self, valobj: lldb.SBValue, internal_dict):
         self.n = valobj.GetChildMemberWithName("n")
-
-        if not self.n.IsValid():
-            raise RuntimeError("n is invalid")
-
         self.n_int = self.n.GetValueAsUnsigned()
 
         self.valobj = valobj
