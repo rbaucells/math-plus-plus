@@ -42,17 +42,12 @@ def dense_vector_summary(valobj: lldb.SBValue, internal_dict):
 
 class DenseVectorSyntheticChildrenProvider:
     def __init__(self, valobj: lldb.SBValue, internal_dict):
+        self.valobj = valobj
+
         self.n = valobj.GetChildMemberWithName("n")
         self.n_int = self.n.GetValueAsUnsigned()
 
-        self.valobj = valobj
-
-        data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
-
-        if not data.IsValid():
-            raise RuntimeError("data member is not valid")
-
-        self.data = data
+        self.data = valobj.GetChildMemberWithName("data_")
 
         self.element_type = self.data.GetType().GetPointeeType()
         self.array_type = self.element_type.GetArrayType(self.n_int)
@@ -83,28 +78,10 @@ class DenseVectorSyntheticChildrenProvider:
         return None
 
 def to_string_dv(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
-    target: lldb.SBTarget = debugger.GetSelectedTarget()
-
-    if not target.IsValid():
-        result.PutError("target was invalid")
-        return
-
-    frame: lldb.SBFrame = target.GetProcess().GetSelectedThread().GetSelectedFrame()
-
-    if not frame.IsValid():
-        result.PutError("frame was invalid")
-        return
-
-    valobj: lldb.SBValue = frame.FindVariable(command)
-
-    if not valobj.IsValid():
-        result.PutError("valobj was invalid")
-        return
-
-    valobj = valobj.GetNonSyntheticValue()
+    frame: lldb.SBFrame = debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+    valobj: lldb.SBValue = frame.FindVariable(command).GetNonSyntheticValue()
 
     summary = dense_vector_summary(valobj, internal_dict)
-
     if vector_to_string_orientation == "vertical":
         summary = summary.replace("{", "{\n ")
         summary = summary.replace("}", "\n}")
