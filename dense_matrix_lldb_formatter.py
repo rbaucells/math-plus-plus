@@ -7,6 +7,7 @@ imag_char: str = 'i'
 def __lldb_init_module(debugger: lldb.SBDebugger, dict):
     debugger.HandleCommand(f'type summary add -x "^DenseMatrix<.*>$" -F dense_matrix_lldb_formatter.dense_matrix_summary')
     debugger.HandleCommand(f'type synthetic add -x "^DenseMatrix<.*>$" --python-class dense_matrix_lldb_formatter.DenseMatrixSyntheticChildrenProvider')
+    debugger.HandleCommand(f'command script add -f dense_matrix_lldb_formatter.to_string to_string')
     print("Imported dense_matrix_lldb_formatter.py")
 
 
@@ -239,4 +240,34 @@ class DenseMatrixSyntheticChildrenProvider:
                 self.data.GetValueAsUnsigned(),
                 self.array_type
             )
+
         return None
+
+def to_string(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
+    target: lldb.SBTarget = debugger.GetSelectedTarget()
+
+    if not target.IsValid():
+        result.PutError("target was invalid")
+        return
+
+    frame: lldb.SBFrame = target.GetProcess().GetSelectedThread().GetSelectedFrame()
+
+    if not frame.IsValid():
+        result.PutError("frame was invalid")
+        return
+
+    valobj: lldb.SBValue = frame.FindVariable(command)
+
+    if not valobj.IsValid():
+        result.PutError("valobj was invalid")
+        return
+
+    valobj = valobj.GetNonSyntheticValue()
+
+    summary = dense_matrix_summary(valobj, internal_dict)
+
+    summary = summary.replace("}, {", "},\n     {")
+
+    summary = summary[1:-1]
+
+    result.PutCString("{\n     " + summary + "\n}")
