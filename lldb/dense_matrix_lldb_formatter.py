@@ -5,11 +5,6 @@ from utils import *
 precision: int = 2
 imag_char: str = 'i'
 
-def __lldb_init_module(debugger: lldb.SBDebugger, dict):
-    debugger.HandleCommand(f'type summary add -x "^DenseMatrix<.*>$" -F dense_matrix_lldb_formatter.dense_matrix_summary')
-    debugger.HandleCommand(f'type synthetic add -x "^DenseMatrix<.*>$" --python-class dense_matrix_lldb_formatter.DenseMatrixSyntheticChildrenProvider')
-    debugger.HandleCommand(f'command script add -f dense_matrix_lldb_formatter.to_string_dm to_string_dm')
-
 def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
     valobj = valobj.GetNonSyntheticValue()
 

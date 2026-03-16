@@ -6,11 +6,6 @@ from utils import *
 to_string_orientation: str = "horizontal"
 # to_string_orientation: str = "vertical"
 
-def __lldb_init_module(debugger: lldb.SBDebugger, dict):
-    debugger.HandleCommand(f'type summary add -x "^DenseVector<.*>$" -F dense_vector_lldb_formatter.dense_vector_summary')
-    debugger.HandleCommand(f'type synthetic add -x "^DenseVector<.*>$" --python-class dense_vector_lldb_formatter.DenseVectorSyntheticChildrenProvider')
-    debugger.HandleCommand(f'command script add -f dense_vector_lldb_formatter.to_string_dv to_string_dv')
-
 def dense_vector_summary(valobj: lldb.SBValue, internal_dict):
     valobj = valobj.GetNonSyntheticValue()
 
