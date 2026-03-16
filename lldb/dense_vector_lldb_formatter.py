@@ -4,50 +4,32 @@ import lldb
 def dense_vector_summary(valobj: lldb.SBValue, internal_dict):
     valobj = valobj.GetNonSyntheticValue()
 
-    dense_vector_type: lldb.SBType = valobj.GetType()
-
-    if not dense_vector_type.IsValid():
-        raise RuntimeError("dense_vector_type is invalid")
-
-    dense_vector_type = get_real_type(dense_vector_type)
-
-    t_type = dense_vector_type.GetTemplateArgumentType(0)
-
-    if not t_type.IsValid():
-        raise RuntimeError("t_type is invalid")
-
-    scalar_type = scalar_type_from_type(t_type)
-
+    dense_vector_type: lldb.SBType = get_real_type(valobj.GetType())
+    scalar_type = scalar_type_from_type(dense_vector_type.GetTemplateArgumentType(0))
     n: lldb.SBValue = valobj.GetChildMemberWithName("n")
-
-    if not n.IsValid():
-        raise RuntimeError("n is invalid")
-
     n_int = n.GetValueAsUnsigned()
 
     if n_int == 0:
-        raise RuntimeError("empty dense vector")
+        return "Empty Vector (n = 0)"
 
     if n_int > 7:
-        return ""
+        return f"Vector too big for summary (n = {n}"
 
     data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
 
-    if not data.IsValid():
-        raise RuntimeError("data member is not valid")
-
     if data.GetValueAsSigned() == 0:
-        raise RuntimeError("data member is nullptr")
+        return "Null Vector (data_ = nullptr)"
 
     summary: str = "{"
 
     for i in range(0, n_int):
         cur_element_data: lldb.SBValue = iterate_data_array(data, i)
 
-        if not cur_element_data.IsValid():
-            raise RuntimeError(f"cur_element at index = {i}) is not valid")
+        if cur_element_data.IsValid():
+            cur_element = get_str_from_value(cur_element_data, scalar_type)
+        else:
+            cur_element = "N/A"
 
-        cur_element = get_str_from_value(cur_element_data, scalar_type)
 
         if i != n_int - 1:
             summary += f"{cur_element}, "
