@@ -124,10 +124,10 @@ class DenseVectorViewSyntheticChildrenProvider:
         if name == "offset_":
             return 1
 
-        if name == "data":
+        if name == "view":
             return 2
 
-        if name == "owner":
+        if name == "owner_":
             return 3
 
         return -1

@@ -119,7 +119,7 @@ class DenseMatrixSyntheticChildrenProvider:
         if name == "rows":
             return 1
 
-        if name == "data":
+        if name == "data_":
             return 2
 
         return -1
@@ -133,7 +133,7 @@ class DenseMatrixSyntheticChildrenProvider:
 
         if index == 2:
             return self.data.CreateValueFromAddress(
-                "data",
+                "data_",
                 self.data.GetValueAsUnsigned(),
                 self.array_type
             )

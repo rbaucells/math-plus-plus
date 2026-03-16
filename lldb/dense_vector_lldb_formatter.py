@@ -88,7 +88,7 @@ class DenseVectorSyntheticChildrenProvider:
         if name == "n":
             return 0
 
-        if name == "data":
+        if name == "data_":
             return 1
 
         return -1
@@ -99,7 +99,7 @@ class DenseVectorSyntheticChildrenProvider:
 
         if index == 1:
             return self.data.CreateValueFromAddress(
-                "data",
+                "data_",
                 self.data.GetValueAsUnsigned(),
                 self.array_type
             )
