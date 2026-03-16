@@ -13,7 +13,7 @@ def custom_dense_vector_summary(valobj: lldb.SBValue, internal_dict):
         return "Empty Vector (n = 0)"
 
     if n_int > 7:
-        return f"Vector too big for summary (n = {n}"
+        return f"Big vector (n > 7)"
 
     stride: lldb.SBValue = valobj.GetChildMemberWithName("stride_")
     stride_int = stride.GetValueAsUnsigned()

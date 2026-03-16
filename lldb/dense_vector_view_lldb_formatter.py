@@ -13,7 +13,7 @@ def dense_vector_view_summary(valobj: lldb.SBValue, internal_dict):
         return "Empty Vector (n = 0)"
 
     if n_int > 7:
-        return f"Vector too big for summary (n = {n}"
+        return f"Big vector (n > 7)"
 
     offset: lldb.SBValue = valobj.GetChildMemberWithName("offset_")
     offset_int = offset.GetValueAsUnsigned()
