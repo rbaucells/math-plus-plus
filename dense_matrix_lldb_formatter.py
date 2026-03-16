@@ -8,7 +8,6 @@ def __lldb_init_module(debugger: lldb.SBDebugger, dict):
     debugger.HandleCommand(f'type summary add -x "^DenseMatrix<.*>$" -F dense_matrix_lldb_formatter.dense_matrix_summary')
     debugger.HandleCommand(f'type synthetic add -x "^DenseMatrix<.*>$" --python-class dense_matrix_lldb_formatter.DenseMatrixSyntheticChildrenProvider')
     debugger.HandleCommand(f'command script add -f dense_matrix_lldb_formatter.to_string to_string')
-    print("Imported dense_matrix_lldb_formatter.py")
 
 
 class ScalarType(Enum):
@@ -110,6 +109,15 @@ def iterate_data_array(data_ptr: lldb.SBValue, index: int) -> lldb.SBValue:
     return data_ptr.CreateChildAtOffset(f"[{index}]", offset, element_type)
 
 
+def get_real_type(dense_matrix_type: lldb.SBType) -> lldb.SBType:
+    if dense_matrix_type.IsPointerType():
+        return dense_matrix_type.GetPointeeType()
+
+    if dense_matrix_type.IsReferenceType():
+        return dense_matrix_type.GetDereferencedType()
+
+    return dense_matrix_type
+
 def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
     valobj = valobj.GetNonSyntheticValue()
 
@@ -117,6 +125,8 @@ def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
 
     if not dense_matrix_type.IsValid():
         raise RuntimeError("dense_matrix_type is invalid")
+
+    dense_matrix_type = get_real_type(dense_matrix_type)
 
     t_type = dense_matrix_type.GetTemplateArgumentType(0)
 
