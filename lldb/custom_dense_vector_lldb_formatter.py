@@ -56,10 +56,12 @@ class CustomDenseVectorSyntheticChildrenProvider:
         self.data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
 
         self.element_type: lldb.SBType = self.data.GetType().GetPointeeType()
+
+        self.fake_array_type: lldb.SBType = self.element_type.GetArrayType(self.n_int)
         self.array_type: lldb.SBType = self.element_type.GetArrayType(self.n_int * self.stride_int)
 
     def num_children(self, max_children: int) -> int:
-        return 3
+        return 4
 
     def get_child_index(self, name: str) -> int:
         if name == "n":
@@ -68,8 +70,11 @@ class CustomDenseVectorSyntheticChildrenProvider:
         if name == "stride_":
             return 1
 
-        if name == "data_":
+        if name == "view":
             return 2
+
+        if name == "data_":
+            return 3
 
         return -1
 
@@ -81,6 +86,19 @@ class CustomDenseVectorSyntheticChildrenProvider:
             return self.stride
 
         if index == 2:
+            data: lldb.SBData = lldb.SBData()
+
+            for i in range(0, self.n_int):
+                cur_element = lldb.SBValue = iterate_data_array(self.data, i * self.stride_int)
+                data.Append(cur_element.GetData())
+
+            return self.data.CreateValueFromData(
+                "view",
+                data,
+                self.fake_array_type
+            )
+
+        if index == 3:
             return self.data.CreateValueFromAddress(
                 "data_",
                 self.data.GetValueAsUnsigned(),
