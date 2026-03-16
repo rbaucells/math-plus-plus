@@ -107,11 +107,11 @@ def iterate_data_array(data_ptr: lldb.SBValue, index: int) -> lldb.SBValue:
     return data_ptr.CreateChildAtOffset(f"[{index}]", offset, element_type)
 
 
-def get_real_type(dense_vector_type: lldb.SBType) -> lldb.SBType:
-    if dense_vector_type.IsPointerType():
-        return dense_vector_type.GetPointeeType()
+def get_real_type(t_type: lldb.SBType) -> lldb.SBType:
+    if t_type.IsPointerType():
+        return t_type.GetPointeeType()
 
-    if dense_vector_type.IsReferenceType():
-        return dense_vector_type.GetDereferencedType()
+    if t_type.IsReferenceType():
+        return t_type.GetDereferencedType()
 
-    return dense_vector_type
+    return t_type

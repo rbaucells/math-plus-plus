@@ -4,57 +4,35 @@ import lldb
 def custom_dense_vector_summary(valobj: lldb.SBValue, internal_dict):
     valobj = valobj.GetNonSyntheticValue()
 
-    custom_dense_vector_type: lldb.SBType = valobj.GetType()
-
-    if not custom_dense_vector_type.IsValid():
-        raise RuntimeError("custom_dense_vector_type is invalid")
-
-    custom_dense_vector_type = get_real_type(custom_dense_vector_type)
-
-    t_type = custom_dense_vector_type.GetTemplateArgumentType(0)
-
-    if not t_type.IsValid():
-        raise RuntimeError("t_type is invalid")
-
-    scalar_type = scalar_type_from_type(t_type)
-
+    custom_dense_vector_type: lldb.SBType = get_real_type(valobj.GetType())
+    scalar_type: ScalarType = scalar_type_from_type(custom_dense_vector_type.GetTemplateArgumentType(0))
     n: lldb.SBValue = valobj.GetChildMemberWithName("n")
-
-    if not n.IsValid():
-        raise RuntimeError("n is invalid")
-
-    n_int = n.GetValueAsUnsigned()
+    n_int: int = n.GetValueAsUnsigned()
 
     if n_int == 0:
-        raise RuntimeError("empty custom dense vector")
+        return "Empty Vector (n = 0)"
 
     if n_int > 7:
-        return ""
+        return f"Vector too big for summary (n = {n}"
 
     stride: lldb.SBValue = valobj.GetChildMemberWithName("stride_")
-
-    if not stride.IsValid():
-        raise RuntimeError("stride is invalid")
-
     stride_int = stride.GetValueAsUnsigned()
 
     data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
 
-    if not data.IsValid():
-        raise RuntimeError("data member is not valid")
-
     if data.GetValueAsSigned() == 0:
-        raise RuntimeError("data member is nullptr")
+        return "Null Vector (data_ = nullptr)"
 
     summary: str = "{"
 
     for i in range(0, n_int):
         cur_element_data: lldb.SBValue = iterate_data_array(data, i * stride_int)
 
-        if not cur_element_data.IsValid():
-            raise RuntimeError(f"cur_element at index = {i}) is not valid")
+        if cur_element_data.IsValid():
+            cur_element = get_str_from_value(cur_element_data, scalar_type)
+        else:
+            cur_element = "N/A"
 
-        cur_element = get_str_from_value(cur_element_data, scalar_type)
 
         if i != n_int - 1:
             summary += f"{cur_element}, "
@@ -67,28 +45,15 @@ def custom_dense_vector_summary(valobj: lldb.SBValue, internal_dict):
 
 class CustomDenseVectorSyntheticChildrenProvider:
     def __init__(self, valobj: lldb.SBValue, internal_dict):
+        self.valobj = valobj
+
         self.n = valobj.GetChildMemberWithName("n")
-
-        if not self.n.IsValid():
-            raise RuntimeError("n is invalid")
-
         self.n_int = self.n.GetValueAsUnsigned()
 
         self.stride = valobj.GetChildMemberWithName("stride_")
-
-        if not self.stride.IsValid():
-            raise RuntimeError("offset is invalid")
-
         self.stride_int = self.stride.GetValueAsUnsigned()
 
-        self.valobj = valobj
-
-        data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
-
-        if not data.IsValid():
-            raise RuntimeError("data member is not valid")
-
-        self.data = data
+        self.data = valobj.GetChildMemberWithName("data_")
 
         self.element_type = self.data.GetType().GetPointeeType()
         self.array_type = self.element_type.GetArrayType(self.n_int * self.stride_int)
@@ -125,28 +90,10 @@ class CustomDenseVectorSyntheticChildrenProvider:
         return None
 
 def to_string_cdv(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
-    target: lldb.SBTarget = debugger.GetSelectedTarget()
-
-    if not target.IsValid():
-        result.PutError("target was invalid")
-        return
-
-    frame: lldb.SBFrame = target.GetProcess().GetSelectedThread().GetSelectedFrame()
-
-    if not frame.IsValid():
-        result.PutError("frame was invalid")
-        return
-
-    valobj: lldb.SBValue = frame.FindVariable(command)
-
-    if not valobj.IsValid():
-        result.PutError("valobj was invalid")
-        return
-
-    valobj = valobj.GetNonSyntheticValue()
+    frame: lldb.SBFrame = debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
+    valobj: lldb.SBValue = frame.FindVariable(command).GetNonSyntheticValue()
 
     summary = custom_dense_vector_summary(valobj, internal_dict)
-
     if vector_to_string_orientation == "vertical":
         summary = summary.replace("{", "{\n ")
         summary = summary.replace("}", "\n}")
