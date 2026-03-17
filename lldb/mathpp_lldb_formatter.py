@@ -13,6 +13,8 @@ def __lldb_init_module(debugger: lldb.SBDebugger, dict):
     # sparse vector
     debugger.HandleCommand(
         "command script import /Users/ricardo/Projects/math-plus-plus/lldb/sparse_vector_lldb_formatter.py")
+    debugger.HandleCommand(
+        "command script import /Users/ricardo/Projects/math-plus-plus/lldb/sparse_vector_view_lldb_formatter.py")
 
     # dense matrix
     debugger.HandleCommand(
@@ -41,6 +43,8 @@ def __lldb_init_module(debugger: lldb.SBDebugger, dict):
     # SparseVector
     debugger.HandleCommand(
         f'type synthetic add -x "^SparseVector<.*>$" --python-class sparse_vector_lldb_formatter.SparseVectorSyntheticChildrenProvider')
+    debugger.HandleCommand(
+        f'type synthetic add -x "^SparseVectorView<.*>$" --python-class sparse_vector_view_lldb_formatter.SparseVectorViewSyntheticChildrenProvider')
 
     # DenseMatrix
     debugger.HandleCommand(
