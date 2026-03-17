@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     const DenseVectorView<int> h(e, 3, 1);
 
     float data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    CustomDenseVector<float> i(data, 3, 3);
+    CustomDenseVector<float> i(nullptr, 3, 3);
 
     SparseVector<float> j = {3, {{1, 0}, {3, 2}}};
     SparseVector<float>& k = j;
