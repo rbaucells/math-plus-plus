@@ -77,14 +77,36 @@ class DenseVectorSyntheticChildrenProvider:
 
         return None
 
-def to_string(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
-    frame: lldb.SBFrame = debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-    valobj: lldb.SBValue = frame.FindVariable(command).GetNonSyntheticValue()
+def to_string(valobj: lldb.SBValue) -> str:
+    dense_vector_type: lldb.SBType = get_real_type(valobj.GetType())
+    scalar_type: ScalarType = scalar_type_from_type(dense_vector_type.GetTemplateArgumentType(0))
+    n: lldb.SBValue = valobj.GetChildMemberWithName("n")
+    n_int: int = n.GetValueAsUnsigned()
 
-    summary = dense_vector_summary(valobj, internal_dict)
-    if vector_to_string_orientation == "vertical":
-        summary = summary.replace("{", "{\n    ")
-        summary = summary.replace("}", "\n}")
-        summary = summary.replace(", ", "\n    ")
+    if n_int == 0:
+        return f"n = {n_int}""data_ = {}"
 
-    result.PutCString(summary)
+    data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
+
+    if data.GetValueAsSigned() == 0:
+        return f"n = {n_int}""data_ = nullptr"
+
+    summary: str = "{"
+
+    for i in range(0, n_int):
+        cur_element_data: lldb.SBValue = iterate_data_array(data, i)
+
+        if cur_element_data.IsValid():
+            cur_element = get_str_from_value(cur_element_data, scalar_type)
+        else:
+            cur_element = "N/A"
+
+
+        if i != n_int - 1:
+            summary += f"{cur_element}, "
+        else:
+            summary += cur_element
+
+    summary += "}"
+
+    return f"n = {n_int}"f"data_ = {summary}"

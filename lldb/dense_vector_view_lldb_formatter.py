@@ -98,14 +98,5 @@ class DenseVectorViewSyntheticChildrenProvider:
 
         return None
 
-def to_string(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
-    frame: lldb.SBFrame = debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
-    valobj: lldb.SBValue = frame.FindVariable(command).GetNonSyntheticValue()
-
-    summary = dense_vector_view_summary(valobj, internal_dict)
-    if vector_to_string_orientation == "vertical":
-        summary = summary.replace("{", "{\n    ")
-        summary = summary.replace("}", "\n}")
-        summary = summary.replace(", ", "\n    ")
-
-    result.PutCString(summary)
+def to_string(valobj: lldb.SBValue) -> str:
+    ...

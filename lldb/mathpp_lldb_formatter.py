@@ -47,62 +47,62 @@ def to_string(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandRet
         if "Vector" in type_name:
             if "View" in type_name:
                 import dense_vector_view_lldb_formatter
-                dense_vector_view_lldb_formatter.to_string(debugger, command, result, internal_dict)
+                result.PutCString(dense_vector_view_lldb_formatter.to_string(valobj))
                 return
 
             if "Custom" in type_name:
                 import custom_dense_vector_lldb_formatter
-                custom_dense_vector_lldb_formatter.to_string(debugger, command, result, internal_dict)
+                result.PutCString(custom_dense_vector_lldb_formatter.to_string(valobj))
                 return
 
             import dense_vector_lldb_formatter
-            dense_vector_lldb_formatter.to_string(debugger, command, result, internal_dict)
+            result.PutCString(dense_vector_lldb_formatter.to_string(valobj))
             return
 
         if "Matrix" in type_name:
             if "View" in type_name:
                 import dense_matrix_view_lldb_formatter
-                dense_matrix_view_lldb_formatter.to_string(debugger, command, result, internal_dict)
+                result.PutCString(dense_matrix_view_lldb_formatter.to_string(valobj))
                 return
 
             if "Custom" in type_name:
                 import custom_dense_matrix_lldb_formatter
-                custom_dense_matrix_lldb_formatter.to_string(debugger, command, result, internal_dict)
+                result.PutCString(custom_dense_matrix_lldb_formatter.to_string(valobj))
                 return
 
             import dense_matrix_lldb_formatter
-            dense_matrix_lldb_formatter.to_string(debugger, command, result, internal_dict)
+            result.PutCString(dense_matrix_lldb_formatter.to_string(valobj))
             return
 
     if "Sparse" in type_name:
         if "Vector" in type_name:
             if "View" in type_name:
                 import sparse_vector_view_lldb_formatter
-                sparse_vector_view_lldb_formatter.to_string(debugger, command, result, internal_dict)
+                result.PutCString(sparse_vector_view_lldb_formatter.to_string(valobj))
                 return
 
             if "Custom" in type_name:
                 import custom_sparse_vector_lldb_formatter
-                custom_sparse_vector_lldb_formatter.to_string(debugger, command, result, internal_dict)
+                result.PutCString(custom_sparse_vector_lldb_formatter.to_string(valobj))
                 return
 
             import sparse_vector_lldb_formatter
-            sparse_vector_lldb_formatter.to_string(debugger, command, result, internal_dict)
+            result.PutCString(sparse_vector_lldb_formatter.to_string(valobj))
             return
 
         if "Matrix" in type_name:
             if "View" in type_name:
                 import sparse_matrix_view_lldb_formatter
-                sparse_matrix_view_lldb_formatter.to_string(debugger, command, result, internal_dict)
+                result.PutCString(sparse_matrix_view_lldb_formatter.to_string(valobj))
                 return
 
             if "Custom" in type_name:
                 import custom_sparse_matrix_lldb_formatter
-                custom_sparse_matrix_lldb_formatter.to_string(debugger, command, result, internal_dict)
+                result.PutCString(custom_sparse_matrix_lldb_formatter.to_string(valobj))
                 return
 
             import sparse_matrix_lldb_formatter
-            sparse_matrix_lldb_formatter.to_string(debugger, command, result, internal_dict)
+            result.PutCString(sparse_matrix_lldb_formatter.to_string(valobj))
             return
 
     result.PutError(f"unknown type = {type_name}")

@@ -5,9 +5,6 @@ import lldb
 precision: int = 2
 imag_char: str = 'i'
 
-# vector_to_string_orientation: str = "horizontal"
-vector_to_string_orientation: str = "vertical"
-
 class ScalarType(Enum):
     Integer = 1
     Floating = 2
