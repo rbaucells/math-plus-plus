@@ -3,55 +3,36 @@ import lldb
 
 def __lldb_init_module(debugger: lldb.SBDebugger, dict):
     # dense vector
-    debugger.HandleCommand(
-        "command script import /Users/ricardo/Projects/math-plus-plus/lldb/dense_vector_lldb_formatter.py")
-    debugger.HandleCommand(
-        "command script import /Users/ricardo/Projects/math-plus-plus/lldb/dense_vector_view_lldb_formatter.py")
-    debugger.HandleCommand(
-        "command script import /Users/ricardo/Projects/math-plus-plus/lldb/custom_dense_vector_lldb_formatter.py")
+    debugger.HandleCommand("command script import /Users/ricardo/Projects/math-plus-plus/lldb/dense_vector_lldb_formatter.py")
+    debugger.HandleCommand("command script import /Users/ricardo/Projects/math-plus-plus/lldb/dense_vector_view_lldb_formatter.py")
+    debugger.HandleCommand("command script import /Users/ricardo/Projects/math-plus-plus/lldb/custom_dense_vector_lldb_formatter.py")
 
     # sparse vector
-    debugger.HandleCommand(
-        "command script import /Users/ricardo/Projects/math-plus-plus/lldb/sparse_vector_lldb_formatter.py")
-    debugger.HandleCommand(
-        "command script import /Users/ricardo/Projects/math-plus-plus/lldb/sparse_vector_view_lldb_formatter.py")
+    debugger.HandleCommand("command script import /Users/ricardo/Projects/math-plus-plus/lldb/sparse_vector_lldb_formatter.py")
+    debugger.HandleCommand("command script import /Users/ricardo/Projects/math-plus-plus/lldb/sparse_vector_view_lldb_formatter.py")
 
     # dense matrix
-    debugger.HandleCommand(
-        "command script import /Users/ricardo/Projects/math-plus-plus/lldb/dense_matrix_lldb_formatter.py")
+    debugger.HandleCommand("command script import /Users/ricardo/Projects/math-plus-plus/lldb/dense_matrix_lldb_formatter.py")
 
     # sparse matrix
 
     # DenseVector
-    debugger.HandleCommand(
-        f'type summary add -x "^DenseVector<.*>$" -F dense_vector_lldb_formatter.dense_vector_summary')
-    debugger.HandleCommand(
-        f'type synthetic add -x "^DenseVector<.*>$" --python-class dense_vector_lldb_formatter.DenseVectorSyntheticChildrenProvider')
-
-    # DenseVectorView
-    debugger.HandleCommand(
-        f'type summary add -x "^DenseVectorView<.*>$" -F dense_vector_view_lldb_formatter.dense_vector_view_summary')
-    debugger.HandleCommand(
-        f'type synthetic add -x "^DenseVectorView<.*>$" --python-class dense_vector_view_lldb_formatter.DenseVectorViewSyntheticChildrenProvider')
-
-    # CustomDenseVector
-    debugger.HandleCommand(
-        f'type summary add -x "^CustomDenseVector<.*>$" -F custom_dense_vector_lldb_formatter.custom_dense_vector_summary')
-    debugger.HandleCommand(
-        f'type synthetic add -x "^CustomDenseVector<.*>$" --python-class custom_dense_vector_lldb_formatter.CustomDenseVectorSyntheticChildrenProvider')
+    debugger.HandleCommand(f'type summary add -x "^DenseVector<.*>$" -F dense_vector_lldb_formatter.dense_vector_summary')
+    debugger.HandleCommand(f'type synthetic add -x "^DenseVector<.*>$" --python-class dense_vector_lldb_formatter.DenseVectorSyntheticChildrenProvider')
+    debugger.HandleCommand(f'type summary add -x "^DenseVectorView<.*>$" -F dense_vector_view_lldb_formatter.dense_vector_view_summary')
+    debugger.HandleCommand(f'type synthetic add -x "^DenseVectorView<.*>$" --python-class dense_vector_view_lldb_formatter.DenseVectorViewSyntheticChildrenProvider')
+    debugger.HandleCommand(f'type summary add -x "^CustomDenseVector<.*>$" -F custom_dense_vector_lldb_formatter.custom_dense_vector_summary')
+    debugger.HandleCommand(f'type synthetic add -x "^CustomDenseVector<.*>$" --python-class custom_dense_vector_lldb_formatter.CustomDenseVectorSyntheticChildrenProvider')
 
     # SparseVector
-    debugger.HandleCommand(
-        f'type synthetic add -x "^SparseVector<.*>$" --python-class sparse_vector_lldb_formatter.SparseVectorSyntheticChildrenProvider')
-    debugger.HandleCommand(
-        f'type synthetic add -x "^SparseVectorView<.*>$" --python-class sparse_vector_view_lldb_formatter.SparseVectorViewSyntheticChildrenProvider')
+    debugger.HandleCommand(f'type synthetic add -x "^SparseVector<.*>$" --python-class sparse_vector_lldb_formatter.SparseVectorSyntheticChildrenProvider')
+    debugger.HandleCommand(f'type synthetic add -x "^SparseVectorView<.*>$" --python-class sparse_vector_view_lldb_formatter.SparseVectorViewSyntheticChildrenProvider')
 
     # DenseMatrix
-    debugger.HandleCommand(
-        f'type summary add -x "^DenseMatrix<.*>$" -F dense_matrix_lldb_formatter.dense_matrix_summary')
-    debugger.HandleCommand(
-        f'type synthetic add -x "^DenseMatrix<.*>$" --python-class dense_matrix_lldb_formatter.DenseMatrixSyntheticChildrenProvider')
+    debugger.HandleCommand(f'type summary add -x "^DenseMatrix<.*>$" -F dense_matrix_lldb_formatter.dense_matrix_summary')
+    debugger.HandleCommand(f'type synthetic add -x "^DenseMatrix<.*>$" --python-class dense_matrix_lldb_formatter.DenseMatrixSyntheticChildrenProvider')
 
+    # to_string
     debugger.HandleCommand(f'command script add -f mathpp_lldb_formatter.to_string to_string')
 
 
