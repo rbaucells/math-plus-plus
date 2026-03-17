@@ -140,7 +140,7 @@ class DenseMatrixSyntheticChildrenProvider:
 
         return None
 
-def to_string_dm(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
+def to_string(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
     target: lldb.SBTarget = debugger.GetSelectedTarget()
 
     if not target.IsValid():

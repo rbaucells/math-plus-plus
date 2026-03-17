@@ -98,7 +98,7 @@ class DenseVectorViewSyntheticChildrenProvider:
 
         return None
 
-def to_string_dvv(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
+def to_string(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
     frame: lldb.SBFrame = debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
     valobj: lldb.SBValue = frame.FindVariable(command).GetNonSyntheticValue()
 

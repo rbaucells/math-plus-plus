@@ -71,7 +71,7 @@ class SparseVectorSyntheticChildrenProvider:
 
         return None
 
-def to_string_sv(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
+def to_string(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommandReturnObject, internal_dict):
     frame: lldb.SBFrame = debugger.GetSelectedTarget().GetProcess().GetSelectedThread().GetSelectedFrame()
     valobj: lldb.SBValue = frame.FindVariable(command).GetNonSyntheticValue()
 
@@ -128,4 +128,3 @@ def to_string_sv(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommand
         indices_summary = indices_summary.replace(", ", "\n    ")
 
     result.PutCString(f"n = {n_int}\nnnz_ = {nnz_int}\nvalues_ = {values_summary}\nindices_ = {indices_summary}")
-
