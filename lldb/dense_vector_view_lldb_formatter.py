@@ -1,4 +1,7 @@
+import textwrap
+
 from utils import *
+import dense_vector_lldb_formatter
 import lldb
 
 def dense_vector_view_summary(valobj: lldb.SBValue, internal_dict):
@@ -99,4 +102,44 @@ class DenseVectorViewSyntheticChildrenProvider:
         return None
 
 def to_string(valobj: lldb.SBValue) -> str:
-    ...
+    dense_vector_type: lldb.SBType = get_real_type(valobj.GetType())
+    scalar_type: ScalarType = scalar_type_from_type(dense_vector_type.GetTemplateArgumentType(0))
+    n: lldb.SBValue = valobj.GetChildMemberWithName("n")
+    offset: lldb.SBValue = valobj.GetChildMemberWithName("offset_")
+    owner: lldb.SBValue = valobj.GetChildMemberWithName("owner_")
+    data: lldb.SBValue = owner.GetChildMemberWithName("data_")
+
+    n_int: int = n.GetValueAsUnsigned()
+    offset_int: int = offset.GetValueAsUnsigned()
+    data_int: int = data.GetValueAsUnsigned()
+    owner_str: str = dense_vector_lldb_formatter.to_string(owner)
+    owner_str = textwrap.indent(owner_str, "    ")
+
+    if n_int == 0 and data_int != 0:
+        return f"n = 0\noffset_ = {offset_int}\nview = {{}}\nowner_ = {{\n{owner_str}\n}}"
+
+    if n_int == 0 and data_int == 0:
+        return f"n = 0\noffset_ = {offset_int}\nview = {{nullptr}}\nowner_ = {{\n{owner_str}\n}}"
+
+    if data_int == 0:
+        return f"n = {n_int}\noffset_ = {offset_int}\nview = nullptr\nowner_ = {{\n{owner_str}\n}}"
+
+    summary: str = "{"
+
+    for i in range(0, n_int):
+        cur_element_data: lldb.SBValue = iterate_data_array(data, i + offset_int)
+
+        if cur_element_data.IsValid():
+            cur_element = get_str_from_value(cur_element_data, scalar_type)
+        else:
+            cur_element = "N/A"
+
+
+        if i != n_int - 1:
+            summary += f"{cur_element}, "
+        else:
+            summary += cur_element
+
+    summary += "}"
+
+    return f"n = {n_int}\noffset_ = {offset_int}\nview = {summary}\nowner_ = {{\n{owner_str}\n}}"
