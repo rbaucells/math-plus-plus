@@ -81,15 +81,19 @@ def to_string(valobj: lldb.SBValue) -> str:
     dense_vector_type: lldb.SBType = get_real_type(valobj.GetType())
     scalar_type: ScalarType = scalar_type_from_type(dense_vector_type.GetTemplateArgumentType(0))
     n: lldb.SBValue = valobj.GetChildMemberWithName("n")
-    n_int: int = n.GetValueAsUnsigned()
-
-    if n_int == 0:
-        return f"n = {n_int}""data_ = {}"
-
     data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
 
-    if data.GetValueAsSigned() == 0:
-        return f"n = {n_int}""data_ = nullptr"
+    n_int: int = n.GetValueAsUnsigned()
+    data_int: int = data.GetValueAsUnsigned()
+
+    if n_int == 0 and data_int != 0:
+        return "n = 0\ndata_ = {}"
+
+    if n_int == 0 and data_int == 0:
+        return "n = 0\ndata_ = {nullptr}"
+
+    if data_int == 0:
+        return f"n = {n_int}\ndata_ = nullptr"
 
     summary: str = "{"
 
@@ -109,4 +113,4 @@ def to_string(valobj: lldb.SBValue) -> str:
 
     summary += "}"
 
-    return f"n = {n_int}"f"data_ = {summary}"
+    return f"n = {n_int}\ndata_ = {summary}"
