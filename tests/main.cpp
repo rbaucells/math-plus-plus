@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     float data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     CustomDenseVector<float> i(nullptr, 3, 3);
 
-    SparseVector<float> j = {3, {{1, 0}, {3, 2}}};
+    SparseVector<float> j(3);
     SparseVector<float>& k = j;
     SparseVector<float>* l = &j;
 
