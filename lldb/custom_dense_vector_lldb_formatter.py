@@ -113,8 +113,8 @@ def to_string_cdv(debugger: lldb.SBDebugger, command: str, result: lldb.SBComman
 
     summary = custom_dense_vector_summary(valobj, internal_dict)
     if vector_to_string_orientation == "vertical":
-        summary = summary.replace("{", "{\n ")
+        summary = summary.replace("{", "{\n    ")
         summary = summary.replace("}", "\n}")
-        summary = summary.replace(",", "\n")
+        summary = summary.replace(", ", "\n    ")
 
     result.PutCString(summary)

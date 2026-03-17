@@ -119,13 +119,13 @@ def to_string_sv(debugger: lldb.SBDebugger, command: str, result: lldb.SBCommand
     indices_summary += "}"
 
     if vector_to_string_orientation == "vertical":
-        values_summary = values_summary.replace("{", "{\n ")
+        values_summary = values_summary.replace("{", "{\n    ")
         values_summary = values_summary.replace("}", "\n}")
-        values_summary = values_summary.replace(",", "\n")
+        values_summary = values_summary.replace(", ", "\n    ")
 
-        indices_summary = indices_summary.replace("{", "{\n ")
+        indices_summary = indices_summary.replace("{", "{\n    ")
         indices_summary = indices_summary.replace("}", "\n}")
-        indices_summary = indices_summary.replace(",", "\n")
+        indices_summary = indices_summary.replace(", ", "\n    ")
 
     result.PutCString(f"n = {n_int}\nnnz_ = {nnz_int}\nvalues_ = {values_summary}\nindices_ = {indices_summary}")
 
