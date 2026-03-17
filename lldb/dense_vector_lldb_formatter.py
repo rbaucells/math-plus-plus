@@ -85,9 +85,6 @@ def to_string(valobj: lldb.SBValue) -> str:
 
     n_int: int = n.GetValueAsUnsigned()
 
-    if n_int == 0:
-        return "n = 0\ndata_ = {}"
-
     summary: str = "{"
 
     for i in range(0, n_int):

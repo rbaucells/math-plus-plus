@@ -83,9 +83,6 @@ def to_string(valobj: lldb.SBValue):
     n_int: int = n.GetValueAsUnsigned()
     nnz_int: int = nnz.GetValueAsUnsigned()
 
-    if n_int == 0:
-        return f"n = 0\nnnz_ = {nnz_int}\nvalues_ = {{}}\nindices = {{}}"
-
     values_summary: str = "{"
     indices_summary: str = "{"
 

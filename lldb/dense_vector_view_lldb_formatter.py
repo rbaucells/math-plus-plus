@@ -114,9 +114,6 @@ def to_string(valobj: lldb.SBValue) -> str:
     owner_str: str = dense_vector_lldb_formatter.to_string(owner)
     owner_str = textwrap.indent(owner_str, "    ")
 
-    if n_int == 0:
-        return f"n = 0\noffset_ = {offset_int}\nview = {{}}\nowner_ = {{\n{owner_str}\n}}"
-
     summary: str = "{"
 
     for i in range(0, n_int):
