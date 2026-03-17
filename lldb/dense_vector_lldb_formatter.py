@@ -84,16 +84,9 @@ def to_string(valobj: lldb.SBValue) -> str:
     data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
 
     n_int: int = n.GetValueAsUnsigned()
-    data_int: int = data.GetValueAsUnsigned()
 
-    if n_int == 0 and data_int != 0:
+    if n_int == 0:
         return "n = 0\ndata_ = {}"
-
-    if n_int == 0 and data_int == 0:
-        return "n = 0\ndata_ = {nullptr}"
-
-    if data_int == 0:
-        return f"n = {n_int}\ndata_ = nullptr"
 
     summary: str = "{"
 

@@ -111,18 +111,11 @@ def to_string(valobj: lldb.SBValue) -> str:
 
     n_int: int = n.GetValueAsUnsigned()
     offset_int: int = offset.GetValueAsUnsigned()
-    data_int: int = data.GetValueAsUnsigned()
     owner_str: str = dense_vector_lldb_formatter.to_string(owner)
     owner_str = textwrap.indent(owner_str, "    ")
 
-    if n_int == 0 and data_int != 0:
+    if n_int == 0:
         return f"n = 0\noffset_ = {offset_int}\nview = {{}}\nowner_ = {{\n{owner_str}\n}}"
-
-    if n_int == 0 and data_int == 0:
-        return f"n = 0\noffset_ = {offset_int}\nview = {{nullptr}}\nowner_ = {{\n{owner_str}\n}}"
-
-    if data_int == 0:
-        return f"n = {n_int}\noffset_ = {offset_int}\nview = nullptr\nowner_ = {{\n{owner_str}\n}}"
 
     summary: str = "{"
 
