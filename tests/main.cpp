@@ -26,6 +26,8 @@ int main(int argc, char** argv) {
     j.set(3, 4);
     j.set(4, 5);
 
+    // [0, 2, 0, 4, 5]
+
     SparseVectorView<float> m(j, 3, 1);
 
     testing::InitGoogleTest(&argc, argv);

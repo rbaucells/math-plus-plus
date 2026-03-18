@@ -72,8 +72,8 @@ class SparseVectorSyntheticChildrenProvider:
 
 
 def to_string(valobj: lldb.SBValue):
-    dense_vector_type: lldb.SBType = get_real_type(valobj.GetType())
-    scalar_type: ScalarType = scalar_type_from_type(dense_vector_type.GetTemplateArgumentType(0))
+    sparse_vector_type: lldb.SBType = get_real_type(valobj.GetType())
+    scalar_type: ScalarType = scalar_type_from_type(sparse_vector_type.GetTemplateArgumentType(0))
     n: lldb.SBValue = valobj.GetChildMemberWithName("n")
     nnz: lldb.SBValue = valobj.GetChildMemberWithName("nnz_")
     values: lldb.SBValue = valobj.GetChildMemberWithName("values_")

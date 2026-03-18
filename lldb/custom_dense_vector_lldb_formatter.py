@@ -99,7 +99,7 @@ class CustomDenseVectorSyntheticChildrenProvider:
             )
 
         if index == 3:
-            return self.data.CreateValueFromAddress(
+            return self.valobj.CreateValueFromAddress(
                 "data_",
                 self.data.GetValueAsUnsigned(),
                 self.array_type
@@ -117,9 +117,6 @@ def to_string(valobj: lldb.SBValue) -> str:
     n_int: int = n.GetValueAsUnsigned()
     stride_int: int = stride.GetValueAsUnsigned()
     data_int: int = data.GetValueAsUnsigned()
-
-    if n_int == 0 and data_int != 0:
-        return f"n = 0\nstride_ = {stride_int}\nview = {{}}\ndata_ = {{}}"
 
     if n_int == 0 and data_int == 0:
         return f"n = 0\nstride_ = {stride_int}\nview = {{nullptr}}\ndata_ = {{nullptr}}"

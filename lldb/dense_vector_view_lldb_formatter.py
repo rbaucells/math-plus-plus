@@ -90,7 +90,7 @@ class DenseVectorViewSyntheticChildrenProvider:
             return self.offset
 
         if index == 2:
-            return self.data.CreateValueFromAddress(
+            return self.valobj.CreateValueFromAddress(
                 "view",
                 self.data.GetValueAsUnsigned() + (self.offset_int * self.element_type.GetByteSize()),
                 self.array_type
@@ -102,8 +102,8 @@ class DenseVectorViewSyntheticChildrenProvider:
         return None
 
 def to_string(valobj: lldb.SBValue) -> str:
-    dense_vector_type: lldb.SBType = get_real_type(valobj.GetType())
-    scalar_type: ScalarType = scalar_type_from_type(dense_vector_type.GetTemplateArgumentType(0))
+    dense_vector_view_type: lldb.SBType = get_real_type(valobj.GetType())
+    scalar_type: ScalarType = scalar_type_from_type(dense_vector_view_type.GetTemplateArgumentType(0))
     n: lldb.SBValue = valobj.GetChildMemberWithName("n")
     offset: lldb.SBValue = valobj.GetChildMemberWithName("offset_")
     owner: lldb.SBValue = valobj.GetChildMemberWithName("owner_")
