@@ -17,9 +17,6 @@ def dense_vector_summary(valobj: lldb.SBValue, internal_dict):
 
     data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
 
-    if data.GetValueAsSigned() == 0:
-        return "Null Vector (data_ = nullptr)"
-
     summary: str = "{"
 
     for i in range(0, n_int):
