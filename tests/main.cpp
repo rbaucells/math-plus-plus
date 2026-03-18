@@ -41,6 +41,10 @@ int main(int argc, char** argv) {
     DenseMatrix<float>& p = o;
     DenseMatrix<float>* q = &o;
 
+    DenseMatrixView<float> r(o, 2, 2, 1, 1);
+    DenseMatrixView<float>& s = r;
+    DenseMatrixView<float>* t = &r;
+
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

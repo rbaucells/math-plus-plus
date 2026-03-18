@@ -63,7 +63,7 @@ class DenseMatrixSyntheticChildrenProvider:
         self.columns_int: int = self.columns.GetValueAsUnsigned()
 
         self.rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
-        self.rows_int: int = self.columns.GetValueAsUnsigned()
+        self.rows_int: int = self.rows.GetValueAsUnsigned()
 
         self.data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
 
