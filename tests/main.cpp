@@ -18,11 +18,15 @@ int main(int argc, char** argv) {
     float data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     CustomDenseVector<float> i(nullptr, 3, 3);
 
-    SparseVector<float> j(3);
+    SparseVector<float> j(5);
     SparseVector<float>& k = j;
     SparseVector<float>* l = &j;
 
     j.set(1, 2);
+    j.set(3, 4);
+    j.set(4, 5);
+
+    SparseVectorView<float> m(j, 3, 1);
 
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

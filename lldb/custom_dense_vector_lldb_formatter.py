@@ -92,7 +92,7 @@ class CustomDenseVectorSyntheticChildrenProvider:
                 cur_element = lldb.SBValue = iterate_data_array(self.data, i * self.stride_int)
                 data.Append(cur_element.GetData())
 
-            return self.data.CreateValueFromData(
+            return self.valobj.CreateValueFromData(
                 "view",
                 data,
                 self.fake_array_type

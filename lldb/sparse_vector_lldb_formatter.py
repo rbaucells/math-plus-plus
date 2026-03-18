@@ -38,18 +38,17 @@ class SparseVectorSyntheticChildrenProvider:
             return self.n
 
         if index == 1:
-            nnz: lldb.SBValue = self.valobj.GetChildMemberWithName("nnz_")
-            return nnz
+            return self.valobj.GetChildMemberWithName("nnz_")
 
         if index == 2:
             nnz: lldb.SBValue = self.valobj.GetChildMemberWithName("nnz_")
             nnz_int: int = nnz.GetValueAsUnsigned()
 
-            values_array_type: lldb.SBType = self.values_element_type.GetArrayType(nnz_int)
-
             values: lldb.SBValue = self.valobj.GetChildMemberWithName("values_")
 
-            return values.CreateValueFromAddress(
+            values_array_type: lldb.SBType = self.values_element_type.GetArrayType(nnz_int)
+
+            return self.valobj.CreateValueFromAddress(
                 "values_",
                 values.GetValueAsUnsigned(),
                 values_array_type
@@ -59,11 +58,11 @@ class SparseVectorSyntheticChildrenProvider:
             nnz: lldb.SBValue = self.valobj.GetChildMemberWithName("nnz_")
             nnz_int: int = nnz.GetValueAsUnsigned()
 
-            indices_array_type: lldb.SBType = self.indices_element_type.GetArrayType(nnz_int)
-
             indices: lldb.SBValue = self.valobj.GetChildMemberWithName("indices_")
 
-            return indices.CreateValueFromAddress(
+            indices_array_type: lldb.SBType = self.indices_element_type.GetArrayType(nnz_int)
+
+            return self.valobj.CreateValueFromAddress(
                 "indices_",
                 indices.GetValueAsUnsigned(),
                 indices_array_type
@@ -95,7 +94,7 @@ def to_string(valobj: lldb.SBValue):
             cur_element = "N/A"
 
 
-        if i != n_int - 1:
+        if i != nnz_int - 1:
             values_summary += f"{cur_element}, "
         else:
             values_summary += cur_element
@@ -107,8 +106,7 @@ def to_string(valobj: lldb.SBValue):
         else:
             cur_element = "N/A"
 
-
-        if i != n_int - 1:
+        if i != nnz_int - 1:
             indices_summary += f"{cur_element}, "
         else:
             indices_summary += cur_element
