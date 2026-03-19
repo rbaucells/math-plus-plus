@@ -80,8 +80,6 @@ class SparseVectorViewSyntheticChildrenProvider:
                 cur_index: lldb.SBValue = iterate_data_array(owner_indices, i)
                 cur_index_int: int = cur_index.GetValueAsUnsigned()
 
-                print(f"cur_index_int = {cur_index_int}")
-
                 if cur_index_int < self.offset_int or cur_index_int >= self.n_int + self.offset_int:
                     continue
 
@@ -89,8 +87,6 @@ class SparseVectorViewSyntheticChildrenProvider:
                 data.Append(cur_value.GetData())
 
                 nnz_int += 1
-
-            print(f"nnz_int - {nnz_int}")
 
             values_array_type: lldb.SBType = self.owner_values_element_type.GetArrayType(nnz_int)
 
@@ -113,16 +109,14 @@ class SparseVectorViewSyntheticChildrenProvider:
                 cur_index: lldb.SBValue = iterate_data_array(owner_indices, i)
                 cur_index_int: int = cur_index.GetValueAsUnsigned()
 
-                print(f"cur_index_int = {cur_index_int}")
-
                 if cur_index_int < self.offset_int or cur_index_int >= self.n_int + self.offset_int:
                     continue
 
-                data.Append(cur_index.GetData())
+                relative_cur_index_int: int = cur_index_int - self.offset_int
+
+                data.Append(lldb.SBData.CreateDataFromInt(relative_cur_index_int))
 
                 nnz_int += 1
-
-            print(f"nnz_int - {nnz_int}")
 
             indices_array_type: lldb.SBType = self.owner_indices_element_type.GetArrayType(nnz_int)
 
@@ -179,8 +173,10 @@ def to_string(valobj: lldb.SBValue):
         if cur_index_int < offset_int or cur_index_int >= n_int + offset_int:
             continue
 
+        relative_cur_index_int: int = cur_index_int - offset_int
+
         if cur_index.IsValid():
-            cur_element = get_str_from_value(cur_index, ScalarType.Integer)
+            cur_element = str(relative_cur_index_int)
         else:
             cur_element = "N/A"
 
