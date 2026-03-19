@@ -1,0 +1,130 @@
+from utils import *
+import lldb
+
+
+class CustomSparseVectorSyntheticChildrenProvider:
+    def __init__(self, valobj: lldb.SBValue, internal_dict):
+        self.valobj: lldb.SBValue = valobj
+
+        self.n: lldb.SBValue = valobj.GetChildMemberWithName("n")
+        self.n_int: int = self.n.GetValueAsUnsigned()
+
+        values: lldb.SBValue = valobj.GetChildMemberWithName("values_").Dereference()
+        indices: lldb.SBValue = valobj.GetChildMemberWithName("indices_").Dereference()
+
+        self.values_element_type: lldb.SBType = values.GetType().GetPointeeType()
+        self.indices_element_type: lldb.SBType = indices.GetType().GetPointeeType()
+
+        nnz: lldb.SBValue = valobj.GetChildMemberWithName("nnz_").Dereference()
+        self.nnz_type: lldb.SBType = nnz.GetType()
+
+    def num_children(self, max_children: int) -> int:
+        return 4
+
+    def get_child_index(self, name: str) -> int:
+        if name == "n":
+            return 0
+
+        if name == "nnz_":
+            return 1
+
+        if name == "values_":
+            return 2
+
+        if name == "indices_":
+            return 3
+
+        return -1
+
+    def get_child_at_index(self, index: int):
+        if index == 0:
+            return self.n
+
+        if index == 1:
+            # we do it through data cuz it has a wierd name when i just Dereference() it
+            nnz: lldb.SBValue = self.valobj.GetChildMemberWithName("nnz_").Dereference()
+            nnz_int: int = nnz.GetValueAsUnsigned()
+
+            data: lldb.SBData = lldb.SBData.CreateDataFromInt(nnz_int)
+
+            return self.valobj.CreateValueFromData(
+                "nnz_",
+                data,
+                self.nnz_type
+            )
+
+        if index == 2:
+            nnz: lldb.SBValue = self.valobj.GetChildMemberWithName("nnz_").Dereference()
+            nnz_int: int = nnz.GetValueAsUnsigned()
+
+            values: lldb.SBValue = self.valobj.GetChildMemberWithName("values_").Dereference()
+
+            values_array_type: lldb.SBType = self.values_element_type.GetArrayType(nnz_int)
+
+            return self.valobj.CreateValueFromAddress(
+                "values_",
+                values.GetValueAsUnsigned(),
+                values_array_type
+            )
+
+        if index == 3:
+            nnz: lldb.SBValue = self.valobj.GetChildMemberWithName("nnz_").Dereference()
+            nnz_int: int = nnz.GetValueAsUnsigned()
+
+            indices: lldb.SBValue = self.valobj.GetChildMemberWithName("indices_").Dereference()
+
+            indices_array_type: lldb.SBType = self.indices_element_type.GetArrayType(nnz_int)
+
+            return self.valobj.CreateValueFromAddress(
+                "indices_",
+                indices.GetValueAsUnsigned(),
+                indices_array_type
+            )
+
+        return None
+
+
+def to_string(valobj: lldb.SBValue):
+    sparse_vector_type: lldb.SBType = get_real_type(valobj.GetType())
+    scalar_type: ScalarType = scalar_type_from_type(sparse_vector_type.GetTemplateArgumentType(0))
+    n: lldb.SBValue = valobj.GetChildMemberWithName("n")
+    nnz: lldb.SBValue = valobj.GetChildMemberWithName("nnz_").Dereference()
+    values: lldb.SBValue = valobj.GetChildMemberWithName("values_").Dereference()
+    indices: lldb.SBValue = valobj.GetChildMemberWithName("indices_").Dereference()
+
+    n_int: int = n.GetValueAsUnsigned()
+    nnz_int: int = nnz.GetValueAsUnsigned()
+
+    values_summary: str = "{"
+    indices_summary: str = "{"
+
+    for i in range(0, nnz_int):
+        cur_values_element_data: lldb.SBValue = iterate_data_array(values, i)
+
+        if cur_values_element_data.IsValid():
+            cur_element = get_str_from_value(cur_values_element_data, scalar_type)
+        else:
+            cur_element = "N/A"
+
+
+        if i != nnz_int - 1:
+            values_summary += f"{cur_element}, "
+        else:
+            values_summary += cur_element
+
+        cur_indices_element_data: lldb.SBValue = iterate_data_array(indices, i)
+
+        if cur_indices_element_data.IsValid():
+            cur_element = get_str_from_value(cur_indices_element_data, ScalarType.Integer)
+        else:
+            cur_element = "N/A"
+
+        if i != nnz_int - 1:
+            indices_summary += f"{cur_element}, "
+        else:
+            indices_summary += cur_element
+
+    values_summary += "}"
+    indices_summary += "}"
+
+    return f"n = {n_int}\nnnz_ = {nnz_int}\nvalues_ = {values_summary}\nindices = {indices_summary}"

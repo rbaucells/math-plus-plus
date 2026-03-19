@@ -1,10 +1,2 @@
-# Import custom formatters for Matrix and other math++ types
-command script import mathpp_lldb_formatters.py
-
-# Register only the summary (one-line display)
-# The native structure will be expandable
-# matches matrix class with python function, allowing expanding
-# regex says, optional const/volatile, 1 or more whitespace, Matrix<...>, optional whitespace, optional * or optional &
-type summary add -x "^((const|volatile)\\s+)*Matrix<.*>(\\s*[\\*&]+)?$" --python-function mathpp_lldb_formatters.matrix_summary --expand
-
-command script add -f mathpp_lldb_formatters.print_matrix print_matrix
+settings set interpreter.require-overwrite false
+command script import /Users/ricardo/Projects/math-plus-plus/lldb/mathpp_lldb_formatter.py

@@ -65,6 +65,11 @@
 # Contributing
 See src/readme.md
 
+# Debugging
+- Support for lldb
+  - With synthetic children and summaries for all types
+- All you need to do is add "settings set target.load-cwd-lldbinit true" to your root .lldbinit or find some other way to load the project's .lldbinit
+
 # Credits
 - Me
 - My dad
