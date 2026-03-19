@@ -59,6 +59,28 @@ int main(int argc, char** argv) {
     SparseMatrixView<float>& xxx = xx;
     SparseMatrixView<float>* xzx = &xx;
 
+    int* colOffsets = new int[4];
+    colOffsets[0] = 0;
+    colOffsets[1] = 1;
+    colOffsets[2] = 2;
+    colOffsets[3] = 3;
+
+    int* rowIndices = new int[3];
+    rowIndices[0] = 0;
+    rowIndices[1] = 1;
+    rowIndices[2] = 2;
+
+    float* values3 = new float[3];
+    values3[0] = 2;
+    values3[1] = 4;
+    values3[2] = 6;
+
+    int nnz3 = 3;
+
+    CustomSparseMatrix<float> czx(3, 3, colOffsets, rowIndices, values3, nnz3);
+    CustomSparseMatrix<float>& cfzx = czx;
+    CustomSparseMatrix<float>* czfsdx = &czx;
+
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
