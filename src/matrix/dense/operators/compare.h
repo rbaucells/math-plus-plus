@@ -1,5 +1,6 @@
 #pragma once
 #include "../matrix.h"
+#include "../../../expression.h"
 #include "../../../helper.h"
 
 template<dense_matrix_base T, dense_matrix_base U, dense_matrix_base... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
@@ -51,7 +52,7 @@ struct DenseMatrixCompareExpr : Expression<bool, ARGS...> {
     }
 };
 
-template<dense_matrix_base T, dense_matrix_base U>
+template<dense_matrix_base T, dense_matrix_base U> requires has_common_type<typename T::ValueType, typename U::ValueType>
 DenseMatrixCompareExpr<T, U> operator==(const T& a, const U& b) {
     return DenseMatrixCompareExpr<T, U>(Precision(epsilon<underlying_type_t<std::common_type_t<typename T::ValueType, typename U::ValueType>>>()), a, b);
 }
