@@ -51,6 +51,10 @@ int main(int argc, char** argv) {
     CustomDenseMatrix<float>& v = u;
     CustomDenseMatrix<float>* w = &u;
 
+    SparseMatrix<float> x(3,3, {{2, 1, 0}, {4, 0, 1}, {6, 2, 2}});
+    SparseMatrix<float>& y = x;
+    SparseMatrix<float>* z = &x;
+
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

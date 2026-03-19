@@ -18,6 +18,7 @@ def __lldb_init_module(debugger: lldb.SBDebugger, dict):
     debugger.HandleCommand("command script import /Users/ricardo/Projects/math-plus-plus/lldb/custom_dense_matrix_lldb_formatter.py")
 
     # sparse matrix
+    debugger.HandleCommand("command script import /Users/ricardo/Projects/math-plus-plus/lldb/sparse_matrix_lldb_formatter.py")
 
     # DenseVector
     debugger.HandleCommand(f'type summary add -x "^DenseVector<.*>$" -F dense_vector_lldb_formatter.dense_vector_summary')
@@ -39,6 +40,9 @@ def __lldb_init_module(debugger: lldb.SBDebugger, dict):
     debugger.HandleCommand(f'type synthetic add -x "^DenseMatrixView<.*>$" --python-class dense_matrix_view_lldb_formatter.DenseMatrixViewSyntheticChildrenProvider')
     debugger.HandleCommand(f'type summary add -x "^CustomDenseMatrix<.*>$" -F custom_dense_matrix_lldb_formatter.custom_dense_matrix_summary')
     debugger.HandleCommand(f'type synthetic add -x "^CustomDenseMatrix<.*>$" --python-class custom_dense_matrix_lldb_formatter.CustomDenseMatrixSyntheticChildrenProvider')
+
+    # SparseMatrix
+    debugger.HandleCommand(f'type synthetic add -x "^SparseMatrix<.*>$" --python-class sparse_matrix_lldb_formatter.SparseMatrixSyntheticChildrenProvider')
 
     # to_string
     debugger.HandleCommand(f'command script add -f mathpp_lldb_formatter.to_string to_string')
