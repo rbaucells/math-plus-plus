@@ -55,6 +55,10 @@ int main(int argc, char** argv) {
     SparseMatrix<float>& y = x;
     SparseMatrix<float>* z = &x;
 
+    SparseMatrixView<float> xx(x, 2, 3, 0, 1);
+    SparseMatrixView<float>& xxx = xx;
+    SparseMatrixView<float>* xzx = &xx;
+
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
