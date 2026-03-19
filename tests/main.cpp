@@ -45,6 +45,12 @@ int main(int argc, char** argv) {
     DenseMatrixView<float>& s = r;
     DenseMatrixView<float>* t = &r;
 
+    float values2[] = {1,2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+
+    CustomDenseMatrix<float> u(values2, 3, 3, 4);
+    CustomDenseMatrix<float>& v = u;
+    CustomDenseMatrix<float>* w = &u;
+
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
