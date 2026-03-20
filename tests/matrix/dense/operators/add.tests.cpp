@@ -2,7 +2,7 @@
 
 #include "mathpp/math.h"
 
-TEST(addition_operator, given_f_dense_matrices_should_return_sum) {
+TEST(dense_matrix_addition_operator, given_f_dense_matrices_should_return_sum) {
     // arrange
     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     const DenseMatrix<float> b = {{2, 5, 8}, {1, 7, 31}, {8, 2, 7}};
@@ -14,7 +14,7 @@ TEST(addition_operator, given_f_dense_matrices_should_return_sum) {
     ASSERT_TRUE(compare(Precision(0.001f), sum, expected));
 }
 
-TEST(addition_operator, given_cf_dense_matrices_should_return_sum) {
+TEST(dense_matrix_addition_operator, given_cf_dense_matrices_should_return_sum) {
     // arrange
     const DenseMatrix<std::complex<float>> a = {{{2, 6}, {3, 6}, {0, 8}}, {{2, 1}, {3, 7}, {1, 0}}, {{4, 7}, {3,3}, {5,9}}};
     const DenseMatrix<std::complex<float>> b = {{{3,67}, {2, 4}, {7, 7}}, {{9, 12}, {3, 64}, {3, 5}}, {{2, 2}, {0, 0}, {9, 2}}};
@@ -26,7 +26,7 @@ TEST(addition_operator, given_cf_dense_matrices_should_return_sum) {
     ASSERT_TRUE(compare(Precision(0.001f), sum, expected));
 }
 
-TEST(addition_operator, given_f_and_cf_dense_matrices_should_return_sum) {
+TEST(dense_matrix_addition_operator, given_f_and_cf_dense_matrices_should_return_sum) {
     // arrange
     const DenseMatrix<std::complex<float>> a = {{{2, 6}, {3, 6}, {0, 8}}, {{2, 1}, {3, 7}, {1, 0}}, {{4, 7}, {3,3}, {5,9}}};
     const DenseMatrix<float> b = {{2, 5, 8}, {1, 7, 31}, {8, 2, 7}};
