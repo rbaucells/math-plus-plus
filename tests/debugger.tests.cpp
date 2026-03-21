@@ -129,7 +129,7 @@ TEST(debugger_tests, sparse_vectors) {
 TEST(debugger_tests, sparse_vector_views) {
     SparseVector<float> a(5, {{1, 0}, {3, 2}, {5, 4}});
 
-    SparseVectorView<float> c(a, 3, 1);
+    SparseVectorView<float> b(a, 3, 1);
 }
 
 TEST(debugger_tests, custom_sparse_vectors) {
