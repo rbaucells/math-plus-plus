@@ -7,7 +7,7 @@ def custom_dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
     custom_dense_matrix_type: lldb.SBType = get_real_type(valobj.GetType())
     scalar_type: ScalarType = scalar_type_from_type(custom_dense_matrix_type.GetTemplateArgumentType(0))
 
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
     rows_int: int = rows.GetValueAsUnsigned()
 
     if rows_int == 0:
@@ -135,7 +135,7 @@ def to_string(valobj: lldb.SBValue) -> str:
     custom_dense_matrix_type: lldb.SBType = get_real_type(valobj.GetType())
     scalar_type: ScalarType = scalar_type_from_type(custom_dense_matrix_type.GetTemplateArgumentType(0))
 
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
     rows_int: int = rows.GetValueAsUnsigned()
     columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
     columns_int: int = columns.GetValueAsUnsigned()

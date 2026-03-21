@@ -10,7 +10,7 @@ def dense_matrix_view_summary(valobj: lldb.SBValue, internal_dict):
     dense_matrix_view_type: lldb.SBType = get_real_type(valobj.GetType())
     scalar_type: ScalarType = scalar_type_from_type(dense_matrix_view_type.GetTemplateArgumentType(0))
 
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
     rows_int: int = rows.GetValueAsUnsigned()
 
     if rows_int == 0:
@@ -172,7 +172,6 @@ def to_string(valobj: lldb.SBValue) -> str:
     owner_data: lldb.SBValue = owner.GetChildMemberWithName("data_")
     owner_rows: lldb.SBValue = owner.GetChildMemberWithName("rows")
     owner_rows_int: int = owner_rows.GetValueAsUnsigned()
-    owner_cols: lldb.SBValue = owner.GetChildMemberWithName("cols")
 
     summary: str = "{"
 
