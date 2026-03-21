@@ -68,40 +68,40 @@ TEST(debugger_tests, custom_sparse_matrices) {
     CustomSparseMatrix<float> a(3, 3, colOffsets, rowIndices, values, nnz);
 
     int* colOffsets2 = new int[3];
-    colOffsets[0] = 0;
-    colOffsets[1] = 1;
-    colOffsets[2] = 3;
+    colOffsets2[0] = 0;
+    colOffsets2[1] = 1;
+    colOffsets2[2] = 3;
 
     int* rowIndices2 = new int[3];
-    rowIndices[0] = 1;
-    rowIndices[1] = 0;
-    rowIndices[2] = 2;
+    rowIndices2[0] = 1;
+    rowIndices2[1] = 0;
+    rowIndices2[2] = 2;
 
     float* values2 = new float[3];
-    values[0] = 4;
-    values[1] = 7;
-    values[2] = 9;
+    values2[0] = 4;
+    values2[1] = 7;
+    values2[2] = 9;
 
     int nnz2 = 3;
     CustomSparseMatrix<float> b(3, 3, colOffsets2, rowIndices2, values2, nnz2);
 
     int* colOffsets3 = new int[4];
-    colOffsets[0] = 0;
-    colOffsets[1] = 1;
-    colOffsets[2] = 2;
-    colOffsets[3] = 4;
+    colOffsets3[0] = 0;
+    colOffsets3[1] = 1;
+    colOffsets3[2] = 2;
+    colOffsets3[3] = 4;
 
     int* rowIndices3 = new int[4];
-    rowIndices[0] = 0;
-    rowIndices[1] = 1;
-    rowIndices[2] = 0;
-    rowIndices[3] = 1;
+    rowIndices3[0] = 0;
+    rowIndices3[1] = 1;
+    rowIndices3[2] = 0;
+    rowIndices3[3] = 1;
 
     float* values3 = new float[4];
-    values[0] = 1;
-    values[1] = 2;
-    values[2] = 5;
-    values[3] = 3;
+    values3[0] = 1;
+    values3[1] = 2;
+    values3[2] = 5;
+    values3[3] = 3;
 
     int nnz3 = 4;
     CustomSparseMatrix<float> c(3, 3, colOffsets3, rowIndices3, values3, nnz3);
