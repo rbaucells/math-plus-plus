@@ -166,6 +166,7 @@ def to_string(valobj: lldb.SBValue):
     indices_view_summary: str = "{"
     values_view_summary: str = "{"
 
+    current_nnz_int: int = 0
     for i in range(owner_nnz_int):
         cur_index: lldb.SBValue = iterate_data_array(owner_indices, i)
         cur_index_int: int = cur_index.GetValueAsUnsigned()
@@ -180,7 +181,7 @@ def to_string(valobj: lldb.SBValue):
         else:
             cur_element = "N/A"
 
-        if i != nnz_int - 1:
+        if current_nnz_int != nnz_int - 1:
             indices_view_summary += f"{cur_element}, "
         else:
             indices_view_summary += cur_element
@@ -192,10 +193,12 @@ def to_string(valobj: lldb.SBValue):
         else:
             cur_element = "N/A"
 
-        if i != nnz_int - 1:
+        if current_nnz_int != nnz_int - 1:
             values_view_summary += f"{cur_element}, "
         else:
             values_view_summary += cur_element
+
+        current_nnz_int += 1
 
     indices_view_summary += "}"
     values_view_summary += "}"
