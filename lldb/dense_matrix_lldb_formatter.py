@@ -113,7 +113,9 @@ def to_string(valobj: lldb.SBValue) -> str:
     data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
 
     summary: str = "{"
+    data_summary: str = "{"
 
+    data_i: int = 0
     for r in range(0, rows_int):
         summary += "\n    {"
 
@@ -131,11 +133,26 @@ def to_string(valobj: lldb.SBValue) -> str:
             else:
                 summary += cur_element
 
+            cur_data_data: lldb.SBValue = iterate_data_array(data, data_i)
+
+            if cur_data_data.IsValid():
+                cur_element = get_str_from_value(cur_data_data, scalar_type)
+            else:
+                cur_element = "N/A"
+
+            if data_i != columns_int * rows_int - 1:
+                data_summary += f"{cur_element}, "
+            else:
+                data_summary += cur_element
+
+            data_i += 1
+
         if r != rows_int - 1:
             summary += "},"
         else:
             summary += "}"
 
     summary += "\n}"
+    data_summary += "}"
 
-    return f"rows = {rows_int}\ncolumns = {columns_int}\ndata_ = {summary}"
+    return f"rows = {rows_int}\ncolumns = {columns_int}\ndata_view = {summary}\ndata_ = {data_summary}"
