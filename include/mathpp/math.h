@@ -18,3 +18,4 @@
 #include "../../src/vector/sparse/operators/compare.h"
 #include "../../src/matrix/sparse/operators/compare.h"
 #include "../../src/matrix/dense/operators/add.h"
+#include "../../src/matrix/dense/operators/subtract.h"
