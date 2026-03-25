@@ -14,11 +14,7 @@ DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType, typ
 
     for (int c = 0; c < columns; c++) {
         for (int r = 0; r < rows; r++) {
-            if constexpr (sizeof...(args) > 0) {
-                result[c, r] = a[c, r] + b[c, r] + (args[c, r] + ...);
-            } else {
-                result[c, r] = a[c, r] + b[c, r];
-            }
+            result[c, r] = ((a[c, r] + b[c, r]) + ... + args[c, r]);
         }
     }
 
