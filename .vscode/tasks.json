@@ -1,0 +1,85 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-project",
+            "type": "shell",
+            "command": "rm -rf build && mkdir -p build && cd build && cmake -S .. -B . -DMATHPP_BINDINGS=OFF -DCMAKE_BUILD_TYPE=Release && cmake --build . -- -j$(nproc)",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-lc"
+                    ]
+                }
+            }
+        },
+        {
+            "label": "build-project-tests",
+            "type": "shell",
+            "command": "rm -rf build && mkdir -p build && cd build && cmake -S .. -B . -DMATHPP_BUILD_TESTS=ON -DMATHPP_BINDINGS=OFF -DCMAKE_BUILD_TYPE=Debug && cmake --build . -- -j$(nproc)",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-lc"
+                    ]
+                }
+            }
+        },
+        {
+            "label": "configure-tests",
+            "type": "shell",
+            "command": "mkdir -p build && cmake -S . -B build -DMATHPP_BUILD_TESTS=ON -DMATHPP_BINDINGS=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_FLAGS_DEBUG=\"-g -O0 -fno-omit-frame-pointer\"",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-lc"
+                    ]
+                }
+            }
+        },
+        {
+            "label": "build-tests-no-config",
+            "type": "shell",
+            "command": "cmake --build build -- -j$(nproc)",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-lc"
+                    ]
+                }
+            }
+        }
+    ]
+}
