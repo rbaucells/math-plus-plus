@@ -1,6 +1,6 @@
-from utils import ScalarType, scalar_type_from_type, get_str_from_value, iterate_data_array, get_real_type
-from matrix_lldb_formatter import format_matrix_summary, format_matrix_display, _MAX_VIEW_DIM
 import lldb
+from matrix_lldb_formatter import _MAX_VIEW_DIM, format_matrix_display, format_matrix_summary
+from utils import ScalarType, get_real_type, get_str_from_value, iterate_data_array, scalar_type_from_type
 
 
 def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
@@ -27,9 +27,14 @@ def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
     # don't attempt to build view for very large matrices to avoid expensive data retrieval and string construction in the formatter
     if rows_int > _MAX_VIEW_DIM or columns_int > _MAX_VIEW_DIM:
         return f"DenseMatrix<{rows_int}x{columns_int}>"
+
     def get_element(r: int, c: int) -> str:
+        # value at [r, c]
         cur_element: lldb.SBValue = iterate_data_array(data, c * rows_int + r)
+        # format value
         return get_str_from_value(cur_element, scalar_type) if cur_element.IsValid() else "N/A"
+
+    # call generic matrix summary formatter to build single-line summary string
     return format_matrix_summary(rows_int, columns_int, get_element)
 
 
