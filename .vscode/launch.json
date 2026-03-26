@@ -39,32 +39,21 @@
                     "ignoreFailures": false
                 }
             ]
-        }
-        ,
+        },
         {
             "name": "Debug Unit Tests (LLDB)",
-            "type": "cppdbg",
+            "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/build/tests/mathpp-tests",
             "args": [],
-            "stopAtEntry": true,
+            "stopOnEntry": false,
             "cwd": "${workspaceFolder}/build/tests",
-            "preLaunchTask": "build-tests-no-config",
+            "preLaunchTask": "configure-and-build-debug-tests",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-                {
-                    "description": "Allow pending breakpoints",
-                    "text": "set breakpoint pending on",
-                    "ignoreFailures": false
-                }
+            "preRunCommands": [
+                "script import sys; sys.path.insert(0, '${workspaceFolder}/lldb')",
+                "command script import ${workspaceFolder}/lldb/mathpp_lldb_formatter.py"
             ]
         }
     ]

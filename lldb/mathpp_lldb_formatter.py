@@ -1,25 +1,31 @@
 import lldb
+import os
 
 def __lldb_init_module(debugger: lldb.SBDebugger, dict):
+    _dir = os.path.dirname(os.path.abspath(__file__))
+
+    def _import(name):
+        debugger.HandleCommand(f"command script import {os.path.join(_dir, name)}")
+
     # dense vector
-    debugger.HandleCommand("command script import ./lldb/dense_vector_lldb_formatter.py")
-    debugger.HandleCommand("command script import ./lldb/dense_vector_view_lldb_formatter.py")
-    debugger.HandleCommand("command script import ./lldb/custom_dense_vector_lldb_formatter.py")
+    _import("dense_vector_lldb_formatter.py")
+    _import("dense_vector_view_lldb_formatter.py")
+    _import("custom_dense_vector_lldb_formatter.py")
 
     # sparse vector
-    debugger.HandleCommand("command script import ./lldb/sparse_vector_lldb_formatter.py")
-    debugger.HandleCommand("command script import ./lldb/sparse_vector_view_lldb_formatter.py")
-    debugger.HandleCommand("command script import ./lldb/custom_sparse_vector_lldb_formatter.py")
+    _import("sparse_vector_lldb_formatter.py")
+    _import("sparse_vector_view_lldb_formatter.py")
+    _import("custom_sparse_vector_lldb_formatter.py")
 
     # dense matrix
-    debugger.HandleCommand("command script import ./lldb/dense_matrix_lldb_formatter.py")
-    debugger.HandleCommand("command script import ./lldb/dense_matrix_view_lldb_formatter.py")
-    debugger.HandleCommand("command script import ./lldb/custom_dense_matrix_lldb_formatter.py")
+    _import("dense_matrix_lldb_formatter.py")
+    _import("dense_matrix_view_lldb_formatter.py")
+    _import("custom_dense_matrix_lldb_formatter.py")
 
     # sparse matrix
-    debugger.HandleCommand("command script import ./lldb/sparse_matrix_lldb_formatter.py")
-    debugger.HandleCommand("command script import ./lldb/sparse_matrix_view_lldb_formatter.py")
-    debugger.HandleCommand("command script import ./lldb/custom_sparse_matrix_lldb_formatter.py")
+    _import("sparse_matrix_lldb_formatter.py")
+    _import("sparse_matrix_view_lldb_formatter.py")
+    _import("custom_sparse_matrix_lldb_formatter.py")
 
     # DenseVector
     debugger.HandleCommand(f'type summary add -x "^DenseVector<.*>$" -F dense_vector_lldb_formatter.dense_vector_summary')

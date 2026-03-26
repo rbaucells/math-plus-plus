@@ -63,6 +63,12 @@
             }
         },
         {
+            "label": "configure-and-build-debug-tests",
+            "dependsOn": ["configure-tests", "build-tests-no-config"],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        },
+        {
             "label": "build-tests-no-config",
             "type": "shell",
             "command": "cmake --build build -- -j$(nproc)",
