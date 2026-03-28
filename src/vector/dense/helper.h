@@ -94,7 +94,7 @@ struct underlying_type<T> {
  */
 template<dense_vector_base T, dense_vector_base U, dense_vector_base... ARGS>
 inline void assert_same_size(const T& a, const U& b, const ARGS&... args) {
-    if (!(a.n == b.n && ((a.n == args.n) && ...))) {
+    if (!(a.n() == b.n() && ((a.n() == args.n()) && ...))) {
         throw InvalidDimensionException("Dense vectors must all be of same size");
     }
 }

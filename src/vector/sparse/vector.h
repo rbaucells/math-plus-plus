@@ -7,12 +7,14 @@
 
 template<scalar T = float>
 struct SparseVectorBase {
-    const int n;
-
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
+
+    [[nodiscard]] int n() const {
+        return n_;
+    }
 
 protected:
     /**
@@ -23,7 +25,9 @@ protected:
      *
      * @param n Number of elements.
      */
-    explicit SparseVectorBase(const int n) : n(n) {}
+    explicit SparseVectorBase(const int n) : n_(n) {}
+
+    int n_;
 
 public:
     /**
@@ -107,7 +111,7 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * @param other SparseVector to copy from.
      */
-    SparseVector(const SparseVector<T>& other) : SparseVectorBase<T>(other.n), nnz_(other.nnz_) {
+    SparseVector(const SparseVector<T>& other) : SparseVectorBase<T>(other.n_), nnz_(other.nnz_) {
         values_ = new T[nnz_];
         memcpy(values_, other.values_, nnz_ * sizeof(T));
 
@@ -126,7 +130,7 @@ struct SparseVector : SparseVectorBase<T> {
     * @tparam OTHER_T Scalar type of the 'other' SparseVector.
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseVector(const SparseVector<OTHER_T>& other) : SparseVectorBase<T>(other.n), nnz_(other.nnz()) {
+    SparseVector(const SparseVector<OTHER_T>& other) : SparseVectorBase<T>(other.n()), nnz_(other.nnz()) {
         values_ = new T[nnz_];
 
         const OTHER_T* otherValues = other.values();
@@ -150,11 +154,11 @@ struct SparseVector : SparseVectorBase<T> {
     *
     * @param other SparseVectorBase to copy from.
     */
-    SparseVector(const SparseVectorBase<T>& other) : SparseVectorBase<T>(other.n) {
+    SparseVector(const SparseVectorBase<T>& other) : SparseVectorBase<T>(other.n()) {
         nnz_ = 0;
         values_ = new T[nnz_];
         indices_ = new int[nnz_];
-        for (int i = 0; i < this->n; i++) {
+        for (int i = 0; i < this->n_; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
     }
@@ -170,11 +174,11 @@ struct SparseVector : SparseVectorBase<T> {
     * @tparam OTHER_T Scalar type of the 'other' SparseVectorBase.
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseVector(const SparseVectorBase<OTHER_T>& other) : SparseVectorBase<T>(other.n) {
+    SparseVector(const SparseVectorBase<OTHER_T>& other) : SparseVectorBase<T>(other.n()) {
         nnz_ = 0;
         values_ = new T[nnz_];
         indices_ = new int[nnz_];
-        for (int i = 0; i < this->n; i++) {
+        for (int i = 0; i < this->n_; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
     }
@@ -187,7 +191,7 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * @param other SparseVector to move from.
      */
-    SparseVector(SparseVector<T>&& other) noexcept : SparseVectorBase<T>(other.n), nnz_(other.nnz_) {
+    SparseVector(SparseVector<T>&& other) noexcept : SparseVectorBase<T>(other.n_), nnz_(other.nnz_) {
         values_ = other.values_;
         other.values_ = nullptr;
 
@@ -274,7 +278,7 @@ struct SparseVector : SparseVectorBase<T> {
     */
     SparseVector<T>& operator=(const SparseVectorBase<T>& other) {
         assert_same_size(*this, other);
-        for (int i = 0; i < this->n; i++) {
+        for (int i = 0; i < this->n_; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
 
@@ -295,7 +299,7 @@ struct SparseVector : SparseVectorBase<T> {
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseVector<T>& operator=(const SparseVectorBase<OTHER_T>& other) {
         assert_same_size(*this, other);
-        for (int i = 0; i < this->n; i++) {
+        for (int i = 0; i < this->n_; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
 
@@ -330,7 +334,7 @@ struct SparseVector : SparseVectorBase<T> {
     }
 
     void set(const int i, const T value) override {
-        if (i < 0 || i > this->n - 1) {
+        if (i < 0 || i > this->n_ - 1) {
             throw InvalidIndexException("Cannot set on SparseVector with invalid index");
         }
         int j;
@@ -418,7 +422,7 @@ struct SparseVector : SparseVectorBase<T> {
     }
 
     [[nodiscard]] T get(const int i) const override {
-        if (i < 0 || i > this->n - 1) {
+        if (i < 0 || i > this->n_ - 1) {
             throw InvalidIndexException("Cannot get from SparseVector with invalid index");
         }
 
@@ -505,7 +509,7 @@ struct SparseVectorView : SparseVectorBase<T> {
      *
      * @param other SparseVectorView to copy from.
      */
-    SparseVectorView(const SparseVectorView<T>& other) : SparseVectorBase<T>(other.n), offset_(other.offset_), owner_(other.owner_) {}
+    SparseVectorView(const SparseVectorView<T>& other) : SparseVectorBase<T>(other.n_), offset_(other.offset_), owner_(other.owner_) {}
 
     /**
      * @brief Trying to modify a SparseVector through a view is invalid.
@@ -513,7 +517,7 @@ struct SparseVectorView : SparseVectorBase<T> {
      * @throws InvalidIndexException If 'i' is negative or greater than 'n - 1'
      */
     void set(const int i, const T) override {
-        if (i > this->n - 1|| i < 0) {
+        if (i > this->n_ - 1|| i < 0) {
             throw InvalidIndexException("Cannot set on view with invalid index");
         }
 
@@ -521,7 +525,7 @@ struct SparseVectorView : SparseVectorBase<T> {
     }
 
     [[nodiscard]] T get(const int i) const override {
-        if (i < 0 || i > this->n - 1) {
+        if (i < 0 || i > this->n_ - 1) {
             throw InvalidIndexException("Cannot get from SparseVectorView with invalid index");
         }
 
@@ -534,7 +538,7 @@ struct SparseVectorView : SparseVectorBase<T> {
         for (int i = 0; i < owner_.nnz(); i++) {
             const int curIndex = owner_.indices()[i];
 
-            if (curIndex >= offset_ && curIndex < offset_ + this->n) {
+            if (curIndex >= offset_ && curIndex < offset_ + this->n_) {
                 nnz++;
             }
         }
@@ -589,7 +593,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
     CustomSparseVector(const int n, T*& values, int*& indices, int& nnz) : SparseVectorBase<T>(n), values_(values), indices_(indices), nnz_(nnz) {}
 
     void set(const int i, const T value) override {
-        if (i < 0 || i > this->n - 1) {
+        if (i < 0 || i > this->n_ - 1) {
             throw InvalidIndexException("Cannot set on CustomSparseVector with invalid index");
         }
         int j;
@@ -677,7 +681,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
     }
 
     [[nodiscard]] T get(const int i) const override {
-        if (i < 0 || i > this->n - 1) {
+        if (i < 0 || i > this->n_ - 1) {
             throw InvalidIndexException("Cannot get from CustomSparseVector with invalid index");
         }
 

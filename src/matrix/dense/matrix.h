@@ -6,13 +6,19 @@
 
 template<scalar T = float>
 struct DenseMatrixBase {
-    const int rows;
-    const int columns;
 
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
+
+    [[nodiscard]] int rows() const {
+        return rows_;
+    }
+
+    [[nodiscard]] int columns() const {
+        return columns_;
+    }
 
 protected:
     /**
@@ -24,7 +30,10 @@ protected:
      * @param rows Number of rows.
      * @param columns Number of columns.
      */
-    DenseMatrixBase(const int rows, const int columns) : rows(rows), columns(columns) {}
+    DenseMatrixBase(const int rows, const int columns) : rows_(rows), columns_(columns) {}
+
+    const int rows_;
+    const int columns_;
 
 public:
     /**
@@ -46,7 +55,7 @@ public:
     [[nodiscard]] virtual const T& at(int c, int r) const = 0;
 
     [[nodiscard]] T& operator[](const int c, const int r) {
-        if (c > columns - 1 || c < 0 || r > rows - 1 || r < 0) {
+        if (c > columns_ - 1 || c < 0 || r > rows_ - 1 || r < 0) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
 
@@ -54,7 +63,7 @@ public:
     }
 
     [[nodiscard]] const T& operator[](const int c, const int r) const {
-        if (c > columns - 1 || c < 0 || r > rows - 1 || r < 0) {
+        if (c > columns_ - 1 || c < 0 || r > rows_ - 1 || r < 0) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
 
@@ -98,11 +107,11 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @throws InvalidDimensionException If nested initializer_lists are not all the same size.
      */
     DenseMatrix(const std::initializer_list<std::initializer_list<T>>& initializerList) : DenseMatrixBase<T>(initializerList.size(), initializerList.begin()->size()) {
-        data_ = new T[this->columns * this->rows];
+        data_ = new T[this->columns_ * this->rows_];
 
         int r = 0;
         for (const auto& row : initializerList) {
-            if (row.size() != this->columns) {
+            if (row.size() != this->columns_) {
                 throw InvalidDimensionException("Nested initializer lists must all have the same size");
             }
 
@@ -123,9 +132,9 @@ struct DenseMatrix : DenseMatrixBase<T> {
      *
      * @param other DenseMatrix to copy from.
      */
-    DenseMatrix(const DenseMatrix<T>& other) : DenseMatrixBase<T>(other.rows, other.columns) {
-        data_ = new T[this->columns * this->rows];
-        memcpy(data_, other.data_, this->columns * this->rows * sizeof(T));
+    DenseMatrix(const DenseMatrix<T>& other) : DenseMatrixBase<T>(other.rows_, other.columns_) {
+        data_ = new T[this->columns_ * this->rows_];
+        memcpy(data_, other.data_, this->columns_ * this->rows_ * sizeof(T));
     }
 
     /**
@@ -139,11 +148,11 @@ struct DenseMatrix : DenseMatrixBase<T> {
     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
     */
     template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
-    DenseMatrix(const DenseMatrix<OTHER_T>& other) : DenseMatrixBase<T>(other.rows, other.columns) {
-        data_ = new T[this->columns * this->rows];
+    DenseMatrix(const DenseMatrix<OTHER_T>& other) : DenseMatrixBase<T>(other.rows(), other.columns()) {
+        data_ = new T[this->columns_ * this->rows_];
 
-        for (int c = 0; c < this->columns; c++) {
-            for (int r = 0; r < this->rows; r++) {
+        for (int c = 0; c < this->columns_; c++) {
+            for (int r = 0; r < this->rows_; r++) {
                 DenseMatrix<T>::at(c, r) = other[c, r];
             }
         }
@@ -157,11 +166,11 @@ struct DenseMatrix : DenseMatrixBase<T> {
      *
      * @param other DenseMatrixBase to copy from.
      */
-    DenseMatrix(const DenseMatrixBase<T>& other) : DenseMatrixBase<T>(other.rows, other.columns) {
-        data_ = new T[this->columns * this->rows];
+    DenseMatrix(const DenseMatrixBase<T>& other) : DenseMatrixBase<T>(other.rows(), other.columns()) {
+        data_ = new T[this->columns_ * this->rows_];
 
-        for (int c = 0; c < this->columns; c++) {
-            for (int r = 0; r < this->rows; r++) {
+        for (int c = 0; c < this->columns_; c++) {
+            for (int r = 0; r < this->rows_; r++) {
                 DenseMatrix<T>::at(c, r) = other[c, r];
             }
         }
@@ -178,11 +187,11 @@ struct DenseMatrix : DenseMatrixBase<T> {
     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
     */
     template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
-    DenseMatrix(const DenseMatrixBase<OTHER_T>& other) : DenseMatrixBase<T>(other.rows, other.columns) {
-        data_ = new T[this->columns * this->rows];
+    DenseMatrix(const DenseMatrixBase<OTHER_T>& other) : DenseMatrixBase<T>(other.rows(), other.columns()) {
+        data_ = new T[this->columns_ * this->rows_];
 
-        for (int c = 0; c < this->columns; c++) {
-            for (int r = 0; r < this->rows; r++) {
+        for (int c = 0; c < this->columns_; c++) {
+            for (int r = 0; r < this->rows_; r++) {
                 DenseMatrix<T>::at(c, r) = other[c, r];
             }
         }
@@ -196,7 +205,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
      *
      * @param other DenseMatrix to move from.
      */
-    DenseMatrix(DenseMatrix<T>&& other) noexcept : DenseMatrixBase<T>(other.rows, other.columns) {
+    DenseMatrix(DenseMatrix<T>&& other) noexcept : DenseMatrixBase<T>(other.rows_, other.columns_) {
         data_ = other.data_;
         other.data_ = nullptr;
     }
@@ -213,7 +222,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
     DenseMatrix<T>& operator=(const DenseMatrix<T>& other) {
         if (data_ != other.data_) {
             assert_same_dimensions(*this, other);
-            memcpy(data_, other.data_, this->columns * this->rows * sizeof(T));
+            memcpy(data_, other.data_, this->columns_ * this->rows_ * sizeof(T));
         }
 
         return *this;
@@ -236,7 +245,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
 
         const OTHER_T* otherData = other.data();
 
-        for (int i = 0; i < this->columns * this->rows; i++) {
+        for (int i = 0; i < this->columns_ * this->rows_; i++) {
             data_[i] = otherData[i];
         }
 
@@ -254,8 +263,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
      */
     DenseMatrix<T>& operator=(const DenseMatrixBase<T>& other) {
         assert_same_dimensions(*this, other);
-        for (int c = 0; c < this->columns; c++) {
-            for (int r = 0; r < this->rows; r++) {
+        for (int c = 0; c < this->columns_; c++) {
+            for (int r = 0; r < this->rows_; r++) {
                 DenseMatrix<T>::at(c, r) = other[c, r];
             }
         }
@@ -277,8 +286,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     DenseMatrix<T>& operator=(const DenseMatrixBase<OTHER_T>& other) {
         assert_same_dimensions(*this, other);
-        for (int c = 0; c < this->columns; c++) {
-            for (int r = 0; r < this->rows; r++) {
+        for (int c = 0; c < this->columns_; c++) {
+            for (int r = 0; r < this->rows_; r++) {
                 DenseMatrix<T>::at(c, r) = other[c, r];
             }
         }
@@ -324,11 +333,11 @@ struct DenseMatrix : DenseMatrixBase<T> {
     }
 
     [[nodiscard]] T& at(const int c, const int r) override {
-        return data_[c * this->rows + r];
+        return data_[c * this->rows_ + r];
     }
 
     [[nodiscard]] const T& at(const int c, const int r) const override {
-        return data_[c * this->rows + r];
+        return data_[c * this->rows_ + r];
     }
 
     /**
@@ -387,7 +396,7 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      *
      * @param other DenseMatrixView to copy from.
      */
-    DenseMatrixView(const DenseMatrixView<T>& other) : DenseMatrixBase<T>(other.rows, other.columns), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {}
+    DenseMatrixView(const DenseMatrixView<T>& other) : DenseMatrixBase<T>(other.rows_, other.columns_), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {}
 
     /**
      * @brief Trying to modify a DenseMatrix through a view is invalid.

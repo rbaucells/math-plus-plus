@@ -95,7 +95,7 @@ struct underlying_type<T> {
  */
 template<sparse_vector_base T, sparse_vector_base U, sparse_vector_base... ARGS>
 inline void assert_same_size(const T& a, const U& b, const ARGS&... args) {
-    if (!(a.n == b.n && ((a.n == args.n) && ...))) {
+    if (!(a.n() == b.n() && ((a.n() == args.n()) && ...))) {
         throw InvalidDimensionException("Sparse vectors must all be of same size");
     }
 }

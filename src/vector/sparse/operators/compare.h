@@ -16,7 +16,7 @@ template<sparse_vector_base T, sparse_vector_base U, sparse_vector_base... ARGS>
         return false;
     }
 
-    const int n = a.n;
+    const int n = a.n();
 
     for (int i = 0; i < n; i++) {
         if (!compare(precision, a.get(i), b.get(i), args.get(i)...)) {
