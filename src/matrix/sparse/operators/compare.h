@@ -16,8 +16,8 @@ template<sparse_matrix_base T, sparse_matrix_base U, sparse_matrix_base... ARGS>
         return false;
     }
 
-    const int columns = a.columns;
-    const int rows = a.rows;
+    const int columns = a.columns();
+    const int rows = a.rows();
 
     for (int c = 0; c < columns; c++) {
         for (int r = 0; r < rows; r++) {

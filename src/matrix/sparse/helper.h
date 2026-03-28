@@ -94,7 +94,7 @@ struct underlying_type<T> {
  */
 template<sparse_matrix_base T, sparse_matrix_base U, sparse_matrix_base... ARGS>
 inline void assert_same_dimensions(const T& a, const U& b, const ARGS&... args) {
-    if (!(a.columns == b.columns && a.rows == b.rows && ((a.columns == args.columns && a.rows == args.rows) && ...))) {
+    if (!(a.columns() == b.columns() && a.rows() == b.rows() && ((a.columns() == args.columns() && a.rows() == args.rows()) && ...))) {
         throw InvalidDimensionException("Sparse matrices must all have same dimensions");
     }
 }
@@ -107,7 +107,7 @@ inline void assert_same_dimensions(const T& a, const U& b, const ARGS&... args) 
  */
 template<sparse_matrix_base T>
 inline void assert_square(const T& m) {
-    if (m.columns != m.rows) {
+    if (m.columns() != m.rows()) {
         throw InvalidDimensionException("Sparse matrix must be square");
     }
 }
