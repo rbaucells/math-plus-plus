@@ -8,12 +8,14 @@
 
 template<scalar T = float>
 struct DenseVectorBase {
-    const int n;
-
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
+
+    [[nodiscard]] int n() const {
+        return n_;
+    }
 
 protected:
     /**
@@ -24,7 +26,9 @@ protected:
      *
      * @param n Number of elements.
      */
-    explicit DenseVectorBase(const int n) : n(n) {}
+    explicit DenseVectorBase(const int n) : n_(n) {}
+
+    int n_;
 
 public:
     /**
@@ -44,7 +48,7 @@ public:
     [[nodiscard]] virtual const T& at(int i) const = 0;
 
     [[nodiscard]] T& operator[](const int i) {
-        if (i < 0 || i >= n) {
+        if (i < 0 || i >= n_) {
             throw InvalidIndexException("Cannot access vector at invalid index");
         }
 
@@ -52,7 +56,7 @@ public:
     }
 
     [[nodiscard]] const T& operator[](const int i) const {
-        if (i < 0 || i >= n) {
+        if (i < 0 || i >= n_) {
             throw InvalidIndexException("Cannot access vector at invalid index");
         }
 
@@ -108,9 +112,9 @@ struct DenseVector : DenseVectorBase<T> {
      *
      * @param other DenseVector to copy from.
      */
-    DenseVector(const DenseVector<T>& other) : DenseVectorBase<T>(other.n) {
-        data_ = new T[other.n];
-        memcpy(data_, other.data_, this->n * sizeof(T));
+    DenseVector(const DenseVector<T>& other) : DenseVectorBase<T>(other.n_) {
+        data_ = new T[other.n_];
+        memcpy(data_, other.data_, this->n_ * sizeof(T));
     }
 
     /**
@@ -124,12 +128,12 @@ struct DenseVector : DenseVectorBase<T> {
     * @tparam OTHER_T Scalar type of the 'other' DenseMatrix.
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    DenseVector(const DenseVector<OTHER_T>& other) : DenseVectorBase<T>(other.n) {
-        data_ = new T[other.n];
+    DenseVector(const DenseVector<OTHER_T>& other) : DenseVectorBase<T>(other.n()) {
+        data_ = new T[other.n()];
 
         const OTHER_T* otherData = other.data();
 
-        for (int i = 0; i < this->n; i++) {
+        for (int i = 0; i < this->n_; i++) {
             data_[i] = otherData[i];
         }
     }
@@ -142,10 +146,10 @@ struct DenseVector : DenseVectorBase<T> {
      *
      * @param other DenseVectorBase to copy from.
      */
-    DenseVector(const DenseVectorBase<T>& other) : DenseVectorBase<T>(other.n) {
-        data_ = new T[other.n];
+    DenseVector(const DenseVectorBase<T>& other) : DenseVectorBase<T>(other.n()) {
+        data_ = new T[other.n()];
 
-        for (int i = 0; i < this->n; i++) {
+        for (int i = 0; i < this->n_; i++) {
             DenseVector<T>::at(i) = other.at(i);
         }
     }
@@ -161,10 +165,10 @@ struct DenseVector : DenseVectorBase<T> {
     * @tparam OTHER_T Scalar type of the 'other' DenseMatrix.
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    DenseVector(const DenseVectorBase<OTHER_T>& other) : DenseVectorBase<T>(other.n) {
-        data_ = new T[other.n];
+    DenseVector(const DenseVectorBase<OTHER_T>& other) : DenseVectorBase<T>(other.n()) {
+        data_ = new T[other.n()];
 
-        for (int i = 0; i < this->n; i++) {
+        for (int i = 0; i < this->n_; i++) {
             DenseVector<T>::at(i) = other.at(i);
         }
     }
@@ -177,7 +181,7 @@ struct DenseVector : DenseVectorBase<T> {
      *
      * @param other DenseVector to move from.
      */
-    DenseVector(DenseVector<T>&& other) noexcept : DenseVectorBase<T>(other.n) {
+    DenseVector(DenseVector<T>&& other) noexcept : DenseVectorBase<T>(other.n_) {
         data_ = other.data_;
         other.data_ = nullptr;
     }
@@ -194,7 +198,7 @@ struct DenseVector : DenseVectorBase<T> {
     DenseVector<T>& operator=(const DenseVector<T>& other) {
         if (data_ != other.data_) {
             assert_same_size(*this, other);
-            memcpy(data_, other.data_, this->n * sizeof(T));
+            memcpy(data_, other.data_, this->n_ * sizeof(T));
         }
 
         return *this;
@@ -217,7 +221,7 @@ struct DenseVector : DenseVectorBase<T> {
         const OTHER_T* otherData = other.data();
 
         assert_same_size(*this, other);
-        for (int i = 0; i < this->n; i++) {
+        for (int i = 0; i < this->n_; i++) {
             data_[i] = otherData[i];
         }
 
@@ -235,7 +239,7 @@ struct DenseVector : DenseVectorBase<T> {
      */
     DenseVector<T>& operator=(const DenseVectorBase<T>& other) {
         assert_same_size(*this, other);
-        for (int i = 0; i < this->n; i++) {
+        for (int i = 0; i < this->n_; i++) {
             DenseVector<T>::at(i) = other.at(i);
         }
 
@@ -256,7 +260,7 @@ struct DenseVector : DenseVectorBase<T> {
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     DenseVector<T>& operator=(const DenseVectorBase<OTHER_T>& other) {
         assert_same_size(*this, other);
-        for (int i = 0; i < this->n; i++) {
+        for (int i = 0; i < this->n_; i++) {
             DenseVector<T>::at(i) = other.at(i);
         }
 
@@ -343,7 +347,7 @@ struct DenseVectorView : DenseVectorBase<T> {
     *
     * @param other DenseVectorView to copy from.
     */
-    DenseVectorView(const DenseVectorView<T>& other) : DenseVectorBase<T>(other.n), offset_(other.offset_), owner_(other.owner_) {}
+    DenseVectorView(const DenseVectorView<T>& other) : DenseVectorBase<T>(other.n_), offset_(other.offset_), owner_(other.owner_) {}
 
     /**
      * @brief Trying to modify a DenseVector through a view is invalid.
