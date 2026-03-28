@@ -184,6 +184,8 @@ struct DenseVector : DenseVectorBase<T> {
     DenseVector(DenseVector<T>&& other) noexcept : DenseVectorBase<T>(other.n_) {
         data_ = other.data_;
         other.data_ = nullptr;
+
+        other.n_ = 0;
     }
 
     /**
@@ -196,8 +198,13 @@ struct DenseVector : DenseVectorBase<T> {
      * @note 'other' must be of same size as this.
      */
     DenseVector<T>& operator=(const DenseVector<T>& other) {
-        if (data_ != other.data_) {
-            assert_same_size(*this, other);
+        if (this != &other) {
+            if (this->n_ != other.n_) {
+                this->n_ = other.n_;
+                delete[] data_;
+                data_ = new T[this->n_];
+            }
+
             memcpy(data_, other.data_, this->n_ * sizeof(T));
         }
 
@@ -217,10 +224,14 @@ struct DenseVector : DenseVectorBase<T> {
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     DenseVector<T>& operator=(const DenseVector<OTHER_T>& other) {
+        if (this->n_ != other.n()) {
+            this->n_ = other.n();
+            delete[] data_;
+            data_ = new T[this->n_];
+        }
 
         const OTHER_T* otherData = other.data();
 
-        assert_same_size(*this, other);
         for (int i = 0; i < this->n_; i++) {
             data_[i] = otherData[i];
         }
@@ -238,9 +249,16 @@ struct DenseVector : DenseVectorBase<T> {
      * @note 'other' must be of same size as this.
      */
     DenseVector<T>& operator=(const DenseVectorBase<T>& other) {
-        assert_same_size(*this, other);
-        for (int i = 0; i < this->n_; i++) {
-            DenseVector<T>::at(i) = other.at(i);
+        if (static_cast<const DenseVectorBase<T>*>(this) != &other) {
+            if (this->n_ != other.n()) {
+                this->n_ = other.n();
+                delete[] data_;
+                data_ = new T[this->n_];
+            }
+
+            for (int i = 0; i < this->n_; i++) {
+                data_[i] = other[i];
+            }
         }
 
         return *this;
@@ -259,9 +277,14 @@ struct DenseVector : DenseVectorBase<T> {
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     DenseVector<T>& operator=(const DenseVectorBase<OTHER_T>& other) {
-        assert_same_size(*this, other);
+        if (this->n_ != other.n()) {
+            this->n_ = other.n();
+            delete[] data_;
+            data_ = new T[this->n_];
+        }
+
         for (int i = 0; i < this->n_; i++) {
-            DenseVector<T>::at(i) = other.at(i);
+            data_[i] = other[i];
         }
 
         return *this;
@@ -276,12 +299,14 @@ struct DenseVector : DenseVectorBase<T> {
      * @throws InvalidDimensionException If 'other' does not have same size as this.
      * @note 'other' must be of same size as this.
      */
-    DenseVector<T>& operator=(DenseVector<T>&& other) {
-        if (data_ != other.data_) {
-            assert_same_size(*this, other);
+    DenseVector<T>& operator=(DenseVector<T>&& other) noexcept {
+        if (this != &other) {
             delete[] data_;
             data_ = other.data_;
             other.data_ = nullptr;
+
+            this->n_ = other.n_;
+            other.n_ = 0;
         }
 
         return *this;
