@@ -11,7 +11,7 @@ template<dense_vector_base T, dense_vector_base U, dense_vector_base... ARGS> re
 [[nodiscard]] bool compare(const Precision<underlying_type_t<std::common_type_t<typename T::ValueType, typename ARGS::ValueType...>>> precision, const T& a, const U& b, const ARGS&... args) {
     assert_same_size(a, b, args...);
 
-    const int columns = a.n;
+    const int columns = a.n();
 
     for (int i = 0; i < columns; i++) {
         if (!compare(precision, a[i], b[i], args[i]...)) {
