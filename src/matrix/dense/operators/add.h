@@ -7,8 +7,8 @@ template<dense_matrix_base T, dense_matrix_base U, dense_matrix_base... ARGS> re
 DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>> add(const T& a, const U& b, const ARGS&... args) {
     assert_same_dimensions(a, b, args...);
 
-    const int columns = a.columns;
-    const int rows = a.rows;
+    const int columns = a.columns();
+    const int rows = a.rows();
 
     DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>> result(rows, columns, false);
 
