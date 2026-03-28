@@ -95,7 +95,7 @@ struct underlying_type<T> {
  */
 template<dense_matrix_base T, dense_matrix_base U, dense_matrix_base... ARGS>
 inline void assert_same_dimensions(const T& a, const U& b, const ARGS&... args) {
-    if (!(a.columns == b.columns && a.rows == b.rows && ((a.columns == args.columns && a.rows == args.rows) && ...))) {
+    if (!(a.columns() == b.columns() && a.rows() == b.rows() && ((a.columns() == args.columns() && a.rows() == args.rows()) && ...))) {
         throw InvalidDimensionException("Dense matrices must all have same dimensions");
     }
 }
@@ -108,7 +108,7 @@ inline void assert_same_dimensions(const T& a, const U& b, const ARGS&... args) 
  */
 template<dense_matrix_base T>
 inline void assert_square(const T& m) {
-    if (m.columns != m.rows) {
+    if (m.columns() != m.rows()) {
         throw InvalidDimensionException("Dense matrix must be square");
     }
 }
