@@ -32,8 +32,8 @@ protected:
     SparseMatrixBase(const int rows, const int columns) : rows_(rows), columns_(columns) {
     }
 
-    const int rows_;
-    const int columns_;
+    int rows_;
+    int columns_;
 
 public:
     /**
@@ -386,31 +386,29 @@ struct SparseMatrix : SparseMatrixBase<T> {
      */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseMatrix<T>& operator=(const SparseMatrixBase<OTHER_T>& other) {
-        if (static_cast<const SparseMatrixBase<T>*>(this) != &other) {
-            if (this->columns_ != other.columns()) {
-                delete[] colOffsets_;
-                this->columns_ = other.columns();
-                colOffsets_ = new int[this->columns_ + 1];
-            }
+        if (this->columns_ != other.columns()) {
+            delete[] colOffsets_;
+            this->columns_ = other.columns();
+            colOffsets_ = new int[this->columns_ + 1];
+        }
 
-            this->rows_ = other.rows();
+        this->rows_ = other.rows();
 
-            for (int i = 0; i < this->columns_ + 1; i++) {
-                colOffsets_[i] = 0;
-            }
+        for (int i = 0; i < this->columns_ + 1; i++) {
+            colOffsets_[i] = 0;
+        }
 
-            nnz_ = 0;
+        nnz_ = 0;
 
-            delete[] rowIndices_;
-            rowIndices_ = new int[0];
+        delete[] rowIndices_;
+        rowIndices_ = new int[0];
 
-            delete[] values_;
-            values_ = new T[0];
+        delete[] values_;
+        values_ = new T[0];
 
-            for (int c = 0; c < this->columns_; c++) {
-                for (int r = 0; r < this->rows_; r++) {
-                    SparseMatrix<T>::set(c, r, other.get(c, r));
-                }
+        for (int c = 0; c < this->columns_; c++) {
+            for (int r = 0; r < this->rows_; r++) {
+                SparseMatrix<T>::set(c, r, other.get(c, r));
             }
         }
 
