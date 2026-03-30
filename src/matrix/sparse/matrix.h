@@ -29,10 +29,11 @@ protected:
     * @param rows Number of rows.
     * @param columns Number of columns.
     */
-    SparseMatrixBase(const int rows, const int columns) : rows_(rows), columns_(columns) {}
+    SparseMatrixBase(const int rows, const int columns) : rows_(rows), columns_(columns) {
+    }
 
-    const int rows_;
-    const int columns_;
+    int rows_;
+    int columns_;
 
 public:
     /**
@@ -96,7 +97,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
      *
      * @note 'initializerList' must be sorted within each row, and between rows
      */
-    SparseMatrix(const int rows, const int columns, std::initializer_list<std::tuple<T, int, int>> initializerList) : SparseMatrixBase<T>(rows, columns) {
+    SparseMatrix(const int rows, const int columns, std::initializer_list<std::tuple<T, int, int> > initializerList) : SparseMatrixBase<T>(rows, columns) {
         if (rows < 0 || columns < 0) {
             throw InvalidIndexException("Cannot create SparseMatrix with negative size");
         }
@@ -113,7 +114,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
         values_ = new T[nnz_];
 
         int i = 0;
-        for (const auto nonZeroElement : initializerList) {
+        for (const auto nonZeroElement: initializerList) {
             rowIndices_[i] = std::get<2>(nonZeroElement);
             values_[i] = std::get<0>(nonZeroElement);
 
@@ -248,17 +249,13 @@ struct SparseMatrix : SparseMatrixBase<T> {
      *
      * @param other SparseMatrix to move from.
      */
-    SparseMatrix(SparseMatrix&& other) noexcept : SparseMatrixBase<T>(other.rows_, other.columns_) {
-        colOffsets_ = other.colOffsets_;
+    SparseMatrix(SparseMatrix&& other) noexcept : SparseMatrixBase<T>(other.rows_, other.columns_), nnz_(other.nnz_), values_(other.values_), colOffsets_(other.colOffsets_), rowIndices_(other.rowIndices_) {
         other.colOffsets_ = nullptr;
-
-        rowIndices_ = other.rowIndices_;
         other.rowIndices_ = nullptr;
-
-        values_ = other.values_;
         other.values_ = nullptr;
-
-        nnz_ = other.nnz_;
+        other.rows_ = 0;
+        other.columns_ = 0;
+        other.nnz_ = 0;
     }
 
     /**
@@ -271,16 +268,19 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * @note 'other' must be of same dimensions as this.
      */
     SparseMatrix<T>& operator=(const SparseMatrix<T>& other) {
-        assert_same_dimensions(*this, other);
+        if (this != &other) {
+            if (this->rows_ != other.rows_ || this->columns_ != other.columns_) {
+                delete[] colOffsets_;
+                this->rows_ = other.rows_;
+                this->columns_ = other.columns_;
+                colOffsets_ = new int[this->columns_ + 1];
+            }
 
-        if (values_ != other.values_ && colOffsets_ != other.colOffsets_ && rowIndices_ != other.rowIndices_) {
             if (nnz_ != other.nnz_) {
                 nnz_ = other.nnz_;
-
                 delete[] values_;
-                values_ = new T[nnz_];
-
                 delete[] rowIndices_;
+                values_ = new T[nnz_];
                 rowIndices_ = new int[nnz_];
             }
 
@@ -305,33 +305,29 @@ struct SparseMatrix : SparseMatrixBase<T> {
      */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseMatrix<T>& operator=(const SparseMatrix<OTHER_T>& other) {
-        assert_same_dimensions(*this, other);
+        if (this->columns_ != other.columns()) {
+            delete[] colOffsets_;
+            this->columns_ = other.columns();
+            colOffsets_ = new int[this->columns_ + 1];
+        }
 
-        const int* otherColOffsets = other.colOffsets();
-        const int* otherRowIndices = other.rowIndices();
+        this->rows_ = other.rows();
+
+        if (nnz_ != other.nnz()) {
+            nnz_ = other.nnz();
+            delete[] values_;
+            delete[] rowIndices_;
+            values_ = new T[nnz_];
+            rowIndices_ = new int[nnz_];
+        }
 
         const OTHER_T* otherValues = other.values();
-
-        const int otherNnz = other.nnz();
-
-        if (colOffsets_ != otherColOffsets && rowIndices_ != otherRowIndices) {
-            if (nnz_ != otherNnz) {
-                nnz_ = otherNnz;
-
-                delete[] values_;
-                values_ = new T[nnz_];
-
-                delete[] rowIndices_;
-                rowIndices_ = new int[nnz_];
-            }
-
-            for (int i = 0; i < nnz_; i++) {
-                values_[i] = otherValues[i];
-            }
-
-            memcpy(rowIndices_, otherRowIndices, nnz_ * sizeof(int));
-            memcpy(colOffsets_, otherColOffsets, (this->columns_ + 1) * sizeof(int));
+        for (int i = 0; i < nnz_; i++) {
+            values_[i] = otherValues[i];
         }
+
+        memcpy(rowIndices_, other.rowIndices(), nnz_ * sizeof(int));
+        memcpy(colOffsets_, other.colOffsets(), (this->columns_ + 1) * sizeof(int));
 
         return *this;
     }
@@ -346,23 +342,31 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * @note 'other' must be of same dimensions as this.
      */
     SparseMatrix<T>& operator=(const SparseMatrixBase<T>& other) {
-        assert_same_dimensions(*this, other);
+        if (static_cast<const SparseMatrixBase<T>*>(this) != &other) {
+            if (this->columns_ != other.columns()) {
+                delete[] colOffsets_;
+                this->columns_ = other.columns();
+                colOffsets_ = new int[this->columns_ + 1];
+            }
 
-        for (int i = 0; i < this->columns_ + 1; i++) {
-            colOffsets_[i] = 0;
-        }
+            this->rows_ = other.rows();
 
-        nnz_ = 0;
+            for (int i = 0; i < this->columns_ + 1; i++) {
+                colOffsets_[i] = 0;
+            }
 
-        delete[] rowIndices_;
-        rowIndices_ = new int[nnz_];
+            nnz_ = 0;
 
-        delete[] values_;
-        values_ = new T[nnz_];
+            delete[] rowIndices_;
+            rowIndices_ = new int[0];
 
-        for (int c = 0; c < this->columns_; c++) {
-            for (int r = 0; r < this->columns_; r++) {
-                SparseMatrix<T>::set(c, r, other.get(c, r));
+            delete[] values_;
+            values_ = new T[0];
+
+            for (int c = 0; c < this->columns_; c++) {
+                for (int r = 0; r < this->rows_; r++) {
+                    SparseMatrix<T>::set(c, r, other.get(c, r));
+                }
             }
         }
 
@@ -382,7 +386,13 @@ struct SparseMatrix : SparseMatrixBase<T> {
      */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseMatrix<T>& operator=(const SparseMatrixBase<OTHER_T>& other) {
-        assert_same_dimensions(*this, other);
+        if (this->columns_ != other.columns()) {
+            delete[] colOffsets_;
+            this->columns_ = other.columns();
+            colOffsets_ = new int[this->columns_ + 1];
+        }
+
+        this->rows_ = other.rows();
 
         for (int i = 0; i < this->columns_ + 1; i++) {
             colOffsets_[i] = 0;
@@ -391,13 +401,13 @@ struct SparseMatrix : SparseMatrixBase<T> {
         nnz_ = 0;
 
         delete[] rowIndices_;
-        rowIndices_ = new int[nnz_];
+        rowIndices_ = new int[0];
 
         delete[] values_;
-        values_ = new T[nnz_];
+        values_ = new T[0];
 
         for (int c = 0; c < this->columns_; c++) {
-            for (int r = 0; r < this->columns_; r++) {
+            for (int r = 0; r < this->rows_; r++) {
                 SparseMatrix<T>::set(c, r, other.get(c, r));
             }
         }
@@ -414,25 +424,28 @@ struct SparseMatrix : SparseMatrixBase<T> {
     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
     * @note 'other' must be of same dimensions as this.
     */
-    SparseMatrix<T>& operator=(SparseMatrix<T>&& other) {
-        if (values_ != other.values_ && rowIndices_ != other.rowIndices_ && colOffsets_ != other.colOffsets_) {
-            assert_same_dimensions(*this, other);
-
+    SparseMatrix<T>& operator=(SparseMatrix<T>&& other) noexcept {
+        if (this != &other) {
             delete[] values_;
+            delete[] rowIndices_;
+            delete[] colOffsets_;
+
             values_ = other.values_;
             other.values_ = nullptr;
-
-            delete[] rowIndices_;
             rowIndices_ = other.rowIndices_;
             other.rowIndices_ = nullptr;
-
-            delete[] colOffsets_;
             colOffsets_ = other.colOffsets_;
             other.colOffsets_ = nullptr;
 
             nnz_ = other.nnz_;
-        }
+            other.nnz_ = 0;
 
+            this->rows_ = other.rows_;
+            other.rows_ = 0;
+
+            this->columns_ = other.columns_;
+            other.columns_ = 0;
+        }
         return *this;
     }
 
@@ -605,17 +618,20 @@ struct SparseMatrix : SparseMatrixBase<T> {
     }
 
 private:
+    int nnz_;
+    T* values_;
     int* colOffsets_;
     int* rowIndices_;
-    T* values_;
-    int nnz_;
 };
 
 template<scalar T = float>
 struct SparseMatrixView : SparseMatrixBase<T> {
     SparseMatrixView() = delete;
+
     SparseMatrixView(SparseMatrixView<T>&& other) noexcept = delete;
+
     SparseMatrixView<T>& operator=(const SparseMatrixView<T>& other) = delete;
+
     SparseMatrixView<T>& operator=(SparseMatrixView<T>&& other) noexcept = delete;
 
     /**
@@ -631,7 +647,8 @@ struct SparseMatrixView : SparseMatrixBase<T> {
      * @param colOffset Starting column offset in the 'owner' matrix.
      * @param rowOffset Starting row offset in the 'owner' matrix.
      */
-    SparseMatrixView(const SparseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : SparseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {}
+    SparseMatrixView(const SparseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : SparseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
+    }
 
     /**
      * @brief Copy constructor for SparseMatrixView.
@@ -641,7 +658,8 @@ struct SparseMatrixView : SparseMatrixBase<T> {
      *
      * @param other SparseMatrixView to copy from.
      */
-    SparseMatrixView(const SparseMatrixView<T>& other) : SparseMatrixBase<T>(other.rows_, other.columns_), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {}
+    SparseMatrixView(const SparseMatrixView<T>& other) : SparseMatrixBase<T>(other.rows_, other.columns_), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {
+    }
 
     /**
     * @brief Trying to modify a SparseMatrix through a view is invalid.
@@ -717,9 +735,13 @@ private:
 template<scalar T = float>
 struct CustomSparseMatrix : SparseMatrixBase<T> {
     CustomSparseMatrix() = delete;
+
     CustomSparseMatrix(const CustomSparseMatrix<T>& other) = delete;
+
     CustomSparseMatrix(CustomSparseMatrix<T>&& other) noexcept = delete;
+
     CustomSparseMatrix<T>& operator=(const CustomSparseMatrix<T>& other) = delete;
+
     CustomSparseMatrix<T>& operator=(CustomSparseMatrix<T>&& other) noexcept = delete;
 
     /**
@@ -743,7 +765,8 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
      * @note Assumes 'colOffsets' is of size 'columns + 1'.
      * @note Assumes 'rowIndices' and 'values' is of size 'nnz'.
      */
-    CustomSparseMatrix(const int rows, const int columns, int*& colOffsets, int*& rowIndices, T*& values, int& nnz) : SparseMatrixBase<T>(rows, columns), colOffsets_(colOffsets), rowIndices_(rowIndices), values_(values), nnz_(nnz) {}
+    CustomSparseMatrix(const int rows, const int columns, int*& colOffsets, int*& rowIndices, T*& values, int& nnz) : SparseMatrixBase<T>(rows, columns), nnz_(nnz), values_(values), colOffsets_(colOffsets), rowIndices_(rowIndices) {
+    }
 
     void set(const int c, const int r, const T value) override {
         if (c < 0 || c > this->columns_ - 1 || r < 0 || r > this->rows_ - 1) {
@@ -906,8 +929,8 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     }
 
 private:
+    int& nnz_;
+    T*& values_;
     int*& colOffsets_;
     int*& rowIndices_;
-    T*& values_;
-    int& nnz_;
 };

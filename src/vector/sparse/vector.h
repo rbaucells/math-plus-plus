@@ -25,7 +25,8 @@ protected:
      *
      * @param n Number of elements.
      */
-    explicit SparseVectorBase(const int n) : n_(n) {}
+    explicit SparseVectorBase(const int n) : n_(n) {
+    }
 
     int n_;
 
@@ -67,14 +68,10 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * @param n Size of vector.
      */
-    explicit SparseVector(const int n) : SparseVectorBase<T>(n) {
+    explicit SparseVector(const int n) : SparseVectorBase<T>(n), nnz_(0), values_(new T[0]), indices_(new int[0]) {
         if (n < 0) {
             throw InvalidIndexException("Cannot construct SparseVector of negative size");
         }
-
-        nnz_ = 0;
-        values_ = new T[nnz_];
-        indices_ = new int[nnz_];
     }
 
     /**
@@ -85,20 +82,15 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * @note 'initializerList' must be sorted in increasing indices.
      */
-    SparseVector(const int n, std::initializer_list<std::tuple<T, int>> initializerList) : SparseVector<T>(n) {
+    SparseVector(const int n, std::initializer_list<std::tuple<T, int> > initializerList) : SparseVectorBase<T>(n), nnz_(initializerList.size()), values_(new T[nnz_]), indices_(new int[nnz_]) {
         if (n < 0) {
             throw InvalidIndexException("Cannot construct SparseVector of negative size");
         }
 
-        nnz_ = initializerList.size();
-        values_ = new T[nnz_];
-        indices_ = new int[nnz_];
-
         int i = 0;
-        for (const auto& nonZeroElement : initializerList) {
+        for (const auto& nonZeroElement: initializerList) {
             values_[i] = std::get<0>(nonZeroElement);
             indices_[i] = std::get<1>(nonZeroElement);
-
             ++i;
         }
     }
@@ -111,11 +103,8 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * @param other SparseVector to copy from.
      */
-    SparseVector(const SparseVector<T>& other) : SparseVectorBase<T>(other.n_), nnz_(other.nnz_) {
-        values_ = new T[nnz_];
+    SparseVector(const SparseVector<T>& other) : SparseVectorBase<T>(other.n_), nnz_(other.nnz_), values_(other.values_), indices_(other.indices_) {
         memcpy(values_, other.values_, nnz_ * sizeof(T));
-
-        indices_ = new int[nnz_];
         memcpy(indices_, other.indices_, nnz_ * sizeof(int));
     }
 
@@ -130,20 +119,14 @@ struct SparseVector : SparseVectorBase<T> {
     * @tparam OTHER_T Scalar type of the 'other' SparseVector.
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseVector(const SparseVector<OTHER_T>& other) : SparseVectorBase<T>(other.n()), nnz_(other.nnz()) {
-        values_ = new T[nnz_];
-
+    SparseVector(const SparseVector<OTHER_T>& other) : SparseVectorBase<T>(other.n()), nnz_(other.nnz()), values_(new T[nnz_]), indices_(new int[nnz_]) {
         const OTHER_T* otherValues = other.values();
 
         for (int i = 0; i < nnz_; i++) {
             values_[i] = otherValues[i];
         }
 
-        indices_ = new int[nnz_];
-
-        const int* otherIndices = other.indices();
-
-        memcpy(indices_, otherIndices, nnz_ * sizeof(int));
+        memcpy(indices_, other.indices(), nnz_ * sizeof(int));
     }
 
     /**
@@ -154,10 +137,7 @@ struct SparseVector : SparseVectorBase<T> {
     *
     * @param other SparseVectorBase to copy from.
     */
-    SparseVector(const SparseVectorBase<T>& other) : SparseVectorBase<T>(other.n()) {
-        nnz_ = 0;
-        values_ = new T[nnz_];
-        indices_ = new int[nnz_];
+    SparseVector(const SparseVectorBase<T>& other) : SparseVectorBase<T>(other.n()), nnz_(0), values_(new T[nnz_]), indices_(new int[nnz_]) {
         for (int i = 0; i < this->n_; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
@@ -174,10 +154,7 @@ struct SparseVector : SparseVectorBase<T> {
     * @tparam OTHER_T Scalar type of the 'other' SparseVectorBase.
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseVector(const SparseVectorBase<OTHER_T>& other) : SparseVectorBase<T>(other.n()) {
-        nnz_ = 0;
-        values_ = new T[nnz_];
-        indices_ = new int[nnz_];
+    SparseVector(const SparseVectorBase<OTHER_T>& other) : SparseVectorBase<T>(other.n()), nnz_(0), values_(new T[nnz_]), indices_(new int[nnz_]) {
         for (int i = 0; i < this->n_; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
@@ -191,12 +168,11 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * @param other SparseVector to move from.
      */
-    SparseVector(SparseVector<T>&& other) noexcept : SparseVectorBase<T>(other.n_), nnz_(other.nnz_) {
-        values_ = other.values_;
+    SparseVector(SparseVector<T>&& other) noexcept : SparseVectorBase<T>(other.n_), nnz_(other.nnz_), values_(other.values_), indices_(other.indices_) {
         other.values_ = nullptr;
-
-        indices_ = other.indices_;
         other.indices_ = nullptr;
+        other.n_ = 0;
+        other.nnz_ = 0;
     }
 
     /**
@@ -209,9 +185,7 @@ struct SparseVector : SparseVectorBase<T> {
      * @note 'other' must be of same size as this.
      */
     SparseVector<T>& operator=(const SparseVector<T>& other) {
-        if (values_ != other.values_ && indices_ != other.indices_) {
-            assert_same_size(*this, other);
-
+        if (this != &other) {
             if (nnz_ != other.nnz_) {
                 nnz_ = other.nnz_;
 
@@ -221,6 +195,8 @@ struct SparseVector : SparseVectorBase<T> {
                 delete[] indices_;
                 indices_ = new int[nnz_];
             }
+
+            this->n_ = other.n_;
 
             memcpy(values_, other.values_, nnz_ * sizeof(T));
             memcpy(indices_, other.indices_, nnz_ * sizeof(int));
@@ -242,12 +218,8 @@ struct SparseVector : SparseVectorBase<T> {
      */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseVector<T>& operator=(const SparseVector<OTHER_T>& other) {
-        assert_same_size(*this, other);
-
-        const int otherNnz = other.nnz();
-
-        if (nnz_ != otherNnz) {
-            nnz_ = otherNnz;
+        if (nnz_ != other.nnz()) {
+            nnz_ = other.nnz();
 
             delete[] values_;
             values_ = new T[nnz_];
@@ -255,6 +227,8 @@ struct SparseVector : SparseVectorBase<T> {
             delete[] indices_;
             indices_ = new int[nnz_];
         }
+
+        this->n_ = other.n();
 
         const OTHER_T* otherValues = other.values();
 
@@ -277,9 +251,13 @@ struct SparseVector : SparseVectorBase<T> {
     * @note 'other' must be of same size as this.
     */
     SparseVector<T>& operator=(const SparseVectorBase<T>& other) {
-        assert_same_size(*this, other);
-        for (int i = 0; i < this->n_; i++) {
-            SparseVector<T>::set(i, other.get(i));
+        if (static_cast<const SparseVectorBase<T>*>(this) != &other) {
+            this->nnz_ = 0;
+            this->n_ = other.n();
+
+            for (int i = 0; i < this->n_; i++) {
+                SparseVector<T>::set(i, other.get(i));
+            }
         }
 
         return *this;
@@ -298,7 +276,9 @@ struct SparseVector : SparseVectorBase<T> {
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseVector<T>& operator=(const SparseVectorBase<OTHER_T>& other) {
-        assert_same_size(*this, other);
+        this->nnz_ = 0;
+        this->n_ = other.n();
+
         for (int i = 0; i < this->n_; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
@@ -315,10 +295,8 @@ struct SparseVector : SparseVectorBase<T> {
     * @throws InvalidDimensionException If 'other' does not have same size as this.
     * @note 'other' must be of same size as this.
     */
-    SparseVector<T>& operator=(SparseVector<T>&& other) {
-        if (values_ != other.values_ && indices_ != other.indices_) {
-            assert_same_size(*this, other);
-
+    SparseVector<T>& operator=(SparseVector<T>&& other) noexcept {
+        if (this != &other) {
             delete[] values_;
             values_ = other.values_;
             other.values_ = nullptr;
@@ -328,6 +306,10 @@ struct SparseVector : SparseVectorBase<T> {
             other.indices_ = nullptr;
 
             nnz_ = other.nnz_;
+            other.nnz_ = 0;
+
+            this->n_ = other.n_;
+            other.n_ = 0;
         }
 
         return *this;
@@ -474,16 +456,19 @@ struct SparseVector : SparseVectorBase<T> {
     ~SparseVector() override = default;
 
 private:
+    int nnz_;
     T* values_;
     int* indices_;
-    int nnz_;
 };
 
 template<scalar T = float>
 struct SparseVectorView : SparseVectorBase<T> {
     SparseVectorView() = delete;
+
     SparseVectorView(SparseVectorView<T>&& other) noexcept = delete;
+
     SparseVectorView<T>& operator=(const SparseVectorView<T>& other) = delete;
+
     SparseVectorView<T>& operator=(SparseVectorView<T>&& other) noexcept = delete;
 
     /**
@@ -498,7 +483,8 @@ struct SparseVectorView : SparseVectorBase<T> {
      * @param n Number of elements in the view.
      * @param offset Starting element offset into the 'owner' vector.
      */
-    SparseVectorView(const SparseVector<T>& owner, const int n, const int offset) : SparseVectorBase<T>(n), offset_(offset), owner_(owner) {}
+    SparseVectorView(const SparseVector<T>& owner, const int n, const int offset) : SparseVectorBase<T>(n), offset_(offset), owner_(owner) {
+    }
 
 
     /**
@@ -509,7 +495,8 @@ struct SparseVectorView : SparseVectorBase<T> {
      *
      * @param other SparseVectorView to copy from.
      */
-    SparseVectorView(const SparseVectorView<T>& other) : SparseVectorBase<T>(other.n_), offset_(other.offset_), owner_(other.owner_) {}
+    SparseVectorView(const SparseVectorView<T>& other) : SparseVectorBase<T>(other.n_), offset_(other.offset_), owner_(other.owner_) {
+    }
 
     /**
      * @brief Trying to modify a SparseVector through a view is invalid.
@@ -517,7 +504,7 @@ struct SparseVectorView : SparseVectorBase<T> {
      * @throws InvalidIndexException If 'i' is negative or greater than 'n - 1'
      */
     void set(const int i, const T) override {
-        if (i > this->n_ - 1|| i < 0) {
+        if (i > this->n_ - 1 || i < 0) {
             throw InvalidIndexException("Cannot set on view with invalid index");
         }
 
@@ -573,9 +560,13 @@ private:
 template<scalar T = float>
 struct CustomSparseVector : SparseVectorBase<T> {
     CustomSparseVector() = delete;
+
     CustomSparseVector(const CustomSparseVector<T>& other) = delete;
+
     CustomSparseVector(CustomSparseVector<T>&& other) noexcept = delete;
+
     CustomSparseVector<T>& operator=(const CustomSparseVector<T>& other) = delete;
+
     CustomSparseVector<T>& operator=(CustomSparseVector<T>&& other) noexcept = delete;
 
     /**
@@ -590,7 +581,8 @@ struct CustomSparseVector : SparseVectorBase<T> {
      * @note The array 'values' and 'indices' are pointing to may change.
      * @note Value of 'nnz' may change.
      */
-    CustomSparseVector(const int n, T*& values, int*& indices, int& nnz) : SparseVectorBase<T>(n), values_(values), indices_(indices), nnz_(nnz) {}
+    CustomSparseVector(const int n, T*& values, int*& indices, int& nnz) : SparseVectorBase<T>(n), nnz_(nnz), values_(values), indices_(indices) {
+    }
 
     void set(const int i, const T value) override {
         if (i < 0 || i > this->n_ - 1) {
@@ -733,7 +725,7 @@ struct CustomSparseVector : SparseVectorBase<T> {
     ~CustomSparseVector() override = default;
 
 private:
+    int& nnz_;
     T*& values_;
     int*& indices_;
-    int& nnz_;
 };

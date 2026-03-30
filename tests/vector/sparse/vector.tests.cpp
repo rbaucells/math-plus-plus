@@ -827,7 +827,7 @@ TEST(sparse_vector_copy_constructor_from_different_type_sparse_vector_base, give
 }
 #pragma endregion
 #pragma region move_constructor
-TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct_and_invalidate_other_data) {
+TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct_and_leave_other_empty) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
@@ -840,6 +840,8 @@ TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.indices() == nullptr);
+    ASSERT_TRUE((compare(a.n(), 0)));
+    ASSERT_TRUE((compare(a.nnz(), 0)));
     ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(b.nnz(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
@@ -850,7 +852,7 @@ TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct
     ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 
-TEST(sparse_vector_move_constructor, given_cf_sparse_vector_should_move_construct_and_invalidate_other_data) {
+TEST(sparse_vector_move_constructor, given_cf_sparse_vector_should_move_construct_and_leave_other_empty) {
     // arrange
     SparseVector<std::complex<float>> a(5);
     a.set(0, {1, 2});
@@ -863,6 +865,8 @@ TEST(sparse_vector_move_constructor, given_cf_sparse_vector_should_move_construc
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.indices() == nullptr);
+    ASSERT_TRUE((compare(a.n(), 0)));
+    ASSERT_TRUE((compare(a.nnz(), 0)));
     ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(b.nnz(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 2))));
@@ -874,7 +878,7 @@ TEST(sparse_vector_move_constructor, given_cf_sparse_vector_should_move_construc
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_same_type_sparse_vector
-TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_sparse_vector_should_copy_assign) {
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_sparse_vector_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
@@ -887,6 +891,7 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_
     const int* bIndexes = b.indices();
     // assert
     ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
@@ -895,7 +900,32 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_
     ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 
-TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_cf_sparse_vector_should_copy_assign) {
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_sparse_vector_of_same_size_same_nnz_should_copy_assign) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    SparseVector<float> b(5);
+    b.set(1, 3);
+    b.set(2, 2);
+    b.set(3, 1);
+    // act
+    b = a;
+    const float* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_cf_sparse_vector_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseVector<std::complex<float>> a(5);
     a.set(0, {1, 2});
@@ -908,6 +938,7 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_
     const int* bIndexes = b.indices();
     // assert
     ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 2))));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(3, 4))));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(5, 6))));
@@ -916,19 +947,76 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_
     ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 
-TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_sparse_vector_of_different_size_should_throw) {
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_sparse_vector_of_diff_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
     SparseVector<float> b(3);
-    // act / assert
-    ASSERT_THROW(b = a, InvalidDimensionException);
+    // act
+    b = a;
+    const float* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_sparse_vector_of_diff_size_same_nnz_should_copy_assign) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    SparseVector<float> b(3);
+    b.set(0, 1);
+    b.set(1, 3);
+    b.set(2, 2);
+    // act
+    b = a;
+    const float* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_self_should_do_nothing) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    // act
+    a = a;
+    const float* aValues = a.values();
+    const int* aIndexes = a.indices();
+    // assert
+    ASSERT_TRUE((compare(a.nnz(), 3)));
+    ASSERT_TRUE((compare(a.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), aValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), aValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), aValues[2], 3)));
+    ASSERT_TRUE((compare(aIndexes[0], 0)));
+    ASSERT_TRUE((compare(aIndexes[1], 2)));
+    ASSERT_TRUE((compare(aIndexes[2], 4)));
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_different_type_sparse_vector
-TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_should_copy_assign) {
+TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
@@ -941,6 +1029,7 @@ TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, g
     const int* bIndexes = b.indices();
     // assert
     ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 0))));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(2, 0))));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(3, 0))));
@@ -949,19 +1038,80 @@ TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, g
     ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 
-TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_of_different_size_should_throw) {
+TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_of_same_size_same_nnz_should_copy_assign) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    SparseVector<std::complex<float>> b(5);
+    b.set(1, 2);
+    b.set(2, 3);
+    b.set(3, 4);
+    // act
+    b = a;
+    const std::complex<float>* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(2, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(3, 0))));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_of_diff_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
     SparseVector<std::complex<float>> b(3);
-    // act / assert
-    ASSERT_THROW(b = a, InvalidDimensionException);
+    // act
+    b = a;
+    const std::complex<float>* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(2, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(3, 0))));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_of_diff_size_same_nnz_should_copy_assign) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    SparseVector<std::complex<float>> b(3);
+    b.set(0, 1);
+    b.set(1, 3);
+    b.set(2, 2);
+    // act
+    b = a;
+    const std::complex<float>* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(2, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(3, 0))));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_same_type_sparse_vector_base
-TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, given_f_sparse_vector_base_should_copy_assign) {
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, given_f_sparse_vector_base_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
@@ -974,6 +1124,7 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, g
     const int* bIndexes = b.indices();
     // assert
     ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
@@ -982,7 +1133,32 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, g
     ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 
-TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, given_cf_sparse_vector_base_should_copy_assign) {
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, given_f_sparse_vector_base_of_same_size_same_nnz_should_copy_assign) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    SparseVector<float> b(5);
+    b.set(1, -1);
+    b.set(2, 3);
+    b.set(4, 4);
+    // act
+    b = static_cast<const SparseVectorBase<float>&>(a);
+    const float* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, given_cf_sparse_vector_base_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseVector<std::complex<float>> a(5);
     a.set(0, std::complex<float>(1, 2));
@@ -995,6 +1171,7 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, g
     const int* bIndexes = b.indices();
     // assert
     ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 2))));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(3, 4))));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(5, 6))));
@@ -1003,19 +1180,76 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, g
     ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 
-TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, given_sparse_vector_base_of_different_size_should_throw) {
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, given_f_sparse_vector_base_of_diff_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
     SparseVector<float> b(3);
-    // act / assert
-    ASSERT_THROW(b = static_cast<const SparseVectorBase<float>&>(a), InvalidDimensionException);
+    // act
+    b = static_cast<const SparseVectorBase<float>&>(a);
+    const float* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, given_f_sparse_vector_base_of_diff_size_same_nnz_should_copy_assign) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    SparseVector<float> b(3);
+    b.set(0, 2);
+    b.set(1, 1);
+    b.set(2, 4);
+    // act
+    b = static_cast<const SparseVectorBase<float>&>(a);
+    const float* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector_base, given_f_self_should_do_nothing) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    // act
+    a = static_cast<const SparseVectorBase<float>&>(a);
+    const float* aValues = a.values();
+    const int* aIndexes = a.indices();
+    // assert
+    ASSERT_TRUE((compare(a.nnz(), 3)));
+    ASSERT_TRUE((compare(a.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), aValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), aValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), aValues[2], 3)));
+    ASSERT_TRUE((compare(aIndexes[0], 0)));
+    ASSERT_TRUE((compare(aIndexes[1], 2)));
+    ASSERT_TRUE((compare(aIndexes[2], 4)));
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_different_type_sparse_vector_base
-TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector_base, given_f_sparse_vector_base_should_copy_assign) {
+TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector_base, given_f_sparse_vector_base_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
@@ -1028,6 +1262,7 @@ TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector_ba
     const int* bIndexes = b.indices();
     // assert
     ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 0))));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(2, 0))));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(3, 0))));
@@ -1036,19 +1271,80 @@ TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector_ba
     ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 
-TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector_base, given_sparse_vector_base_of_different_size_should_throw) {
+TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector_base, given_f_sparse_vector_base_of_same_size_same_nnz_should_copy_assign) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    SparseVector<std::complex<float>> b(5);
+    b.set(1, 3);
+    b.set(2, 4);
+    b.set(4, 35);
+    // act
+    b = static_cast<const SparseVectorBase<float>&>(a);
+    const std::complex<float>* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(2, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(3, 0))));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector_base, given_f_sparse_vector_base_of_diff_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
     SparseVector<std::complex<float>> b(3);
-    // act / assert
-    ASSERT_THROW(b = static_cast<const SparseVectorBase<float>&>(a), InvalidDimensionException);
+    // act
+    b = static_cast<const SparseVectorBase<float>&>(a);
+    const std::complex<float>* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(2, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(3, 0))));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector_base, given_f_sparse_vector_base_of_diff_size_same_nnz_should_copy_assign) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    SparseVector<std::complex<float>> b(3);
+    b.set(0, 14);
+    b.set(1, 32);
+    b.set(2, 33);
+    // act
+    b = static_cast<const SparseVectorBase<float>&>(a);
+    const std::complex<float>* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(2, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(3, 0))));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 #pragma endregion
 #pragma region move_assignment_operator
-TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_should_move_assign) {
+TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_same_size_diff_nnz_should_move_assign) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
@@ -1062,7 +1358,10 @@ TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_should_move_a
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.indices() == nullptr);
+    ASSERT_TRUE((compare(a.nnz(), 0)));
+    ASSERT_TRUE((compare(a.n(), 0)));
     ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
@@ -1071,7 +1370,36 @@ TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_should_move_a
     ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 
-TEST(sparse_vector_move_assignment_operator, given_cf_sparse_vector_should_move_assign) {
+TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_same_size_same_nnz_should_move_assign) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    SparseVector<float> b(5);
+    b.set(1, 11);
+    b.set(2, 22);
+    b.set(4, 33);
+    // act
+    b = std::move(a);
+    const float* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE(a.values() == nullptr);
+    ASSERT_TRUE(a.indices() == nullptr);
+    ASSERT_TRUE((compare(a.nnz(), 0)));
+    ASSERT_TRUE((compare(a.n(), 0)));
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_move_assignment_operator, given_cf_sparse_vector_of_same_size_diff_nnz_should_move_assign) {
     // arrange
     SparseVector<std::complex<float>> a(5);
     a.set(0, {1, 2});
@@ -1085,7 +1413,10 @@ TEST(sparse_vector_move_assignment_operator, given_cf_sparse_vector_should_move_
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.indices() == nullptr);
+    ASSERT_TRUE((compare(a.nnz(), 0)));
+    ASSERT_TRUE((compare(a.n(), 0)));
     ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 2))));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(3, 4))));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(5, 6))));
@@ -1094,15 +1425,80 @@ TEST(sparse_vector_move_assignment_operator, given_cf_sparse_vector_should_move_
     ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 
-TEST(sparse_vector_move_assignment_operator, given_sparse_vector_of_different_size_should_throw) {
+TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_diff_size_diff_nnz_should_move_assign) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
     SparseVector<float> b(3);
-    // act / assert
-    ASSERT_THROW(b = std::move(a), InvalidDimensionException);
+    // act
+    b = std::move(a);
+    const float* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE(a.values() == nullptr);
+    ASSERT_TRUE(a.indices() == nullptr);
+    ASSERT_TRUE((compare(a.nnz(), 0)));
+    ASSERT_TRUE((compare(a.n(), 0)));
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_diff_size_same_nnz_should_move_assign) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    SparseVector<float> b(3);
+    b.set(0, -0.2f);
+    b.set(1, 20);
+    b.set(2, 4);
+    // act
+    b = std::move(a);
+    const float* bValues = b.values();
+    const int* bIndexes = b.indices();
+    // assert
+    ASSERT_TRUE(a.values() == nullptr);
+    ASSERT_TRUE(a.indices() == nullptr);
+    ASSERT_TRUE((compare(a.nnz(), 0)));
+    ASSERT_TRUE((compare(a.n(), 0)));
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(b.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3)));
+    ASSERT_TRUE((compare(bIndexes[0], 0)));
+    ASSERT_TRUE((compare(bIndexes[1], 2)));
+    ASSERT_TRUE((compare(bIndexes[2], 4)));
+}
+
+TEST(sparse_vector_move_assignment_operator, given_f_self_should_do_nothing) {
+    // arrange
+    SparseVector<float> a(5);
+    a.set(0, 1);
+    a.set(2, 2);
+    a.set(4, 3);
+    // act
+    a = std::move(a);
+    const float* aValues = a.values();
+    const int* aIndexes = a.indices();
+    // assert
+    ASSERT_TRUE((compare(a.nnz(), 3)));
+    ASSERT_TRUE((compare(a.n(), 5)));
+    ASSERT_TRUE((compare(Precision(0.001f), aValues[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), aValues[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), aValues[2], 3)));
+    ASSERT_TRUE((compare(aIndexes[0], 0)));
+    ASSERT_TRUE((compare(aIndexes[1], 2)));
+    ASSERT_TRUE((compare(aIndexes[2], 4)));
 }
 #pragma endregion
 #pragma endregion

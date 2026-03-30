@@ -216,7 +216,7 @@ TEST(dense_vector_copy_constructor_from_different_type_dense_vector_base, given_
 }
 #pragma endregion
 #pragma region move_constructor
-TEST(dense_vector_move_constructor, given_f_dense_vector_should_move_construct_and_invalidate_other_data) {
+TEST(dense_vector_move_constructor, given_f_dense_vector_should_construct_and_leave_other_empty) {
     // arrange
     DenseVector<float> a = {1, 2, 3};
     // act
@@ -224,13 +224,14 @@ TEST(dense_vector_move_constructor, given_f_dense_vector_should_move_construct_a
     const float* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
-    ASSERT_TRUE((compare(b.n(), 3)));
+    ASSERT_TRUE(compare(a.n(), 0));
+    ASSERT_TRUE(compare(b.n(), 3));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 2)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 3)));
 }
 
-TEST(dense_vector_move_constructor, given_cf_dense_vector_should_move_construct_and_invalidate_other_data) {
+TEST(dense_vector_move_constructor, given_cf_dense_vector_should_construct_and_leave_other_empty) {
     // arrange
     DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
     // act
@@ -238,14 +239,15 @@ TEST(dense_vector_move_constructor, given_cf_dense_vector_should_move_construct_
     const std::complex<float>* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
-    ASSERT_TRUE((compare(b.n(), 3)));
+    ASSERT_TRUE(compare(a.n(), 0));
+    ASSERT_TRUE(compare(b.n(), 3));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(3, 4))));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(5, 6))));
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_same_type_dense_vector
-TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_f_dense_vector_should_copy_assign) {
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_f_dense_vector_of_same_size_should_copy_assign) {
     // arrange
     const DenseVector<float> a = {1, 2, 3};
     DenseVector<float> b(3, true);
@@ -253,12 +255,13 @@ TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_f_
     b = a;
     const float* bData = b.data();
     // assert
+    ASSERT_TRUE((compare(b.n(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 2)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 3)));
 }
 
-TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_cf_dense_vector_should_copy_assign) {
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_cf_dense_vector_of_same_size_should_copy_assign) {
     // arrange
     const DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
     DenseVector<std::complex<float>> b(3, true);
@@ -266,21 +269,41 @@ TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_cf
     b = a;
     const std::complex<float>* bData = b.data();
     // assert
+    ASSERT_TRUE((compare(b.n(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(3, 4))));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(5, 6))));
 }
 
-TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_dense_vector_of_different_size_should_throw) {
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_f_dense_vector_of_diff_size_should_copy_assign) {
     // arrange
     const DenseVector<float> a = {1, 2, 3};
     DenseVector<float> b(2, true);
-    // act / assert
-    ASSERT_THROW(b = a, InvalidDimensionException);
+    // act
+    b = a;
+    const float* bData = b.data();
+    // assert
+    ASSERT_TRUE((compare(b.n(), 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 3)));
+}
+
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector, given_f_self_should_do_nothing) {
+    // arrange
+    DenseVector<float> a = {1, 2, 3};
+    // act
+    a = a;
+    const float* aData = a.data();
+    // assert
+    ASSERT_TRUE((compare(a.n(), 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), aData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), aData[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), aData[2], 3)));
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_different_type_dense_vector
-TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector, given_f_dense_vector_should_copy_assign) {
+TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector, given_f_dense_vector_of_same_size_should_copy_assign) {
     // arrange
     const DenseVector<float> a = {1, 2, 3};
     DenseVector<std::complex<float>> b(3, true);
@@ -288,21 +311,28 @@ TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector, giv
     b = a;
     const std::complex<float>* bData = b.data();
     // assert
+    ASSERT_TRUE((compare(b.n(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 2)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 3)));
 }
 
-TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector, given_f_dense_vector_of_different_size_should_throw) {
+TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector, given_f_dense_vector_of_diff_size_should_copy_assign) {
     // arrange
     const DenseVector<float> a = {1, 2, 3};
     DenseVector<std::complex<float>> b(2, true);
-    // act / assert
-    ASSERT_THROW(b = a, InvalidDimensionException);
+    // act
+    b = a;
+    const std::complex<float>* bData = b.data();
+    // assert
+    ASSERT_TRUE((compare(b.n(), 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(2, 0))));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(3, 0))));
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_same_type_dense_vector_base
-TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector_base, given_f_dense_vector_base_should_copy_assign) {
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector_base, given_f_dense_vector_base_of_same_size_should_copy_assign) {
     // arrange
     const DenseVector<float> a = {1, 2, 3};
     DenseVector<float> b(3, true);
@@ -310,12 +340,13 @@ TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector_base, giv
     b = static_cast<const DenseVectorBase<float>&>(a);
     const float* bData = b.data();
     // assert
+    ASSERT_TRUE((compare(b.n(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 2)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 3)));
 }
 
-TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector_base, given_cf_dense_vector_base_should_copy_assign) {
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector_base, given_cf_dense_vector_base_of_same_size_should_copy_assign) {
     // arrange
     const DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
     DenseVector<std::complex<float>> b(3, true);
@@ -323,21 +354,41 @@ TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector_base, giv
     b = static_cast<const DenseVectorBase<std::complex<float>>&>(a);
     const std::complex<float>* bData = b.data();
     // assert
+    ASSERT_TRUE((compare(b.n(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(3, 4))));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(5, 6))));
 }
 
-TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector_base, given_dense_vector_base_of_different_size_should_throw) {
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector_base, given_f_dense_vector_base_of_diff_size_should_copy_assign) {
     // arrange
     const DenseVector<float> a = {1, 2, 3};
     DenseVector<float> b(2, true);
-    // act / assert
-    ASSERT_THROW(b = static_cast<const DenseVectorBase<float>&>(a), InvalidDimensionException);
+    // act
+    b = static_cast<const DenseVectorBase<float>&>(a);
+    const float* bData = b.data();
+    // assert
+    ASSERT_TRUE((compare(b.n(), 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 3)));
+}
+
+TEST(dense_vector_copy_assignment_operator_from_same_type_dense_vector_base, given_f_self_should_do_nothing) {
+    // arrange
+    DenseVector<float> a = {1, 2, 3};
+    // act
+    a = static_cast<const DenseVectorBase<float>&>(a);
+    const float* aData = a.data();
+    // assert
+    ASSERT_TRUE((compare(a.n(), 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), aData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), aData[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), aData[2], 3)));
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_different_type_dense_vector_base
-TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector_base, given_f_dense_vector_base_should_copy_assign) {
+TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector_base, given_f_dense_vector_base_of_same_size_should_copy_assign) {
     // arrange
     const DenseVector<float> a = {1, 2, 3};
     DenseVector<std::complex<float>> b(3, true);
@@ -345,21 +396,28 @@ TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector_base
     b = static_cast<const DenseVectorBase<float>&>(a);
     const std::complex<float>* bData = b.data();
     // assert
+    ASSERT_TRUE((compare(b.n(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 2)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 3)));
 }
 
-TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector_base, given_dense_vector_base_of_different_size_should_throw) {
+TEST(dense_vector_copy_assignment_operator_from_different_type_dense_vector_base, given_f_dense_vector_base_of_diff_size_should_copy_assign) {
     // arrange
     const DenseVector<float> a = {1, 2, 3};
     DenseVector<std::complex<float>> b(2, true);
-    // act / assert
-    ASSERT_THROW(b = static_cast<const DenseVectorBase<float>&>(a), InvalidDimensionException);
+    // act
+    b = static_cast<const DenseVectorBase<float>&>(a);
+    const std::complex<float>* bData = b.data();
+    // assert
+    ASSERT_TRUE((compare(b.n(), 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 3)));
 }
 #pragma endregion
 #pragma region move_assignment_operator
-TEST(dense_vector_move_assignment_operator, given_f_dense_vector_should_move_assign) {
+TEST(dense_vector_move_assignment_operator, given_f_dense_vector_of_same_size_should_move_assign) {
     // arrange
     DenseVector<float> a = {1, 2, 3};
     DenseVector<float> b(3, true);
@@ -368,12 +426,14 @@ TEST(dense_vector_move_assignment_operator, given_f_dense_vector_should_move_ass
     const float* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
+    ASSERT_TRUE(compare(a.n(), 0));
+    ASSERT_TRUE(compare(b.n(), 3));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 2)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 3)));
 }
 
-TEST(dense_vector_move_assignment_operator, given_cf_dense_vector_should_move_assign) {
+TEST(dense_vector_move_assignment_operator, given_cf_dense_vector_of_same_size_should_move_assign) {
     // arrange
     DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
     DenseVector<std::complex<float>> b(3, true);
@@ -382,17 +442,40 @@ TEST(dense_vector_move_assignment_operator, given_cf_dense_vector_should_move_as
     const std::complex<float>* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
+    ASSERT_TRUE(compare(a.n(), 0));
+    ASSERT_TRUE(compare(b.n(), 3));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(3, 4))));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(5, 6))));
 }
 
-TEST(dense_vector_move_assignment_operator, given_dense_vector_of_different_size_should_throw) {
+TEST(dense_vector_move_assignment_operator, given_f_dense_vector_of_diff_size_should_move_assign) {
     // arrange
     DenseVector<float> a = {1, 2, 3};
     DenseVector<float> b(2, true);
-    // act / assert
-    ASSERT_THROW(b = std::move(a), InvalidDimensionException);
+    // act
+    b = std::move(a);
+    const float* bData = b.data();
+    // assert
+    ASSERT_TRUE(a.data() == nullptr);
+    ASSERT_TRUE(compare(a.n(), 0));
+    ASSERT_TRUE(compare(b.n(), 3));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 3)));
+}
+
+TEST(dense_vector_move_assignment_operator, given_f_self_should_do_nothing) {
+    // arrange
+    DenseVector<float> a = {1, 2, 3};
+    // act
+    a = std::move(a);
+    const float* aData = a.data();
+    // assert
+    ASSERT_TRUE(compare(a.n(), 3));
+    ASSERT_TRUE((compare(Precision(0.001f), aData[0], 1)));
+    ASSERT_TRUE((compare(Precision(0.001f), aData[1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), aData[2], 3)));
 }
 #pragma endregion
 #pragma endregion
