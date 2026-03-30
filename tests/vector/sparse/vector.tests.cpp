@@ -827,7 +827,7 @@ TEST(sparse_vector_copy_constructor_from_different_type_sparse_vector_base, give
 }
 #pragma endregion
 #pragma region move_constructor
-TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct_and_invalidate_other_data) {
+TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct_and_leave_other_empty) {
     // arrange
     SparseVector<float> a(5);
     a.set(0, 1);
@@ -840,6 +840,8 @@ TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.indices() == nullptr);
+    ASSERT_TRUE((compare(a.n(), 0)));
+    ASSERT_TRUE((compare(a.nnz(), 0)));
     ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(b.nnz(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1)));
@@ -850,7 +852,7 @@ TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct
     ASSERT_TRUE((compare(bIndexes[2], 4)));
 }
 
-TEST(sparse_vector_move_constructor, given_cf_sparse_vector_should_move_construct_and_invalidate_other_data) {
+TEST(sparse_vector_move_constructor, given_cf_sparse_vector_should_move_construct_and_leave_other_empty) {
     // arrange
     SparseVector<std::complex<float>> a(5);
     a.set(0, {1, 2});
@@ -863,6 +865,8 @@ TEST(sparse_vector_move_constructor, given_cf_sparse_vector_should_move_construc
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.indices() == nullptr);
+    ASSERT_TRUE((compare(a.n(), 0)));
+    ASSERT_TRUE((compare(a.nnz(), 0)));
     ASSERT_TRUE((compare(b.n(), 5)));
     ASSERT_TRUE((compare(b.nnz(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 2))));

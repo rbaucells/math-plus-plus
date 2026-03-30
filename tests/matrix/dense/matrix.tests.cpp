@@ -357,7 +357,7 @@ TEST(dense_matrix_copy_constructor_from_different_type_dense_matrix_base, given_
 }
 #pragma endregion
 #pragma region move_constructor
-TEST(dense_matrix_move_constructor, given_f_dense_matrix_should_move_construct_and_invalidate_other_data) {
+TEST(dense_matrix_move_constructor, given_f_dense_matrix_should_move_construct_and_leave_other_empty) {
     // arrange
     DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act
@@ -365,6 +365,8 @@ TEST(dense_matrix_move_constructor, given_f_dense_matrix_should_move_construct_a
     const float* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
+    ASSERT_TRUE((compare(a.rows(), 0)));
+    ASSERT_TRUE((compare(a.columns(), 0)));
     ASSERT_TRUE((compare(b.rows(), 3)));
     ASSERT_TRUE((compare(b.columns(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
@@ -378,7 +380,7 @@ TEST(dense_matrix_move_constructor, given_f_dense_matrix_should_move_construct_a
     ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 
-TEST(dense_matrix_move_constructor, given_cf_dense_matrix_should_move_construct_and_invalidate_other_data) {
+TEST(dense_matrix_move_constructor, given_cf_dense_matrix_should_move_construct_and_leave_other_empty) {
     // arrange
     DenseMatrix<std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
     // act
@@ -386,6 +388,8 @@ TEST(dense_matrix_move_constructor, given_cf_dense_matrix_should_move_construct_
     const std::complex<float>* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
+    ASSERT_TRUE((compare(a.rows(), 0)));
+    ASSERT_TRUE((compare(a.columns(), 0)));
     ASSERT_TRUE((compare(b.rows(), 3)));
     ASSERT_TRUE((compare(b.columns(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));

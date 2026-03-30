@@ -1093,6 +1093,9 @@ TEST(sparse_matrix_move_constructor, given_f_sparse_matrix_should_move_construct
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.rowIndices() == nullptr);
     ASSERT_TRUE(a.colOffsets() == nullptr);
+    ASSERT_TRUE((compare(a.rows(), 0)));
+    ASSERT_TRUE((compare(a.columns(), 0)));
+    ASSERT_TRUE((compare(a.nnz(), 0)));
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
     ASSERT_TRUE((compare(b.nnz(), 3)));
@@ -1125,6 +1128,9 @@ TEST(sparse_matrix_move_constructor, given_cf_sparse_matrix_should_move_construc
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.rowIndices() == nullptr);
     ASSERT_TRUE(a.colOffsets() == nullptr);
+    ASSERT_TRUE((compare(a.rows(), 0)));
+    ASSERT_TRUE((compare(a.columns(), 0)));
+    ASSERT_TRUE((compare(a.nnz(), 0)));
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
     ASSERT_TRUE((compare(b.nnz(), 3)));

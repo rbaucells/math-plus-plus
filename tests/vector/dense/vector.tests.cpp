@@ -216,7 +216,7 @@ TEST(dense_vector_copy_constructor_from_different_type_dense_vector_base, given_
 }
 #pragma endregion
 #pragma region move_constructor
-TEST(dense_vector_move_constructor, given_f_dense_vector_should_move_construct_and_invalidate_other_data) {
+TEST(dense_vector_move_constructor, given_f_dense_vector_should_construct_and_leave_other_empty) {
     // arrange
     DenseVector<float> a = {1, 2, 3};
     // act
@@ -224,13 +224,14 @@ TEST(dense_vector_move_constructor, given_f_dense_vector_should_move_construct_a
     const float* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
-    ASSERT_TRUE((compare(b.n(), 3)));
+    ASSERT_TRUE(compare(a.n(), 0));
+    ASSERT_TRUE(compare(b.n(), 3));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 2)));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 3)));
 }
 
-TEST(dense_vector_move_constructor, given_cf_dense_vector_should_move_construct_and_invalidate_other_data) {
+TEST(dense_vector_move_constructor, given_cf_dense_vector_should_construct_and_leave_other_empty) {
     // arrange
     DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}};
     // act
@@ -238,7 +239,8 @@ TEST(dense_vector_move_constructor, given_cf_dense_vector_should_move_construct_
     const std::complex<float>* bData = b.data();
     // assert
     ASSERT_TRUE(a.data() == nullptr);
-    ASSERT_TRUE((compare(b.n(), 3)));
+    ASSERT_TRUE(compare(a.n(), 0));
+    ASSERT_TRUE(compare(b.n(), 3));
     ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
     ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(3, 4))));
     ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(5, 6))));
