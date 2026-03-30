@@ -1149,7 +1149,7 @@ TEST(sparse_matrix_move_constructor, given_cf_sparse_matrix_should_move_construc
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_same_type_sparse_matrix
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_f_sparse_matrix_should_copy_assign) {
+TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_f_sparse_matrix_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
@@ -1179,7 +1179,40 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
 
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_cf_sparse_matrix_should_copy_assign) {
+TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_f_sparse_matrix_of_same_size_same_nnz_should_copy_assign) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    a.set(0, 0, 1);
+    a.set(2, 2, 2);
+    a.set(4, 4, 3);
+    SparseMatrix<float> b(5, 5);
+    b.set(0, 1, 1);
+    b.set(2, 1, 2);
+    b.set(4, 2, 4);
+    // act
+    b = a;
+    const float* bValues = b.values();
+    const int* bRowIndexes = b.rowIndices();
+    const int* bColOffsets = b.colOffsets();
+    // assert
+    ASSERT_TRUE((compare(b.rows(), 5)));
+    ASSERT_TRUE((compare(b.columns(), 5)));
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+}
+
+TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_cf_sparse_matrix_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseMatrix<std::complex<float>> a(5, 5);
     a.set(0, 0, {1, 2});
@@ -1208,20 +1241,9 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
-
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_sparse_matrix_of_different_size_should_throw) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<float> b(3, 3);
-    // act / assert
-    ASSERT_THROW(b = a, InvalidDimensionException);
-}
 #pragma endregion
 #pragma region copy_assignment_operator_from_different_type_sparse_matrix
-TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, given_f_sparse_matrix_should_copy_assign) {
+TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, given_f_sparse_matrix_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
@@ -1251,19 +1273,41 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
 
-TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, given_f_sparse_matrix_of_different_size_should_throw) {
+TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, given_f_sparse_matrix_of_same_size_same_nnz_should_copy_assign) {
     // arrange
     SparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(3, 3);
-    // act / assert
-    ASSERT_THROW(b = a, InvalidDimensionException);
+    SparseMatrix<std::complex<float>> b(5, 5);
+    b.set(1, 3, 12);
+    b.set(3, 2, 23);
+    b.set(4, 4, 5);
+    // act
+    b = a;
+    const std::complex<float>* bValues = b.values();
+    const int* bRowIndexes = b.rowIndices();
+    const int* bColOffsets = b.colOffsets();
+    // assert
+    ASSERT_TRUE((compare(b.rows(), 5)));
+    ASSERT_TRUE((compare(b.columns(), 5)));
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_same_type_sparse_matrix_base
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_should_copy_assign) {
+TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
@@ -1293,7 +1337,40 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, g
     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
 
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_cf_sparse_matrix_base_should_copy_assign) {
+TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_same_nnz_should_copy_assign) {
+    // arrange
+    SparseMatrix<float> a(5, 5);
+    a.set(0, 0, 1);
+    a.set(2, 2, 2);
+    a.set(4, 4, 3);
+    SparseMatrix<float> b(5, 5);
+    b.set(1, 3, 45);
+    b.set(3, 2, 67);
+    b.set(4, 4, 89);
+    // act
+    b = static_cast<const SparseMatrixBase<float>&>(a);
+    const float* bValues = b.values();
+    const int* bRowIndexes = b.rowIndices();
+    const int* bColOffsets = b.colOffsets();
+    // assert
+    ASSERT_TRUE((compare(b.rows(), 5)));
+    ASSERT_TRUE((compare(b.columns(), 5)));
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+}
+
+TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_cf_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseMatrix<std::complex<float>> a(5, 5);
     a.set(0, 0, {1, 2});
@@ -1322,20 +1399,9 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, g
     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
-
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_sparse_matrix_base_of_different_size_should_throw) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<float> b(3, 3);
-    // act / assert
-    ASSERT_THROW(b = static_cast<const SparseMatrixBase<float>&>(a), InvalidDimensionException);
-}
 #pragma endregion
 #pragma region copy_assignment_operator_from_different_type_sparse_matrix_base
-TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_should_copy_assign) {
+TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
     SparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
@@ -1365,19 +1431,41 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_ba
     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
 
-TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_sparse_matrix_base_of_different_size_should_throw) {
+TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_same_nnz_should_copy_assign) {
     // arrange
     SparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(3, 3);
-    // act / assert
-    ASSERT_THROW(b = static_cast<const SparseMatrixBase<float>&>(a), InvalidDimensionException);
+    SparseMatrix<std::complex<float>> b(5, 5);
+    b.set(1, 3, 45);
+    b.set(3, 2, 67);
+    b.set(4, 4, 89);
+    // act
+    b = static_cast<const SparseMatrixBase<float>&>(a);
+    const std::complex<float>* bValues = b.values();
+    const int* bRowIndexes = b.rowIndices();
+    const int* bColOffsets = b.colOffsets();
+    // assert
+    ASSERT_TRUE((compare(b.rows(), 5)));
+    ASSERT_TRUE((compare(b.columns(), 5)));
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
 #pragma endregion
 #pragma region move_assignment_operator
-TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_should_move_assign) {
+TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_same_size_diff_nnz_should_move_assign) {
     // arrange
     SparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
@@ -1410,7 +1498,7 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_should_move_a
     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
 
-TEST(sparse_matrix_move_assignment_operator, given_cf_sparse_matrix_should_move_assign) {
+TEST(sparse_matrix_move_assignment_operator, given_cf_sparse_matrix_of_same_size_diff_nnz_should_move_assign) {
     // arrange
     SparseMatrix<std::complex<float>> a(5, 5);
     a.set(0, 0, {1, 2});
@@ -1443,15 +1531,40 @@ TEST(sparse_matrix_move_assignment_operator, given_cf_sparse_matrix_should_move_
     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
 
-TEST(sparse_matrix_move_assignment_operator, given_sparse_matrix_of_different_size_should_throw) {
+TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_same_size_same_nnz_should_move_assign) {
     // arrange
     SparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(3, 3);
-    // act / assert
-    ASSERT_THROW(b = std::move(a), InvalidDimensionException);
+    SparseMatrix<float> b(5, 5);
+    b.set(1, 3, 45);
+    b.set(3, 2, 67);
+    b.set(4, 4, 89);
+    // act
+    b = std::move(a);
+    const float* bValues = b.values();
+    const int* bRowIndexes = b.rowIndices();
+    const int* bColOffsets = b.colOffsets();
+    // assert
+    ASSERT_TRUE(a.values() == nullptr);
+    ASSERT_TRUE(a.rowIndices() == nullptr);
+    ASSERT_TRUE(a.colOffsets() == nullptr);
+    ASSERT_TRUE((compare(b.rows(), 5)));
+    ASSERT_TRUE((compare(b.columns(), 5)));
+    ASSERT_TRUE((compare(b.nnz(), 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
 #pragma endregion
 #pragma endregion
