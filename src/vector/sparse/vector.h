@@ -252,6 +252,9 @@ struct SparseVector : SparseVectorBase<T> {
     */
     SparseVector<T>& operator=(const SparseVectorBase<T>& other) {
         if (static_cast<const SparseVectorBase<T>*>(this) != &other) {
+            this->nnz_ = 0;
+            this->n_ = other.n();
+
             for (int i = 0; i < this->n_; i++) {
                 SparseVector<T>::set(i, other.get(i));
             }
@@ -273,6 +276,9 @@ struct SparseVector : SparseVectorBase<T> {
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseVector<T>& operator=(const SparseVectorBase<OTHER_T>& other) {
+        this->nnz_ = 0;
+        this->n_ = other.n();
+
         for (int i = 0; i < this->n_; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
