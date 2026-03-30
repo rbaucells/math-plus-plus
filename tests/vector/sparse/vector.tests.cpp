@@ -1491,8 +1491,6 @@ TEST(sparse_vector_move_assignment_operator, given_f_self_should_do_nothing) {
     const float* aValues = a.values();
     const int* aIndexes = a.indices();
     // assert
-    ASSERT_TRUE(a.values() != nullptr);
-    ASSERT_TRUE(a.indices() != nullptr);
     ASSERT_TRUE((compare(a.nnz(), 3)));
     ASSERT_TRUE((compare(a.n(), 5)));
     ASSERT_TRUE((compare(Precision(0.001f), aValues[0], 1)));

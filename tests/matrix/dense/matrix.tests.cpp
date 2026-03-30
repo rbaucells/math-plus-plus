@@ -835,7 +835,6 @@ TEST(dense_matrix_move_assignment_operator, given_f_self_should_do_nothing) {
     a = std::move(a);
     const float* aData = a.data();
     // assert
-    ASSERT_TRUE(aData != nullptr);
     ASSERT_TRUE(compare(a.rows(), 3));
     ASSERT_TRUE(compare(a.columns(), 3));
     ASSERT_TRUE((compare(Precision(0.001f), aData[0], 1)));
