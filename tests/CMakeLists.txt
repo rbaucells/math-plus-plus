@@ -37,6 +37,7 @@ add_executable(mathpp-tests main.cpp
         matrix/dense/operators/add.tests.cpp
         debugger.tests.cpp
         matrix/dense/operators/subtract.tests.cpp
+        matrix/dense/operators/multiply.tests.cpp
 )
 
 # link with the math lib
