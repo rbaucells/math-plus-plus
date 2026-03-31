@@ -10,8 +10,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
     // act
     m.set(2, 2, 3);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 3.0f)));
@@ -31,8 +31,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
     // act
     m.set(2, 2, 3);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 4)));
@@ -55,8 +55,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
     // act
     m.set(2, 2, 3);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 4)));
@@ -80,8 +80,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
     // act
     m.set(2, 2, 3);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 4)));
@@ -100,13 +100,13 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_
     // arrange
     SparseMatrix<float> m(5, 5);
     const float* oldMValues = m.values();
-    const int* oldMRowIndexes = m.rowIndices();
-    const int* oldMColOffsets = m.colOffsets();
+    const std::size_t* oldMRowIndexes = m.rowIndices();
+    const std::size_t* oldMColOffsets = m.colOffsets();
     // act
     m.set(2, 2, 0);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 0)));
     ASSERT_TRUE(mValues == oldMValues);
@@ -121,8 +121,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_
     // act
     m.set(2, 2, 0);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 4)));
@@ -142,8 +142,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_
     // act
     m.set(2, 2, 0);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 5)));
@@ -164,8 +164,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_
     // act
     m.set(2, 2, 0);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 5)));
@@ -187,8 +187,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
     // act
     m.set(2, 2, 4);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 4)));
@@ -209,8 +209,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
     // act
     m.set(2, 2, 5);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 4)));
@@ -234,8 +234,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
     // act
     m.set(2, 2, 6);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 4)));
@@ -260,8 +260,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
     // act
     m.set(2, 2, 5);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 4)));
@@ -283,8 +283,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
     // act
     m.set(2, 2, 0);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 0)));
     ASSERT_TRUE(mValues != nullptr);
@@ -300,8 +300,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
     // act
     m.set(2, 2, 0);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 4)));
@@ -323,8 +323,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
     // act
     m.set(2, 2, 0);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 4)));
@@ -347,8 +347,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
     // act
     m.set(2, 2, 0);
     const float* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], 4)));
@@ -367,8 +367,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
     // act
     m.set(2, 2, {1, 2});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -388,8 +388,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
     // act
     m.set(2, 2, {3, 4});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -412,8 +412,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
     // act
     m.set(2, 2, {5, 6});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -437,8 +437,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
     // act
     m.set(2, 2, {3, 4});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -457,13 +457,13 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf
     // arrange
     SparseMatrix<std::complex<float>> m(5, 5);
     const std::complex<float>* oldMValues = m.values();
-    const int* oldMRowIndexes = m.rowIndices();
-    const int* oldMColOffsets = m.colOffsets();
+    const std::size_t* oldMRowIndexes = m.rowIndices();
+    const std::size_t* oldMColOffsets = m.colOffsets();
     // act
     m.set(2, 2, {0, 0});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 0)));
     ASSERT_TRUE(mValues == oldMValues);
@@ -478,8 +478,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf
     // act
     m.set(2, 2, {0, 0});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -499,8 +499,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf
     // act
     m.set(2, 2, {0, 0});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -521,8 +521,8 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf
     // act
     m.set(2, 2, {0, 0});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(3, 4))));
@@ -544,8 +544,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
     // act
     m.set(2, 2, {3, 4});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(3, 4))));
@@ -566,8 +566,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
     // act
     m.set(2, 2, {5, 6});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -591,8 +591,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
     // act
     m.set(2, 2, {7, 8});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 3)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -617,8 +617,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
     // act
     m.set(2, 2, {5, 6});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -640,8 +640,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
     // act
     m.set(2, 2, {0, 0});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 0)));
     ASSERT_TRUE(mValues != nullptr);
@@ -657,8 +657,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
     // act
     m.set(2, 2, {0, 0});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -680,8 +680,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
     // act
     m.set(2, 2, {0, 0});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 2)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -704,8 +704,8 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
     // act
     m.set(2, 2, {0, 0});
     const std::complex<float>* mValues = m.values();
-    const int* mRowIndexes = m.rowIndices();
-    const int* mColOffsets = m.colOffsets();
+    const std::size_t* mRowIndexes = m.rowIndices();
+    const std::size_t* mColOffsets = m.colOffsets();
     // assert
     ASSERT_TRUE((compare(m.nnz(), 1)));
     ASSERT_TRUE((compare(Precision(0.001f), mValues[0], std::complex<float>(1, 2))));
@@ -854,8 +854,8 @@ TEST(sparse_matrix_default_constructor, given_negative_cols_should_throw) {
 TEST(sparse_matrix_initializer_list_constructor, given_rows_cols_and_value_col_index_row_index_tuples_should_construct_f) {
     // arrange / act
     SparseMatrix<float> v(3, 3, {{1, 0, 0}, {5, 1, 1}, {6, 2, 1}, {9, 2, 2}});
-    const int* vColOffsets = v.colOffsets();
-    const int* vRowIndices = v.rowIndices();
+    const std::size_t* vColOffsets = v.colOffsets();
+    const std::size_t* vRowIndices = v.rowIndices();
     const float* vValues = v.values();
     // assert
     ASSERT_TRUE(compare(v.rows(), 3));
@@ -878,8 +878,8 @@ TEST(sparse_matrix_initializer_list_constructor, given_rows_cols_and_value_col_i
 TEST(sparse_matrix_initializer_list_constructor, given_rows_cols_and_value_col_index_row_index_tuples_should_construct_cf) {
     // arrange / act
     SparseMatrix<std::complex<float>> v(3, 3, {{{1, 2}, 0, 0}, {{5, 6}, 1, 1}, {{6, 7}, 2, 1}, {{9, 10}, 2, 2}});
-    const int* vColOffsets = v.colOffsets();
-    const int* vRowIndices = v.rowIndices();
+    const std::size_t* vColOffsets = v.colOffsets();
+    const std::size_t* vRowIndices = v.rowIndices();
     const std::complex<float>* vValues = v.values();
     // assert
     ASSERT_TRUE(compare(v.rows(), 3));
@@ -909,8 +909,8 @@ TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix, given_f_sparse
     // act
     const SparseMatrix<float> b = a;
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -938,8 +938,8 @@ TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix, given_cf_spars
     // act
     const SparseMatrix<std::complex<float>> b = a;
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -968,8 +968,8 @@ TEST(sparse_matrix_copy_constructor_from_different_type_sparse_matrix, given_f_s
     // act
     const SparseMatrix<std::complex<float>> b = a;
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -998,8 +998,8 @@ TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix_base, given_f_s
     // act
     const SparseMatrix<float> b = static_cast<const SparseMatrixBase<float>&>(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1027,8 +1027,8 @@ TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix_base, given_cf_
     // act
     const SparseMatrix<std::complex<float>> b = static_cast<const SparseMatrixBase<std::complex<float>>&>(a);
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1057,8 +1057,8 @@ TEST(sparse_matrix_copy_constructor_from_different_type_sparse_matrix_base, give
     // act
     const SparseMatrix<std::complex<float>> b = static_cast<const SparseMatrixBase<float>&>(a);
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1087,8 +1087,8 @@ TEST(sparse_matrix_move_constructor, given_f_sparse_matrix_should_move_construct
     // act
     const SparseMatrix<float> b = std::move(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.rowIndices() == nullptr);
@@ -1122,8 +1122,8 @@ TEST(sparse_matrix_move_constructor, given_cf_sparse_matrix_should_move_construc
     // act
     const SparseMatrix<std::complex<float>> b = std::move(a);
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.rowIndices() == nullptr);
@@ -1159,8 +1159,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
     // act
     b = a;
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1192,8 +1192,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
     // act
     b = a;
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1222,8 +1222,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
     // act
     b = a;
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1252,8 +1252,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
     // act
     b = a;
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1285,8 +1285,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
     // act
     b = a;
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1318,8 +1318,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
     // act
     b = a;
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1348,8 +1348,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1377,8 +1377,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
     // act
     a = a;
     const float* aValues = a.values();
-    const int* aRowIndexes = a.rowIndices();
-    const int* aColOffsets = a.colOffsets();
+    const std::size_t* aRowIndexes = a.rowIndices();
+    const std::size_t* aColOffsets = a.colOffsets();
     // assert
     ASSERT_TRUE((compare(a.rows(), 5)));
     ASSERT_TRUE((compare(a.columns(), 5)));
@@ -1408,8 +1408,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1441,8 +1441,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1471,8 +1471,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1501,8 +1501,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1534,8 +1534,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1567,8 +1567,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1598,8 +1598,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, g
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1631,8 +1631,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, g
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1661,8 +1661,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, g
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1691,8 +1691,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, g
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1724,8 +1724,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, g
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1757,8 +1757,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, g
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1787,8 +1787,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, g
     // act
     b = static_cast<const SparseMatrixBase<std::complex<float>>&>(a);
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1816,8 +1816,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, g
     // act
     a = static_cast<const SparseMatrixBase<float>&>(a);
     const float* aValues = a.values();
-    const int* aRowIndexes = a.rowIndices();
-    const int* aColOffsets = a.colOffsets();
+    const std::size_t* aRowIndexes = a.rowIndices();
+    const std::size_t* aColOffsets = a.colOffsets();
     // assert
     ASSERT_TRUE((compare(a.rows(), 5)));
     ASSERT_TRUE((compare(a.columns(), 5)));
@@ -1847,8 +1847,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_ba
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1880,8 +1880,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_ba
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1910,8 +1910,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_ba
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1940,8 +1940,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_ba
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -1973,8 +1973,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_ba
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -2006,8 +2006,8 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_ba
     // act
     b = static_cast<const SparseMatrixBase<float>&>(a);
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE((compare(b.rows(), 5)));
     ASSERT_TRUE((compare(b.columns(), 5)));
@@ -2037,8 +2037,8 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_same_size_
     // act
     b = std::move(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.rowIndices() == nullptr);
@@ -2073,8 +2073,8 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_same_size_
     // act
     b = std::move(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.rowIndices() == nullptr);
@@ -2106,8 +2106,8 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_
     // act
     b = std::move(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.rowIndices() == nullptr);
@@ -2139,8 +2139,8 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_
     // act
     b = std::move(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.rowIndices() == nullptr);
@@ -2175,8 +2175,8 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_
     // act
     b = std::move(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.rowIndices() == nullptr);
@@ -2211,8 +2211,8 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_
     // act
     b = std::move(a);
     const float* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.rowIndices() == nullptr);
@@ -2244,8 +2244,8 @@ TEST(sparse_matrix_move_assignment_operator, given_cf_sparse_matrix_of_same_size
     // act
     b = std::move(a);
     const std::complex<float>* bValues = b.values();
-    const int* bRowIndexes = b.rowIndices();
-    const int* bColOffsets = b.colOffsets();
+    const std::size_t* bRowIndexes = b.rowIndices();
+    const std::size_t* bColOffsets = b.colOffsets();
     // assert
     ASSERT_TRUE(a.values() == nullptr);
     ASSERT_TRUE(a.rowIndices() == nullptr);
@@ -2276,8 +2276,8 @@ TEST(sparse_matrix_move_assignment_operator, given_f_self_should_do_nothing) {
     // act
     a = std::move(a);
     const float* bValues = a.values();
-    const int* bRowIndexes = a.rowIndices();
-    const int* bColOffsets = a.colOffsets();
+    const std::size_t* bRowIndexes = a.rowIndices();
+    const std::size_t* bColOffsets = a.colOffsets();
     // assert
     ASSERT_TRUE((compare(a.rows(), 5)));
     ASSERT_TRUE((compare(a.columns(), 5)));
@@ -2505,9 +2505,9 @@ TEST(sparse_matrix_view_col_offset, should_return_col_offset) {
     // arrange
     const SparseMatrix<float> a(5, 5);
     const SparseMatrixView<float> v(a, 3, 3, 1, 2);
-    constexpr int expected = 1;
+    constexpr std::size_t expected = 1;
     // act
-    const int colOffset = v.colOffset();
+    const std::size_t colOffset = v.colOffset();
     // assert
     ASSERT_TRUE((compare(colOffset, expected)));
 }
@@ -2517,9 +2517,9 @@ TEST(sparse_matrix_view_row_offset, should_return_row_offset) {
     // arrange
     const SparseMatrix<float> a(5, 5);
     const SparseMatrixView<float> v(a, 3, 3, 1, 2);
-    constexpr int expected = 2;
+    constexpr std::size_t expected = 2;
     // act
-    const int rowOffset = v.rowOffset();
+    const std::size_t rowOffset = v.rowOffset();
     // assert
     ASSERT_TRUE((compare(rowOffset, expected)));
 }
@@ -2540,18 +2540,18 @@ TEST(sparse_matrix_view_owner, should_return_owner) {
 #pragma region constructor
 TEST(custom_sparse_matrix_constructor, given_f_pointers_and_size_should_construct) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 1;
     colOffsets[4] = 1;
     colOffsets[5] = 1;
-    int* rowIndices = new int[1];
+    std::size_t* rowIndices = new std::size_t[1];
     rowIndices[0] = 2;
     float* values = new float[1];
     values[0] = 3;
-    int nnz = 1;
+    std::size_t nnz = 1;
     // act
     const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // assert
@@ -2569,18 +2569,18 @@ TEST(custom_sparse_matrix_constructor, given_f_pointers_and_size_should_construc
 
 TEST(custom_sparse_matrix_constructor, given_cf_pointers_and_size_should_construct) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 1;
     colOffsets[4] = 1;
     colOffsets[5] = 1;
-    int* rowIndices = new int[1];
+    std::size_t* rowIndices = new std::size_t[1];
     rowIndices[0] = 2;
     std::complex<float>* values = new std::complex<float>[1];
     values[0] = {1, 2};
-    int nnz = 1;
+    std::size_t nnz = 1;
     // act
     const CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
     // assert
@@ -2599,16 +2599,16 @@ TEST(custom_sparse_matrix_constructor, given_cf_pointers_and_size_should_constru
 #pragma region set
 TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_1) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 3);
@@ -2632,18 +2632,18 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_sh
 
 TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_2) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 1;
     colOffsets[4] = 1;
     colOffsets[5] = 1;
-    int* rowIndices = new int[1];
+    std::size_t* rowIndices = new std::size_t[1];
     rowIndices[0] = 1;
     float* values = new float[1];
     values[0] = 4;
-    int nnz = 1;
+    std::size_t nnz = 1;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 3);
@@ -2669,20 +2669,20 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_sh
 
 TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_3) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 1;
     colOffsets[3] = 2;
     colOffsets[4] = 2;
     colOffsets[5] = 2;
-    int* rowIndices = new int[2];
+    std::size_t* rowIndices = new std::size_t[2];
     rowIndices[0] = 2;
     rowIndices[1] = 1;
     float* values = new float[2];
     values[0] = 4;
     values[1] = 5;
-    int nnz = 2;
+    std::size_t nnz = 2;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 3);
@@ -2710,20 +2710,20 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_sh
 
 TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_4) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 1;
     colOffsets[3] = 2;
     colOffsets[4] = 2;
     colOffsets[5] = 2;
-    int* rowIndices = new int[2];
+    std::size_t* rowIndices = new std::size_t[2];
     rowIndices[0] = 2;
     rowIndices[1] = 2;
     float* values = new float[2];
     values[0] = 4;
     values[1] = 3;
-    int nnz = 2;
+    std::size_t nnz = 2;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 5);
@@ -2749,16 +2749,16 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_sh
 
 TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_not_add_f_1) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 0);
@@ -2774,18 +2774,18 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_zero_value_should
 
 TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_not_add_f_2) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 1;
     colOffsets[4] = 1;
     colOffsets[5] = 1;
-    int* rowIndices = new int[1];
+    std::size_t* rowIndices = new std::size_t[1];
     rowIndices[0] = 1;
     float* values = new float[1];
     values[0] = 4;
-    int nnz = 1;
+    std::size_t nnz = 1;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 0);
@@ -2809,18 +2809,18 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_zero_value_should
 
 TEST(custom_sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_remove_f_1) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 1;
     colOffsets[4] = 1;
     colOffsets[5] = 1;
-    int* rowIndices = new int[1];
+    std::size_t* rowIndices = new std::size_t[1];
     rowIndices[0] = 2;
     float* values = new float[1];
     values[0] = 3;
-    int nnz = 1;
+    std::size_t nnz = 1;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 0);
@@ -2836,20 +2836,20 @@ TEST(custom_sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_sh
 
 TEST(custom_sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_remove_f_2) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 2;
     colOffsets[4] = 2;
     colOffsets[5] = 2;
-    int* rowIndices = new int[2];
+    std::size_t* rowIndices = new std::size_t[2];
     rowIndices[0] = 1;
     rowIndices[1] = 2;
     float* values = new float[2];
     values[0] = 4;
     values[1] = 3;
-    int nnz = 2;
+    std::size_t nnz = 2;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 0);
@@ -2873,16 +2873,16 @@ TEST(custom_sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_sh
 
 TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_1) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     std::complex<float>* values = new std::complex<float>[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, {1, 2});
@@ -2900,16 +2900,16 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_sh
 
 TEST(custom_sparse_matrix_set, given_negative_row_index_should_throw) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(m.set(-1, 2, 1), InvalidIndexException);
@@ -2921,16 +2921,16 @@ TEST(custom_sparse_matrix_set, given_negative_row_index_should_throw) {
 
 TEST(custom_sparse_matrix_set, given_negative_column_index_should_throw) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(m.set(2, -1, 1), InvalidIndexException);
@@ -2942,16 +2942,16 @@ TEST(custom_sparse_matrix_set, given_negative_column_index_should_throw) {
 
 TEST(custom_sparse_matrix_set, given_big_row_index_should_throw) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(m.set(5, 2, 1), InvalidIndexException);
@@ -2963,16 +2963,16 @@ TEST(custom_sparse_matrix_set, given_big_row_index_should_throw) {
 
 TEST(custom_sparse_matrix_set, given_big_column_index_should_throw) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(m.set(2, 5, 1), InvalidIndexException);
@@ -2985,18 +2985,18 @@ TEST(custom_sparse_matrix_set, given_big_column_index_should_throw) {
 #pragma region get
 TEST(custom_sparse_matrix_get, given_index_should_return_value_f) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 1;
     colOffsets[4] = 1;
     colOffsets[5] = 1;
-    int* rowIndices = new int[1];
+    std::size_t* rowIndices = new std::size_t[1];
     rowIndices[0] = 3;
     float* values = new float[1];
     values[0] = 1;
-    int nnz = 1;
+    std::size_t nnz = 1;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     const float value = m.get(2, 3);
@@ -3010,18 +3010,18 @@ TEST(custom_sparse_matrix_get, given_index_should_return_value_f) {
 
 TEST(custom_sparse_matrix_get, given_index_should_return_zero_f) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 1;
     colOffsets[4] = 1;
     colOffsets[5] = 1;
-    int* rowIndices = new int[1];
+    std::size_t* rowIndices = new std::size_t[1];
     rowIndices[0] = 3;
     float* values = new float[1];
     values[0] = 1;
-    int nnz = 1;
+    std::size_t nnz = 1;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     const float value = m.get(1, 2);
@@ -3035,18 +3035,18 @@ TEST(custom_sparse_matrix_get, given_index_should_return_zero_f) {
 
 TEST(custom_sparse_matrix_get, given_index_should_return_value_cf) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 1;
     colOffsets[4] = 1;
     colOffsets[5] = 1;
-    int* rowIndices = new int[1];
+    std::size_t* rowIndices = new std::size_t[1];
     rowIndices[0] = 3;
     std::complex<float>* values = new std::complex<float>[1];
     values[0] = {1, 2};
-    int nnz = 1;
+    std::size_t nnz = 1;
     CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     const std::complex<float> value = m.get(2, 3);
@@ -3060,18 +3060,18 @@ TEST(custom_sparse_matrix_get, given_index_should_return_value_cf) {
 
 TEST(custom_sparse_matrix_get, given_index_should_return_zero_cf) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 1;
     colOffsets[4] = 1;
     colOffsets[5] = 1;
-    int* rowIndices = new int[1];
+    std::size_t* rowIndices = new std::size_t[1];
     rowIndices[0] = 3;
     std::complex<float>* values = new std::complex<float>[1];
     values[0] = {1, 2};
-    int nnz = 1;
+    std::size_t nnz = 1;
     CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     const std::complex<float> value = m.get(1, 2);
@@ -3085,16 +3085,16 @@ TEST(custom_sparse_matrix_get, given_index_should_return_zero_cf) {
 
 TEST(custom_sparse_matrix_get, given_negative_row_index_should_throw) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(std::ignore = m.get(-1, 2), InvalidIndexException);
@@ -3106,16 +3106,16 @@ TEST(custom_sparse_matrix_get, given_negative_row_index_should_throw) {
 
 TEST(custom_sparse_matrix_get, given_negative_column_index_should_throw) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(std::ignore = m.get(2, -1), InvalidIndexException);
@@ -3127,16 +3127,16 @@ TEST(custom_sparse_matrix_get, given_negative_column_index_should_throw) {
 
 TEST(custom_sparse_matrix_get, given_big_row_index_should_throw) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(std::ignore = m.get(5, 2), InvalidIndexException);
@@ -3148,16 +3148,16 @@ TEST(custom_sparse_matrix_get, given_big_row_index_should_throw) {
 
 TEST(custom_sparse_matrix_get, given_big_column_index_should_throw) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(std::ignore = m.get(2, 5), InvalidIndexException);
@@ -3170,23 +3170,23 @@ TEST(custom_sparse_matrix_get, given_big_column_index_should_throw) {
 #pragma region nnz
 TEST(custom_sparse_matrix_nnz, should_return_nnz) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 1;
     colOffsets[3] = 2;
     colOffsets[4] = 2;
     colOffsets[5] = 2;
-    int* rowIndices = new int[2];
+    std::size_t* rowIndices = new std::size_t[2];
     rowIndices[0] = 1;
     rowIndices[1] = 3;
     float* values = new float[2];
     values[0] = 1;
     values[1] = 2;
-    int nnz = 2;
+    std::size_t nnz = 2;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
-    const int result = m.nnz();
+    const std::size_t result = m.nnz();
     // assert
     ASSERT_TRUE((compare(result, 2)));
     // cleanup
@@ -3197,19 +3197,19 @@ TEST(custom_sparse_matrix_nnz, should_return_nnz) {
 
 TEST(custom_sparse_matrix_nnz, should_return_zero_when_empty) {
     // arrange
-    int* colOffsets = new int[6];
+    std::size_t* colOffsets = new std::size_t[6];
     colOffsets[0] = 0;
     colOffsets[1] = 0;
     colOffsets[2] = 0;
     colOffsets[3] = 0;
     colOffsets[4] = 0;
     colOffsets[5] = 0;
-    int* rowIndices = new int[0];
+    std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
-    int nnz = 0;
+    std::size_t nnz = 0;
     CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
-    const int result = m.nnz();
+    const std::size_t result = m.nnz();
     // assert
     ASSERT_TRUE((compare(result, 0)));
     // cleanup
