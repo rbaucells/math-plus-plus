@@ -78,20 +78,6 @@ TEST(dense_matrix_indexing_operator, given_index_should_return_reference_cf) {
     ASSERT_TRUE((compare(Precision(0.001f), data[8], std::complex<float>(17, 18))));
 }
 
-TEST(dense_matrix_indexing_operator, given_negative_index_should_throw_1) {
-    // arrange
-    DenseMatrix<float> v = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    // act / assert
-    ASSERT_THROW((std::ignore = v[-1, 0]), InvalidIndexException);
-}
-
-TEST(dense_matrix_indexing_operator, given_negative_index_should_throw_2) {
-    // arrange
-    DenseMatrix<float> v = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    // act / assert
-    ASSERT_THROW((std::ignore = v[0, -1]), InvalidIndexException);
-}
-
 TEST(dense_matrix_indexing_operator, given_big_index_should_throw_1) {
     // arrange
     DenseMatrix<float> v = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
@@ -135,20 +121,6 @@ TEST(dense_matrix_const_indexing_operator, given_index_should_return_const_refer
     ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], std::complex<float>(13, 14))));
     ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], std::complex<float>(15, 16))));
     ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], std::complex<float>(17, 18))));
-}
-
-TEST(dense_matrix_const_indexing_operator, given_negative_index_should_throw_1) {
-    // arrange
-    const DenseMatrix<float> v = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    // act / assert
-    ASSERT_THROW((std::ignore = v[-1, 0]), InvalidIndexException);
-}
-
-TEST(dense_matrix_const_indexing_operator, given_negative_index_should_throw_2) {
-    // arrange
-    const DenseMatrix<float> v = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    // act / assert
-    ASSERT_THROW((std::ignore = v[0, -1]), InvalidIndexException);
 }
 
 TEST(dense_matrix_const_indexing_operator, given_big_index_should_throw_1) {
@@ -938,22 +910,6 @@ TEST(dense_matrix_view_indexing_operator, given_index_should_throw) {
     ASSERT_THROW((std::ignore = v[0, 0]), InvalidOperationException);
 }
 
-TEST(dense_matrix_view_indexing_operator, given_negative_index_should_throw_1) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}, {16, 17, 18, 19, 20}, {21, 22, 23, 24, 25}};
-    DenseMatrixView<float> v(a, 3, 3, 2, 2);
-    // act / assert
-    ASSERT_THROW((std::ignore = v[-1, 0]), InvalidIndexException);
-}
-
-TEST(dense_matrix_view_indexing_operator, given_negative_index_should_throw_2) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}, {16, 17, 18, 19, 20}, {21, 22, 23, 24, 25}};
-    DenseMatrixView<float> v(a, 3, 3, 2, 2);
-    // act / assert
-    ASSERT_THROW((std::ignore = v[0, -1]), InvalidIndexException);
-}
-
 TEST(dense_matrix_view_indexing_operator, given_big_index_should_throw_1) {
     // arrange
     const DenseMatrix<float> a = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}, {16, 17, 18, 19, 20}, {21, 22, 23, 24, 25}};
@@ -1019,22 +975,6 @@ TEST(dense_matrix_view_const_indexing_operator, given_index_should_return_const_
     ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], std::complex<float>(45, 46))));
     ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], std::complex<float>(47, 48))));
     ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], std::complex<float>(49, 50))));
-}
-
-TEST(dense_matrix_view_const_indexing_operator, given_negative_index_should_throw_1) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}, {16, 17, 18, 19, 20}, {21, 22, 23, 24, 25}};
-    const DenseMatrixView<float> v(a, 3, 3, 2, 2);
-    // act / assert
-    ASSERT_THROW((std::ignore = v[-1, 0]), InvalidIndexException);
-}
-
-TEST(dense_matrix_view_const_indexing_operator, given_negative_index_should_throw_2) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}, {16, 17, 18, 19, 20}, {21, 22, 23, 24, 25}};
-    const DenseMatrixView<float> v(a, 3, 3, 2, 2);
-    // act / assert
-    ASSERT_THROW((std::ignore = v[0, -1]), InvalidIndexException);
 }
 
 TEST(dense_matrix_view_const_indexing_operator, given_big_index_should_throw_1) {
@@ -1352,22 +1292,6 @@ TEST(custom_dense_matrix_index_operator, given_big_index_should_throw_4) {
     // act / assert
     ASSERT_THROW((std::ignore = v[0, 3]), InvalidIndexException);
 }
-
-TEST(custom_dense_matrix_index_operator, given_negative_index_should_throw_1) {
-    // arrange
-    float* data = new float[9];
-    CustomDenseMatrix<float> v(data, 3, 3, 3);
-    // act / assert
-    ASSERT_THROW((std::ignore = v[-1, 0]), InvalidIndexException);
-}
-
-TEST(custom_dense_matrix_index_operator, given_negative_index_should_throw_2) {
-    // arrange
-    float* data = new float[9];
-    CustomDenseMatrix<float> v(data, 3, 3, 3);
-    // act / assert
-    ASSERT_THROW((std::ignore = v[0, -1]), InvalidIndexException);
-}
 #pragma endregion
 #pragma region const_index_operator
 TEST(custom_dense_matrix_const_index_operator, given_index_should_return_reference_f) {
@@ -1450,22 +1374,6 @@ TEST(custom_dense_matrix_const_index_operator, given_big_index_should_throw_4) {
     const CustomDenseMatrix<float> v(data, 3, 3, 3);
     // act / assert
     ASSERT_THROW((std::ignore = v[0, 3]), InvalidIndexException);
-}
-
-TEST(custom_dense_matrix_const_index_operator, given_negative_index_should_throw_1) {
-    // arrange
-    float* data = new float[9];
-    const CustomDenseMatrix<float> v(data, 3, 3, 3);
-    // act / assert
-    ASSERT_THROW((std::ignore = v[-1, 0]), InvalidIndexException);
-}
-
-TEST(custom_dense_matrix_const_index_operator, given_negative_index_should_throw_2) {
-    // arrange
-    float* data = new float[9];
-    const CustomDenseMatrix<float> v(data, 3, 3, 3);
-    // act / assert
-    ASSERT_THROW((std::ignore = v[0, -1]), InvalidIndexException);
 }
 #pragma endregion
 #pragma region stride

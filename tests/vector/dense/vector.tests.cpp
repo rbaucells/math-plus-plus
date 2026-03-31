@@ -38,13 +38,6 @@ TEST(dense_vector_indexing_operator, given_index_should_return_reference_cf) {
     ASSERT_TRUE((compare(Precision(0.001f), data[2], std::complex<float>(5, 6))));
 }
 
-TEST(dense_vector_indexing_operator, given_negative_index_should_throw) {
-    // arrange
-    DenseVector<float> v = {1, 2, 3};
-    // act / assert
-    ASSERT_THROW(std::ignore = v[-1], InvalidIndexException);
-}
-
 TEST(dense_vector_indexing_operator, given_big_index_should_throw) {
     // arrange
     DenseVector<float> v = {1, 2, 3};
@@ -71,13 +64,6 @@ TEST(dense_vector_const_indexing_operator, given_index_should_return_const_refer
     ASSERT_TRUE((compare(Precision(0.001f), vData[0], std::complex<float>(1, 2))));
     ASSERT_TRUE((compare(Precision(0.001f), vData[1], std::complex<float>(3, 4))));
     ASSERT_TRUE((compare(Precision(0.001f), vData[2], std::complex<float>(5, 6))));
-}
-
-TEST(dense_vector_const_indexing_operator, given_negative_index_should_throw) {
-    // arrange
-    const DenseVector<float> v = {1, 2, 3};
-    // act / assert
-    ASSERT_THROW(std::ignore = v[-1], InvalidIndexException);
 }
 
 TEST(dense_vector_const_indexing_operator, given_big_index_should_throw) {
@@ -541,14 +527,6 @@ TEST(dense_vector_view_indexing_operator, given_index_should_throw) {
     ASSERT_THROW(std::ignore = v[2], InvalidOperationException);
 }
 
-TEST(dense_vector_view_indexing_operator, given_negative_index_should_throw) {
-    // arrange
-    const DenseVector<float> a = {1, 2, 3, 4, 5};
-    DenseVectorView<float> v(a, 3, 2);
-    // act / assert
-    ASSERT_THROW(std::ignore = v[-1], InvalidIndexException);
-}
-
 TEST(dense_vector_view_indexing_operator, given_big_index_should_throw_1) {
     // arrange
     const DenseVector<float> a = {1, 2, 3, 4, 5};
@@ -592,14 +570,6 @@ TEST(dense_vector_view_const_indexing_operator, given_index_should_return_const_
     ASSERT_TRUE((compare(Precision(0.001f), v0, std::complex<float>(5, 6))));
     ASSERT_TRUE((compare(Precision(0.001f), v1, std::complex<float>(7, 8))));
     ASSERT_TRUE((compare(Precision(0.001f), v2, std::complex<float>(9, 10))));
-}
-
-TEST(dense_vector_view_const_indexing_operator, given_negative_index_should_throw) {
-    // arrange
-    const DenseVector<float> a = {1, 2, 3, 4, 5};
-    DenseVectorView<float> v(a, 3, 2);
-    // act / assert
-    ASSERT_THROW(std::ignore = v[-1], InvalidIndexException);
 }
 
 TEST(dense_vector_view_const_indexing_operator, given_big_index_should_throw_1) {
@@ -734,16 +704,6 @@ TEST(custom_dense_vector_index_operator, given_big_index_should_throw_2) {
     // cleanup
     delete[] data;
 }
-
-TEST(custom_dense_vector_index_operator, given_negative_index_should_throw) {
-    // arrange
-    float* data = new float[3];
-    CustomDenseVector<float> v(data, 3, 1);
-    // act / assert
-    ASSERT_THROW(std::ignore = v[-1], InvalidIndexException);
-    // cleanup
-    delete[] data;
-}
 #pragma endregion
 #pragma region const_index_operator
 TEST(custom_dense_vector_const_index_operator, given_index_should_return_const_reference_f) {
@@ -792,16 +752,6 @@ TEST(custom_dense_vector_const_index_operator, given_big_index_should_throw_2) {
     const CustomDenseVector<float> v(data, 3, 1);
     // act / assert
     ASSERT_THROW(std::ignore = v[3], InvalidIndexException);
-    // cleanup
-    delete[] data;
-}
-
-TEST(custom_dense_vector_const_index_operator, given_negative_index_should_throw) {
-    // arrange
-    float* data = new float[3];
-    const CustomDenseVector<float> v(data, 3, 1);
-    // act / assert
-    ASSERT_THROW(std::ignore = v[-1], InvalidIndexException);
     // cleanup
     delete[] data;
 }
