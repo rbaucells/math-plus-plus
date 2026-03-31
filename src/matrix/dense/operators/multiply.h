@@ -39,7 +39,7 @@ struct DenseMatrixMultiplyExpr : Expression<DenseMatrix<std::common_type_t<typen
     using Expression<DenseMatrix<std::common_type_t<typename ARGS::ValueType...>> , ARGS...>::Expression;
 
     [[nodiscard]] DenseMatrix<std::common_type_t<typename ARGS::ValueType...>> evaluate() const override {
-        return std::apply([this](const auto&... args) {
+        return std::apply([](const auto&... args) {
             return multiply(args...);
         }, this->args);
     }
