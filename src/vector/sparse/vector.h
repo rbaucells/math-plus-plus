@@ -73,7 +73,7 @@ struct SparseVector : SparseVectorBase<T> {
 
     /**
      * @brief Constructs a SparseVector of size 'n' with elements 'initializerList'.
-     * Allocates 'initializerList.size() x sizeof(T) + initializerList.size() x sizeof(int)' bytes of memory on the heap.
+     * Allocates 'initializerList.size() x sizeof(T) + initializerList.size() x sizeof(std::size_t)' bytes of memory on the heap.
      * @param n Size of vector.
      * @param initializerList Initializer list of T, std::size_t tuples. Representing value and index.
      *
@@ -96,20 +96,20 @@ struct SparseVector : SparseVectorBase<T> {
      * @brief Copy constructor for SparseVector from same type SparseVector.
      *
      * Constructs a vector of size 'n' and performs a deep copy of 'other'.
-     * Allocated 'nnz * sizeof(T) + nnz * sizeof(int)' bytes of memory on the heap.
+     * Allocated 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes of memory on the heap.
      *
      * @param other SparseVector to copy from.
      */
     SparseVector(const SparseVector<T>& other) : SparseVectorBase<T>(other.n_), nnz_(other.nnz_), values_(other.values_), indices_(other.indices_) {
         memcpy(values_, other.values_, nnz_ * sizeof(T));
-        memcpy(indices_, other.indices_, nnz_ * sizeof(int));
+        memcpy(indices_, other.indices_, nnz_ * sizeof(std::size_t));
     }
 
     /**
     * @brief Copy constructor for SparseVector from different type SparseVector.
     *
     * Constructs a vector of size 'n' and performs a deep copy of 'other'.
-    * Allocates 'nnz * sizeof(T) + nnz * sizeof(int)' bytes on the heap.
+    * Allocates 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes on the heap.
     *
     * @param other SparseVector to copy from.
     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
@@ -123,14 +123,14 @@ struct SparseVector : SparseVectorBase<T> {
             values_[i] = otherValues[i];
         }
 
-        memcpy(indices_, other.indices(), nnz_ * sizeof(int));
+        memcpy(indices_, other.indices(), nnz_ * sizeof(std::size_t));
     }
 
     /**
     * @brief Copy constructor for SparseVector from same type SparseVectorBase.
     *
     * Constructs a vector of size 'n' and performs a deep copy of 'other'.
-    * Allocates 'nnz * sizeof(T) + nnz * sizeof(int)' bytes on the heap.
+    * Allocates 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes on the heap.
     *
     * @param other SparseVectorBase to copy from.
     */
@@ -144,7 +144,7 @@ struct SparseVector : SparseVectorBase<T> {
     * @brief Copy constructor for SparseVector from different type SparseVectorBase.
     *
     * Constructs a vector of size 'n' and performs a deep copy of 'other'.
-    * Allocates 'nnz * sizeof(T) + nnz * sizeof(int)' bytes on the heap.
+    * Allocates 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes on the heap.
     *
     * @param other SparseVectorBase to copy from.
     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
@@ -175,7 +175,7 @@ struct SparseVector : SparseVectorBase<T> {
     /**
      * @brief Copy assignment operator for SparseVector from same type SparseVector.
      * Replaces all elements with elements of 'other'.
-     * May allocate 'other.nnz * sizeof(T) + other.nnz * sizeof(int)' bytes of memory on the heap if number of non-zero elements here doesn't match number of non-zero elements in 'other'.
+     * May allocate 'other.nnz * sizeof(T) + other.nnz * sizeof(std::size_t)' bytes of memory on the heap if number of non-zero elements here doesn't match number of non-zero elements in 'other'.
      * @param other SparseVector to copy from.
      * @return Reference to this.
      * @throws InvalidDimensionException If 'other' does not have same size as this.
@@ -196,7 +196,7 @@ struct SparseVector : SparseVectorBase<T> {
             this->n_ = other.n_;
 
             memcpy(values_, other.values_, nnz_ * sizeof(T));
-            memcpy(indices_, other.indices_, nnz_ * sizeof(int));
+            memcpy(indices_, other.indices_, nnz_ * sizeof(std::size_t));
         }
 
         return *this;
@@ -205,7 +205,7 @@ struct SparseVector : SparseVectorBase<T> {
     /**
      * @brief Copy assignment operator for SparseVector from different type SparseVector.
      * Replaces all elements with elements of 'other'.
-     * May allocate 'other.nnz * sizeof(T) + other.nnz * sizeof(int)' bytes of memory on the heap if number of non-zero elements here doesn't match number of non-zero elements in 'other'.
+     * May allocate 'other.nnz * sizeof(T) + other.nnz * sizeof(std::size_t)' bytes of memory on the heap if number of non-zero elements here doesn't match number of non-zero elements in 'other'.
      * @param other SparseVector to copy from.
      * @return Reference to this.
      * @throws InvalidDimensionException If 'other' does not have same size as this.
@@ -233,7 +233,7 @@ struct SparseVector : SparseVectorBase<T> {
             values_[i] = otherValues[i];
         }
 
-        memcpy(indices(), other.indices(), nnz_ * sizeof(int));
+        memcpy(indices(), other.indices(), nnz_ * sizeof(std::size_t));
 
         return *this;
     }
@@ -340,9 +340,9 @@ struct SparseVector : SparseVectorBase<T> {
 
                     std::size_t* newIndices = new std::size_t[nnz_ - 1];
 
-                    memcpy(newIndices, indices_, j * sizeof(int));
+                    memcpy(newIndices, indices_, j * sizeof(std::size_t));
 
-                    memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(int));
+                    memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(std::size_t));
 
                     delete[] indices_;
 
@@ -387,11 +387,11 @@ struct SparseVector : SparseVectorBase<T> {
 
         std::size_t* newIndices = new std::size_t[nnz_ + 1];
 
-        memcpy(newIndices, indices_, j * sizeof(int));
+        memcpy(newIndices, indices_, j * sizeof(std::size_t));
 
         newIndices[j] = i;
 
-        memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(int));
+        memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(std::size_t));
 
         delete[] indices_;
 
@@ -609,9 +609,9 @@ struct CustomSparseVector : SparseVectorBase<T> {
 
                     std::size_t* newIndices = new std::size_t[nnz_ - 1];
 
-                    memcpy(newIndices, indices_, j * sizeof(int));
+                    memcpy(newIndices, indices_, j * sizeof(std::size_t));
 
-                    memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(int));
+                    memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(std::size_t));
 
                     delete[] indices_;
 
@@ -656,11 +656,11 @@ struct CustomSparseVector : SparseVectorBase<T> {
 
         std::size_t* newIndices = new std::size_t[nnz_ + 1];
 
-        memcpy(newIndices, indices_, j * sizeof(int));
+        memcpy(newIndices, indices_, j * sizeof(std::size_t));
 
         newIndices[j] = i;
 
-        memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(int));
+        memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(std::size_t));
 
         delete[] indices_;
 

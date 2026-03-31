@@ -68,7 +68,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
 
     /**
      * @brief Constructs a SparseMatrix of size 'rows x columns'.
-     * Allocates '(columns + 1) * sizeof(int)' bytes of memory on the heap.
+     * Allocates '(columns + 1) * sizeof(std::size_t)' bytes of memory on the heap.
      * @param rows Number of rows.
      * @param columns Number of columns.
      */
@@ -87,7 +87,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
 
     /**
      * @brief Constructs a SparseMatrix of size 'rows x columns'.
-     * Allocates '(columns + 1) x sizeof(int) + initializerList.size() x sizeof(int) + initializerList.size() x sizeof(T)'.
+     * Allocates '(columns + 1) x sizeof(std::size_t) + initializerList.size() x sizeof(std::size_t) + initializerList.size() x sizeof(T)'.
      * @param rows Number of rows.
      * @param columns Number of columns.
      * @param initializerList Initializer list of T, int, std::size_t tuples representing value, column index, row index.
@@ -127,18 +127,18 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * @brief Copy constructor for SparseMatrix from same type SparseMatrix.
      *
      * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
-     * Allocates '(other.columns + 1) * sizeof(int) + other.nnz * sizeof(int) + other.nnz * sizeof(T)' bytes on the heap.
+     * Allocates '(other.columns + 1) * sizeof(std::size_t) + other.nnz * sizeof(std::size_t) + other.nnz * sizeof(T)' bytes on the heap.
      *
      * @param other SparseMatrix to copy from.
      */
     SparseMatrix(const SparseMatrix<T>& other) : SparseMatrixBase<T>(other.rows_, other.columns_) {
         colOffsets_ = new std::size_t[this->columns_ + 1];
-        memcpy(colOffsets_, other.colOffsets_, (this->columns_ + 1) * sizeof(int));
+        memcpy(colOffsets_, other.colOffsets_, (this->columns_ + 1) * sizeof(std::size_t));
 
         nnz_ = other.nnz_;
 
         rowIndices_ = new std::size_t[nnz_];
-        memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(int));
+        memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(std::size_t));
 
         values_ = new T[nnz_];
         memcpy(values_, other.values_, nnz_ * sizeof(T));
@@ -148,7 +148,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
     * @brief Copy constructor for SparseMatrix from different type SparseMatrix.
     *
     * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
-    * Allocates '(other.columns + 1) * sizeof(int) + other.nnz * sizeof(int) + other.nnz * sizeof(T)' bytes on the heap.
+    * Allocates '(other.columns + 1) * sizeof(std::size_t) + other.nnz * sizeof(std::size_t) + other.nnz * sizeof(T)' bytes on the heap.
     *
     * @tparam OTHER_T Scalar type of the 'other' SparseMatrix.
     * @param other SparseMatrix to copy from.
@@ -160,7 +160,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
 
         const std::size_t* otherColOffsets = other.colOffsets();
 
-        memcpy(colOffsets_, otherColOffsets, (this->columns_ + 1) * sizeof(int));
+        memcpy(colOffsets_, otherColOffsets, (this->columns_ + 1) * sizeof(std::size_t));
 
         const std::size_t otherNnz = other.nnz();
 
@@ -170,7 +170,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
 
         const std::size_t* otherRowIndices = other.rowIndices();
 
-        memcpy(rowIndices_, otherRowIndices, nnz_ * sizeof(int));
+        memcpy(rowIndices_, otherRowIndices, nnz_ * sizeof(std::size_t));
 
         values_ = new T[nnz_];
 
@@ -185,7 +185,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * @brief Copy constructor for SparseMatrix from same type SparseMatrixBase.
      *
      * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
-     * Allocates '(columns + 1) * sizeof(int) + other.nnz * sizeof(int) + other.nnz * sizeof(T)' bytes on the heap.
+     * Allocates '(columns + 1) * sizeof(std::size_t) + other.nnz * sizeof(std::size_t) + other.nnz * sizeof(T)' bytes on the heap.
      *
      * @param other SparseMatrixBase to copy from.
      */
@@ -212,7 +212,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * @brief Copy constructor for SparseMatrix from different type SparseMatrixBase.
      *
      * Constructs a 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
-     * Allocates '(columns + 1) * sizeof(int) + other.nnz * sizeof(int) + other.nnz * sizeof(T)' bytes on the heap.
+     * Allocates '(columns + 1) * sizeof(std::size_t) + other.nnz * sizeof(std::size_t) + other.nnz * sizeof(T)' bytes on the heap.
      *
      * @tparam OTHER_T Scalar type of the 'other' SparseMatrixBase.
      * @param other SparseMatrixBase to copy from.
@@ -258,7 +258,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
     /**
      * @brief Copy assignment operator for SparseMatrix from same type SparseMatrix.
      * Replaces all elements with elements of 'other'.
-     * May allocate memory if nnz != other.nnz, if not then 'nnz * sizeof(T) + nnz * sizeof(int)' bytes of memory are allocated on the heap.
+     * May allocate memory if nnz != other.nnz, if not then 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes of memory are allocated on the heap.
      * @param other SparseMatrix to copy from.
      * @return Reference to this.
      * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
@@ -282,8 +282,8 @@ struct SparseMatrix : SparseMatrixBase<T> {
             }
 
             memcpy(values_, other.values_, nnz_ * sizeof(T));
-            memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(int));
-            memcpy(colOffsets_, other.colOffsets_, (this->columns_ + 1) * sizeof(int));
+            memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(std::size_t));
+            memcpy(colOffsets_, other.colOffsets_, (this->columns_ + 1) * sizeof(std::size_t));
         }
 
         return *this;
@@ -292,7 +292,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
     /**
      * @brief Copy assignment operator for SparseMatrix from different type SparseMatrix.
      * Replaces all elements with elements of 'other'.
-     * May allocate memory if nnz != other.nnz, if not then 'nnz * sizeof(T) + nnz * sizeof(int)' bytes of memory are allocated on the heap.
+     * May allocate memory if nnz != other.nnz, if not then 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes of memory are allocated on the heap.
      * @param other SparseMatrix to copy from.
      * @return Reference to this.
      * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
@@ -323,8 +323,8 @@ struct SparseMatrix : SparseMatrixBase<T> {
             values_[i] = otherValues[i];
         }
 
-        memcpy(rowIndices_, other.rowIndices(), nnz_ * sizeof(int));
-        memcpy(colOffsets_, other.colOffsets(), (this->columns_ + 1) * sizeof(int));
+        memcpy(rowIndices_, other.rowIndices(), nnz_ * sizeof(std::size_t));
+        memcpy(colOffsets_, other.colOffsets(), (this->columns_ + 1) * sizeof(std::size_t));
 
         return *this;
     }
@@ -332,7 +332,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
     /**
      * @brief Copy assignment operator for DenseMatrix from same type SparseMatrixBase.
      * Replaces all elements with elements of 'other'.
-     * Allocates 'other.nnz * sizeof(T) + other.nnz * sizeof(int)' bytes of memory on the heap.
+     * Allocates 'other.nnz * sizeof(T) + other.nnz * sizeof(std::size_t)' bytes of memory on the heap.
      * @param other SparseMatrixBase to copy from.
      * @return Reference to this.
      * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
@@ -373,7 +373,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
     /**
      * @brief Copy assignment operator for DenseMatrix from different type SparseMatrixBase.
      * Replaces all elements with elements of 'other'.
-     * Allocates 'other.nnz * sizeof(T) + other.nnz * sizeof(int)' bytes of memory on the heap.
+     * Allocates 'other.nnz * sizeof(T) + other.nnz * sizeof(std::size_t)' bytes of memory on the heap.
      * @param other SparseMatrixBase to copy from.
      * @return Reference to this.
      * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
@@ -461,9 +461,9 @@ struct SparseMatrix : SparseMatrixBase<T> {
                 if (compare(value, 0)) {
                     std::size_t* newRowIndices = new std::size_t[nnz_ - 1];
 
-                    memcpy(newRowIndices, rowIndices_, i * sizeof(int));
+                    memcpy(newRowIndices, rowIndices_, i * sizeof(std::size_t));
 
-                    memcpy(&newRowIndices[i], &rowIndices_[i + 1], (nnz_ - i - 1) * sizeof(int));
+                    memcpy(&newRowIndices[i], &rowIndices_[i + 1], (nnz_ - i - 1) * sizeof(std::size_t));
 
                     delete[] rowIndices_;
 
@@ -506,11 +506,11 @@ struct SparseMatrix : SparseMatrixBase<T> {
 
         std::size_t* newRowIndices = new std::size_t[nnz_ + 1];
 
-        memcpy(newRowIndices, rowIndices_, i * sizeof(int));
+        memcpy(newRowIndices, rowIndices_, i * sizeof(std::size_t));
 
         newRowIndices[i] = r;
 
-        memcpy(&newRowIndices[i + 1], &rowIndices_[i], (nnz_ - i) * sizeof(int));
+        memcpy(&newRowIndices[i + 1], &rowIndices_[i], (nnz_ - i) * sizeof(std::size_t));
 
         delete[] rowIndices_;
 
@@ -780,9 +780,9 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
                 if (compare(value, 0)) {
                     std::size_t* newRowIndices = new std::size_t[nnz_ - 1];
 
-                    memcpy(newRowIndices, rowIndices_, i * sizeof(int));
+                    memcpy(newRowIndices, rowIndices_, i * sizeof(std::size_t));
 
-                    memcpy(&newRowIndices[i], &rowIndices_[i + 1], (nnz_ - i - 1) * sizeof(int));
+                    memcpy(&newRowIndices[i], &rowIndices_[i + 1], (nnz_ - i - 1) * sizeof(std::size_t));
 
                     delete[] rowIndices_;
 
@@ -825,11 +825,11 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
 
         std::size_t* newRowIndices = new std::size_t[nnz_ + 1];
 
-        memcpy(newRowIndices, rowIndices_, i * sizeof(int));
+        memcpy(newRowIndices, rowIndices_, i * sizeof(std::size_t));
 
         newRowIndices[i] = r;
 
-        memcpy(&newRowIndices[i + 1], &rowIndices_[i], (nnz_ - i) * sizeof(int));
+        memcpy(&newRowIndices[i + 1], &rowIndices_[i], (nnz_ - i) * sizeof(std::size_t));
 
         delete[] rowIndices_;
 
