@@ -11,11 +11,11 @@ struct DenseMatrixBase {
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    [[nodiscard]] int rows() const {
+    [[nodiscard]] std::size_t rows() const {
         return rows_;
     }
 
-    [[nodiscard]] int columns() const {
+    [[nodiscard]] std::size_t columns() const {
         return columns_;
     }
 
@@ -29,11 +29,11 @@ protected:
      * @param rows Number of rows.
      * @param columns Number of columns.
      */
-    DenseMatrixBase(const int rows, const int columns) : rows_(rows), columns_(columns) {
+    DenseMatrixBase(const std::size_t rows, const std::size_t columns) : rows_(rows), columns_(columns) {
     }
 
-    int rows_;
-    int columns_;
+    std::size_t rows_;
+    std::size_t columns_;
 
 public:
     /**
@@ -43,7 +43,7 @@ public:
      * @param r Zero-based row index.
      * @return Reference to the element at column 'c' and row 'r'.
      */
-    [[nodiscard]] virtual T& at(int c, int r) = 0;
+    [[nodiscard]] virtual T& at(std::size_t c, std::size_t r) = 0;
 
     /**
      * @brief Accesses the element at column 'c' and row 'r' (const).
@@ -52,18 +52,18 @@ public:
      * @param r Zero-based row index.
      * @return Const reference to the element at column 'c' and row 'r' .
      */
-    [[nodiscard]] virtual const T& at(int c, int r) const = 0;
+    [[nodiscard]] virtual const T& at(std::size_t c, std::size_t r) const = 0;
 
-    [[nodiscard]] T& operator[](const int c, const int r) {
-        if (c > columns_ - 1 || c < 0 || r > rows_ - 1 || r < 0) {
+    [[nodiscard]] T& operator[](const std::size_t c, const std::size_t r) {
+        if (c > columns_ - 1 || r > rows_ - 1) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
 
         return at(c, r);
     }
 
-    [[nodiscard]] const T& operator[](const int c, const int r) const {
-        if (c > columns_ - 1 || c < 0 || r > rows_ - 1 || r < 0) {
+    [[nodiscard]] const T& operator[](const std::size_t c, const std::size_t r) const {
+        if (c > columns_ - 1 || r > rows_ - 1) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
 
@@ -87,9 +87,9 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @param rows Number of rows.
      * @param fill If true, initializes all elements to zero; otherwise leaves elements uninitialized.
      */
-    DenseMatrix(const int rows, const int columns, const bool fill = true) : DenseMatrixBase<T>(rows, columns), data_(new T[columns * rows]) {
+    DenseMatrix(const std::size_t rows, const std::size_t columns, const bool fill = true) : DenseMatrixBase<T>(rows, columns), data_(new T[columns * rows]) {
         if (fill) {
-            for (int i = 0; i < columns * rows; i++) {
+            for (std::size_t i = 0; i < columns * rows; i++) {
                 data_[i] = 0;
             }
         }
@@ -105,13 +105,13 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @throws InvalidDimensionException If nested initializer_lists are not all the same size.
      */
     DenseMatrix(const std::initializer_list<std::initializer_list<T> >& initializerList) : DenseMatrixBase<T>(initializerList.size(), initializerList.begin()->size()), data_(new T[initializerList.size() * initializerList.begin()->size()]) {
-        int r = 0;
+        std::size_t r = 0;
         for (const auto& row: initializerList) {
             if (row.size() != this->columns_) {
                 throw InvalidDimensionException("Nested initializer lists must all have the same size");
             }
 
-            int c = 0;
+            std::size_t c = 0;
             for (const T element: row) {
                 DenseMatrix<T>::at(c, r) = element;
                 c++;
@@ -144,8 +144,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
     */
     template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
     DenseMatrix(const DenseMatrix<OTHER_T>& other) : DenseMatrixBase<T>(other.rows(), other.columns()), data_(new T[this->columns_ * this->rows_]) {
-        for (int c = 0; c < this->columns_; c++) {
-            for (int r = 0; r < this->rows_; r++) {
+        for (std::size_t c = 0; c < this->columns_; c++) {
+            for (std::size_t r = 0; r < this->rows_; r++) {
                 DenseMatrix<T>::at(c, r) = other[c, r];
             }
         }
@@ -160,8 +160,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @param other DenseMatrixBase to copy from.
      */
     DenseMatrix(const DenseMatrixBase<T>& other) : DenseMatrixBase<T>(other.rows(), other.columns()), data_(new T[this->columns_ * this->rows_]) {
-        for (int c = 0; c < this->columns_; c++) {
-            for (int r = 0; r < this->rows_; r++) {
+        for (std::size_t c = 0; c < this->columns_; c++) {
+            for (std::size_t r = 0; r < this->rows_; r++) {
                 DenseMatrix<T>::at(c, r) = other[c, r];
             }
         }
@@ -179,8 +179,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
     */
     template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
     DenseMatrix(const DenseMatrixBase<OTHER_T>& other) : DenseMatrixBase<T>(other.rows(), other.columns()), data_(new T[this->columns_ * this->rows_]) {
-        for (int c = 0; c < this->columns_; c++) {
-            for (int r = 0; r < this->rows_; r++) {
+        for (std::size_t c = 0; c < this->columns_; c++) {
+            for (std::size_t r = 0; r < this->rows_; r++) {
                 DenseMatrix<T>::at(c, r) = other[c, r];
             }
         }
@@ -245,7 +245,7 @@ struct DenseMatrix : DenseMatrixBase<T> {
 
         const OTHER_T* otherData = other.data();
 
-        for (int i = 0; i < this->columns_ * this->rows_; i++) {
+        for (std::size_t i = 0; i < this->columns_ * this->rows_; i++) {
             data_[i] = otherData[i];
         }
 
@@ -270,8 +270,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
                 data_ = new T[this->rows_ * this->columns_];
             }
 
-            for (int c = 0; c < this->columns_; c++) {
-                for (int r = 0; r < this->rows_; r++) {
+            for (std::size_t c = 0; c < this->columns_; c++) {
+                for (std::size_t r = 0; r < this->rows_; r++) {
                     DenseMatrix<T>::at(c, r) = other[c, r];
                 }
             }
@@ -300,8 +300,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
             data_ = new T[this->rows_ * this->columns_];
         }
 
-        for (int c = 0; c < this->columns_; c++) {
-            for (int r = 0; r < this->rows_; r++) {
+        for (std::size_t c = 0; c < this->columns_; c++) {
+            for (std::size_t r = 0; r < this->rows_; r++) {
                 DenseMatrix<T>::at(c, r) = other[c, r];
             }
         }
@@ -334,11 +334,11 @@ struct DenseMatrix : DenseMatrixBase<T> {
         return *this;
     }
 
-    static DenseMatrix<T> identity(const int n) {
+    static DenseMatrix<T> identity(const std::size_t n) {
         DenseMatrix<T> m(n, n, false);
 
-        for (int c = 0; c < n; c++) {
-            for (int r = 0; r < n; r++) {
+        for (std::size_t c = 0; c < n; c++) {
+            for (std::size_t r = 0; r < n; r++) {
                 if (c == r) {
                     m[c, r] = 1;
                 }
@@ -351,11 +351,11 @@ struct DenseMatrix : DenseMatrixBase<T> {
         return std::move(m);
     }
 
-    [[nodiscard]] T& at(const int c, const int r) override {
+    [[nodiscard]] T& at(const std::size_t c, const std::size_t r) override {
         return data_[c * this->rows_ + r];
     }
 
-    [[nodiscard]] const T& at(const int c, const int r) const override {
+    [[nodiscard]] const T& at(const std::size_t c, const std::size_t r) const override {
         return data_[c * this->rows_ + r];
     }
 
@@ -407,7 +407,7 @@ struct DenseMatrixView : DenseMatrixBase<T> {
     * @param colOffset Starting column offset in the owner matrix.
     * @param rowOffset Starting row offset in the owner matrix.
     */
-    DenseMatrixView(const DenseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : DenseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
+    DenseMatrixView(const DenseMatrix<T>& owner, const std::size_t rows, const std::size_t columns, const std::size_t colOffset, const std::size_t rowOffset) : DenseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
     }
 
 
@@ -426,11 +426,11 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      * @brief Trying to modify a DenseMatrix through a view is invalid.
      * @throws InvalidOperationException You cannot modify owner through a view.
      */
-    [[nodiscard]] T& at(const int, const int) override {
+    [[nodiscard]] T& at(const std::size_t, const std::size_t) override {
         throw InvalidOperationException("Cannot modify owner through view");
     }
 
-    [[nodiscard]] const T& at(const int c, const int r) const override {
+    [[nodiscard]] const T& at(const std::size_t c, const std::size_t r) const override {
         return owner_.at(c + colOffset_, r + rowOffset_);
     }
 
@@ -438,7 +438,7 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      * @brief Gets the column offset relative to the 'owner'.
      * @return The column offset.
      */
-    [[nodiscard]] int colOffset() const {
+    [[nodiscard]] std::size_t colOffset() const {
         return colOffset_;
     }
 
@@ -446,7 +446,7 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      * @brief Gets the row offset relative to the 'owner'.
      * @return The row offset.
      */
-    [[nodiscard]] int rowOffset() const {
+    [[nodiscard]] std::size_t rowOffset() const {
         return rowOffset_;
     }
 
@@ -461,8 +461,8 @@ struct DenseMatrixView : DenseMatrixBase<T> {
     ~DenseMatrixView() override = default;
 
 private:
-    const int colOffset_;
-    const int rowOffset_;
+    const std::size_t colOffset_;
+    const std::size_t rowOffset_;
 
     const DenseMatrix<T>& owner_;
 };
@@ -494,14 +494,14 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
      * @note Length of 'data' array must be greater than '(columns - 1) x stride + (rows - 1)'.
      * @note 'data' array must be in column major ordering.
      */
-    CustomDenseMatrix(T* data, const int rows, const int columns, const int stride) : DenseMatrixBase<T>(rows, columns), stride_(stride), data_(data) {
+    CustomDenseMatrix(T* data, const std::size_t rows, const std::size_t columns, const std::size_t stride) : DenseMatrixBase<T>(rows, columns), stride_(stride), data_(data) {
     }
 
-    [[nodiscard]] T& at(const int c, const int r) override {
+    [[nodiscard]] T& at(const std::size_t c, const std::size_t r) override {
         return data_[c * stride_ + r];
     }
 
-    [[nodiscard]] const T& at(const int c, const int r) const override {
+    [[nodiscard]] const T& at(const std::size_t c, const std::size_t r) const override {
         return data_[c * stride_ + r];
     }
 
@@ -509,7 +509,7 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
      * @brief Gets the stride or how far to jump between elements.
      * @return The stride.
      */
-    [[nodiscard]] int stride() const {
+    [[nodiscard]] std::size_t stride() const {
         return stride_;
     }
 
@@ -532,6 +532,6 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
     ~CustomDenseMatrix() override = default;
 
 private:
-    const int stride_;
+    const std::size_t stride_;
     T* const data_;
 };
