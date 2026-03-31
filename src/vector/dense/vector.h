@@ -13,7 +13,7 @@ struct DenseVectorBase {
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    [[nodiscard]] int n() const {
+    [[nodiscard]] std::size_t n() const {
         return n_;
     }
 
@@ -26,10 +26,10 @@ protected:
      *
      * @param n Number of elements.
      */
-    explicit DenseVectorBase(const int n) : n_(n) {
+    explicit DenseVectorBase(const std::size_t n) : n_(n) {
     }
 
-    int n_;
+    std::size_t n_;
 
 public:
     /**
@@ -38,7 +38,7 @@ public:
     * @param i Zero-based index.
     * @return Reference to the element at index 'i'.
     */
-    [[nodiscard]] virtual T& at(int i) = 0;
+    [[nodiscard]] virtual T& at(std::size_t i) = 0;
 
     /**
     * @brief Accesses the element at index 'i' (const).
@@ -46,9 +46,9 @@ public:
     * @param i Zero-based index.
     * @return Const reference to the element at index 'i'.
     */
-    [[nodiscard]] virtual const T& at(int i) const = 0;
+    [[nodiscard]] virtual const T& at(std::size_t i) const = 0;
 
-    [[nodiscard]] T& operator[](const int i) {
+    [[nodiscard]] T& operator[](const std::size_t i) {
         if (i < 0 || i >= n_) {
             throw InvalidIndexException("Cannot access vector at invalid index");
         }
@@ -56,7 +56,7 @@ public:
         return at(i);
     }
 
-    [[nodiscard]] const T& operator[](const int i) const {
+    [[nodiscard]] const T& operator[](const std::size_t i) const {
         if (i < 0 || i >= n_) {
             throw InvalidIndexException("Cannot access vector at invalid index");
         }
@@ -78,9 +78,9 @@ struct DenseVector : DenseVectorBase<T> {
      * @param n Number of elements.
      * @param fill If true, initializes all elements to zero; otherwise leaves elements uninitialized.
      */
-    DenseVector(const int n, const bool fill) : DenseVectorBase<T>(n), data_(new T[n]) {
+    DenseVector(const std::size_t n, const bool fill) : DenseVectorBase<T>(n), data_(new T[n]) {
         if (fill) {
-            for (int i = 0; i < n; i++) {
+            for (std::size_t i = 0; i < n; i++) {
                 data_[i] = 0;
             }
         }
@@ -94,7 +94,7 @@ struct DenseVector : DenseVectorBase<T> {
     * @param initializerList Initializer_list representing vector elements.
     */
     DenseVector(const std::initializer_list<T>& initializerList) : DenseVectorBase<T>(initializerList.size()), data_(new T[initializerList.size()]) {
-        int i = 0;
+        std::size_t i = 0;
         for (const T element: initializerList) {
             data_[i] = element;
             i++;
@@ -127,7 +127,7 @@ struct DenseVector : DenseVectorBase<T> {
     DenseVector(const DenseVector<OTHER_T>& other) : DenseVectorBase<T>(other.n()), data_(new T[other.n()]) {
         const OTHER_T* otherData = other.data();
 
-        for (int i = 0; i < this->n_; i++) {
+        for (std::size_t i = 0; i < this->n_; i++) {
             data_[i] = otherData[i];
         }
     }
@@ -141,7 +141,7 @@ struct DenseVector : DenseVectorBase<T> {
      * @param other DenseVectorBase to copy from.
      */
     DenseVector(const DenseVectorBase<T>& other) : DenseVectorBase<T>(other.n()), data_(new T[other.n()]) {
-        for (int i = 0; i < this->n_; i++) {
+        for (std::size_t i = 0; i < this->n_; i++) {
             data_[i] = other[i];
         }
     }
@@ -158,7 +158,7 @@ struct DenseVector : DenseVectorBase<T> {
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     DenseVector(const DenseVectorBase<OTHER_T>& other) : DenseVectorBase<T>(other.n()), data_(new T[other.n()]) {
-        for (int i = 0; i < this->n_; i++) {
+        for (std::size_t i = 0; i < this->n_; i++) {
             data_[i] = other[i];
         }
     }
@@ -220,7 +220,7 @@ struct DenseVector : DenseVectorBase<T> {
 
         const OTHER_T* otherData = other.data();
 
-        for (int i = 0; i < this->n_; i++) {
+        for (std::size_t i = 0; i < this->n_; i++) {
             data_[i] = otherData[i];
         }
 
@@ -244,7 +244,7 @@ struct DenseVector : DenseVectorBase<T> {
                 data_ = new T[this->n_];
             }
 
-            for (int i = 0; i < this->n_; i++) {
+            for (std::size_t i = 0; i < this->n_; i++) {
                 data_[i] = other[i];
             }
         }
@@ -271,7 +271,7 @@ struct DenseVector : DenseVectorBase<T> {
             data_ = new T[this->n_];
         }
 
-        for (int i = 0; i < this->n_; i++) {
+        for (std::size_t i = 0; i < this->n_; i++) {
             data_[i] = other[i];
         }
 
@@ -300,11 +300,11 @@ struct DenseVector : DenseVectorBase<T> {
         return *this;
     }
 
-    [[nodiscard]] T& at(int i) override {
+    [[nodiscard]] T& at(std::size_t i) override {
         return data_[i];
     }
 
-    [[nodiscard]] const T& at(int i) const override {
+    [[nodiscard]] const T& at(std::size_t i) const override {
         return data_[i];
     }
 
@@ -353,7 +353,7 @@ struct DenseVectorView : DenseVectorBase<T> {
      * @param n Number of elements in the view.
      * @param offset Starting index offset in the owner vector.
      */
-    DenseVectorView(const DenseVector<T>& owner, const int n, const int offset) : DenseVectorBase<T>(n), offset_(offset), owner_(owner) {
+    DenseVectorView(const DenseVector<T>& owner, const std::size_t n, const std::size_t offset) : DenseVectorBase<T>(n), offset_(offset), owner_(owner) {
     }
 
     /**
@@ -371,11 +371,11 @@ struct DenseVectorView : DenseVectorBase<T> {
      * @brief Trying to modify a DenseVector through a view is invalid.
      * @throws InvalidOperationException You cannot modify owner through a view.
      */
-    [[nodiscard]] T& at(const int) override {
+    [[nodiscard]] T& at(const std::size_t) override {
         throw InvalidOperationException("Cannot modify owner through view");
     }
 
-    [[nodiscard]] const T& at(const int i) const override {
+    [[nodiscard]] const T& at(const std::size_t i) const override {
         return owner_.at(i + offset_);
     }
 
@@ -383,7 +383,7 @@ struct DenseVectorView : DenseVectorBase<T> {
      * @brief Gets the offset relative to the 'owner'.
      * @return The offset.
      */
-    [[nodiscard]] int offset() const {
+    [[nodiscard]] std::size_t offset() const {
         return offset_;
     }
 
@@ -398,7 +398,7 @@ struct DenseVectorView : DenseVectorBase<T> {
     ~DenseVectorView() override = default;
 
 private:
-    const int offset_;
+    const std::size_t offset_;
     const DenseVector<T>& owner_;
 };
 
@@ -424,14 +424,14 @@ struct CustomDenseVector : DenseVectorBase<T> {
      * @param stride How many elements to skip when accessing elements.
      * @note Length of 'data' array must be greater than '(n - 1) x stride'.
      */
-    CustomDenseVector(T* data, const int n, const int stride) : DenseVectorBase<T>(n), stride_(stride), data_(data) {
+    CustomDenseVector(T* data, const std::size_t n, const std::size_t stride) : DenseVectorBase<T>(n), stride_(stride), data_(data) {
     }
 
-    [[nodiscard]] T& at(const int i) override {
+    [[nodiscard]] T& at(const std::size_t i) override {
         return data_[i * stride_];
     }
 
-    [[nodiscard]] const T& at(const int i) const override {
+    [[nodiscard]] const T& at(const std::size_t i) const override {
         return data_[i * stride_];
     }
 
@@ -439,7 +439,7 @@ struct CustomDenseVector : DenseVectorBase<T> {
      * @brief Gets the stride or how far to jump between elements.
      * @return The stride.
      */
-    [[nodiscard]] int stride() const {
+    [[nodiscard]] std::size_t stride() const {
         return stride_;
     }
 
@@ -462,6 +462,6 @@ struct CustomDenseVector : DenseVectorBase<T> {
     ~CustomDenseVector() override = default;
 
 private:
-    const int stride_;
+    const std::size_t stride_;
     T* const data_;
 };
