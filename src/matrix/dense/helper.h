@@ -117,7 +117,7 @@ template<dense_matrix_base T, dense_matrix_base U, dense_matrix_base... ARGS>
 inline void assert_can_multiply(const T& a, const U& b, const ARGS&... args) {
     bool valid = a.columns() == b.rows();
 
-    int current_cols = b.columns();
+    std::size_t current_cols = b.columns();
 
     if (!(valid && ((valid = (current_cols == args.rows()), current_cols = args.columns(), valid) && ...))) {
         throw InvalidDimensionException("Dense Matrices must have matching inner dimensions (a.columns() == b.rows())");
