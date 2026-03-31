@@ -11,11 +11,11 @@ struct SparseMatrixBase {
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    [[nodiscard]] int rows() const {
+    [[nodiscard]] std::size_t rows() const {
         return rows_;
     }
 
-    [[nodiscard]] int columns() const {
+    [[nodiscard]] std::size_t columns() const {
         return columns_;
     }
 
@@ -29,11 +29,11 @@ protected:
     * @param rows Number of rows.
     * @param columns Number of columns.
     */
-    SparseMatrixBase(const int rows, const int columns) : rows_(rows), columns_(columns) {
+    SparseMatrixBase(const std::size_t rows, const std::size_t columns) : rows_(rows), columns_(columns) {
     }
 
-    int rows_;
-    int columns_;
+    std::size_t rows_;
+    std::size_t columns_;
 
 public:
     /**
@@ -43,7 +43,7 @@ public:
      * @param r Row index.
      * @param value The value to set at 'c, r'.
      */
-    virtual void set(int c, int r, T value) = 0;
+    virtual void set(std::size_t c, std::size_t r, T value) = 0;
 
     /**
      * @brief Gets the value of the element at column 'c' and row 'r'.
@@ -51,13 +51,13 @@ public:
      * @param r Row index.
      * @return The value at 'c, r'.
      */
-    [[nodiscard]] virtual T get(int c, int r) const = 0;
+    [[nodiscard]] virtual T get(std::size_t c, std::size_t r) const = 0;
 
     /**
      * @brief Gets the number of non-zero elements in the sparse matrix.
      * @return Number of non-zero elements.
      */
-    [[nodiscard]] virtual int nnz() const = 0;
+    [[nodiscard]] virtual std::size_t nnz() const = 0;
 
     virtual ~SparseMatrixBase() = default;
 };
@@ -72,19 +72,16 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * @param rows Number of rows.
      * @param columns Number of columns.
      */
-    SparseMatrix(const int rows, const int columns) : SparseMatrixBase<T>(rows, columns) {
-        if (rows < 0 || columns < 0) {
-            throw InvalidIndexException("Cannot create SparseMatrix with negative size");
-        }
-        colOffsets_ = new int[columns + 1];
+    SparseMatrix(const std::size_t rows, const std::size_t columns) : SparseMatrixBase<T>(rows, columns) {
+        colOffsets_ = new std::size_t[columns + 1];
 
-        for (int i = 0; i < columns + 1; i++) {
+        for (std::size_t i = 0; i < columns + 1; i++) {
             colOffsets_[i] = 0;
         }
 
         nnz_ = 0;
 
-        rowIndices_ = new int[nnz_];
+        rowIndices_ = new std::size_t[nnz_];
         values_ = new T[nnz_];
     }
 
@@ -93,32 +90,32 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * Allocates '(columns + 1) x sizeof(int) + initializerList.size() x sizeof(int) + initializerList.size() x sizeof(T)'.
      * @param rows Number of rows.
      * @param columns Number of columns.
-     * @param initializerList Initializer list of T, int, int tuples representing value, column index, row index.
+     * @param initializerList Initializer list of T, int, std::size_t tuples representing value, column index, row index.
      *
      * @note 'initializerList' must be sorted within each row, and between rows
      */
-    SparseMatrix(const int rows, const int columns, std::initializer_list<std::tuple<T, int, int> > initializerList) : SparseMatrixBase<T>(rows, columns) {
+    SparseMatrix(const std::size_t rows, const std::size_t columns, std::initializer_list<std::tuple<T, int, int> > initializerList) : SparseMatrixBase<T>(rows, columns) {
         if (rows < 0 || columns < 0) {
             throw InvalidIndexException("Cannot create SparseMatrix with negative size");
         }
 
-        colOffsets_ = new int[columns + 1];
+        colOffsets_ = new std::size_t[columns + 1];
 
-        for (int i = 0; i < columns + 1; i++) {
+        for (std::size_t i = 0; i < columns + 1; i++) {
             colOffsets_[i] = 0;
         }
 
         nnz_ = initializerList.size();
 
-        rowIndices_ = new int[nnz_];
+        rowIndices_ = new std::size_t[nnz_];
         values_ = new T[nnz_];
 
-        int i = 0;
+        std::size_t i = 0;
         for (const auto nonZeroElement: initializerList) {
             rowIndices_[i] = std::get<2>(nonZeroElement);
             values_[i] = std::get<0>(nonZeroElement);
 
-            for (int j = std::get<1>(nonZeroElement) + 1; j < columns + 1; ++j) {
+            for (std::size_t j = std::get<1>(nonZeroElement) + 1; j < columns + 1; ++j) {
                 ++colOffsets_[j];
             }
 
@@ -135,12 +132,12 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * @param other SparseMatrix to copy from.
      */
     SparseMatrix(const SparseMatrix<T>& other) : SparseMatrixBase<T>(other.rows_, other.columns_) {
-        colOffsets_ = new int[this->columns_ + 1];
+        colOffsets_ = new std::size_t[this->columns_ + 1];
         memcpy(colOffsets_, other.colOffsets_, (this->columns_ + 1) * sizeof(int));
 
         nnz_ = other.nnz_;
 
-        rowIndices_ = new int[nnz_];
+        rowIndices_ = new std::size_t[nnz_];
         memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(int));
 
         values_ = new T[nnz_];
@@ -159,19 +156,19 @@ struct SparseMatrix : SparseMatrixBase<T> {
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseMatrix(const SparseMatrix<OTHER_T>& other) : SparseMatrixBase<T>(other.rows(), other.columns()) {
-        colOffsets_ = new int[this->columns_ + 1];
+        colOffsets_ = new std::size_t[this->columns_ + 1];
 
-        const int* otherColOffsets = other.colOffsets();
+        const std::size_t* otherColOffsets = other.colOffsets();
 
         memcpy(colOffsets_, otherColOffsets, (this->columns_ + 1) * sizeof(int));
 
-        const int otherNnz = other.nnz();
+        const std::size_t otherNnz = other.nnz();
 
         nnz_ = otherNnz;
 
-        rowIndices_ = new int[nnz_];
+        rowIndices_ = new std::size_t[nnz_];
 
-        const int* otherRowIndices = other.rowIndices();
+        const std::size_t* otherRowIndices = other.rowIndices();
 
         memcpy(rowIndices_, otherRowIndices, nnz_ * sizeof(int));
 
@@ -179,7 +176,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
 
         const OTHER_T* otherValues = other.values();
 
-        for (int i = 0; i < nnz_; i++) {
+        for (std::size_t i = 0; i < nnz_; i++) {
             values_[i] = otherValues[i];
         }
     }
@@ -193,19 +190,19 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * @param other SparseMatrixBase to copy from.
      */
     SparseMatrix(const SparseMatrixBase<T>& other) : SparseMatrixBase<T>(other.rows(), other.columns()) {
-        colOffsets_ = new int[this->columns_ + 1];
+        colOffsets_ = new std::size_t[this->columns_ + 1];
 
-        for (int i = 0; i < this->columns_ + 1; i++) {
+        for (std::size_t i = 0; i < this->columns_ + 1; i++) {
             colOffsets_[i] = 0;
         }
 
         nnz_ = 0;
 
-        rowIndices_ = new int[nnz_];
+        rowIndices_ = new std::size_t[nnz_];
         values_ = new T[nnz_];
 
-        for (int c = 0; c < this->columns_; c++) {
-            for (int r = 0; r < this->rows_; r++) {
+        for (std::size_t c = 0; c < this->columns_; c++) {
+            for (std::size_t r = 0; r < this->rows_; r++) {
                 SparseMatrix<T>::set(c, r, other.get(c, r));
             }
         }
@@ -223,19 +220,19 @@ struct SparseMatrix : SparseMatrixBase<T> {
      */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
     SparseMatrix(const SparseMatrixBase<OTHER_T>& other) : SparseMatrixBase<T>(other.rows(), other.columns()) {
-        colOffsets_ = new int[this->columns_ + 1];
+        colOffsets_ = new std::size_t[this->columns_ + 1];
 
-        for (int i = 0; i < this->columns_ + 1; i++) {
+        for (std::size_t i = 0; i < this->columns_ + 1; i++) {
             colOffsets_[i] = 0;
         }
 
         nnz_ = 0;
 
-        rowIndices_ = new int[nnz_];
+        rowIndices_ = new std::size_t[nnz_];
         values_ = new T[nnz_];
 
-        for (int c = 0; c < this->columns_; c++) {
-            for (int r = 0; r < this->rows_; r++) {
+        for (std::size_t c = 0; c < this->columns_; c++) {
+            for (std::size_t r = 0; r < this->rows_; r++) {
                 SparseMatrix<T>::set(c, r, other.get(c, r));
             }
         }
@@ -273,7 +270,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
                 delete[] colOffsets_;
                 this->rows_ = other.rows_;
                 this->columns_ = other.columns_;
-                colOffsets_ = new int[this->columns_ + 1];
+                colOffsets_ = new std::size_t[this->columns_ + 1];
             }
 
             if (nnz_ != other.nnz_) {
@@ -281,7 +278,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
                 delete[] values_;
                 delete[] rowIndices_;
                 values_ = new T[nnz_];
-                rowIndices_ = new int[nnz_];
+                rowIndices_ = new std::size_t[nnz_];
             }
 
             memcpy(values_, other.values_, nnz_ * sizeof(T));
@@ -308,7 +305,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
         if (this->columns_ != other.columns()) {
             delete[] colOffsets_;
             this->columns_ = other.columns();
-            colOffsets_ = new int[this->columns_ + 1];
+            colOffsets_ = new std::size_t[this->columns_ + 1];
         }
 
         this->rows_ = other.rows();
@@ -318,11 +315,11 @@ struct SparseMatrix : SparseMatrixBase<T> {
             delete[] values_;
             delete[] rowIndices_;
             values_ = new T[nnz_];
-            rowIndices_ = new int[nnz_];
+            rowIndices_ = new std::size_t[nnz_];
         }
 
         const OTHER_T* otherValues = other.values();
-        for (int i = 0; i < nnz_; i++) {
+        for (std::size_t i = 0; i < nnz_; i++) {
             values_[i] = otherValues[i];
         }
 
@@ -346,25 +343,25 @@ struct SparseMatrix : SparseMatrixBase<T> {
             if (this->columns_ != other.columns()) {
                 delete[] colOffsets_;
                 this->columns_ = other.columns();
-                colOffsets_ = new int[this->columns_ + 1];
+                colOffsets_ = new std::size_t[this->columns_ + 1];
             }
 
             this->rows_ = other.rows();
 
-            for (int i = 0; i < this->columns_ + 1; i++) {
+            for (std::size_t i = 0; i < this->columns_ + 1; i++) {
                 colOffsets_[i] = 0;
             }
 
             nnz_ = 0;
 
             delete[] rowIndices_;
-            rowIndices_ = new int[0];
+            rowIndices_ = new std::size_t[0];
 
             delete[] values_;
             values_ = new T[0];
 
-            for (int c = 0; c < this->columns_; c++) {
-                for (int r = 0; r < this->rows_; r++) {
+            for (std::size_t c = 0; c < this->columns_; c++) {
+                for (std::size_t r = 0; r < this->rows_; r++) {
                     SparseMatrix<T>::set(c, r, other.get(c, r));
                 }
             }
@@ -389,25 +386,25 @@ struct SparseMatrix : SparseMatrixBase<T> {
         if (this->columns_ != other.columns()) {
             delete[] colOffsets_;
             this->columns_ = other.columns();
-            colOffsets_ = new int[this->columns_ + 1];
+            colOffsets_ = new std::size_t[this->columns_ + 1];
         }
 
         this->rows_ = other.rows();
 
-        for (int i = 0; i < this->columns_ + 1; i++) {
+        for (std::size_t i = 0; i < this->columns_ + 1; i++) {
             colOffsets_[i] = 0;
         }
 
         nnz_ = 0;
 
         delete[] rowIndices_;
-        rowIndices_ = new int[0];
+        rowIndices_ = new std::size_t[0];
 
         delete[] values_;
         values_ = new T[0];
 
-        for (int c = 0; c < this->columns_; c++) {
-            for (int r = 0; r < this->rows_; r++) {
+        for (std::size_t c = 0; c < this->columns_; c++) {
+            for (std::size_t r = 0; r < this->rows_; r++) {
                 SparseMatrix<T>::set(c, r, other.get(c, r));
             }
         }
@@ -449,20 +446,20 @@ struct SparseMatrix : SparseMatrixBase<T> {
         return *this;
     }
 
-    void set(const int c, const int r, const T value) override {
-        if (c < 0 || c > this->columns_ - 1 || r < 0 || r > this->rows_ - 1) {
+    void set(const std::size_t c, const std::size_t r, const T value) override {
+        if (c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
         }
-        const int start = colOffsets_[c];
-        const int end = colOffsets_[c + 1];
+        const std::size_t start = colOffsets_[c];
+        const std::size_t end = colOffsets_[c + 1];
 
-        int i;
+        std::size_t i;
         for (i = start; i < end; i++) {
-            const int curIndex = rowIndices_[i];
+            const std::size_t curIndex = rowIndices_[i];
 
             if (curIndex == r) {
                 if (compare(value, 0)) {
-                    int* newRowIndices = new int[nnz_ - 1];
+                    std::size_t* newRowIndices = new std::size_t[nnz_ - 1];
 
                     memcpy(newRowIndices, rowIndices_, i * sizeof(int));
 
@@ -484,7 +481,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
                     values_ = newValues;
 
                     // fix column offsets
-                    for (int j = c + 1; j < this->columns_ + 1; j++) {
+                    for (std::size_t j = c + 1; j < this->columns_ + 1; j++) {
                         colOffsets_[j]--;
                     }
 
@@ -507,7 +504,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
             return;
         }
 
-        int* newRowIndices = new int[nnz_ + 1];
+        std::size_t* newRowIndices = new std::size_t[nnz_ + 1];
 
         memcpy(newRowIndices, rowIndices_, i * sizeof(int));
 
@@ -533,22 +530,22 @@ struct SparseMatrix : SparseMatrixBase<T> {
         values_ = newValues;
 
         // fix column offsets
-        for (int j = c + 1; j < this->columns_ + 1; j++) {
+        for (std::size_t j = c + 1; j < this->columns_ + 1; j++) {
             colOffsets_[j]++;
         }
 
         nnz_++;
     }
 
-    [[nodiscard]] T get(const int c, const int r) const override {
-        if (c < 0 || c > this->columns_ - 1 || r < 0 || r > this->rows_ - 1) {
+    [[nodiscard]] T get(const std::size_t c, const std::size_t r) const override {
+        if (c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
         }
 
-        const int start = colOffsets_[c];
-        const int end = colOffsets_[c + 1];
+        const std::size_t start = colOffsets_[c];
+        const std::size_t end = colOffsets_[c + 1];
 
-        for (int i = start; i < end; i++) {
+        for (std::size_t i = start; i < end; i++) {
             if (rowIndices_[i] == r) {
                 return values_[i];
             }
@@ -557,7 +554,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
         return 0;
     }
 
-    [[nodiscard]] int nnz() const override {
+    [[nodiscard]] std::size_t nnz() const override {
         return nnz_;
     }
 
@@ -566,7 +563,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
      * Always of size 'columns + 1'.
      * @return Pointer to array of column offsets.
      */
-    [[nodiscard]] int* colOffsets() {
+    [[nodiscard]] std::size_t* colOffsets() {
         return colOffsets_;
     }
 
@@ -575,7 +572,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
     * Always of size 'columns + 1'.
     * @return Const pointer to array of column offsets.
     */
-    [[nodiscard]] const int* colOffsets() const {
+    [[nodiscard]] const std::size_t* colOffsets() const {
         return colOffsets_;
     }
 
@@ -583,7 +580,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
     * @brief Gets the array containing the row indices.
     * @return Pointer to array of row indices.
     */
-    [[nodiscard]] int* rowIndices() {
+    [[nodiscard]] std::size_t* rowIndices() {
         return rowIndices_;
     }
 
@@ -591,7 +588,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
     * @brief Gets the array containing the row indices.
     * @return Const pointer to array of row indices.
     */
-    [[nodiscard]] const int* rowIndices() const {
+    [[nodiscard]] const std::size_t* rowIndices() const {
         return rowIndices_;
     }
 
@@ -618,10 +615,10 @@ struct SparseMatrix : SparseMatrixBase<T> {
     }
 
 private:
-    int nnz_;
+    std::size_t nnz_;
     T* values_;
-    int* colOffsets_;
-    int* rowIndices_;
+    std::size_t* colOffsets_;
+    std::size_t* rowIndices_;
 };
 
 template<scalar T = float>
@@ -647,7 +644,7 @@ struct SparseMatrixView : SparseMatrixBase<T> {
      * @param colOffset Starting column offset in the 'owner' matrix.
      * @param rowOffset Starting row offset in the 'owner' matrix.
      */
-    SparseMatrixView(const SparseMatrix<T>& owner, const int rows, const int columns, const int colOffset, const int rowOffset) : SparseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
+    SparseMatrixView(const SparseMatrix<T>& owner, const std::size_t rows, const std::size_t columns, const std::size_t colOffset, const std::size_t rowOffset) : SparseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
     }
 
     /**
@@ -665,30 +662,30 @@ struct SparseMatrixView : SparseMatrixBase<T> {
     * @brief Trying to modify a SparseMatrix through a view is invalid.
     * @throws InvalidOperationException You cannot modify owner through a view.
     */
-    void set(const int c, const int r, const T) override {
-        if (c < 0 || c > this->columns_ - 1 || r < 0 || r > this->rows_ - 1) {
+    void set(const std::size_t c, const std::size_t r, const T) override {
+        if (c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot set on view with invalid index");
         }
         throw InvalidOperationException("Cannot modify owner through view");
     }
 
-    [[nodiscard]] T get(const int c, const int r) const override {
-        if (c < 0 || c > this->columns_ - 1 || r < 0 || r > this->rows_ - 1) {
+    [[nodiscard]] T get(const std::size_t c, const std::size_t r) const override {
+        if ( c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot get on view with invalid index");
         }
 
         return owner_.get(c + colOffset_, r + rowOffset_);
     }
 
-    [[nodiscard]] int nnz() const override {
-        int nnz = 0;
+    [[nodiscard]] std::size_t nnz() const override {
+        std::size_t nnz = 0;
 
-        for (int c = colOffset_; c < colOffset_ + this->columns_; c++) {
-            const int start = owner().colOffsets()[c];
-            const int end = owner().colOffsets()[c + 1];
+        for (std::size_t c = colOffset_; c < colOffset_ + this->columns_; c++) {
+            const std::size_t start = owner().colOffsets()[c];
+            const std::size_t end = owner().colOffsets()[c + 1];
 
-            for (int r = start; r < end; r++) {
-                const int curIndex = owner().rowIndices()[r];
+            for (std::size_t r = start; r < end; ++r) {
+                const std::size_t curIndex = owner().rowIndices()[r];
 
                 if (curIndex >= rowOffset_ && curIndex < rowOffset_ + this->rows_) {
                     nnz++;
@@ -703,7 +700,7 @@ struct SparseMatrixView : SparseMatrixBase<T> {
     * @brief Gets the column offset relative to the 'owner'.
     * @return The column offset.
     */
-    [[nodiscard]] int colOffset() const {
+    [[nodiscard]] std::size_t colOffset() const {
         return colOffset_;
     }
 
@@ -711,7 +708,7 @@ struct SparseMatrixView : SparseMatrixBase<T> {
      * @brief Gets the row offset relative to the 'owner'.
      * @return The row offset.
      */
-    [[nodiscard]] int rowOffset() const {
+    [[nodiscard]] std::size_t rowOffset() const {
         return rowOffset_;
     }
 
@@ -726,8 +723,8 @@ struct SparseMatrixView : SparseMatrixBase<T> {
     ~SparseMatrixView() override = default;
 
 private:
-    const int colOffset_;
-    const int rowOffset_;
+    const std::size_t colOffset_;
+    const std::size_t rowOffset_;
 
     const SparseMatrix<T>& owner_;
 };
@@ -765,23 +762,23 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
      * @note Assumes 'colOffsets' is of size 'columns + 1'.
      * @note Assumes 'rowIndices' and 'values' is of size 'nnz'.
      */
-    CustomSparseMatrix(const int rows, const int columns, int*& colOffsets, int*& rowIndices, T*& values, int& nnz) : SparseMatrixBase<T>(rows, columns), nnz_(nnz), values_(values), colOffsets_(colOffsets), rowIndices_(rowIndices) {
+    CustomSparseMatrix(const std::size_t rows, const std::size_t columns, std::size_t*& colOffsets, std::size_t*& rowIndices, T*& values, std::size_t& nnz) : SparseMatrixBase<T>(rows, columns), nnz_(nnz), values_(values), colOffsets_(colOffsets), rowIndices_(rowIndices) {
     }
 
-    void set(const int c, const int r, const T value) override {
-        if (c < 0 || c > this->columns_ - 1 || r < 0 || r > this->rows_ - 1) {
+    void set(const std::size_t c, const std::size_t r, const T value) override {
+        if (c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
         }
-        const int start = colOffsets_[c];
-        const int end = colOffsets_[c + 1];
+        const std::size_t start = colOffsets_[c];
+        const std::size_t end = colOffsets_[c + 1];
 
-        int i;
+        std::size_t i;
         for (i = start; i < end; i++) {
-            const int curIndex = rowIndices_[i];
+            const std::size_t curIndex = rowIndices_[i];
 
             if (curIndex == r) {
                 if (compare(value, 0)) {
-                    int* newRowIndices = new int[nnz_ - 1];
+                    std::size_t* newRowIndices = new std::size_t[nnz_ - 1];
 
                     memcpy(newRowIndices, rowIndices_, i * sizeof(int));
 
@@ -803,7 +800,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
                     values_ = newValues;
 
                     // fix column offsets
-                    for (int j = c + 1; j < this->columns_ + 1; j++) {
+                    for (std::size_t j = c + 1; j < this->columns_ + 1; j++) {
                         colOffsets_[j]--;
                     }
 
@@ -826,7 +823,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
             return;
         }
 
-        int* newRowIndices = new int[nnz_ + 1];
+        std::size_t* newRowIndices = new std::size_t[nnz_ + 1];
 
         memcpy(newRowIndices, rowIndices_, i * sizeof(int));
 
@@ -852,22 +849,22 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         values_ = newValues;
 
         // fix column offsets
-        for (int j = c + 1; j < this->columns_ + 1; j++) {
+        for (std::size_t j = c + 1; j < this->columns_ + 1; j++) {
             colOffsets_[j]++;
         }
 
         nnz_++;
     }
 
-    [[nodiscard]] T get(const int c, const int r) const override {
-        if (c < 0 || c > this->columns_ - 1 || r < 0 || r > this->rows_ - 1) {
+    [[nodiscard]] T get(const std::size_t c, const std::size_t r) const override {
+        if (c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
         }
 
-        const int start = colOffsets_[c];
-        const int end = colOffsets_[c + 1];
+        const std::size_t start = colOffsets_[c];
+        const std::size_t end = colOffsets_[c + 1];
 
-        for (int i = start; i < end; i++) {
+        for (std::size_t i = start; i < end; i++) {
             if (rowIndices_[i] == r) {
                 return values_[i];
             }
@@ -876,7 +873,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         return 0;
     }
 
-    [[nodiscard]] int nnz() const override {
+    [[nodiscard]] std::size_t nnz() const override {
         return nnz_;
     }
 
@@ -884,7 +881,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     * @brief Gets the reference to the pointer storing the column offsets.
     * @return Reference to pointer containing the column offsets.
     */
-    [[nodiscard]] int*& colOffsets() {
+    [[nodiscard]] std::size_t*& colOffsets() {
         return colOffsets_;
     }
 
@@ -892,7 +889,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     * @brief Gets the const reference to the const pointer storing the column offsets.
     * @return Const reference to const pointer containing the column offsets.
     */
-    [[nodiscard]] const int* const& colOffsets() const {
+    [[nodiscard]] const std::size_t* const& colOffsets() const {
         return colOffsets_;
     }
 
@@ -900,7 +897,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     * @brief Gets the reference to the pointer storing the row indices.
     * @return Reference to pointer containing the row indices.
     */
-    [[nodiscard]] int*& rowIndices() {
+    [[nodiscard]] std::size_t*& rowIndices() {
         return rowIndices_;
     }
 
@@ -908,7 +905,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     * @brief Gets the const reference to the const pointer storing the row indices.
     * @return Const reference to const pointer containing the row indices.
     */
-    [[nodiscard]] const int* const& rowIndices() const {
+    [[nodiscard]] const std::size_t* const& rowIndices() const {
         return rowIndices_;
     }
 
@@ -929,8 +926,8 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     }
 
 private:
-    int& nnz_;
+    std::size_t& nnz_;
     T*& values_;
-    int*& colOffsets_;
-    int*& rowIndices_;
+    std::size_t*& colOffsets_;
+    std::size_t*& rowIndices_;
 };
