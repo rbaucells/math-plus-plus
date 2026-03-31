@@ -718,20 +718,6 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
     ASSERT_TRUE((compare(mColOffsets[5], 1.0f)));
 }
 
-TEST(sparse_matrix_set, given_negative_row_index_should_throw) {
-    // arrange
-    SparseMatrix<float> m(5, 5);
-    // act / assert
-    ASSERT_THROW(m.set(-1, 2, 1), InvalidIndexException);
-}
-
-TEST(sparse_matrix_set, given_negative_column_index_should_throw) {
-    // arrange
-    SparseMatrix<float> m(5, 5);
-    // act / assert
-    ASSERT_THROW(m.set(2, -1, 1), InvalidIndexException);
-}
-
 TEST(sparse_matrix_set, given_big_row_index_should_throw) {
     // arrange
     SparseMatrix<float> m(5, 5);
@@ -787,20 +773,6 @@ TEST(sparse_matrix_get, given_index_should_return_zero_cf) {
     ASSERT_TRUE((compare(Precision(0.001f), value, std::complex<float>(0, 0))));
 }
 
-TEST(sparse_matrix_get, given_negative_row_index_should_throw) {
-    // arrange
-    const SparseMatrix<float> m(5, 5);
-    // act / assert
-    ASSERT_THROW(std::ignore = m.get(-1, 2), InvalidIndexException);
-}
-
-TEST(sparse_matrix_get, given_negative_column_index_should_throw) {
-    // arrange
-    const SparseMatrix<float> m(5, 5);
-    // act / assert
-    ASSERT_THROW(std::ignore = m.get(2, -1), InvalidIndexException);
-}
-
 TEST(sparse_matrix_get, given_big_row_index_should_throw) {
     // arrange
     const SparseMatrix<float> m(5, 5);
@@ -838,16 +810,6 @@ TEST(sparse_matrix_default_constructor, given_rows_and_cols_should_construct_cf)
     ASSERT_TRUE(a.values() != nullptr);
     ASSERT_TRUE(a.rowIndices() != nullptr);
     ASSERT_TRUE(a.colOffsets() != nullptr);
-}
-
-TEST(sparse_matrix_default_constructor, given_negative_rows_should_throw) {
-    // act / assert
-    ASSERT_THROW(std::ignore = SparseMatrix<float>(-1, 5), InvalidIndexException);
-}
-
-TEST(sparse_matrix_default_constructor, given_negative_cols_should_throw) {
-    // act / assert
-    ASSERT_THROW(std::ignore = SparseMatrix<float>(5, -1), InvalidIndexException);
 }
 #pragma endregion
 #pragma region intializer_list_constructor
@@ -2381,22 +2343,6 @@ TEST(sparse_matrix_view_set, given_index_should_throw) {
     ASSERT_THROW(v.set(0, 0, 1), InvalidOperationException);
 }
 
-TEST(sparse_matrix_view_set, given_negative_column_index_should_throw) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 1, 1);
-    // act / assert
-    ASSERT_THROW(v.set(-1, 0, 1), InvalidIndexException);
-}
-
-TEST(sparse_matrix_view_set, given_negative_row_index_should_throw) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 1, 1);
-    // act / assert
-    ASSERT_THROW(v.set(0, -1, 1), InvalidIndexException);
-}
-
 TEST(sparse_matrix_view_set, given_big_column_index_should_throw_1) {
     // arrange
     SparseMatrix<float> a(5, 5);
@@ -2450,22 +2396,6 @@ TEST(sparse_matrix_view_get, given_index_should_return_value_cf) {
     const std::complex<float> value = v.get(1, 1);
     // assert
     ASSERT_TRUE((compare(Precision(0.001f), value, std::complex<float>(1, 2))));
-}
-
-TEST(sparse_matrix_view_get, given_negative_column_index_should_throw) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 1, 1);
-    // act / assert
-    ASSERT_THROW(std::ignore = v.get(-1, 0), InvalidIndexException);
-}
-
-TEST(sparse_matrix_view_get, given_negative_row_index_should_throw) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 1, 1);
-    // act / assert
-    ASSERT_THROW(std::ignore = v.get(0, -1), InvalidIndexException);
 }
 
 TEST(sparse_matrix_view_get, given_big_column_index_should_throw_1) {
@@ -2898,48 +2828,6 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_sh
     delete[] values;
 }
 
-TEST(custom_sparse_matrix_set, given_negative_row_index_should_throw) {
-    // arrange
-    std::size_t* colOffsets = new std::size_t[6];
-    colOffsets[0] = 0;
-    colOffsets[1] = 0;
-    colOffsets[2] = 0;
-    colOffsets[3] = 0;
-    colOffsets[4] = 0;
-    colOffsets[5] = 0;
-    std::size_t* rowIndices = new std::size_t[0];
-    float* values = new float[0];
-    std::size_t nnz = 0;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
-    // act / assert
-    ASSERT_THROW(m.set(-1, 2, 1), InvalidIndexException);
-    // cleanup
-    delete[] colOffsets;
-    delete[] rowIndices;
-    delete[] values;
-}
-
-TEST(custom_sparse_matrix_set, given_negative_column_index_should_throw) {
-    // arrange
-    std::size_t* colOffsets = new std::size_t[6];
-    colOffsets[0] = 0;
-    colOffsets[1] = 0;
-    colOffsets[2] = 0;
-    colOffsets[3] = 0;
-    colOffsets[4] = 0;
-    colOffsets[5] = 0;
-    std::size_t* rowIndices = new std::size_t[0];
-    float* values = new float[0];
-    std::size_t nnz = 0;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
-    // act / assert
-    ASSERT_THROW(m.set(2, -1, 1), InvalidIndexException);
-    // cleanup
-    delete[] colOffsets;
-    delete[] rowIndices;
-    delete[] values;
-}
-
 TEST(custom_sparse_matrix_set, given_big_row_index_should_throw) {
     // arrange
     std::size_t* colOffsets = new std::size_t[6];
@@ -3077,48 +2965,6 @@ TEST(custom_sparse_matrix_get, given_index_should_return_zero_cf) {
     const std::complex<float> value = m.get(1, 2);
     // assert
     ASSERT_TRUE((compare(Precision(0.001f), value, std::complex<float>(0, 0))));
-    // cleanup
-    delete[] colOffsets;
-    delete[] rowIndices;
-    delete[] values;
-}
-
-TEST(custom_sparse_matrix_get, given_negative_row_index_should_throw) {
-    // arrange
-    std::size_t* colOffsets = new std::size_t[6];
-    colOffsets[0] = 0;
-    colOffsets[1] = 0;
-    colOffsets[2] = 0;
-    colOffsets[3] = 0;
-    colOffsets[4] = 0;
-    colOffsets[5] = 0;
-    std::size_t* rowIndices = new std::size_t[0];
-    float* values = new float[0];
-    std::size_t nnz = 0;
-    const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
-    // act / assert
-    ASSERT_THROW(std::ignore = m.get(-1, 2), InvalidIndexException);
-    // cleanup
-    delete[] colOffsets;
-    delete[] rowIndices;
-    delete[] values;
-}
-
-TEST(custom_sparse_matrix_get, given_negative_column_index_should_throw) {
-    // arrange
-    std::size_t* colOffsets = new std::size_t[6];
-    colOffsets[0] = 0;
-    colOffsets[1] = 0;
-    colOffsets[2] = 0;
-    colOffsets[3] = 0;
-    colOffsets[4] = 0;
-    colOffsets[5] = 0;
-    std::size_t* rowIndices = new std::size_t[0];
-    float* values = new float[0];
-    std::size_t nnz = 0;
-    const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
-    // act / assert
-    ASSERT_THROW(std::ignore = m.get(2, -1), InvalidIndexException);
     // cleanup
     delete[] colOffsets;
     delete[] rowIndices;

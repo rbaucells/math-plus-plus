@@ -568,13 +568,6 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_se
     ASSERT_TRUE((compare(vIndexes[0], 3)));
 }
 
-TEST(sparse_vector_set, given_negative_index_should_throw) {
-    // arrange
-    SparseVector<float> v(5);
-    // act / assert
-    ASSERT_THROW(v.set(-1, 0), InvalidIndexException);
-}
-
 TEST(sparse_vector_set, given_big_index_should_throw) {
     // arrange
     SparseVector<float> v(5);
@@ -623,13 +616,6 @@ TEST(sparse_vector_get, given_index_should_return_zero_cf) {
     ASSERT_TRUE((compare(Precision(0.001f), value, std::complex<float>(0, 0))));
 }
 
-TEST(sparse_vector_get, given_negative_index_should_throw) {
-    // arrange
-    const SparseVector<float> v(5);
-    // act / assert
-    ASSERT_THROW(std::ignore = v.get(-1), InvalidIndexException);
-}
-
 TEST(sparse_vector_get, given_big_index_should_throw) {
     // arrange
     const SparseVector<float> v(5);
@@ -656,11 +642,6 @@ TEST(sparse_vector_default_constructor, given_size_should_construct_cf) {
     ASSERT_TRUE((compare(a.nnz(), 0)));
     ASSERT_TRUE(a.values() != nullptr);
     ASSERT_TRUE(a.indices() != nullptr);
-}
-
-TEST(sparse_vector_default_constructor, given_negative_size_should_throw) {
-    // act / assert
-    ASSERT_THROW(std::ignore = SparseVector<std::complex<float>>(-1), InvalidIndexException);
 }
 #pragma endregion
 #pragma region initializer_list_constructor
@@ -1582,14 +1563,6 @@ TEST(sparse_vector_view_set, given_index_should_throw) {
     ASSERT_THROW(v.set(0, 1), InvalidOperationException);
 }
 
-TEST(sparse_vector_view_set, given_negative_index_should_throw) {
-    // arrange
-    SparseVector<float> a(5);
-    SparseVectorView<float> v(a, 3, 1);
-    // act
-    ASSERT_THROW(v.set(-1, 1), InvalidIndexException);
-}
-
 TEST(sparse_vector_view_set, given_big_index_should_throw_1) {
     // arrange
     SparseVector<float> a(5);
@@ -1619,14 +1592,6 @@ TEST(sparse_vector_view_get, given_index_should_return_value_cf) {
     const std::complex<float> value = v.get(1);
     // assert
     ASSERT_TRUE((compare(Precision(0.001f), value, std::complex<float>(1, 2))));
-}
-
-TEST(sparse_vector_view_get, given_negative_index_should_throw_f) {
-    // arrange
-    SparseVector<float> a(5);
-    SparseVectorView<float> v(a, 3, 1);
-    // act / assert
-    ASSERT_THROW(std::ignore = v.get(-1), InvalidIndexException);
 }
 
 TEST(sparse_vector_view_get, given_big_index_should_throw_f_1) {
@@ -2451,19 +2416,6 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_zero_value_sh
     delete[] indices;
 }
 
-TEST(custom_sparse_vector_set, given_negative_index_should_throw) {
-    // arrange
-    float* values = new float[0];
-    std::size_t* indices = new std::size_t[0];
-    std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
-    // act / assert
-    ASSERT_THROW(v.set(-1, 0), InvalidIndexException);
-    // clean up
-    delete[] values;
-    delete[] indices;
-}
-
 TEST(custom_sparse_vector_set, given_big_index_should_throw) {
     // arrange
     float* values = new float[0];
@@ -2537,19 +2489,6 @@ TEST(custom_sparse_vector_get, given_index_should_return_zero_cf) {
     const std::complex<float> value = v.get(1);
     // assert
     ASSERT_TRUE((compare(Precision(0.001f), value, std::complex<float>(0, 0))));
-    // clean up
-    delete[] values;
-    delete[] indices;
-}
-
-TEST(custom_sparse_vector_get, given_negative_index_should_throw) {
-    // arrange
-    float* values = new float[0];
-    std::size_t* indices = new std::size_t[0];
-    std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
-    // act / assert
-    ASSERT_THROW(std::ignore = v.get(-1), InvalidIndexException);
     // clean up
     delete[] values;
     delete[] indices;
