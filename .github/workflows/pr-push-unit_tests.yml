@@ -1,13 +1,13 @@
-name: Build
+name: Unit Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [main, main-refactor]
   pull_request:
-    branches: [ main ]
+    branches: [main, main-refactor]
 
 jobs:
-  build:
+  unit_tests:
     runs-on: ubuntu-latest
     
     steps:
