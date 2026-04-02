@@ -2,60 +2,58 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "LLDB: Debug Tests",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/tests/math-tests",
-            "args": [],
-            "cwd": "${workspaceFolder}",
-            "preLaunchTask": "build",
-            "initCommands": [
-                "command script import ${workspaceFolder}/mathpp_lldb_formatters.py"
-            ],
-            "postRunCommands": [],
-            "sourceMap": {},
-            "env": {},
-            "externalConsole": false,
-            "MIMode": "lldb"
-        },
-        {
-            "name": "LLDB: Debug Tests (with .lldbinit)",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/tests/math-tests",
-            "args": [],
-            "cwd": "${workspaceFolder}",
-            "preLaunchTask": "build",
-            "sourceMap": {},
-            "env": {
-                "HOME": "${workspaceFolder}"
-            },
-            "externalConsole": false,
-            "MIMode": "lldb"
-        },
-        {
-            "name": "GDB: Debug Tests",
+            "name": "Configure & Build",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/tests/math-tests",
+            "program": "/bin/true",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
+            "preLaunchTask": "build-project"
+        },
+        {
+            "name": "Debug Unit Tests",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/tests/mathpp-tests",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}/build/tests",
+            "environment": [],
+            "externalConsole": false,
+            "console": "integratedTerminal",
+            "preLaunchTask": "build-tests-no-config",
             "MIMode": "gdb",
-            "preLaunchTask": "build",
+            "miDebuggerPath": "/usr/bin/gdb",
             "setupCommands": [
                 {
-                    "description": "Enable pretty-printing for gdb",
+                    "description": "Enable pretty-printing",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 },
                 {
-                    "description": "Set Disassembly Flavor to Intel",
-                    "text": "-gdb-set disassembly-flavor intel",
-                    "ignoreFailures": true
+                    "description": "Allow pending breakpoints",
+                    "text": "set breakpoint pending on",
+                    "ignoreFailures": false
                 }
+            ]
+        },
+        {
+            "name": "Debug Unit Tests (LLDB)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/tests/mathpp-tests",
+            "args": [],
+            "stopOnEntry": false,
+            "cwd": "${workspaceFolder}/build/tests",
+            "preLaunchTask": "configure-and-build-debug-tests",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "preRunCommands": [
+                "script import sys; sys.path.insert(0, '${workspaceFolder}/lldb')",
+                "command script import ${workspaceFolder}/lldb/mathpp_lldb_formatter.py"
             ]
         }
     ]
