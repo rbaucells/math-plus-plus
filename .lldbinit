@@ -1,2 +1,2 @@
 settings set interpreter.require-overwrite false
-command script import /Users/ricardo/Projects/math-plus-plus/lldb/mathpp_lldb_formatter.py
+command script import ./lldb/mathpp_lldb_formatter.py

@@ -14,7 +14,8 @@
 				"ms-vscode.cpptools-extension-pack",
 				"ms-vscode.cmake-tools",
 				"twxs.cmake",
-				"ms-vscode.cpptools-themes"
+				"ms-vscode.cpptools-themes",
+				"vadimcn.vscode-lldb"
 			],
 			"settings": {
 				"cmake.configureOnOpen": true,

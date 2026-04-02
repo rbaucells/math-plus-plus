@@ -5,3 +5,4 @@ cmake-build-debug-coverage
 cmake-build-release
 cmake-build-release-coverage
 cobertura-coverage.xml
+__pycache__

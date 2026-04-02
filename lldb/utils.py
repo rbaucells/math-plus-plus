@@ -1,8 +1,9 @@
 from enum import Enum
+import struct
 
 import lldb
 
-precision: int = 2
+precision: int = 4
 imag_char: str = 'i'
 
 class ScalarType(Enum):
@@ -44,55 +45,65 @@ def scalar_type_from_type(t_type: lldb.SBType):
 
     raise RuntimeError(f"could not get ScalarType for {type_name}")
 
-def is_zero(val: lldb.SBValue) -> bool:
-    try:
-        return float(val.value) == 0.0
-    except:
-        return False
+def _complex_to_str(value: lldb.SBValue, scalar_type: ScalarType) -> str:
+    """Render a std::complex<T> value as a string by reading raw memory.
+
+    The C++ standard guarantees std::complex<T> is layout-compatible with T[2]
+    (real part first, imaginary part second), so this works with both libc++ and
+    libstdc++ regardless of their internal field naming conventions.
+    """
+    byte_size: int = value.GetByteSize()
+    if byte_size == 0 or byte_size % 2 != 0:
+        return "N/A"
+
+    component_size: int = byte_size // 2
+    addr: int = value.GetLoadAddress()
+    if addr == lldb.LLDB_INVALID_ADDRESS:
+        return "N/A"
+
+    error: lldb.SBError = lldb.SBError()
+    raw: bytes = bytes(value.GetTarget().GetProcess().ReadMemory(addr, byte_size, error))
+    if error.Fail() or len(raw) != byte_size:
+        return "N/A"
+
+    is_float: bool = scalar_type == ScalarType.ComplexFloating
+    fmt_char: str | None = (
+        {4: "f", 8: "d"}.get(component_size)
+        if is_float
+        else {1: "b", 2: "h", 4: "i", 8: "q"}.get(component_size)
+    )
+    if fmt_char is None:
+        return "N/A"
+
+    real_val, imag_val = struct.unpack(f"{fmt_char}{fmt_char}", raw)
+
+    real_zero: bool = real_val == 0
+    imag_zero: bool = imag_val == 0
+
+    if real_zero and imag_zero:
+        return "0"
+
+    real_str: str = f"{float(real_val):.{precision}g}" if is_float else str(real_val)
+    imag_str: str = f"{float(imag_val):.{precision}g}" if is_float else str(imag_val)
+
+    if imag_zero:
+        return real_str
+    if real_zero:
+        return f"{imag_str}{imag_char}"
+    if imag_val < 0:
+        return f"{real_str} - {imag_str.lstrip('-')}{imag_char}"
+    return f"{real_str} + {imag_str}{imag_char}"
+
 
 def get_str_from_value(value: lldb.SBValue, scalar_type: ScalarType) -> str:
     if scalar_type == ScalarType.Floating:
-        value_as_float: float = float(value.value)
-
-        value_as_float_rounded: float = round(value_as_float, precision)
-
-        value_as_str: str = str(value_as_float_rounded)
-
-        return value_as_str
+        return f"{float(value.value):.{precision}g}"
 
     if scalar_type == ScalarType.Integer:
-        value_as_str: str = value.value
-
-        return value_as_str
+        return value.value
 
     if scalar_type in [ScalarType.ComplexFloating, ScalarType.ComplexInteger]:
-        real: lldb.SBValue = value.GetChildMemberWithName("__re_")
-        imag: lldb.SBValue = value.GetChildMemberWithName("__im_")
-
-        if not real.IsValid() or not imag.IsValid():
-            return "N/A invalid"
-
-        inner_type: ScalarType = ScalarType.Floating if scalar_type == ScalarType.ComplexFloating else ScalarType.Integer
-
-        real_is_zero: bool = is_zero(real)
-        imag_is_zero: bool = is_zero(imag)
-
-        if real_is_zero and imag_is_zero:
-            return "0"
-
-        if imag_is_zero:
-            return get_str_from_value(real, inner_type)
-
-        if real_is_zero:
-            return get_str_from_value(imag, inner_type) + imag_char
-
-        real_str = get_str_from_value(real, inner_type)
-        imag_str = get_str_from_value(imag, inner_type)
-
-        if imag_str.startswith('-'):
-            return f"{real_str} - {imag_str.removeprefix('-')}{imag_char}"
-        else:
-            return f"{real_str} + {imag_str}{imag_char}"
+        return _complex_to_str(value, scalar_type)
 
     return "N/A"
 
