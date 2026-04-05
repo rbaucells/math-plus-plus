@@ -10,12 +10,12 @@ def custom_dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
     custom_dense_matrix_type: lldb.SBType = get_real_type(valobj.GetType())
     scalar_type: ScalarType = scalar_type_from_type(custom_dense_matrix_type.GetTemplateArgumentType(0))
     # rows
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
+    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows_")
     rows_int: int = rows.GetValueAsUnsigned()
     if rows_int == 0:
         return "Empty Matrix (rows = 0)"
     # columns
-    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns_")
     columns_int: int = columns.GetValueAsUnsigned()
     if columns_int == 0:
         return "Empty Matrix (columns = 0)"
@@ -48,10 +48,10 @@ class CustomDenseMatrixSyntheticChildrenProvider:
 
     def _refresh(self):
         # rows
-        self.rows: lldb.SBValue = self.valobj.GetChildMemberWithName("rows")
+        self.rows: lldb.SBValue = self.valobj.GetChildMemberWithName("rows_")
         self.rows_int: int = self.rows.GetValueAsUnsigned()
         # columns
-        self.columns: lldb.SBValue = self.valobj.GetChildMemberWithName("columns")
+        self.columns: lldb.SBValue = self.valobj.GetChildMemberWithName("columns_")
         self.columns_int: int = self.columns.GetValueAsUnsigned()
         # stride
         self.stride: lldb.SBValue = self.valobj.GetChildMemberWithName("stride_")
@@ -71,9 +71,9 @@ class CustomDenseMatrixSyntheticChildrenProvider:
 
     def get_child_index(self, name: str) -> int:
         # map child name to index for rows, columns, stride_, view, and data_ children
-        if name == "rows":
+        if name == "rows_":
             return 0
-        if name == "columns":
+        if name == "columns_":
             return 1
         if name == "stride_":
             return 2
@@ -118,10 +118,10 @@ def to_string(valobj: lldb.SBValue) -> str:
     custom_dense_matrix_type: lldb.SBType = get_real_type(valobj.GetType())
     scalar_type: ScalarType = scalar_type_from_type(custom_dense_matrix_type.GetTemplateArgumentType(0))
     # rows
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
+    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows_")
     rows_int: int = rows.GetValueAsUnsigned()
     # columns
-    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns_")
     columns_int: int = columns.GetValueAsUnsigned()
     # stride
     stride: lldb.SBValue = valobj.GetChildMemberWithName("stride_")

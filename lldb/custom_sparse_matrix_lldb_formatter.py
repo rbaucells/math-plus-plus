@@ -10,12 +10,12 @@ def custom_sparse_matrix_summary(valobj: lldb.SBValue, internal_dict):
     custom_sparse_matrix_type: lldb.SBType = get_real_type(valobj.GetType())
     scalar_type: ScalarType = scalar_type_from_type(custom_sparse_matrix_type.GetTemplateArgumentType(0))
     # rows
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
+    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows_")
     rows_int: int = rows.GetValueAsUnsigned()
     if rows_int == 0:
         return "Empty Matrix (rows = 0)"
     # columns
-    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns_")
     columns_int: int = columns.GetValueAsUnsigned()
     if columns_int == 0:
         return "Empty Matrix (columns = 0)"
@@ -62,10 +62,10 @@ class CustomSparseMatrixSyntheticChildrenProvider:
 
     def _refresh(self):
         # rows
-        self.rows: lldb.SBValue = self.valobj.GetChildMemberWithName("rows")
+        self.rows: lldb.SBValue = self.valobj.GetChildMemberWithName("rows_")
         self.rows_int: int = self.rows.GetValueAsUnsigned()
         # columns
-        self.columns: lldb.SBValue = self.valobj.GetChildMemberWithName("columns")
+        self.columns: lldb.SBValue = self.valobj.GetChildMemberWithName("columns_")
         self.columns_int: int = self.columns.GetValueAsUnsigned()
         # nnz — pointer-to-pointer field: dereference to read value and cache type
         nnz_deref: lldb.SBValue = self.valobj.GetChildMemberWithName("nnz_").Dereference()
@@ -92,9 +92,9 @@ class CustomSparseMatrixSyntheticChildrenProvider:
 
     def get_child_index(self, name: str) -> int:
         # map child name to index for rows, columns, nnz_, colOffsets_, rowIndices_, and values_ children
-        if name == "rows":
+        if name == "rows_":
             return 0
-        if name == "columns":
+        if name == "columns_":
             return 1
         if name == "nnz_":
             return 2
@@ -135,10 +135,10 @@ def to_string(valobj: lldb.SBValue) -> str:
     custom_sparse_matrix_type: lldb.SBType = get_real_type(valobj.GetType())
     scalar_type: ScalarType = scalar_type_from_type(custom_sparse_matrix_type.GetTemplateArgumentType(0))
     # rows
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
+    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows_")
     rows_int: int = rows.GetValueAsUnsigned()
     # columns
-    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns_")
     columns_int: int = columns.GetValueAsUnsigned()
     # nnz — pointer-to-pointer field
     nnz_int: int = valobj.GetChildMemberWithName("nnz_").Dereference().GetValueAsUnsigned()

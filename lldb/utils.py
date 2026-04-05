@@ -45,6 +45,7 @@ def scalar_type_from_type(t_type: lldb.SBType):
 
     raise RuntimeError(f"could not get ScalarType for {type_name}")
 
+
 def _complex_to_str(value: lldb.SBValue, scalar_type: ScalarType) -> str:
     """Render a std::complex<T> value as a string by reading raw memory.
 
@@ -96,15 +97,16 @@ def _complex_to_str(value: lldb.SBValue, scalar_type: ScalarType) -> str:
 
 
 def get_str_from_value(value: lldb.SBValue, scalar_type: ScalarType) -> str:
+    # float/double
     if scalar_type == ScalarType.Floating:
         return f"{float(value.value):.{precision}g}"
-
+    # int
     if scalar_type == ScalarType.Integer:
         return value.value
-
+    # complex<T>
     if scalar_type in [ScalarType.ComplexFloating, ScalarType.ComplexInteger]:
         return _complex_to_str(value, scalar_type)
-
+    # unsupported type
     return "N/A"
 
 
@@ -123,3 +125,12 @@ def get_real_type(t_type: lldb.SBType) -> lldb.SBType:
         return t_type.GetDereferencedType()
 
     return t_type
+
+
+def indent_lines(s: str, spaces: int) -> str:
+    if spaces < 0:
+        raise ValueError("spaces must be >= 0")
+    # line prefix
+    prefix: str = " " * spaces
+    # add prefix to each line
+    return "\n".join(prefix + line for line in s.splitlines())
