@@ -9,10 +9,10 @@ class SparseMatrixViewSyntheticChildrenProvider:
     def __init__(self, valobj: lldb.SBValue, internal_dict):
         self.valobj: lldb.SBValue = valobj
 
-        self.columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+        self.columns: lldb.SBValue = valobj.GetChildMemberWithName("columns_")
         self.columns_int: int = self.columns.GetValueAsUnsigned()
 
-        self.rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
+        self.rows: lldb.SBValue = valobj.GetChildMemberWithName("rows_")
         self.rows_int: int = self.rows.GetValueAsUnsigned()
 
         self.col_offset: lldb.SBValue = valobj.GetChildMemberWithName("colOffset_")
@@ -23,10 +23,10 @@ class SparseMatrixViewSyntheticChildrenProvider:
 
         self.owner: lldb.SBValue = valobj.GetChildMemberWithName("owner_")
 
-        owner_columns: lldb.SBValue = self.owner.GetChildMemberWithName("columns")
+        owner_columns: lldb.SBValue = self.owner.GetChildMemberWithName("columns_")
         self.owner_columns_int: int = owner_columns.GetValueAsUnsigned()
 
-        owner_rows: lldb.SBValue = self.owner.GetChildMemberWithName("rows")
+        owner_rows: lldb.SBValue = self.owner.GetChildMemberWithName("rows_")
         self.owner_rows_int: int = owner_rows.GetValueAsUnsigned()
 
         owner_nnz: lldb.SBValue = self.owner.GetChildMemberWithName("nnz_")
@@ -46,10 +46,10 @@ class SparseMatrixViewSyntheticChildrenProvider:
         return 7
 
     def get_child_index(self, name: str) -> int:
-        if name == "rows":
+        if name == "rows_":
             return 0
 
-        if name == "columns":
+        if name == "columns_":
             return 1
 
         if name == "nnz_view":
@@ -204,10 +204,10 @@ def to_string(valobj: lldb.SBValue) -> str:
 
     valobj: lldb.SBValue = valobj
 
-    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns_")
     columns_int: int = columns.GetValueAsUnsigned()
 
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
+    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows_")
     rows_int: int = rows.GetValueAsUnsigned()
 
     col_offset: lldb.SBValue = valobj.GetChildMemberWithName("colOffset_")

@@ -3,24 +3,24 @@ from matrix_lldb_formatter import _MAX_VIEW_DIM, format_matrix_display, format_m
 from utils import ScalarType, get_real_type, get_str_from_value, iterate_data_array, scalar_type_from_type
 
 
-def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
+def dense_matrix_summary(matrix: lldb.SBValue, internal_dict):
     # get non-synthetic value to access actual DenseMatrix members
-    valobj = valobj.GetNonSyntheticValue()
+    matrix = matrix.GetNonSyntheticValue()
     # get matrix type and scalar type
-    dense_matrix_type: lldb.SBType = get_real_type(valobj.GetType())
-    scalar_type: ScalarType = scalar_type_from_type(dense_matrix_type.GetTemplateArgumentType(0))
+    matrix_type: lldb.SBType = get_real_type(matrix.GetType())
+    scalar_type: ScalarType = scalar_type_from_type(matrix_type.GetTemplateArgumentType(0))
     # rows
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
+    rows: lldb.SBValue = matrix.GetChildMemberWithName("rows_")
     rows_int: int = rows.GetValueAsUnsigned()
     if rows_int == 0:
         return "Empty Matrix (rows = 0)"
     # columns
-    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+    columns: lldb.SBValue = matrix.GetChildMemberWithName("columns_")
     columns_int: int = columns.GetValueAsUnsigned()
     if columns_int == 0:
         return "Empty Matrix (columns = 0)"
     # data
-    data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
+    data: lldb.SBValue = matrix.GetChildMemberWithName("data_")
     # null data pointer indicates moved-from state
     if data.GetValueAsSigned() == 0:
         return "Moved-from Matrix (data_ = nullptr)"
@@ -40,19 +40,19 @@ def dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
 
 class DenseMatrixSyntheticChildrenProvider:
 
-    def __init__(self, valobj: lldb.SBValue, internal_dict):
-        self.valobj: lldb.SBValue = valobj
+    def __init__(self, matrix: lldb.SBValue, internal_dict):
+        self.matrix = matrix
         self._refresh()
 
     def _refresh(self):
         # rows
-        self.rows: lldb.SBValue = self.valobj.GetChildMemberWithName("rows")
+        self.rows: lldb.SBValue = self.matrix.GetChildMemberWithName("rows_")
         self.rows_int: int = self.rows.GetValueAsUnsigned()
         # columns
-        self.columns: lldb.SBValue = self.valobj.GetChildMemberWithName("columns")
+        self.columns: lldb.SBValue = self.matrix.GetChildMemberWithName("columns_")
         self.columns_int: int = self.columns.GetValueAsUnsigned()
         # data
-        self.data: lldb.SBValue = self.valobj.GetChildMemberWithName("data_")
+        self.data: lldb.SBValue = self.matrix.GetChildMemberWithName("data_")
         # element type and view array type
         self.element_type: lldb.SBType = self.data.GetType().GetPointeeType()
         self.view_array_type: lldb.SBType = self.element_type.GetArrayType(self.columns_int * self.rows_int)
@@ -65,9 +65,9 @@ class DenseMatrixSyntheticChildrenProvider:
 
     def get_child_index(self, name: str) -> int:
         # map child name to index for rows, columns, view, and data_ children
-        if name == "rows":
+        if name == "rows_":
             return 0
-        if name == "columns":
+        if name == "columns_":
             return 1
         if name == "view":
             return 2
@@ -96,26 +96,26 @@ class DenseMatrixSyntheticChildrenProvider:
                     # append element to view
                     view_data.Append(element.GetData())
             # create synthetic "view" child with row-major view data and appropriate array type
-            return self.valobj.CreateValueFromData("view", view_data, self.view_array_type)
+            return self.matrix.CreateValueFromData("view", view_data, self.view_array_type)
         # data_ child is just the original data pointer with the original column-major layout
         if index == 3:
-            return self.valobj.CreateValueFromAddress("data_", self.data.GetValueAsUnsigned(), self.view_array_type)
+            return self.matrix.CreateValueFromAddress("data_", self.data.GetValueAsUnsigned(), self.view_array_type)
         # exit
         return None
 
 
-def to_string(valobj: lldb.SBValue) -> str:
+def to_string(matrix: lldb.SBValue) -> str:
     # get non-synthetic value to access actual DenseMatrix members
-    dense_matrix_type: lldb.SBType = get_real_type(valobj.GetType())
-    scalar_type: ScalarType = scalar_type_from_type(dense_matrix_type.GetTemplateArgumentType(0))
+    matrix_type: lldb.SBType = get_real_type(matrix.GetType())
+    scalar_type: ScalarType = scalar_type_from_type(matrix_type.GetTemplateArgumentType(0))
     # rows
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows")
+    rows: lldb.SBValue = matrix.GetChildMemberWithName("rows_")
     rows_int: int = rows.GetValueAsUnsigned()
     # columns
-    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns")
+    columns: lldb.SBValue = matrix.GetChildMemberWithName("columns_")
     columns_int: int = columns.GetValueAsUnsigned()
     # data
-    data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
+    data: lldb.SBValue = matrix.GetChildMemberWithName("data_")
     # check dimensions
     if rows_int <= _MAX_VIEW_DIM and columns_int <= _MAX_VIEW_DIM:
 
