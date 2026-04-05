@@ -469,6 +469,7 @@ private:
 
 template<scalar T = float>
 struct CustomDenseMatrix : DenseMatrixBase<T> {
+
     CustomDenseMatrix() = delete;
 
     CustomDenseMatrix(const CustomDenseMatrix<T>& other) = delete;
