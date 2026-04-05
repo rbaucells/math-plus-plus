@@ -1,10 +1,7 @@
-name: Default Workflow
+name: Code Coverage Report
 
 on:
-  push:
-    branches-ignore:
-      - main
-  pull_request:
+  pull_request_target:
     types: [opened, reopened, synchronize]
 
 permissions:
@@ -12,7 +9,7 @@ permissions:
   issues: write
 
 jobs:
-  build:
+  code_coverage:
     runs-on: ubuntu-latest
     
     steps:
