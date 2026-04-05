@@ -23,13 +23,9 @@ def dense_matrix_view_summary(view: lldb.SBValue, internal_dict):
     # colOffset
     col_offset: lldb.SBValue = view.GetChildMemberWithName("colOffset_")
     col_offset_int: int = col_offset.GetValueAsUnsigned()
-    if col_offset_int == 0:
-        return "Empty Matrix (colOffset = 0)"
     # rowOffset
     row_offset: lldb.SBValue = view.GetChildMemberWithName("rowOffset_")
     row_offset_int: int = row_offset.GetValueAsUnsigned()
-    if row_offset_int == 0:
-        return "Empty Matrix (rowOffset = 0)"
     # owner
     owner: lldb.SBValue = view.GetChildMemberWithName("owner_")
     # data
