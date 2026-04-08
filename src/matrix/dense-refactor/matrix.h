@@ -80,15 +80,15 @@ struct DenseMatrix {
     DenseMatrix(const DenseMatrix<OTHER_T>& other) : rows_(other.rows()), columns_(other.columns()), data_(new T[columns_ * rows_]) {
         const OTHER_T* otherData = other.data();
 
-        for (int i = 0; i < columns_ * rows_; i++) {
+        for (std::size_t i = 0; i < columns_ * rows_; i++) {
             data_[i] = otherData[i];
         }
     }
 
     template<dense_matrix_like U>
     DenseMatrix(const U& other) : rows_(other.rows()), columns_(other.columns()), data_(new T[columns_ * rows_]) {
-        for (int c = 0; c < columns_; c++) {
-            for (int r = 0; r < rows_; r++) {
+        for (std::size_t c = 0; c < columns_; c++) {
+            for (std::size_t r = 0; r < rows_; r++) {
                 at(c, r) = other.at(c, r);
             }
         }

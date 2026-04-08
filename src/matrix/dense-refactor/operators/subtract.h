@@ -57,7 +57,7 @@ struct DenseMatrixSubtractExpr {
 
     template<dense_matrix_like OTHER> requires has_common_type<typename ARGS::ValueType..., typename OTHER::ValueType>
     DenseMatrixSubtractExpr<ARGS..., OTHER> operator-(const OTHER& other) const {
-        if (!other.rows() == rows() || !other.columns() == columns()) {
+        if (other.rows() != rows() || other.columns() != columns()) {
             throw InvalidDimensionException("Cannot subtract matrices to DenseMatrixSubtractExpr of different sizes");
         }
 
@@ -69,7 +69,7 @@ struct DenseMatrixSubtractExpr {
 
 template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>
 DenseMatrixSubtractExpr<T, U> operator-(const T& a, const U& b) {
-    if (!a.rows() == b.rows() || !a.columns() == b.columns()) {
+    if (a.rows() != b.rows() || a.columns() != b.columns()) {
         throw InvalidDimensionException("Cannot create DenseMatrixSubtractExpr matrices of different sizes");
     }
 

@@ -464,7 +464,11 @@ TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix, given_f_
     // arrange
     DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wself-assign-overloaded"
+    // ReSharper disable once CppIdenticalOperandsInBinaryExpression
     a = a;
+#pragma GCC diagnostic pop
     const float* aData = a.data();
     // assert
     ASSERT_TRUE(compare(a.rows(), 3));
@@ -804,7 +808,10 @@ TEST(dense_matrix_move_assignment_operator, given_f_self_should_do_nothing) {
     // arrange
     DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wself-move"
     a = std::move(a);
+#pragma GCC diagnostic pop
     const float* aData = a.data();
     // assert
     ASSERT_TRUE(compare(a.rows(), 3));
