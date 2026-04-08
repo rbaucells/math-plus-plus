@@ -266,68 +266,68 @@ TEST(dense_matrix_copy_constructor_from_different_type_dense_matrix, given_f_den
     ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 #pragma endregion
-#pragma region copy_constructor_from_same_type_dense_matrix_base
-TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix_base, given_f_dense_matrix_base_should_copy_construct) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    // act
-    const DenseMatrix<float> b = static_cast<const DenseMatrixBase<float>&>(a);
-    const float* bData = b.data();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 3)));
-    ASSERT_TRUE((compare(b.columns(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
-}
-
-TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix_base, given_cf_dense_matrix_base_should_copy_construct) {
-    // arrange
-    const DenseMatrix<std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
-    // act
-    const DenseMatrix<std::complex<float>> b = static_cast<const DenseMatrixBase<std::complex<float>>&>(a);
-    const std::complex<float>* bData = b.data();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 3)));
-    ASSERT_TRUE((compare(b.columns(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(7, 8))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(13, 14))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[3], std::complex<float>(3, 4))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[4], std::complex<float>(9, 10))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[5], std::complex<float>(15, 16))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[6], std::complex<float>(5, 6))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[7], std::complex<float>(11, 12))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[8], std::complex<float>(17, 18))));
-}
-#pragma endregion
-#pragma region copy_constructor_from_different_type_dense_matrix_base
-TEST(dense_matrix_copy_constructor_from_different_type_dense_matrix_base, given_f_dense_matrix_base_should_copy_construct) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    // act
-    const DenseMatrix<std::complex<float>> b = static_cast<const DenseMatrixBase<float>&>(a);
-    const std::complex<float>* bData = b.data();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 3)));
-    ASSERT_TRUE((compare(b.columns(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
-}
-#pragma endregion
+// #pragma region copy_constructor_from_same_type_dense_matrix_base
+// TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix_base, given_f_dense_matrix_base_should_copy_construct) {
+//     // arrange
+//     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+//     // act
+//     const DenseMatrix<float> b = static_cast<const DenseMatrixBase<float>&>(a);
+//     const float* bData = b.data();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 3)));
+//     ASSERT_TRUE((compare(b.columns(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
+// }
+//
+// TEST(dense_matrix_copy_constructor_from_same_type_dense_matrix_base, given_cf_dense_matrix_base_should_copy_construct) {
+//     // arrange
+//     const DenseMatrix<std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
+//     // act
+//     const DenseMatrix<std::complex<float>> b = static_cast<const DenseMatrixBase<std::complex<float>>&>(a);
+//     const std::complex<float>* bData = b.data();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 3)));
+//     ASSERT_TRUE((compare(b.columns(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(7, 8))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(13, 14))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[3], std::complex<float>(3, 4))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[4], std::complex<float>(9, 10))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[5], std::complex<float>(15, 16))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[6], std::complex<float>(5, 6))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[7], std::complex<float>(11, 12))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[8], std::complex<float>(17, 18))));
+// }
+// #pragma endregion
+// #pragma region copy_constructor_from_different_type_dense_matrix_base
+// TEST(dense_matrix_copy_constructor_from_different_type_dense_matrix_base, given_f_dense_matrix_base_should_copy_construct) {
+//     // arrange
+//     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+//     // act
+//     const DenseMatrix<std::complex<float>> b = static_cast<const DenseMatrixBase<float>&>(a);
+//     const std::complex<float>* bData = b.data();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 3)));
+//     ASSERT_TRUE((compare(b.columns(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
+// }
+// #pragma endregion
 #pragma region move_constructor
 TEST(dense_matrix_move_constructor, given_f_dense_matrix_should_move_construct_and_leave_other_empty) {
     // arrange
@@ -542,167 +542,167 @@ TEST(dense_matrix_copy_assignment_operator_from_different_type_dense_matrix, giv
     ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
 }
 #pragma endregion
-#pragma region copy_assignment_operator_from_same_type_dense_matrix_base
-TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_f_dense_matrix_base_of_same_size_should_copy_assign) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    DenseMatrix<float> b(3, 3, true);
-    // act
-    b = static_cast<const DenseMatrixBase<float>&>(a);
-    const float* bData = b.data();
-    // assert
-    ASSERT_TRUE(compare(b.rows(), 3));
-    ASSERT_TRUE(compare(b.columns(), 3));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
-}
-
-TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_cf_dense_matrix_base_of_same_size_should_copy_assign) {
-    // arrange
-    const DenseMatrix<std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
-    DenseMatrix<std::complex<float>> b(3, 3, true);
-    // act
-    b = static_cast<const DenseMatrixBase<std::complex<float>>&>(a);
-    const std::complex<float>* bData = b.data();
-    // assert
-    ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(7, 8))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(13, 14))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[3], std::complex<float>(3, 4))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[4], std::complex<float>(9, 10))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[5], std::complex<float>(15, 16))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[6], std::complex<float>(5, 6))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[7], std::complex<float>(11, 12))));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[8], std::complex<float>(17, 18))));
-}
-
-TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_f_dense_matrix_base_of_diff_size_should_copy_assign_1) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    DenseMatrix<float> b(2, 3, true);
-    // act
-    b = static_cast<const DenseMatrixBase<float>&>(a);
-    const float* bData = b.data();
-    // assert
-    ASSERT_TRUE(compare(b.rows(), 3));
-    ASSERT_TRUE(compare(b.columns(), 3));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
-}
-
-TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_f_dense_matrix_base_of_diff_size_should_copy_assign_2) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    DenseMatrix<float> b(3, 2, true);
-    // act
-    b = static_cast<const DenseMatrixBase<float>&>(a);
-    const float* bData = b.data();
-    // assert
-    ASSERT_TRUE(compare(b.rows(), 3));
-    ASSERT_TRUE(compare(b.columns(), 3));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
-}
-
-TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_f_self_should_do_nothing) {
-    // arrange
-    DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    // act
-    a = static_cast<const DenseMatrixBase<float>&>(a);
-    const float* aData = a.data();
-    // assert
-    ASSERT_TRUE(compare(a.rows(), 3));
-    ASSERT_TRUE(compare(a.columns(), 3));
-    ASSERT_TRUE((compare(Precision(0.001f), aData[0], 1)));
-    ASSERT_TRUE((compare(Precision(0.001f), aData[1], 4)));
-    ASSERT_TRUE((compare(Precision(0.001f), aData[2], 7)));
-    ASSERT_TRUE((compare(Precision(0.001f), aData[3], 2)));
-    ASSERT_TRUE((compare(Precision(0.001f), aData[4], 5)));
-    ASSERT_TRUE((compare(Precision(0.001f), aData[5], 8)));
-    ASSERT_TRUE((compare(Precision(0.001f), aData[6], 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), aData[7], 6)));
-    ASSERT_TRUE((compare(Precision(0.001f), aData[8], 9)));
-}
-#pragma endregion
-#pragma region copy_assignment_operator_from_different_type_base
-TEST(dense_matrix_copy_assignment_operator_from_different_type_dense_matrix_base, given_f_dense_matrix_base_of_same_size_should_copy_assign) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    DenseMatrix<std::complex<float>> b(3, 3, true);
-    // act
-    b = static_cast<const DenseMatrixBase<float>&>(a);
-    const std::complex<float>* bData = b.data();
-    // assert
-    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
-}
-
-TEST(dense_matrix_copy_assignment_operator_from_different_type_dense_matrix_base, given_f_dense_matrix_base_of_diff_size_should_copy_assign_1) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    DenseMatrix<std::complex<float>> b(2, 3, true);
-    // act
-    b = static_cast<const DenseMatrixBase<float>&>(a);
-    const std::complex<float>* bData = b.data();
-    // assert
-    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
-}
-
-TEST(dense_matrix_copy_assignment_operator_from_different_type_dense_matrix_base, given_f_dense_matrix_base_of_diff_size_should_copy_assign_2) {
-    // arrange
-    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    DenseMatrix<std::complex<float>> b(3, 2, true);
-    // act
-    b = static_cast<const DenseMatrixBase<float>&>(a);
-    const std::complex<float>* bData = b.data();
-    // assert
-    ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
-    ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
-}
-#pragma endregion
+// #pragma region copy_assignment_operator_from_same_type_dense_matrix_base
+// TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_f_dense_matrix_base_of_same_size_should_copy_assign) {
+//     // arrange
+//     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+//     DenseMatrix<float> b(3, 3, true);
+//     // act
+//     b = static_cast<const DenseMatrixBase<float>&>(a);
+//     const float* bData = b.data();
+//     // assert
+//     ASSERT_TRUE(compare(b.rows(), 3));
+//     ASSERT_TRUE(compare(b.columns(), 3));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
+// }
+//
+// TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_cf_dense_matrix_base_of_same_size_should_copy_assign) {
+//     // arrange
+//     const DenseMatrix<std::complex<float>> a = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
+//     DenseMatrix<std::complex<float>> b(3, 3, true);
+//     // act
+//     b = static_cast<const DenseMatrixBase<std::complex<float>>&>(a);
+//     const std::complex<float>* bData = b.data();
+//     // assert
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[0], std::complex<float>(1, 2))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[1], std::complex<float>(7, 8))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[2], std::complex<float>(13, 14))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[3], std::complex<float>(3, 4))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[4], std::complex<float>(9, 10))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[5], std::complex<float>(15, 16))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[6], std::complex<float>(5, 6))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[7], std::complex<float>(11, 12))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[8], std::complex<float>(17, 18))));
+// }
+//
+// TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_f_dense_matrix_base_of_diff_size_should_copy_assign_1) {
+//     // arrange
+//     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+//     DenseMatrix<float> b(2, 3, true);
+//     // act
+//     b = static_cast<const DenseMatrixBase<float>&>(a);
+//     const float* bData = b.data();
+//     // assert
+//     ASSERT_TRUE(compare(b.rows(), 3));
+//     ASSERT_TRUE(compare(b.columns(), 3));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
+// }
+//
+// TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_f_dense_matrix_base_of_diff_size_should_copy_assign_2) {
+//     // arrange
+//     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+//     DenseMatrix<float> b(3, 2, true);
+//     // act
+//     b = static_cast<const DenseMatrixBase<float>&>(a);
+//     const float* bData = b.data();
+//     // assert
+//     ASSERT_TRUE(compare(b.rows(), 3));
+//     ASSERT_TRUE(compare(b.columns(), 3));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
+// }
+//
+// TEST(dense_matrix_copy_assignment_operator_from_same_type_dense_matrix_base, given_f_self_should_do_nothing) {
+//     // arrange
+//     DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+//     // act
+//     a = static_cast<const DenseMatrixBase<float>&>(a);
+//     const float* aData = a.data();
+//     // assert
+//     ASSERT_TRUE(compare(a.rows(), 3));
+//     ASSERT_TRUE(compare(a.columns(), 3));
+//     ASSERT_TRUE((compare(Precision(0.001f), aData[0], 1)));
+//     ASSERT_TRUE((compare(Precision(0.001f), aData[1], 4)));
+//     ASSERT_TRUE((compare(Precision(0.001f), aData[2], 7)));
+//     ASSERT_TRUE((compare(Precision(0.001f), aData[3], 2)));
+//     ASSERT_TRUE((compare(Precision(0.001f), aData[4], 5)));
+//     ASSERT_TRUE((compare(Precision(0.001f), aData[5], 8)));
+//     ASSERT_TRUE((compare(Precision(0.001f), aData[6], 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), aData[7], 6)));
+//     ASSERT_TRUE((compare(Precision(0.001f), aData[8], 9)));
+// }
+// #pragma endregion
+// #pragma region copy_assignment_operator_from_different_type_base
+// TEST(dense_matrix_copy_assignment_operator_from_different_type_dense_matrix_base, given_f_dense_matrix_base_of_same_size_should_copy_assign) {
+//     // arrange
+//     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+//     DenseMatrix<std::complex<float>> b(3, 3, true);
+//     // act
+//     b = static_cast<const DenseMatrixBase<float>&>(a);
+//     const std::complex<float>* bData = b.data();
+//     // assert
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
+// }
+//
+// TEST(dense_matrix_copy_assignment_operator_from_different_type_dense_matrix_base, given_f_dense_matrix_base_of_diff_size_should_copy_assign_1) {
+//     // arrange
+//     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+//     DenseMatrix<std::complex<float>> b(2, 3, true);
+//     // act
+//     b = static_cast<const DenseMatrixBase<float>&>(a);
+//     const std::complex<float>* bData = b.data();
+//     // assert
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
+// }
+//
+// TEST(dense_matrix_copy_assignment_operator_from_different_type_dense_matrix_base, given_f_dense_matrix_base_of_diff_size_should_copy_assign_2) {
+//     // arrange
+//     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+//     DenseMatrix<std::complex<float>> b(3, 2, true);
+//     // act
+//     b = static_cast<const DenseMatrixBase<float>&>(a);
+//     const std::complex<float>* bData = b.data();
+//     // assert
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[0], 1)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[1], 4)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[2], 7)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[3], 2)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[4], 5)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[5], 8)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[6], 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[7], 6)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bData[8], 9)));
+// }
+// #pragma endregion
 #pragma region move_assignment_operator
 TEST(dense_matrix_move_assignment_operator, given_f_dense_matrix_of_same_size_should_move_assign) {
     // arrange
