@@ -29,7 +29,13 @@ add_library(mathpp INTERFACE
         src/matrix/sparse/operators/compare.h
         src/matrix/dense/operators/add.h
         src/matrix/dense/operators/subtract.h
-        src/matrix/dense/operators/multiply.h)
+        src/matrix/dense/operators/multiply.h
+        src/matrix/dense-refactor/operators/add.h
+        src/matrix/dense-refactor/operators/compare.h
+        src/matrix/dense-refactor/operators/multiply.h
+        src/matrix/dense-refactor/operators/subtract.h
+        src/matrix/dense-refactor/helper.h
+        src/matrix/dense-refactor/matrix.h)
 
 target_include_directories(mathpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
