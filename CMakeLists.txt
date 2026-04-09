@@ -21,15 +21,15 @@ add_library(mathpp INTERFACE
         src/matrix/exceptions.h
         src/matrix/sparse/matrix.h
         src/matrix/sparse/helper.h
-        src/matrix/dense/matrix.h
-        src/matrix/dense/helper.h
+#        src/matrix/dense/matrix.h
+#        src/matrix/dense/helper.h
         src/vector/dense/operators/compare.h
-        src/matrix/dense/operators/compare.h
+#        src/matrix/dense/operators/compare.h
         src/vector/sparse/operators/compare.h
         src/matrix/sparse/operators/compare.h
-        src/matrix/dense/operators/add.h
-        src/matrix/dense/operators/subtract.h
-        src/matrix/dense/operators/multiply.h
+#        src/matrix/dense/operators/add.h
+#        src/matrix/dense/operators/subtract.h
+#        src/matrix/dense/operators/multiply.h
         src/matrix/dense-refactor/operators/add.h
         src/matrix/dense-refactor/operators/compare.h
         src/matrix/dense-refactor/operators/multiply.h
