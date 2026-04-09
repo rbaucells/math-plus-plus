@@ -14,6 +14,8 @@ DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType, typ
 
         DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType>> result(aRows, bColumns, false);
 
+        std::cout << "Doing multiplication loop" << std::endl;
+
         for (int c = 0; c < bColumns; c++) {
             for (int r = 0; r < aRows; r++) {
                 result[c, r] = 0;
@@ -41,24 +43,43 @@ struct DenseMatrixMultiplyExpr {
 
     static constexpr bool isComplex = is_complex_v<std::common_type_t<typename ARGS::ValueType...>>;
 
-    DenseMatrix<std::common_type_t<typename ARGS::ValueType...>> result;
+    std::tuple<ARGS...> args;
 
-    explicit DenseMatrixMultiplyExpr(const ARGS&... args) : result(multiply(args...)) {}
+    mutable DenseMatrix<std::common_type_t<typename ARGS::ValueType...>>* result = nullptr;
+
+    explicit DenseMatrixMultiplyExpr(ARGS... args) : args(args...) {
+        assert_can_multiply(args...);
+    }
 
     [[nodiscard]] std::size_t rows() const {
-        return result.rows();
+        return std::get<0>(args).rows();
     }
 
     [[nodiscard]] std::size_t columns() const {
-        return result.columns();
+        constexpr std::size_t args_size = std::tuple_size_v<std::tuple<ARGS...>>;
+        return std::get<args_size - 1>(args).columns();
     }
 
     std::common_type_t<typename ARGS::ValueType...> at(const std::size_t c, const std::size_t r) const {
-        return result.at(c, r);
+        if (result == nullptr) {
+            std::apply([this](const auto... m) {
+                std::cout << "Recalculating in at funciton" << std::endl;
+                result = new DenseMatrix<std::common_type_t<typename ARGS::ValueType...>>(multiply(m...));
+            }, args);
+        }
+
+        return result->at(c, r);
     }
 
     std::common_type_t<typename ARGS::ValueType...> operator[](const std::size_t c, const std::size_t r) const {
-        return result[c, r];
+        if (result == nullptr) {
+            std::apply([this](const auto... m) {
+                std::cout << "Recalculating in [] operator" << std::endl;
+                result = new DenseMatrix<std::common_type_t<typename ARGS::ValueType...>>(multiply(m...));
+            }, args);
+        }
+
+        return result->operator[](c, r);
     }
 
     template<dense_matrix_like OTHER> requires has_common_type<typename ARGS::ValueType..., typename OTHER::ValueType>
@@ -68,6 +89,10 @@ struct DenseMatrixMultiplyExpr {
         }
 
         return DenseMatrixMultiplyExpr<ARGS..., OTHER>(result, other);
+    }
+
+    ~DenseMatrixMultiplyExpr() {
+        delete result;
     }
 };
 
