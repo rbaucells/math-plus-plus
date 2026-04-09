@@ -33,6 +33,7 @@ TEST(dense_matrix_mixed_operators, given_f_dense_matrices_should_return_a_plus_b
     const DenseMatrix<float> expected = {{44, 75, 45}, {57, 94, 50}, {33, 27, 56}};
     // act
     const DenseMatrix<float> result = a + b * c;
+    // a + b * c;
     // assert
     ASSERT_TRUE(compare(Precision(0.001f), result, expected));
 }

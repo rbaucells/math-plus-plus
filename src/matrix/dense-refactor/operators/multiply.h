@@ -60,25 +60,22 @@ struct DenseMatrixMultiplyExpr {
         return std::get<args_size - 1>(args).columns();
     }
 
-    std::common_type_t<typename ARGS::ValueType...> at(const std::size_t c, const std::size_t r) const {
-        if (result == nullptr) {
+    void remakeResultIfNeeded() const {
+        if (!result) {
+            std::cout << "remake result is needed" << std::endl;
             std::apply([this](const auto... m) {
-                std::cout << "Recalculating in at funciton" << std::endl;
                 result = new DenseMatrix<std::common_type_t<typename ARGS::ValueType...>>(multiply(m...));
             }, args);
         }
+    }
 
+    std::common_type_t<typename ARGS::ValueType...> at(const std::size_t c, const std::size_t r) const {
+        remakeResultIfNeeded();
         return result->at(c, r);
     }
 
     std::common_type_t<typename ARGS::ValueType...> operator[](const std::size_t c, const std::size_t r) const {
-        if (result == nullptr) {
-            std::apply([this](const auto... m) {
-                std::cout << "Recalculating in [] operator" << std::endl;
-                result = new DenseMatrix<std::common_type_t<typename ARGS::ValueType...>>(multiply(m...));
-            }, args);
-        }
-
+        remakeResultIfNeeded();
         return result->operator[](c, r);
     }
 
@@ -88,11 +85,9 @@ struct DenseMatrixMultiplyExpr {
             throw InvalidDimensionException("Cannot add matrices to DenseMatrixMultiplyExpr of different sizes");
         }
 
-        return DenseMatrixMultiplyExpr<ARGS..., OTHER>(result, other);
-    }
-
-    ~DenseMatrixMultiplyExpr() {
-        delete result;
+        return std::apply([other](const auto... args) {
+            return DenseMatrixMultiplyExpr<ARGS..., OTHER>(args..., other);
+        }, args);
     }
 };
 
