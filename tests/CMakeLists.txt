@@ -38,6 +38,7 @@ add_executable(mathpp-tests main.cpp
         debugger.tests.cpp
         matrix/dense/operators/subtract.tests.cpp
         matrix/dense/operators/multiply.tests.cpp
+        matrix/dense/operators/mixed.tests.cpp
 )
 
 # link with the math lib
