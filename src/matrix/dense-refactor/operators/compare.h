@@ -32,7 +32,7 @@ struct DenseMatrixCompareExpr {
 
     Precision<underlying_type_t<std::common_type_t<typename ARGS::ValueType...>>> precision;
 
-    DenseMatrixCompareExpr(const Precision<underlying_type_t<std::common_type_t<typename ARGS::ValueType...>>> precision, const ARGS&... args) : args(args...), precision(precision) {}
+    explicit DenseMatrixCompareExpr(const Precision<underlying_type_t<std::common_type_t<typename ARGS::ValueType...>>> precision, const ARGS&... args) : args(args...), precision(precision) {}
 
     [[nodiscard]] bool evaluate() const {
         return std::apply([this](const auto&... m) {

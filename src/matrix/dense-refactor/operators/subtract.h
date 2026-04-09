@@ -29,14 +29,14 @@ struct DenseMatrixSubtractExpr {
 
     std::tuple<ARGS...> args;
 
-    DenseMatrixSubtractExpr(ARGS... args) : args(args...) {}
+    explicit DenseMatrixSubtractExpr(ARGS... args) : args(args...) {}
 
-    std::size_t rows() const {
+    [[nodiscard]] std::size_t rows() const {
         // all args should be of same rows, so get first
         return std::get<0>(args).rows();
     }
 
-    std::size_t columns() const {
+    [[nodiscard]] std::size_t columns() const {
         // all args should be of same columns, so get first
         return std::get<0>(args).columns();
     }

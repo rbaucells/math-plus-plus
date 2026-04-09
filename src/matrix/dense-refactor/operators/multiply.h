@@ -43,7 +43,7 @@ struct DenseMatrixMultiplyExpr {
 
     DenseMatrix<std::common_type_t<typename ARGS::ValueType...>> result;
 
-    DenseMatrixMultiplyExpr(const ARGS&... args) : result(multiply(args...)) {}
+    explicit DenseMatrixMultiplyExpr(const ARGS&... args) : result(multiply(args...)) {}
 
     [[nodiscard]] std::size_t rows() const {
         return result.rows();
