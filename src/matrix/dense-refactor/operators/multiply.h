@@ -12,9 +12,9 @@ DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType, typ
         const int aColumns = a.columns();
         const int bColumns = b.columns();
 
-        DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType>> result(aRows, bColumns, false);
+        std::cout << "running multiplicaiton loop" << std::endl;
 
-        std::cout << "Doing multiplication loop" << std::endl;
+        DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType>> result(aRows, bColumns, false);
 
         for (int c = 0; c < bColumns; c++) {
             for (int r = 0; r < aRows; r++) {
@@ -43,11 +43,11 @@ struct DenseMatrixMultiplyExpr {
 
     static constexpr bool isComplex = is_complex_v<std::common_type_t<typename ARGS::ValueType...>>;
 
-    std::tuple<ARGS...> args;
+    std::tuple<const ARGS&...> args;
 
     mutable DenseMatrix<std::common_type_t<typename ARGS::ValueType...>>* result = nullptr;
 
-    explicit DenseMatrixMultiplyExpr(ARGS... args) : args(args...) {
+    explicit DenseMatrixMultiplyExpr(const ARGS&... args) : args(args...) {
         assert_can_multiply(args...);
     }
 
@@ -56,14 +56,13 @@ struct DenseMatrixMultiplyExpr {
     }
 
     [[nodiscard]] std::size_t columns() const {
-        constexpr std::size_t args_size = std::tuple_size_v<std::tuple<ARGS...>>;
+        constexpr std::size_t args_size = std::tuple_size_v<std::tuple<const ARGS&...>>;
         return std::get<args_size - 1>(args).columns();
     }
 
     void remakeResultIfNeeded() const {
-        if (!result) {
-            std::cout << "remake result is needed" << std::endl;
-            std::apply([this](const auto... m) {
+        if (result == nullptr) {
+            std::apply([this](const auto&... m) {
                 result = new DenseMatrix<std::common_type_t<typename ARGS::ValueType...>>(multiply(m...));
             }, args);
         }
@@ -81,13 +80,17 @@ struct DenseMatrixMultiplyExpr {
 
     template<dense_matrix_like OTHER> requires has_common_type<typename ARGS::ValueType..., typename OTHER::ValueType>
     DenseMatrixMultiplyExpr<ARGS..., OTHER> operator*(const OTHER& other) const {
-        if (other.rows() != rows() || other.columns() != columns()) {
-            throw InvalidDimensionException("Cannot add matrices to DenseMatrixMultiplyExpr of different sizes");
+        if (other.rows() != columns()) {
+            throw InvalidDimensionException("Cannot multiply matrices to DenseMatrixMultiplyExpr whose inner dimensions dont match");
         }
 
-        return std::apply([other](const auto... args) {
-            return DenseMatrixMultiplyExpr<ARGS..., OTHER>(args..., other);
+        return std::apply([&](const auto&... m) {
+            return DenseMatrixMultiplyExpr<ARGS..., OTHER>(m..., other);
         }, args);
+    }
+
+    ~DenseMatrixMultiplyExpr() {
+        delete result;
     }
 };
 

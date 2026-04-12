@@ -3,6 +3,7 @@
 
 #include "../../exceptions.h"
 #include "../../helper.h"
+#include <iostream>
 
 template<scalar T = float>
 struct DenseMatrix {
@@ -66,6 +67,7 @@ struct DenseMatrix {
      */
     DenseMatrix(const DenseMatrix<T>& other) : rows_(other.rows_), columns_(other.columns_), data_(new T[columns_ * rows_]) {
         memcpy(data_, other.data_, columns_ * rows_ * sizeof(T));
+        std::cout << "Copy Constructor" << std::endl;
     }
 
     /**

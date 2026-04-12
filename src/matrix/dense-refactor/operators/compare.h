@@ -28,7 +28,7 @@ template<dense_matrix_like T, dense_matrix_like U, dense_matrix_like... ARGS> re
 
 template<dense_matrix_like... ARGS> requires has_common_type<typename ARGS::ValueType...>
 struct DenseMatrixCompareExpr {
-    std::tuple<ARGS...> args;
+    std::tuple<const ARGS&...> args;
 
     Precision<underlying_type_t<std::common_type_t<typename ARGS::ValueType...>>> precision;
 

@@ -27,9 +27,9 @@ struct DenseMatrixAddExpr {
 
     static constexpr bool isComplex = is_complex_v<std::common_type_t<typename ARGS::ValueType...>>;
 
-    std::tuple<ARGS...> args;
+    std::tuple<const ARGS&...> args;
 
-    explicit DenseMatrixAddExpr(ARGS... args) : args(args...) {}
+    explicit DenseMatrixAddExpr(const ARGS&... args) : args(args...) {}
 
     [[nodiscard]] std::size_t rows() const {
         // all args should be of same rows, so get first
@@ -42,7 +42,7 @@ struct DenseMatrixAddExpr {
     }
 
     std::common_type_t<typename ARGS::ValueType...> at(const std::size_t c, const std::size_t r) const {
-        return std::apply([c, r](const auto... args) {
+        return std::apply([c, r](const auto&... args) {
             return (... + args[c, r]);
         }, args);
     }
