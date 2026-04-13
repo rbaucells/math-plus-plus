@@ -26,3 +26,4 @@
 #include "../../src/matrix/dense-refactor/operators/add.h"
 #include "../../src/matrix/dense-refactor/operators/subtract.h"
 #include "../../src/matrix/dense-refactor/operators/multiply.h"
+#include "../../src/matrix/dense-refactor/operators/add_assign.h"

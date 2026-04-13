@@ -69,9 +69,5 @@ struct DenseMatrixSubtractExpr {
 
 template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>
 DenseMatrixSubtractExpr<T, U> operator-(const T& a, const U& b) {
-    if (a.rows() != b.rows() || a.columns() != b.columns()) {
-        throw InvalidDimensionException("Cannot create DenseMatrixSubtractExpr matrices of different sizes");
-    }
-
     return DenseMatrixSubtractExpr<T, U>(a, b);
 }
