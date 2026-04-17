@@ -73,3 +73,28 @@ TEST(dense_matrix_subtraction, given_f_and_cf_dense_matrices_should_return_diffe
     // assert
     ASSERT_TRUE(compare(Precision(0.001f), diff, expected));
 }
+
+TEST(dense_matrix_subtraction_operator, should_evaluate_left_associatively) {
+    // arrange
+    const DenseMatrix<float> a = {{10, 20}, {30, 40}};
+    const DenseMatrix<float> b = {{1, 2}, {3, 4}};
+    const DenseMatrix<float> c = {{5, 6}, {7, 8}};
+    // act
+    const DenseMatrix<float> leftAssociative = a - b - c;
+    const DenseMatrix<float> leftGrouped = (a - b) - c;
+    // assert
+    ASSERT_TRUE(compare(Precision(0.001f), leftAssociative, leftGrouped));
+}
+
+TEST(dense_matrix_subtraction, should_evaluate_left_associatively) {
+    // arrange
+    const DenseMatrix<float> a = {{10, 20}, {30, 40}};
+    const DenseMatrix<float> b = {{1, 2}, {3, 4}};
+    const DenseMatrix<float> c = {{5, 6}, {7, 8}};
+    // act
+    const DenseMatrix<float> leftAssociative = subtract(a, b, c);
+    const DenseMatrix<float> leftGrouped = subtract(subtract(a, b), c);
+    // assert
+    ASSERT_TRUE(compare(Precision(0.001f), leftAssociative, leftGrouped));
+}
+
