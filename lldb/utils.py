@@ -1,5 +1,6 @@
 from enum import Enum
 import struct
+from typing import Optional
 
 import lldb
 
@@ -68,7 +69,7 @@ def _complex_to_str(value: lldb.SBValue, scalar_type: ScalarType) -> str:
         return "N/A"
 
     is_float: bool = scalar_type == ScalarType.ComplexFloating
-    fmt_char: str | None = (
+    fmt_char: Optional[str] = (
         {4: "f", 8: "d"}.get(component_size)
         if is_float
         else {1: "b", 2: "h", 4: "i", 8: "q"}.get(component_size)

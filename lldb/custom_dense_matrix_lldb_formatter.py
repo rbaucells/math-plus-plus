@@ -3,27 +3,27 @@ from matrix_lldb_formatter import _MAX_VIEW_DIM, format_matrix_display, format_m
 from utils import ScalarType, get_real_type, get_str_from_value, iterate_data_array, scalar_type_from_type
 
 
-def custom_dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
+def custom_dense_matrix_summary(matrix: lldb.SBValue, internal_dict):
     # get non-synthetic value to access actual CustomDenseMatrix members
-    valobj = valobj.GetNonSyntheticValue()
+    matrix = matrix.GetNonSyntheticValue()
     # get matrix type and scalar type
-    custom_dense_matrix_type: lldb.SBType = get_real_type(valobj.GetType())
-    scalar_type: ScalarType = scalar_type_from_type(custom_dense_matrix_type.GetTemplateArgumentType(0))
+    matrix_type: lldb.SBType = get_real_type(matrix.GetType())
+    scalar_type: ScalarType = scalar_type_from_type(matrix_type.GetTemplateArgumentType(0))
     # rows
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows_")
+    rows: lldb.SBValue = matrix.GetChildMemberWithName("rows_")
     rows_int: int = rows.GetValueAsUnsigned()
     if rows_int == 0:
         return "Empty Matrix (rows = 0)"
     # columns
-    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns_")
+    columns: lldb.SBValue = matrix.GetChildMemberWithName("columns_")
     columns_int: int = columns.GetValueAsUnsigned()
     if columns_int == 0:
         return "Empty Matrix (columns = 0)"
     # stride
-    stride: lldb.SBValue = valobj.GetChildMemberWithName("stride_")
+    stride: lldb.SBValue = matrix.GetChildMemberWithName("stride_")
     stride_int: int = stride.GetValueAsUnsigned()
     # data
-    data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
+    data: lldb.SBValue = matrix.GetChildMemberWithName("data_")
     # null data pointer indicates moved-from state
     if data.GetValueAsSigned() == 0:
         return "Moved-from Matrix (data_ = nullptr)"
@@ -32,7 +32,7 @@ def custom_dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
         return f"CustomDenseMatrix<{rows_int}x{columns_int}>"
 
     def get_element(r: int, c: int) -> str:
-        # value at [r, c] using column-major storage with stride
+        # value at [r, c]
         cur_element: lldb.SBValue = iterate_data_array(data, c * stride_int + r)
         # format value
         return get_str_from_value(cur_element, scalar_type) if cur_element.IsValid() else "N/A"
@@ -40,27 +40,27 @@ def custom_dense_matrix_summary(valobj: lldb.SBValue, internal_dict):
     # call generic matrix summary formatter to build single-line summary string
     return format_matrix_summary(rows_int, columns_int, get_element)
 
+
 class CustomDenseMatrixSyntheticChildrenProvider:
 
-    def __init__(self, valobj: lldb.SBValue, internal_dict):
-        self.valobj: lldb.SBValue = valobj
+    def __init__(self, matrix: lldb.SBValue, internal_dict):
+        self.matrix = matrix
         self._refresh()
 
     def _refresh(self):
         # rows
-        self.rows: lldb.SBValue = self.valobj.GetChildMemberWithName("rows_")
+        self.rows: lldb.SBValue = self.matrix.GetChildMemberWithName("rows_")
         self.rows_int: int = self.rows.GetValueAsUnsigned()
         # columns
-        self.columns: lldb.SBValue = self.valobj.GetChildMemberWithName("columns_")
+        self.columns: lldb.SBValue = self.matrix.GetChildMemberWithName("columns_")
         self.columns_int: int = self.columns.GetValueAsUnsigned()
         # stride
-        self.stride: lldb.SBValue = self.valobj.GetChildMemberWithName("stride_")
+        self.stride: lldb.SBValue = self.matrix.GetChildMemberWithName("stride_")
         self.stride_int: int = self.stride.GetValueAsUnsigned()
         # data
-        self.data: lldb.SBValue = self.valobj.GetChildMemberWithName("data_")
-        # element type and view array types
+        self.data: lldb.SBValue = self.matrix.GetChildMemberWithName("data_")
+        # element type and view array type
         self.element_type: lldb.SBType = self.data.GetType().GetPointeeType()
-        self.data_array_type: lldb.SBType = self.element_type.GetArrayType(self.stride_int * (self.columns_int - 1) + self.rows_int)
         self.view_array_type: lldb.SBType = self.element_type.GetArrayType(self.columns_int * self.rows_int)
 
     def update(self):
@@ -70,7 +70,7 @@ class CustomDenseMatrixSyntheticChildrenProvider:
         return 5
 
     def get_child_index(self, name: str) -> int:
-        # map child name to index for rows, columns, stride_, view, and data_ children
+        # map child name to index for rows, columns, view, stride, and data_ children
         if name == "rows_":
             return 0
         if name == "columns_":
@@ -85,7 +85,7 @@ class CustomDenseMatrixSyntheticChildrenProvider:
         return -1
 
     def get_child_at_index(self, index: int):
-        # map index to child for rows, columns, stride_, view, and data_ children
+        # map index to child for rows, columns, view, stride, and data_ children
         if index == 0:
             return self.rows
         if index == 1:
@@ -101,42 +101,43 @@ class CustomDenseMatrixSyntheticChildrenProvider:
             for r in range(self.rows_int):
                 # loop over columns in inner loop
                 for c in range(self.columns_int):
-                    # get the current element using stride-based column-major indexing and append to view data
+                    # get the current element in column-major order and append to view data
                     element: lldb.SBValue = iterate_data_array(self.data, c * self.stride_int + r)
                     # append element to view
                     view_data.Append(element.GetData())
             # create synthetic "view" child with row-major view data and appropriate array type
-            return self.valobj.CreateValueFromData("view", view_data, self.view_array_type)
-        # data_ child is the original data pointer with the column-major strided layout
+            return self.matrix.CreateValueFromData("view", view_data, self.view_array_type)
+        # data_ child is just the original data pointer with the original column-major layout
         if index == 4:
-            return self.valobj.CreateValueFromAddress("data_", self.data.GetValueAsUnsigned(), self.data_array_type)
+            return self.matrix.CreateValueFromAddress("data_", self.data.GetValueAsUnsigned(), self.view_array_type)
         # exit
         return None
 
-def to_string(valobj: lldb.SBValue) -> str:
-    # get matrix type and scalar type
-    custom_dense_matrix_type: lldb.SBType = get_real_type(valobj.GetType())
-    scalar_type: ScalarType = scalar_type_from_type(custom_dense_matrix_type.GetTemplateArgumentType(0))
+
+def to_string(matrix: lldb.SBValue) -> str:
+    # get non-synthetic value to access actual DenseMatrix members
+    matrix_type: lldb.SBType = get_real_type(matrix.GetType())
+    scalar_type: ScalarType = scalar_type_from_type(matrix_type.GetTemplateArgumentType(0))
     # rows
-    rows: lldb.SBValue = valobj.GetChildMemberWithName("rows_")
+    rows: lldb.SBValue = matrix.GetChildMemberWithName("rows_")
     rows_int: int = rows.GetValueAsUnsigned()
     # columns
-    columns: lldb.SBValue = valobj.GetChildMemberWithName("columns_")
+    columns: lldb.SBValue = matrix.GetChildMemberWithName("columns_")
     columns_int: int = columns.GetValueAsUnsigned()
     # stride
-    stride: lldb.SBValue = valobj.GetChildMemberWithName("stride_")
+    stride: lldb.SBValue = matrix.GetChildMemberWithName("stride_")
     stride_int: int = stride.GetValueAsUnsigned()
     # data
-    data: lldb.SBValue = valobj.GetChildMemberWithName("data_")
+    data: lldb.SBValue = matrix.GetChildMemberWithName("data_")
     # check dimensions
     if rows_int <= _MAX_VIEW_DIM and columns_int <= _MAX_VIEW_DIM:
 
         def get_element(r: int, c: int) -> str:
-            # value at [r, c] using column-major storage with stride
+            # value at [r, c]
             cur_element: lldb.SBValue = iterate_data_array(data, c * stride_int + r)
             # format value
             return get_str_from_value(cur_element, scalar_type) if cur_element.IsValid() else "N/A"
-
+        
         # call generic matrix display formatter to build multi-line view string
         view_line = "view =\n" + format_matrix_display(rows_int, columns_int, get_element) + "\n"
     else:
@@ -145,9 +146,9 @@ def to_string(valobj: lldb.SBValue) -> str:
     total: int = stride_int * (columns_int - 1) + rows_int
     # initialize data summary
     data_summary: str = "{"
-    # loop over the physical data array in storage order
+    # loop over columns in outer loop and rows in inner loop to match column-major storage order
     for i in range(total):
-        # get the current element in physical storage order
+        # get the current element in column-major order
         cur_element: lldb.SBValue = iterate_data_array(data, i)
         element_str = get_str_from_value(cur_element, scalar_type) if cur_element.IsValid() else "N/A"
         # add element string to summary
