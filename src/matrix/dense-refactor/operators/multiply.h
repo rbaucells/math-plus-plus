@@ -1,6 +1,5 @@
 #pragma once
 #include "../matrix.h"
-#include "../../../expression.h"
 #include "../../../helper.h"
 
 template<dense_matrix_like... ARGS> requires has_common_type<typename ARGS::ValueType...>
@@ -27,8 +26,6 @@ struct DenseMatrixMultiplyExpr {
 
     void remakeResultIfNeeded() const {
         if (!result.has_value()) {
-            std::cout << "Recalculating Multiplication Result" << std::endl;
-
             std::apply([this](const auto&... m) {
                 result.emplace(DenseMatrixMultiplyExpr<ARGS...>::multiply(m...));
             }, args);
