@@ -1,8 +1,8 @@
 import lldb
-from utils import ScalarType, get_real_type, get_str_from_value, iterate_data_array, scalar_type_from_type
+from typing import Optional
 
-# maximum size for which a full vector view is rendered
-_MAX_VIEW_DIM: int = 7
+from vector_lldb_formatter import _MAX_VIEW_DIM, format_vector_summary
+from utils import ScalarType, get_real_type, get_str_from_value, iterate_data_array, scalar_type_from_type
 
 
 def custom_dense_vector_summary(vector: lldb.SBValue, internal_dict: dict[str, object]) -> str:
@@ -34,16 +34,8 @@ def custom_dense_vector_summary(vector: lldb.SBValue, internal_dict: dict[str, o
         # format value
         return get_str_from_value(cur_element, scalar_type) if cur_element.IsValid() else "N/A"
 
-    # build compact summary string
-    summary: str = "{"
-    # loop over vector elements in storage order
-    for i in range(n_int):
-        # element at i
-        element_str: str = get_element(i)
-        # add element string to summary
-        summary += element_str if i == n_int - 1 else f"{element_str}, "
-    # close summary with brace
-    summary += "}"
+    # call generic vector summary formatter to build single-line summary string
+    summary: str = format_vector_summary(n_int, get_element)
     # exit
     return summary
 
@@ -87,7 +79,7 @@ class CustomDenseVectorSyntheticChildrenProvider:
         # default case for unrecognized child name
         return -1
 
-    def get_child_at_index(self, index: int) -> lldb.SBValue | None:
+    def get_child_at_index(self, index: int) -> Optional[lldb.SBValue]:
         # map index to child for n, stride_, view, and data_ children
         if index == 0:
             return self.n
@@ -134,12 +126,7 @@ def to_string(vector: lldb.SBValue) -> str:
             return get_str_from_value(cur_element, scalar_type) if cur_element.IsValid() else "N/A"
 
         # build compact view string
-        view_summary: str = "{"
-        for i in range(n_int):
-            element_str: str = get_element(i)
-            # add element string to view summary
-            view_summary += element_str if i == n_int - 1 else f"{element_str}, "
-        view_summary += "}"
+        view_summary: str = format_vector_summary(n_int, get_element)
         view_line: str = f"view = {view_summary}\n"
     else:
         view_line = ""
