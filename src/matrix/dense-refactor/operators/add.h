@@ -2,24 +2,6 @@
 #include "../matrix.h"
 #include "../../../helper.h"
 
-template<dense_matrix_like T, dense_matrix_like U, dense_matrix_like... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
-DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>> add(const T& a, const U& b, const ARGS&... args) {
-    assert_same_dimensions(a, b, args...);
-
-    const int columns = a.columns();
-    const int rows = a.rows();
-
-    DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>> result(rows, columns, false);
-
-    for (int c = 0; c < columns; c++) {
-        for (int r = 0; r < rows; r++) {
-            result[c, r] = ((a[c, r] + b[c, r]) + ... + args[c, r]);
-        }
-    }
-
-    return result;
-}
-
 template<dense_matrix_like... ARGS> requires has_common_type<typename ARGS::ValueType...>
 struct DenseMatrixAddExpr {
     using ValueType = std::common_type_t<typename ARGS::ValueType...>;
@@ -69,5 +51,12 @@ struct DenseMatrixAddExpr {
 
 template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>
 DenseMatrixAddExpr<T, U> operator+(const T& a, const U& b) {
+    assert_same_dimensions(a, b);
     return DenseMatrixAddExpr<T, U>(a, b);
+}
+
+template<dense_matrix_like T, dense_matrix_like U, dense_matrix_like... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
+DenseMatrixAddExpr<T, U, ARGS...>  add(const T& a, const U& b, const ARGS&... args) {
+    assert_same_dimensions(a, b, args...);
+    return DenseMatrixAddExpr<T, U, ARGS...>(a, b, args...);
 }
