@@ -24,8 +24,10 @@ struct DenseMatrixSubtractExpr {
     }
 
     std::common_type_t<typename ARGS::ValueType...> at(const std::size_t c, const std::size_t r) const {
-        return std::apply([c, r](const auto&... args) {
-            return (... - args[c, r]);
+        return std::apply([c, r](const auto& first, const auto&... rest) {
+            std::common_type_t<typename ARGS::ValueType...> value = first[c, r];
+            ((value -= rest[c, r]), ...);
+            return value;
         }, args);
     }
 

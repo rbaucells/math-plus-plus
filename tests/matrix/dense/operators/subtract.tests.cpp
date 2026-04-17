@@ -73,3 +73,31 @@ TEST(dense_matrix_subtraction, given_f_and_cf_dense_matrices_should_return_diffe
     // assert
     ASSERT_TRUE(compare(Precision(0.001f), diff, expected));
 }
+
+TEST(dense_matrix_subtraction_operator, should_evaluate_left_associatively) {
+    // arrange
+    const DenseMatrix<float> a = {{10, 20}, {30, 40}};
+    const DenseMatrix<float> b = {{1, 2}, {3, 4}};
+    const DenseMatrix<float> c = {{5, 6}, {7, 8}};
+    const DenseMatrix<float> expected = {{4, 12}, {20, 28}};
+    // act
+    const DenseMatrix<float> left_associative = a - b - c;
+    const DenseMatrix<float> right_grouped = a - (b - c);
+    // assert
+    ASSERT_TRUE(compare(Precision(0.001f), left_associative, expected));
+    ASSERT_FALSE(compare(Precision(0.001f), left_associative, right_grouped));
+}
+
+TEST(dense_matrix_subtraction, should_evaluate_left_associatively) {
+    // arrange
+    const DenseMatrix<float> a = {{10, 20}, {30, 40}};
+    const DenseMatrix<float> b = {{1, 2}, {3, 4}};
+    const DenseMatrix<float> c = {{5, 6}, {7, 8}};
+    const DenseMatrix<float> expected = {{4, 12}, {20, 28}};
+    // act
+    const DenseMatrix<float> left_associative = subtract(a, b, c);
+    const DenseMatrix<float> explicit_left_grouped = subtract(subtract(a, b), c);
+    // assert
+    ASSERT_TRUE(compare(Precision(0.001f), left_associative, expected));
+    ASSERT_TRUE(compare(Precision(0.001f), left_associative, explicit_left_grouped));
+}
