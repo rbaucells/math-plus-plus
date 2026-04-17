@@ -6,11 +6,11 @@ template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<type
 T& add_assign(T& a, const U& b) {
     assert_same_dimensions(a, b);
 
-    const int columns = a.columns();
-    const int rows = a.rows();
+    const std::size_t columns = a.columns();
+    const std::size_t rows = a.rows();
 
-    for (int c = 0; c < columns; c++) {
-        for (int r = 0; r < rows; r++) {
+    for (std::size_t c = 0; c < columns; c++) {
+        for (std::size_t r = 0; r < rows; r++) {
             a[c, r] += b[c, r];
         }
     }
