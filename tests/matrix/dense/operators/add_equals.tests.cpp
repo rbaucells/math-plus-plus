@@ -73,3 +73,14 @@ TEST(dense_matrix_addition_assignment, given_f_and_cf_dense_matrices_should_add_
     // assert
     ASSERT_TRUE(compare(Precision(0.001f), a, expected));
 }
+
+TEST(dense_matrix_addition_assignment, given_rectangular_dense_matrices_should_add_assign) {
+    // arrange
+    DenseMatrix<float> a = {{1, 10}, {2, 20}, {3, 30}, {4, 40}};
+    const DenseMatrix<float> b = {{5, 50}, {6, 60}, {7, 70}, {8, 80}};
+    const DenseMatrix<float> expected = {{6, 60}, {8, 80}, {10, 100}, {12, 120}};
+    // act
+    add_assign(a, b);
+    // assert
+    ASSERT_TRUE(compare(Precision(0.001f), a, expected));
+}
