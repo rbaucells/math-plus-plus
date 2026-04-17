@@ -12,11 +12,11 @@ template<dense_matrix_like T, dense_matrix_like U, dense_matrix_like... ARGS> re
 [[nodiscard]] bool compare(const Precision<underlying_type_t<std::common_type_t<typename T::ValueType, typename ARGS::ValueType...>>> precision, const T& a, const U& b, const ARGS&... args) {
     assert_same_dimensions(a, b, args...);
 
-    const int columns = a.columns();
-    const int rows = a.rows();
+    const std::size_t columns = a.columns();
+    const std::size_t rows = a.rows();
 
-    for (int c = 0; c < columns; c++) {
-        for (int r = 0; r < rows; r++) {
+    for (std::size_t c = 0; c < columns; c++) {
+        for (std::size_t r = 0; r < rows; r++) {
             if (!compare(precision, a[c, r], b[c, r], args[c, r]...)) {
                 return false;
             }

@@ -265,3 +265,16 @@ TEST(dense_matrix_equality, given_f_and_cf_dense_matrices_and_precision_should_r
     // assert
     ASSERT_FALSE(result);
 }
+
+TEST(dense_matrix_equality, given_rectangular_dense_matrices_should_compare_correctly) {
+    // arrange
+    const DenseMatrix<float> a = {{1, 10}, {2, 20}, {3, 30}, {4, 40}};
+    const DenseMatrix<std::complex<float>> b = {{{1, 0}, {10, 0}}, {{2, 0}, {20, 0}}, {{3, 0}, {30, 0}}, {{4, 0}, {40, 0}}};
+    const DenseMatrix<float> c = {{1, 10}, {2, 20}, {3, 30}, {4, 41}};
+    // act
+    const bool equal_result = compare(a, b);
+    const bool precision_result = compare(Precision(0.5f), a, c);
+    // assert
+    ASSERT_TRUE(equal_result);
+    ASSERT_FALSE(precision_result);
+}

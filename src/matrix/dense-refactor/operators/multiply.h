@@ -56,17 +56,17 @@ struct DenseMatrixMultiplyExpr {
 private:
     template<dense_matrix_like T, dense_matrix_like U>
     static DenseMatrix<std::common_type_t<typename ARGS::ValueType...>> multiply(const T& a, const U& b) {
-        const int aRows = a.rows();
-        const int aColumns = a.columns();
-        const int bColumns = b.columns();
+        const std::size_t a_rows = a.rows();
+        const std::size_t a_columns = a.columns();
+        const std::size_t b_columns = b.columns();
 
-        DenseMatrix<std::common_type_t<typename ARGS::ValueType...>> result(aRows, bColumns, false);
+        DenseMatrix<std::common_type_t<typename ARGS::ValueType...>> result(a_rows, b_columns, false);
 
-        for (int c = 0; c < bColumns; c++) {
-            for (int r = 0; r < aRows; r++) {
+        for (std::size_t c = 0; c < b_columns; c++) {
+            for (std::size_t r = 0; r < a_rows; r++) {
                 result[c, r] = 0;
 
-                for (int x = 0; x < aColumns; x++) {
+                for (std::size_t x = 0; x < a_columns; x++) {
                     result[c, r] += a[x, r] * b[c, x];
                 }
             }
