@@ -64,10 +64,10 @@ private:
 
         for (std::size_t c = 0; c < b_columns; c++) {
             for (std::size_t r = 0; r < a_rows; r++) {
-                result[c, r] = 0;
+                result.at(c, r) = 0;
 
                 for (std::size_t x = 0; x < a_columns; x++) {
-                    result[c, r] += a[x, r] * b[c, x];
+                    result.at(c, r) += a.at(x, r) * b.at(c, x);
                 }
             }
         }

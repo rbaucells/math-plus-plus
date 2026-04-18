@@ -211,10 +211,10 @@ struct DenseMatrix {
         for (std::size_t c = 0; c < n; c++) {
             for (std::size_t r = 0; r < n; r++) {
                 if (c == r) {
-                    m[c, r] = 1;
+                    m.at(c, r) = 1;
                 }
                 else {
-                    m[c, r] = 0;
+                    m.at(c, r) = 0;
                 }
             }
         }

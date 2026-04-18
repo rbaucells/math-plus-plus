@@ -17,7 +17,7 @@ template<dense_matrix_like T, dense_matrix_like U, dense_matrix_like... ARGS> re
 
     for (std::size_t c = 0; c < columns; c++) {
         for (std::size_t r = 0; r < rows; r++) {
-            if (!compare(precision, a[c, r], b[c, r], args[c, r]...)) {
+            if (!compare(precision, a.at(c, r), b.at(c, r), args.at(c, r)...)) {
                 return false;
             }
         }

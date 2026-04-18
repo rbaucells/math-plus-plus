@@ -11,7 +11,7 @@ T& add_assign(T& a, const U& b) {
 
     for (std::size_t c = 0; c < columns; c++) {
         for (std::size_t r = 0; r < rows; r++) {
-            a[c, r] += b[c, r];
+            a.at(c, r) += b.at(c, r);
         }
     }
 
