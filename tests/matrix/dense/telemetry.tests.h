@@ -75,10 +75,10 @@ protected:
     }
 };
 
-template<typename RESULT, typename ACTION>
-RESULT run_with_budget(const DenseMatrixStats& expected, ACTION&& action) {
+template<typename ACTION>
+auto run_with_budget(const DenseMatrixStats& expected, ACTION&& action) {
     const DenseMatrixTelemetryScope scope;
-    RESULT result(std::forward<ACTION>(action)());
+    auto result(std::forward<ACTION>(action)());
     scope.assert_stats_delta(expected);
     return result;
 }
