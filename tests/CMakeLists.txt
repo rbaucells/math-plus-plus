@@ -45,6 +45,9 @@ add_executable(mathpp-tests main.cpp
 # link with the math lib
 target_link_libraries(mathpp-tests PRIVATE mathpp GTest::gtest_main)
 
+# enable DenseMatrix copy instrumentation only for tests
+target_compile_definitions(mathpp-tests PRIVATE MATHPP_ENABLE_TELEMETRY)
+
 # enable more warnings in tests for better
 target_compile_options(mathpp-tests PRIVATE -Wall -Wextra -Wpedantic)
 

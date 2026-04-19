@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include "mathpp/math.h"
 
+#include "../telemetry.tests.h"
+
 TEST(dense_matrix_mixed_operators, given_f_dense_matrices_should_return_a_plus_b_minus_c) {
     // arrange
     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
@@ -27,8 +29,8 @@ TEST(dense_matrix_mixed_operators, given_f_dense_matrices_should_return_a_minus_
 
 TEST(dense_matrix_mixed_operators, given_f_dense_matrices_should_return_a_plus_b_times_c_1) {
     // arrange
-    const DenseMatrix<float> a = {{1, 5, 1}, {5,7, 1}, {9, -1, 37}};
-    const DenseMatrix<float> b = {{8, 1,3}, {8, 1, 4}, {3, -3, 5}};
+    const DenseMatrix<float> a = {{1, 5, 1}, {5, 7, 1}, {9, -1, 37}};
+    const DenseMatrix<float> b = {{8, 1, 3}, {8, 1, 4}, {3, -3, 5}};
     const DenseMatrix<float> c = {{1, 0, 3}, {8, 19, 5}, {9, 17, 5}};
     const DenseMatrix<float> expected = {{44, 75, 45}, {57, 94, 50}, {33, 27, 56}};
     // act
@@ -40,8 +42,8 @@ TEST(dense_matrix_mixed_operators, given_f_dense_matrices_should_return_a_plus_b
 
 TEST(dense_matrix_mixed_operators, given_f_dense_matrices_should_return_a_plus_b_times_c_2) {
     // arrange
-    const DenseMatrix<float> a = {{1, 5, 1}, {5,7, 1}, {9, -1, 37}};
-    const DenseMatrix<float> b = {{8, 1,3}, {8, 1, 4}, {3, -3, 5}};
+    const DenseMatrix<float> a = {{1, 5, 1}, {5, 7, 1}, {9, -1, 37}};
+    const DenseMatrix<float> b = {{8, 1, 3}, {8, 1, 4}, {3, -3, 5}};
     const DenseMatrix<float> c = {{1, 0, 3}, {8, 19, 5}, {9, 17, 5}};
     const DenseMatrix<float> expected = {{93, 182, 77}, {122, 237, 104}, {358, 638, 226}};
     // act
@@ -149,8 +151,8 @@ TEST(dense_matrix_mixed, given_f_dense_matrices_should_return_a_minus_b_plus_c) 
 
 TEST(dense_matrix_mixed, given_f_dense_matrices_should_return_a_plus_b_times_c_1) {
     // arrange
-    const DenseMatrix<float> a = {{1, 5, 1}, {5,7, 1}, {9, -1, 37}};
-    const DenseMatrix<float> b = {{8, 1,3}, {8, 1, 4}, {3, -3, 5}};
+    const DenseMatrix<float> a = {{1, 5, 1}, {5, 7, 1}, {9, -1, 37}};
+    const DenseMatrix<float> b = {{8, 1, 3}, {8, 1, 4}, {3, -3, 5}};
     const DenseMatrix<float> c = {{1, 0, 3}, {8, 19, 5}, {9, 17, 5}};
     const DenseMatrix<float> expected = {{44, 75, 45}, {57, 94, 50}, {33, 27, 56}};
     // act
@@ -162,8 +164,8 @@ TEST(dense_matrix_mixed, given_f_dense_matrices_should_return_a_plus_b_times_c_1
 
 TEST(dense_matrix_mixed, given_f_dense_matrices_should_return_a_plus_b_times_c_2) {
     // arrange
-    const DenseMatrix<float> a = {{1, 5, 1}, {5,7, 1}, {9, -1, 37}};
-    const DenseMatrix<float> b = {{8, 1,3}, {8, 1, 4}, {3, -3, 5}};
+    const DenseMatrix<float> a = {{1, 5, 1}, {5, 7, 1}, {9, -1, 37}};
+    const DenseMatrix<float> b = {{8, 1, 3}, {8, 1, 4}, {3, -3, 5}};
     const DenseMatrix<float> c = {{1, 0, 3}, {8, 19, 5}, {9, 17, 5}};
     const DenseMatrix<float> expected = {{93, 182, 77}, {122, 237, 104}, {358, 638, 226}};
     // act
