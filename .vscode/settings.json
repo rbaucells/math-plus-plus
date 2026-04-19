@@ -2,5 +2,8 @@
     "python.analysis.extraPaths": [
         "/usr/lib/llvm-18/lib/python3.11/site-packages"
     ],
-    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json"
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "C_Cpp.default.cppStandard": "c++23",
+    "C_Cpp.default.compilerPath": "/usr/bin/c++",
+    "C_Cpp.default.intelliSenseMode": "linux-gcc-x64"
 }
