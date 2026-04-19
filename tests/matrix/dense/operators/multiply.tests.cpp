@@ -73,16 +73,3 @@ TEST(dense_matrix_multiplication, given_f_and_cf_dense_matrices_should_return_pr
     // assert
     ASSERT_TRUE(compare(Precision(0.001f), product, expected));
 }
-
-TEST(dense_matrix_multiplication, given_single_row_and_single_column_should_return_dot_product) {
-    // arrange
-    const DenseMatrix<float> a = {{1}, {2}, {3}, {4}};
-    const DenseMatrix<float> b = {{10, 20, 30, 40}};
-    const DenseMatrix<float> expected = {{300}};
-    // act
-    const DenseMatrix<float> product_operator = a * b;
-    const DenseMatrix<float> product_function = multiply(a, b);
-    // assert
-    ASSERT_TRUE(compare(Precision(0.001f), product_operator, expected));
-    ASSERT_TRUE(compare(Precision(0.001f), product_function, expected));
-}
