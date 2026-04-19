@@ -35,6 +35,7 @@ add_library(mathpp INTERFACE
         src/matrix/dense-refactor/operators/multiply.h
         src/matrix/dense-refactor/operators/subtract.h
         src/matrix/dense-refactor/helper.h
+        src/matrix/dense-refactor/telemetry.h
         src/matrix/dense-refactor/matrix.h)
 
 target_include_directories(mathpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
