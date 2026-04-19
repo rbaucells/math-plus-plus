@@ -1,8 +1,9 @@
 #pragma once
-#include "../matrix.h"
 #include "../../../helper.h"
+#include "../matrix.h"
 
-template<dense_matrix_like... ARGS> requires has_common_type<typename ARGS::ValueType...>
+template<dense_matrix_like... ARGS>
+    requires has_common_type<typename ARGS::ValueType...>
 struct DenseMatrixSubtractExpr {
     using ValueType = std::common_type_t<typename ARGS::ValueType...>;
     using UnderlyingType = underlying_type_t<std::common_type_t<typename ARGS::ValueType...>>;
@@ -11,7 +12,8 @@ struct DenseMatrixSubtractExpr {
 
     std::tuple<const ARGS&...> args;
 
-    explicit DenseMatrixSubtractExpr(const ARGS&... args) : args(args...) {}
+    explicit DenseMatrixSubtractExpr(const ARGS&... args) : args(args...) {
+    }
 
     [[nodiscard]] std::size_t rows() const {
         // all args should be of same rows, so get first
@@ -23,39 +25,38 @@ struct DenseMatrixSubtractExpr {
         return std::get<0>(args).columns();
     }
 
-    std::common_type_t<typename ARGS::ValueType...> at(const std::size_t c, const std::size_t r) const {
-        return std::apply([c, r](const auto&... args) {
-            return (... - args.at(c, r));
-        }, args);
+    std::common_type_t<typename ARGS::ValueType...> at(const std::size_t r, const std::size_t c) const {
+        return std::apply([r, c](const auto&... args) { return (... - args.at(r, c)); }, args);
     }
 
-    std::common_type_t<typename ARGS::ValueType...> operator[](const std::size_t c, const std::size_t r) const {
-        if (c > columns() - 1 || r > rows() - 1) {
+    std::common_type_t<typename ARGS::ValueType...> operator[](const std::size_t r, const std::size_t c) const {
+        if (r >= rows() || c >= columns()) {
             throw InvalidIndexException("Cannot access DenseMatrixSubtractExpr at invalid index");
         }
 
-        return at(c, r);
+        return at(r, c);
     }
 
-    template<dense_matrix_like OTHER> requires has_common_type<typename ARGS::ValueType..., typename OTHER::ValueType>
+    template<dense_matrix_like OTHER>
+        requires has_common_type<typename ARGS::ValueType..., typename OTHER::ValueType>
     DenseMatrixSubtractExpr<ARGS..., OTHER> operator-(const OTHER& other) const {
         if (other.rows() != rows() || other.columns() != columns()) {
             throw InvalidDimensionException("Cannot subtract matrices to DenseMatrixSubtractExpr of different sizes");
         }
 
-        return std::apply([&](const auto&... args) {
-            return DenseMatrixSubtractExpr<ARGS..., OTHER>(args..., other);
-        }, args);
+        return std::apply([&](const auto&... args) { return DenseMatrixSubtractExpr<ARGS..., OTHER>(args..., other); }, args);
     }
 };
 
-template<dense_matrix_like T, dense_matrix_like U, dense_matrix_like... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
+template<dense_matrix_like T, dense_matrix_like U, dense_matrix_like... ARGS>
+    requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
 DenseMatrixSubtractExpr<T, U, ARGS...> subtract(const T& a, const U& b, const ARGS&... args) {
     assert_same_dimensions(a, b, args...);
     return DenseMatrixSubtractExpr<T, U, ARGS...>(a, b, args...);
 }
 
-template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>
+template<dense_matrix_like T, dense_matrix_like U>
+    requires has_common_type<typename T::ValueType, typename U::ValueType>
 DenseMatrixSubtractExpr<T, U> operator-(const T& a, const U& b) {
     assert_same_dimensions(a, b);
     return DenseMatrixSubtractExpr<T, U>(a, b);
