@@ -97,4 +97,3 @@ TEST(dense_matrix_subtraction, should_evaluate_left_associatively) {
     // assert
     ASSERT_TRUE(compare(Precision(0.001f), leftAssociative, leftGrouped));
 }
-
