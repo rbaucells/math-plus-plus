@@ -25,7 +25,6 @@ inline void assert_telemetry_stats(const DenseMatrixStats& actual, const DenseMa
 
 class DenseMatrixTelemetryScope {
 public:
-
     DenseMatrixTelemetryScope() : baseline_(DenseMatrixTelemetry::snapshot()) {
     }
 
@@ -63,7 +62,6 @@ inline void assert_dense_matrix_copy_telemetry(const std::size_t expected_number
 
 class DenseMatrixTelemetryFixture : public ::testing::Test {
 protected:
-
     void SetUp() override {
         reset_dense_matrix_telemetry();
     }

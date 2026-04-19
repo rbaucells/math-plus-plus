@@ -12,7 +12,6 @@ struct DenseMatrixStats {
 };
 
 struct DenseMatrixTelemetry {
-
     static void emit_copy_construct() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
         ++stats_.copy_constructs;

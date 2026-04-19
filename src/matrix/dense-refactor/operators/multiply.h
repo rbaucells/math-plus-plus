@@ -2,10 +2,8 @@
 #include "../../../helper.h"
 #include "../matrix.h"
 
-template<dense_matrix_like... ARGS>
-    requires has_common_type<typename ARGS::ValueType...>
+template<dense_matrix_like... ARGS> requires has_common_type<typename ARGS::ValueType...>
 struct DenseMatrixMultiplyExpr {
-
     using ValueType = std::common_type_t<typename ARGS::ValueType...>;
     using UnderlyingType = underlying_type_t<std::common_type_t<typename ARGS::ValueType...>>;
 
@@ -29,7 +27,9 @@ struct DenseMatrixMultiplyExpr {
 
     void remakeResultIfNeeded() const {
         if (!result.has_value()) {
-            std::apply([this](const auto&... m) { result.emplace(DenseMatrixMultiplyExpr<ARGS...>::multiply(m...)); }, args);
+            std::apply([this](const auto&... m) {
+                result.emplace(DenseMatrixMultiplyExpr<ARGS...>::multiply(m...));
+            }, args);
         }
     }
 
@@ -43,14 +43,15 @@ struct DenseMatrixMultiplyExpr {
         return result->operator[](r, c);
     }
 
-    template<dense_matrix_like OTHER>
-        requires has_common_type<typename ARGS::ValueType..., typename OTHER::ValueType>
+    template<dense_matrix_like OTHER> requires has_common_type<typename ARGS::ValueType..., typename OTHER::ValueType>
     DenseMatrixMultiplyExpr<ARGS..., OTHER> operator*(const OTHER& other) const {
         if (other.rows() != columns()) {
             throw InvalidDimensionException("Cannot multiply matrices to DenseMatrixMultiplyExpr whose inner dimensions dont match");
         }
 
-        return std::apply([&](const auto&... m) { return DenseMatrixMultiplyExpr<ARGS..., OTHER>(m..., other); }, args);
+        return std::apply([&](const auto&... m) {
+            return DenseMatrixMultiplyExpr<ARGS..., OTHER>(m..., other);
+        }, args);
     }
 
 private:
@@ -82,15 +83,13 @@ private:
     }
 };
 
-template<dense_matrix_like T, dense_matrix_like U, dense_matrix_like... ARGS>
-    requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
+template<dense_matrix_like T, dense_matrix_like U, dense_matrix_like... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
 DenseMatrixMultiplyExpr<T, U, ARGS...> multiply(const T& a, const U& b, const ARGS&... args) {
     assert_can_multiply(a, b, args...);
     return DenseMatrixMultiplyExpr<T, U, ARGS...>(a, b, args...);
 }
 
-template<dense_matrix_like T, dense_matrix_like U>
-    requires has_common_type<typename T::ValueType, typename U::ValueType>
+template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>
 DenseMatrixMultiplyExpr<T, U> operator*(const T& a, const U& b) {
     assert_can_multiply(a, b);
     return DenseMatrixMultiplyExpr<T, U>(a, b);

@@ -7,7 +7,6 @@
 
 template<scalar T = float>
 struct DenseMatrix {
-
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
@@ -151,8 +150,7 @@ struct DenseMatrix {
      * @note 'OTHER_T' must be able to implicitly convert to 'T'.
      * @note 'other' must be of same dimensions as this.
      */
-    template<scalar OTHER_T>
-        requires std::convertible_to<OTHER_T, T>
+    template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
     DenseMatrix<T>& operator=(const DenseMatrix<OTHER_T>& other) {
         if (this->rows_ != other.rows() || this->columns_ != other.columns()) {
             DenseMatrixTelemetry::emit_deallocation();
