@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeSharedSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug-clang" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="clang" />
+      <configuration PROFILE_NAME="Release-clang" ENABLED="true" CONFIG_NAME="Release" TOOLCHAIN_NAME="clang" />
+      <configuration PROFILE_NAME="Debug-gcc" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="gcc" GENERATION_OPTIONS="-DCMAKE_OSX_SYSROOT:STRING=/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk" />
+      <configuration PROFILE_NAME="Release-gcc" ENABLED="true" CONFIG_NAME="Release" TOOLCHAIN_NAME="gcc" GENERATION_OPTIONS="-DCMAKE_OSX_SYSROOT:STRING=/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk" />
+    </configurations>
+  </component>
+</project>
