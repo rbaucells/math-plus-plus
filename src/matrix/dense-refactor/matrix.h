@@ -38,7 +38,7 @@ struct DenseMatrix {
      * @param initializerList Nested initializer_list representing matrix elements.
      * @throws InvalidDimensionException If nested initializer_lists are not all the same size.
      */
-    DenseMatrix(const std::initializer_list<std::initializer_list<T> >& initializerList) : rows_(initializerList.size()), columns_(initializerList.begin()->size()), data_(new T[rows_ * columns_]) {
+    DenseMatrix(const std::initializer_list<std::initializer_list<T>>& initializerList) : rows_(initializerList.size()), columns_(initializerList.begin()->size()), data_(new T[rows_ * columns_]) {
         std::size_t r = 0;
         for (const auto& row: initializerList) {
             if (row.size() != columns_) {
@@ -47,7 +47,7 @@ struct DenseMatrix {
 
             std::size_t c = 0;
             for (const T element: row) {
-                at(c, r) = element;
+                at(r, c) = element;
                 c++;
             }
             r++;
@@ -70,13 +70,13 @@ struct DenseMatrix {
     }
 
     /**
-    * @brief Copy constructor for DenseMatrix from different type DenseMatrix.
-    *
-    * Constructs an 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
-    * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
-    *
-    * @param other DenseMatrix to copy from.
-    */
+     * @brief Copy constructor for DenseMatrix from different type DenseMatrix.
+     *
+     * Constructs an 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
+     * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
+     *
+     * @param other DenseMatrix to copy from.
+     */
     template<scalar OTHER_T>
     DenseMatrix(const DenseMatrix<OTHER_T>& other) : rows_(other.rows()), columns_(other.columns()), data_(new T[columns_ * rows_]) {
         const OTHER_T* otherData = other.data();
@@ -93,7 +93,7 @@ struct DenseMatrix {
     DenseMatrix(const U& other) : rows_(other.rows()), columns_(other.columns()), data_(new T[columns_ * rows_]) {
         for (std::size_t c = 0; c < columns_; c++) {
             for (std::size_t r = 0; r < rows_; r++) {
-                data_[c * rows_ + r] = other.at(c, r);
+                data_[c * rows_ + r] = other.at(r, c);
             }
         }
         DenseMatrixTelemetry::emit_allocation();
@@ -141,17 +141,18 @@ struct DenseMatrix {
     }
 
     /**
-    * @brief Copy assignment operator for DenseMatrix from different type DenseMatrix.
-    * Replaces all elements with elements of 'other'.
-    * Does not allocate memory on the heap.
-    * @tparam OTHER_T Scalar type of the 'other' DenseMatrix.
-    * @param other DenseMatrix to copy from.
-    * @return Reference to this.
-    * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
-    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
-    * @note 'other' must be of same dimensions as this.
-    */
-    template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
+     * @brief Copy assignment operator for DenseMatrix from different type DenseMatrix.
+     * Replaces all elements with elements of 'other'.
+     * Does not allocate memory on the heap.
+     * @tparam OTHER_T Scalar type of the 'other' DenseMatrix.
+     * @param other DenseMatrix to copy from.
+     * @return Reference to this.
+     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+     * @note 'other' must be of same dimensions as this.
+     */
+    template<scalar OTHER_T>
+        requires std::convertible_to<OTHER_T, T>
     DenseMatrix<T>& operator=(const DenseMatrix<OTHER_T>& other) {
         if (this->rows_ != other.rows() || this->columns_ != other.columns()) {
             DenseMatrixTelemetry::emit_deallocation();
@@ -185,7 +186,7 @@ struct DenseMatrix {
 
         for (int c = 0; c < columns_; c++) {
             for (int r = 0; r < rows_; r++) {
-                at(c, r) = other.at(c, r);
+                at(r, c) = other.at(r, c);
             }
         }
 
@@ -230,28 +231,28 @@ struct DenseMatrix {
         return std::move(m);
     }
 
-    [[nodiscard]] T& at(const std::size_t c, const std::size_t r) {
+    [[nodiscard]] T& at(const std::size_t r, const std::size_t c) {
         return data_[c * rows_ + r];
     }
 
-    [[nodiscard]] const T& at(const std::size_t c, const std::size_t r) const {
+    [[nodiscard]] const T& at(const std::size_t r, const std::size_t c) const {
         return data_[c * rows_ + r];
     }
 
-    [[nodiscard]] T& operator[](const std::size_t c, const std::size_t r) {
-        if (c > columns_ - 1 || r > rows_ - 1) {
+    [[nodiscard]] T& operator[](const std::size_t r, const std::size_t c) {
+        if (r >= rows_ || c >= columns_) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
 
-        return at(c, r);
+        return at(r, c);
     }
 
-    [[nodiscard]] const T& operator[](const std::size_t c, const std::size_t r) const {
-        if (c > columns_ - 1 || r > rows_ - 1) {
+    [[nodiscard]] const T& operator[](const std::size_t r, const std::size_t c) const {
+        if (r >= rows_ || c >= columns_) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
 
-        return at(c, r);
+        return at(r, c);
     }
 
     [[nodiscard]] std::size_t rows() const {
@@ -271,9 +272,9 @@ struct DenseMatrix {
     }
 
     /**
-    * @brief Gets the const data pointer storing the matrices elements.
-    * @return Const pointer to array of elements.
-    */
+     * @brief Gets the const data pointer storing the matrices elements.
+     * @return Const pointer to array of elements.
+     */
     [[nodiscard]] const T* data() const {
         return data_;
     }
@@ -308,19 +309,19 @@ struct DenseMatrixView {
     DenseMatrixView<T>& operator=(DenseMatrixView<T>&& other) noexcept = delete;
 
     /**
-    * @brief Constructs a DenseMatrixView into an existing DenseMatrix.
-    *
-    * Creates a view of size `rows x columns` into the `owner` matrix,
-    * starting at the colOffset and rowOffset.
-    * Does not allocate new memory.
-    * The view holds a reference to the owner.
-    *
-    * @param owner DenseMatrix to create a view from.
-    * @param rows Number of rows in the view.
-    * @param columns Number of columns in the view.
-    * @param colOffset Starting column offset in the owner matrix.
-    * @param rowOffset Starting row offset in the owner matrix.
-    */
+     * @brief Constructs a DenseMatrixView into an existing DenseMatrix.
+     *
+     * Creates a view of size `rows x columns` into the `owner` matrix,
+     * starting at the colOffset and rowOffset.
+     * Does not allocate new memory.
+     * The view holds a reference to the owner.
+     *
+     * @param owner DenseMatrix to create a view from.
+     * @param rows Number of rows in the view.
+     * @param columns Number of columns in the view.
+     * @param colOffset Starting column offset in the owner matrix.
+     * @param rowOffset Starting row offset in the owner matrix.
+     */
     DenseMatrixView(const DenseMatrix<T>& owner, const std::size_t rows, const std::size_t columns, const std::size_t colOffset, const std::size_t rowOffset) : rows_(rows), columns_(columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
     }
 
@@ -344,24 +345,24 @@ struct DenseMatrixView {
         throw InvalidOperationException("Cannot modify owner through view");
     }
 
-    [[nodiscard]] const T& at(const std::size_t c, const std::size_t r) const {
-        return owner_.at(c + colOffset_, r + rowOffset_);
+    [[nodiscard]] const T& at(const std::size_t r, const std::size_t c) const {
+        return owner_.at(r + rowOffset_, c + colOffset_);
     }
 
-    [[nodiscard]] T& operator[](const std::size_t c, const std::size_t r) {
-        if (c > columns_ - 1 || r > rows_ - 1) {
+    [[nodiscard]] T& operator[](const std::size_t r, const std::size_t c) {
+        if (r >= rows_ || c >= columns_) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
 
-        return at(c, r);
+        return at(r, c);
     }
 
-    [[nodiscard]] const T& operator[](const std::size_t c, const std::size_t r) const {
-        if (c > columns_ - 1 || r > rows_ - 1) {
+    [[nodiscard]] const T& operator[](const std::size_t r, const std::size_t c) const {
+        if (r >= rows_ || c >= columns_) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
 
-        return at(c, r);
+        return at(r, c);
     }
 
     /**
@@ -442,28 +443,28 @@ struct CustomDenseMatrix {
     CustomDenseMatrix(T* data, const std::size_t rows, const std::size_t columns, const std::size_t stride) : rows_(rows), columns_(columns), stride_(stride), data_(data) {
     }
 
-    [[nodiscard]] T& at(const std::size_t c, const std::size_t r) {
+    [[nodiscard]] T& at(const std::size_t r, const std::size_t c) {
         return data_[c * stride_ + r];
     }
 
-    [[nodiscard]] const T& at(const std::size_t c, const std::size_t r) const {
+    [[nodiscard]] const T& at(const std::size_t r, const std::size_t c) const {
         return data_[c * stride_ + r];
     }
 
-    [[nodiscard]] T& operator[](const std::size_t c, const std::size_t r) {
-        if (c > columns_ - 1 || r > rows_ - 1) {
+    [[nodiscard]] T& operator[](const std::size_t r, const std::size_t c) {
+        if (r >= rows_ || c >= columns_) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
 
-        return at(c, r);
+        return at(r, c);
     }
 
-    [[nodiscard]] const T& operator[](const std::size_t c, const std::size_t r) const {
-        if (c > columns_ - 1 || r > rows_ - 1) {
+    [[nodiscard]] const T& operator[](const std::size_t r, const std::size_t c) const {
+        if (r >= rows_ || c >= columns_) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
 
-        return at(c, r);
+        return at(r, c);
     }
 
     /**
@@ -473,7 +474,7 @@ struct CustomDenseMatrix {
     [[nodiscard]] std::size_t stride() const {
         return stride_;
     }
-    
+
     [[nodiscard]] std::size_t rows() const {
         return rows_;
     }
@@ -491,9 +492,9 @@ struct CustomDenseMatrix {
     }
 
     /**
-    * @brief Gets the const data pointer storing the matrices elements.
-    * @return Const pointer to array of elements.
-    */
+     * @brief Gets the const data pointer storing the matrices elements.
+     * @return Const pointer to array of elements.
+     */
     [[nodiscard]] const T* data() const {
         return data_;
     }

@@ -4,25 +4,26 @@
 
 #pragma region dense_matrix
 #pragma region indexing_operator
+
 TEST(dense_matrix_indexing_operator, given_index_should_return_reference_f) {
     // arrange
     DenseMatrix<float> v(3, 3, false);
     // act
     float& v00 = v[0, 0];
     v00 = 1;
-    float& v10 = v[1, 0];
+    float& v10 = v[0, 1];
     v10 = 2;
-    float& v20 = v[2, 0];
+    float& v20 = v[0, 2];
     v20 = 3;
-    float& v01 = v[0, 1];
+    float& v01 = v[1, 0];
     v01 = 4;
     float& v11 = v[1, 1];
     v11 = 5;
-    float& v21 = v[2, 1];
+    float& v21 = v[1, 2];
     v21 = 6;
-    float& v02 = v[0, 2];
+    float& v02 = v[2, 0];
     v02 = 7;
-    float& v12 = v[1, 2];
+    float& v12 = v[2, 1];
     v12 = 8;
     float& v22 = v[2, 2];
     v22 = 9;
@@ -47,19 +48,19 @@ TEST(dense_matrix_indexing_operator, given_index_should_return_reference_cf) {
     // act
     std::complex<float>& v00 = v[0, 0];
     v00 = {1, 2};
-    std::complex<float>& v10 = v[1, 0];
+    std::complex<float>& v10 = v[0, 1];
     v10 = {3, 4};
-    std::complex<float>& v20 = v[2, 0];
+    std::complex<float>& v20 = v[0, 2];
     v20 = {5, 6};
-    std::complex<float>& v01 = v[0, 1];
+    std::complex<float>& v01 = v[1, 0];
     v01 = {7, 8};
     std::complex<float>& v11 = v[1, 1];
     v11 = {9, 10};
-    std::complex<float>& v21 = v[2, 1];
+    std::complex<float>& v21 = v[1, 2];
     v21 = {11, 12};
-    std::complex<float>& v02 = v[0, 2];
+    std::complex<float>& v02 = v[2, 0];
     v02 = {13, 14};
-    std::complex<float>& v12 = v[1, 2];
+    std::complex<float>& v12 = v[2, 1];
     v12 = {15, 16};
     std::complex<float>& v22 = v[2, 2];
     v22 = {17, 18};
@@ -98,13 +99,13 @@ TEST(dense_matrix_const_indexing_operator, given_index_should_return_const_refer
     const DenseMatrix<float> v = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act / assert
     ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], 1)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], 2)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], 4)));
     ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], 5)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], 6)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], 7)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], 8)));
     ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], 9)));
 }
 
@@ -113,13 +114,13 @@ TEST(dense_matrix_const_indexing_operator, given_index_should_return_const_refer
     const DenseMatrix<std::complex<float>> v = {{{1, 2}, {3, 4}, {5, 6}}, {{7, 8}, {9, 10}, {11, 12}}, {{13, 14}, {15, 16}, {17, 18}}};
     // act / assert
     ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], std::complex<float>(1, 2))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], std::complex<float>(3, 4))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], std::complex<float>(5, 6))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], std::complex<float>(7, 8))));
     ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], std::complex<float>(9, 10))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], std::complex<float>(11, 12))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], std::complex<float>(13, 14))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], std::complex<float>(15, 16))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], std::complex<float>(13, 14))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], std::complex<float>(15, 16))));
     ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], std::complex<float>(17, 18))));
 }
 
@@ -849,6 +850,7 @@ TEST(dense_matrix_identity, given_3_should_make_identity_matrix_cf) {
 #pragma endregion
 #pragma region dense_matrix_view
 #pragma region constructor
+
 TEST(dense_matrix_view_constructor, given_f_dense_matrix_should_construct) {
     // arrange
     const DenseMatrix<float> a = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}, {16, 17, 18, 19, 20}, {21, 22, 23, 24, 25}};
@@ -956,13 +958,13 @@ TEST(dense_matrix_view_const_indexing_operator, given_index_should_return_const_
     const DenseMatrixView<float> v(a, 3, 3, 2, 2);
     // act / assert
     ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], 13)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], 14)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], 15)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], 18)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], 14)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], 15)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], 18)));
     ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], 19)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], 20)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], 23)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], 24)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], 20)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], 23)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], 24)));
     ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], 25)));
 }
 
@@ -972,15 +974,15 @@ TEST(dense_matrix_view_const_indexing_operator, given_index_should_return_const_
     const DenseMatrixView<std::complex<float>> v(a, 3, 3, 2, 2);
     // act / assert
     ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], std::complex<float>(25, 26))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], std::complex<float>(27, 28))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], std::complex<float>(29, 30))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], std::complex<float>(27, 28))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], std::complex<float>(29, 30))));
 
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], std::complex<float>(35, 36))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], std::complex<float>(35, 36))));
     ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], std::complex<float>(37, 38))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], std::complex<float>(39, 40))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], std::complex<float>(39, 40))));
 
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], std::complex<float>(45, 46))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], std::complex<float>(47, 48))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], std::complex<float>(45, 46))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], std::complex<float>(47, 48))));
     ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], std::complex<float>(49, 50))));
 }
 
@@ -1201,19 +1203,19 @@ TEST(custom_dense_matrix_index_operator, given_index_should_return_reference_f) 
     // act
     float& v00 = v[0, 0];
     v00 = 1;
-    float& v10 = v[1, 0];
+    float& v10 = v[0, 1];
     v10 = 2;
-    float& v20 = v[2, 0];
+    float& v20 = v[0, 2];
     v20 = 3;
-    float& v01 = v[0, 1];
+    float& v01 = v[1, 0];
     v01 = 4;
     float& v11 = v[1, 1];
     v11 = 5;
-    float& v21 = v[2, 1];
+    float& v21 = v[1, 2];
     v21 = 6;
-    float& v02 = v[0, 2];
+    float& v02 = v[2, 0];
     v02 = 7;
-    float& v12 = v[1, 2];
+    float& v12 = v[2, 1];
     v12 = 8;
     float& v22 = v[2, 2];
     v22 = 9;
@@ -1238,19 +1240,19 @@ TEST(custom_dense_matrix_index_operator, given_index_should_return_reference_cf)
     // act
     std::complex<float>& v00 = v[0, 0];
     v00 = {1, 2};
-    std::complex<float>& v10 = v[1, 0];
+    std::complex<float>& v10 = v[0, 1];
     v10 = {3, 4};
-    std::complex<float>& v20 = v[2, 0];
+    std::complex<float>& v20 = v[0, 2];
     v20 = {5, 6};
-    std::complex<float>& v01 = v[0, 1];
+    std::complex<float>& v01 = v[1, 0];
     v01 = {7, 8};
     std::complex<float>& v11 = v[1, 1];
     v11 = {9, 10};
-    std::complex<float>& v21 = v[2, 1];
+    std::complex<float>& v21 = v[1, 2];
     v21 = {11, 12};
-    std::complex<float>& v02 = v[0, 2];
+    std::complex<float>& v02 = v[2, 0];
     v02 = {13, 14};
-    std::complex<float>& v12 = v[1, 2];
+    std::complex<float>& v12 = v[2, 1];
     v12 = {15, 16};
     std::complex<float>& v22 = v[2, 2];
     v22 = {17, 18};
@@ -1273,7 +1275,7 @@ TEST(custom_dense_matrix_index_operator, given_big_index_should_throw_1) {
     float* data = new float[9];
     CustomDenseMatrix<float> v(data, 3, 3, 3);
     // act / assert
-    ASSERT_THROW((std::ignore = v[3, 0]), InvalidIndexException);
+    ASSERT_THROW((std::ignore = v[0, 3]), InvalidIndexException);
 }
 
 TEST(custom_dense_matrix_index_operator, given_big_index_should_throw_2) {
@@ -1289,7 +1291,7 @@ TEST(custom_dense_matrix_index_operator, given_big_index_should_throw_3) {
     float* data = new float[25];
     CustomDenseMatrix<float> v(data, 3, 3, 3);
     // act / assert
-    ASSERT_THROW((std::ignore = v[3, 0]), InvalidIndexException);
+    ASSERT_THROW((std::ignore = v[0, 3]), InvalidIndexException);
 }
 
 TEST(custom_dense_matrix_index_operator, given_big_index_should_throw_4) {
@@ -1316,13 +1318,13 @@ TEST(custom_dense_matrix_const_index_operator, given_index_should_return_referen
     const CustomDenseMatrix<float> v(data, 3, 3, 3);
     // act / assert
     ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], 1)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], 2)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], 4)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], 2)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], 3)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], 4)));
     ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], 5)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], 6)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], 7)));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], 8)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], 6)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], 7)));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], 8)));
     ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], 9)));
 }
 
@@ -1341,13 +1343,13 @@ TEST(custom_dense_matrix_const_index_operator, given_index_should_return_referen
     const CustomDenseMatrix<std::complex<float>> v(data, 3, 3, 3);
     // act / assert
     ASSERT_TRUE((compare(Precision(0.001f), v[0, 0], std::complex<float>(1, 2))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], std::complex<float>(3, 4))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], std::complex<float>(5, 6))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], std::complex<float>(7, 8))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 1], std::complex<float>(3, 4))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], std::complex<float>(5, 6))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 0], std::complex<float>(7, 8))));
     ASSERT_TRUE((compare(Precision(0.001f), v[1, 1], std::complex<float>(9, 10))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], std::complex<float>(11, 12))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[0, 2], std::complex<float>(13, 14))));
-    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], std::complex<float>(15, 16))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[1, 2], std::complex<float>(11, 12))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 0], std::complex<float>(13, 14))));
+    ASSERT_TRUE((compare(Precision(0.001f), v[2, 1], std::complex<float>(15, 16))));
     ASSERT_TRUE((compare(Precision(0.001f), v[2, 2], std::complex<float>(17, 18))));
 }
 

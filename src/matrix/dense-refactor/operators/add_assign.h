@@ -1,8 +1,9 @@
 #pragma once
-#include "../matrix.h"
 #include "../../../helper.h"
+#include "../matrix.h"
 
-template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>
+template<dense_matrix_like T, dense_matrix_like U>
+    requires has_common_type<typename T::ValueType, typename U::ValueType>
 T& add_assign(T& a, const U& b) {
     assert_same_dimensions(a, b);
 
@@ -11,14 +12,15 @@ T& add_assign(T& a, const U& b) {
 
     for (std::size_t c = 0; c < columns; c++) {
         for (std::size_t r = 0; r < rows; r++) {
-            a.at(c, r) += b.at(c, r);
+            a.at(r, c) += b.at(r, c);
         }
     }
 
     return a;
 }
 
-template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>
+template<dense_matrix_like T, dense_matrix_like U>
+    requires has_common_type<typename T::ValueType, typename U::ValueType>
 T& operator+=(T& a, const U& b) {
     return add_assign(a, b);
 }

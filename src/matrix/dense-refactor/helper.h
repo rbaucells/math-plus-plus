@@ -13,13 +13,13 @@ struct CustomDenseMatrix;
 
 // dense_matrix_like
 template<typename T>
-concept dense_matrix_like = requires(const T constM, std::size_t c, std::size_t r) {
+concept dense_matrix_like = requires(const T constM, std::size_t r, std::size_t c) {
     typename T::ValueType;
     T::isComplex;
     { constM.rows() } -> std::same_as<std::size_t>;
     { constM.columns() } -> std::same_as<std::size_t>;
-    std::same_as<std::remove_cvref_t<decltype(constM.at(c, r))>, typename T::ValueType>;
-    std::same_as<std::remove_cvref_t<decltype(constM[c, r])>, typename T::ValueType>;
+    requires std::same_as<std::remove_cvref_t<decltype(constM.at(r, c))>, typename T::ValueType>;
+    requires std::same_as<std::remove_cvref_t<decltype(constM[r, c])>, typename T::ValueType>;
 };
 
 template<typename T>
