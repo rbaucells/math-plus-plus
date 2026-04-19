@@ -79,7 +79,7 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * @note 'initializerList' must be sorted in increasing indices.
      */
-    SparseVector(const std::size_t n, std::initializer_list<std::tuple<T, int>> initializerList) : SparseVectorBase<T>(n), nnz_(initializerList.size()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
+    SparseVector(const std::size_t n, std::initializer_list<std::tuple<T, int> > initializerList) : SparseVectorBase<T>(n), nnz_(initializerList.size()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         if (n < 0) {
             throw InvalidIndexException("Cannot construct SparseVector of negative size");
         }

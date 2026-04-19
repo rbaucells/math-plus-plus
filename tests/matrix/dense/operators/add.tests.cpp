@@ -11,7 +11,7 @@ TEST(dense_matrix_addition_operator, given_f_dense_matrices_should_return_sum) {
     const DenseMatrix<float> c = {{-5, 1, 7}, {-22, 56, 2}, {9, 4, 7}};
     const DenseMatrix<float> expected = {{-2, 8, 18}, {-17, 68, 39}, {24, 14, 23}};
     // act
-    const DenseMatrix<float>& sum = run_with_budget({.allocations = 1}, [&]() {
+    const DenseMatrix<float>& sum = run_with_budget<DenseMatrix<float>>({.allocations = 1}, [&]() {
         return a + b + c;
     });
     // assert
