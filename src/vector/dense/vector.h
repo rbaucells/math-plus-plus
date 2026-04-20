@@ -7,68 +7,12 @@
 #include "../../helper.h"
 
 template<scalar T = float>
-struct DenseVectorBase {
+struct DenseVector {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    [[nodiscard]] std::size_t n() const {
-        return n_;
-    }
-
-protected:
-    /**
-     * @brief Initializes the size of the vector.
-     *
-     * Internal constructor that initializes the 'n' field.
-     * Does not allocate memory for matrix elements.
-     *
-     * @param n Number of elements.
-     */
-    explicit DenseVectorBase(const std::size_t n) : n_(n) {
-    }
-
-    std::size_t n_;
-
-public:
-    /**
-    * @brief Accesses the element at index 'i'.
-    *
-    * @param i Zero-based index.
-    * @return Reference to the element at index 'i'.
-    */
-    [[nodiscard]] virtual T& at(std::size_t i) = 0;
-
-    /**
-    * @brief Accesses the element at index 'i' (const).
-    *
-    * @param i Zero-based index.
-    * @return Const reference to the element at index 'i'.
-    */
-    [[nodiscard]] virtual const T& at(std::size_t i) const = 0;
-
-    [[nodiscard]] T& operator[](const std::size_t i) {
-        if (i < 0 || i >= n_) {
-            throw InvalidIndexException("Cannot access vector at invalid index");
-        }
-
-        return at(i);
-    }
-
-    [[nodiscard]] const T& operator[](const std::size_t i) const {
-        if (i < 0 || i >= n_) {
-            throw InvalidIndexException("Cannot access vector at invalid index");
-        }
-
-        return at(i);
-    }
-
-    virtual ~DenseVectorBase() = default;
-};
-
-template<scalar T = float>
-struct DenseVector : DenseVectorBase<T> {
     DenseVector() = delete;
 
     /**
@@ -300,12 +244,28 @@ struct DenseVector : DenseVectorBase<T> {
         return *this;
     }
 
-    [[nodiscard]] T& at(std::size_t i) override {
+    [[nodiscard]] T& at(std::size_t i) {
         return data_[i];
     }
 
-    [[nodiscard]] const T& at(std::size_t i) const override {
+    [[nodiscard]] const T& at(std::size_t i) const {
         return data_[i];
+    }
+
+    [[nodiscard]] T& operator[](const std::size_t i) {
+        if (i >= n_) {
+            throw InvalidIndexException("Cannot access vector at invalid index");
+        }
+
+        return at(i);
+    }
+
+    [[nodiscard]] const T& operator[](const std::size_t i) const {
+        if (i >= n_) {
+            throw InvalidIndexException("Cannot access vector at invalid index");
+        }
+
+        return at(i);
     }
 
     /**
@@ -324,16 +284,27 @@ struct DenseVector : DenseVectorBase<T> {
         return data_;
     }
 
+    [[nodiscard]] std::size_t n() const {
+        return n_;
+    }
+
     ~DenseVector() override {
         delete[] data_;
     }
 
 private:
+    std::size_t n_;
+
     T* data_;
 };
 
 template<scalar T = float>
 struct DenseVectorView : DenseVectorBase<T> {
+    using ValueType = T;
+    using UnderlyingType = underlying_type_t<T>;
+
+    static constexpr bool isComplex = is_complex_v<T>;
+
     DenseVectorView() = delete;
 
     DenseVectorView(DenseVectorView<T>&& other) noexcept = delete;
@@ -371,12 +342,28 @@ struct DenseVectorView : DenseVectorBase<T> {
      * @brief Trying to modify a DenseVector through a view is invalid.
      * @throws InvalidOperationException You cannot modify owner through a view.
      */
-    [[nodiscard]] T& at(const std::size_t) override {
+    [[nodiscard]] T& at(const std::size_t) {
         throw InvalidOperationException("Cannot modify owner through view");
     }
 
-    [[nodiscard]] const T& at(const std::size_t i) const override {
+    [[nodiscard]] const T& at(const std::size_t i) const {
         return owner_.at(i + offset_);
+    }
+
+    [[nodiscard]] T& operator[](const std::size_t i) {
+        if (i >= n_) {
+            throw InvalidIndexException("Cannot access vector at invalid index");
+        }
+
+        return at(i);
+    }
+
+    [[nodiscard]] const T& operator[](const std::size_t i) const {
+        if (i >= n_) {
+            throw InvalidIndexException("Cannot access vector at invalid index");
+        }
+
+        return at(i);
     }
 
     /**
@@ -395,15 +382,26 @@ struct DenseVectorView : DenseVectorBase<T> {
         return owner_;
     }
 
+    [[nodiscard]] std::size_t n() const {
+        return n_;
+    }
+
     ~DenseVectorView() override = default;
 
 private:
     const std::size_t offset_;
+    std::size_t n_;
+
     const DenseVector<T>& owner_;
 };
 
 template<scalar T = float>
 struct CustomDenseVector : DenseVectorBase<T> {
+    using ValueType = T;
+    using UnderlyingType = underlying_type_t<T>;
+
+    static constexpr bool isComplex = is_complex_v<T>;
+
     CustomDenseVector() = delete;
 
     CustomDenseVector(const CustomDenseVector<T>& other) = delete;
@@ -427,12 +425,28 @@ struct CustomDenseVector : DenseVectorBase<T> {
     CustomDenseVector(T* data, const std::size_t n, const std::size_t stride) : DenseVectorBase<T>(n), stride_(stride), data_(data) {
     }
 
-    [[nodiscard]] T& at(const std::size_t i) override {
+    [[nodiscard]] T& at(const std::size_t i) {
         return data_[i * stride_];
     }
 
-    [[nodiscard]] const T& at(const std::size_t i) const override {
+    [[nodiscard]] const T& at(const std::size_t i) const {
         return data_[i * stride_];
+    }
+
+    [[nodiscard]] T& operator[](const std::size_t i) {
+        if (i >= n_) {
+            throw InvalidIndexException("Cannot access vector at invalid index");
+        }
+
+        return at(i);
+    }
+
+    [[nodiscard]] const T& operator[](const std::size_t i) const {
+        if (i >= n_) {
+            throw InvalidIndexException("Cannot access vector at invalid index");
+        }
+
+        return at(i);
     }
 
     /**
@@ -459,9 +473,15 @@ struct CustomDenseVector : DenseVectorBase<T> {
         return data_;
     }
 
+    [[nodiscard]] std::size_t n() const {
+        return n_;
+    }
+
     ~CustomDenseVector() override = default;
 
 private:
     const std::size_t stride_;
+    std::size_t n_;
+
     T* const data_;
 };
