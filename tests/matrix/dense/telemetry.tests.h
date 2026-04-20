@@ -82,3 +82,17 @@ RESULT run_with_budget(const DenseMatrixStats& expected, ACTION&& action) {
     scope.assert_stats_delta(expected);
     return result;
 }
+
+#define START_TELEMETRY() \
+    const auto startTelemetryStats = DenseMatrixTelemetry::snapshot();
+
+#define END_TELEMETRY() \
+    const auto endTelemetryStats = DenseMatrixTelemetry::snapshot();
+
+#define ASSERT_TELEMETRY(expectedTelemetryStats) \
+    ASSERT_EQ(endTelemetryStats.copy_constructs, startTelemetryStats.copy_constructs + expectedTelemetryStats.copy_constructs); \
+    ASSERT_EQ(endTelemetryStats.move_constructs, startTelemetryStats.move_constructs + expectedTelemetryStats.move_constructs); \
+    ASSERT_EQ(endTelemetryStats.copy_assigns, startTelemetryStats.copy_assigns + expectedTelemetryStats.copy_assigns); \
+    ASSERT_EQ(endTelemetryStats.move_assigns, startTelemetryStats.move_assigns + expectedTelemetryStats.move_assigns); \
+    ASSERT_EQ(endTelemetryStats.allocations, startTelemetryStats.allocations + expectedTelemetryStats.allocations); \
+    ASSERT_EQ(endTelemetryStats.deallocations, startTelemetryStats.deallocations + expectedTelemetryStats.deallocations); \
