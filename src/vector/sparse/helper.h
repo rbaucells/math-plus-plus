@@ -20,7 +20,7 @@ concept sparse_vector_like = requires(T v,const T constV, std::size_t n, typenam
     { constV.n() } -> std::same_as<std::size_t>;
     { constV.nnz() } -> std::same_as<std::size_t>;
     requires std::same_as<std::remove_cvref_t<decltype(constV.get(n))>, typename T::ValueType>;
-    requires v.set(n, value);
+    v.set(n, value);
 };
 
 template<typename T>
