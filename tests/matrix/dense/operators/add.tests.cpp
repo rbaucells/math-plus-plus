@@ -40,9 +40,12 @@ TEST(dense_matrix_addition_operator, given_f_and_cf_dense_matrices_should_return
     const DenseMatrix<std::complex<float>> c = {{{3, 6}, {3, 3}, {1, 6}}, {{8, 4}, {4, 1}, {5, 1}}, {{0, 7}, {8, 5}, {3, 21}}};
     const DenseMatrix<std::complex<float>> expected = {{{7, 12}, {11, 9}, {9, 14}}, {{11, 5}, {14, 8}, {37, 1}}, {{12, 14}, {13, 8}, {15, 30}}};
     // act
+    Telemetry2::start();
     const DenseMatrix<std::complex<float>> sum = a + b + c;
+    Telemetry2::end();
     // assert
     ASSERT_TRUE(compare(Precision(0.001f), sum, expected));
+    Telemetry2::assert2({.allocations = 1});
 }
 
 TEST(dense_matrix_add, given_f_dense_matrices_should_return_sum) {
