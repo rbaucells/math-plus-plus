@@ -4,9 +4,6 @@
 #include "../../helper.h"
 
 template<scalar T>
-struct SparseVectorBase;
-
-template<scalar T>
 struct SparseVector;
 
 template<scalar T>
