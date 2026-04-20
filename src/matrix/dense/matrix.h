@@ -1,80 +1,17 @@
 #pragma once
 #include "helper.h"
+#include "telemetry.h"
 
 #include "../../exceptions.h"
 #include "../../helper.h"
 
 template<scalar T = float>
-struct DenseMatrixBase {
+struct DenseMatrix {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    [[nodiscard]] std::size_t rows() const {
-        return rows_;
-    }
-
-    [[nodiscard]] std::size_t columns() const {
-        return columns_;
-    }
-
-protected:
-    /**
-     * @brief Initializes the size of the matrix.
-     *
-     * Internal constructor that initializes the 'rows' and 'columns' fields.
-     * Does not allocate memory for matrix elements.
-     *
-     * @param rows Number of rows.
-     * @param columns Number of columns.
-     */
-    DenseMatrixBase(const std::size_t rows, const std::size_t columns) : rows_(rows), columns_(columns) {
-    }
-
-    std::size_t rows_;
-    std::size_t columns_;
-
-public:
-    /**
-     * @brief Accesses the element at column 'c' and row 'r'.
-     *
-     * @param c Zero-based column index.
-     * @param r Zero-based row index.
-     * @return Reference to the element at column 'c' and row 'r'.
-     */
-    [[nodiscard]] virtual T& at(std::size_t c, std::size_t r) = 0;
-
-    /**
-     * @brief Accesses the element at column 'c' and row 'r' (const).
-     *
-     * @param c Zero-based column index.
-     * @param r Zero-based row index.
-     * @return Const reference to the element at column 'c' and row 'r' .
-     */
-    [[nodiscard]] virtual const T& at(std::size_t c, std::size_t r) const = 0;
-
-    [[nodiscard]] T& operator[](const std::size_t c, const std::size_t r) {
-        if (c > columns_ - 1 || r > rows_ - 1) {
-            throw InvalidIndexException("Cannot access matrix at invalid index");
-        }
-
-        return at(c, r);
-    }
-
-    [[nodiscard]] const T& operator[](const std::size_t c, const std::size_t r) const {
-        if (c > columns_ - 1 || r > rows_ - 1) {
-            throw InvalidIndexException("Cannot access matrix at invalid index");
-        }
-
-        return at(c, r);
-    }
-
-    virtual ~DenseMatrixBase() = default;
-};
-
-template<scalar T = float>
-struct DenseMatrix : DenseMatrixBase<T> {
     DenseMatrix() = delete;
 
     /**
@@ -87,12 +24,8 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @param rows Number of rows.
      * @param fill If true, initializes all elements to zero; otherwise leaves elements uninitialized.
      */
-    DenseMatrix(const std::size_t rows, const std::size_t columns, const bool fill = true) : DenseMatrixBase<T>(rows, columns), data_(new T[columns * rows]) {
-        if (fill) {
-            for (std::size_t i = 0; i < columns * rows; i++) {
-                data_[i] = 0;
-            }
-        }
+    DenseMatrix(const std::size_t rows, const std::size_t columns, const bool fill = true) : rows_(rows), columns_(columns), data_(fill ? new T[columns_ * rows_]() : new T[columns_ * rows_]) {
+        DenseMatrixTelemetry::emit_allocation();
     }
 
     /**
@@ -104,20 +37,21 @@ struct DenseMatrix : DenseMatrixBase<T> {
      * @param initializerList Nested initializer_list representing matrix elements.
      * @throws InvalidDimensionException If nested initializer_lists are not all the same size.
      */
-    DenseMatrix(const std::initializer_list<std::initializer_list<T> >& initializerList) : DenseMatrixBase<T>(initializerList.size(), initializerList.begin()->size()), data_(new T[initializerList.size() * initializerList.begin()->size()]) {
+    DenseMatrix(const std::initializer_list<std::initializer_list<T>>& initializerList) : rows_(initializerList.size()), columns_(initializerList.begin()->size()), data_(new T[rows_ * columns_]) {
         std::size_t r = 0;
         for (const auto& row: initializerList) {
-            if (row.size() != this->columns_) {
+            if (row.size() != columns_) {
                 throw InvalidDimensionException("Nested initializer lists must all have the same size");
             }
 
             std::size_t c = 0;
             for (const T element: row) {
-                DenseMatrix<T>::at(c, r) = element;
+                at(r, c) = element;
                 c++;
             }
             r++;
         }
+        DenseMatrixTelemetry::emit_allocation();
     }
 
     /**
@@ -128,62 +62,40 @@ struct DenseMatrix : DenseMatrixBase<T> {
      *
      * @param other DenseMatrix to copy from.
      */
-    DenseMatrix(const DenseMatrix<T>& other) : DenseMatrixBase<T>(other.rows_, other.columns_), data_(new T[this->columns_ * this->rows_]) {
-        memcpy(data_, other.data_, this->columns_ * this->rows_ * sizeof(T));
+    DenseMatrix(const DenseMatrix<T>& other) : rows_(other.rows_), columns_(other.columns_), data_(new T[columns_ * rows_]) {
+        memcpy(data_, other.data_, columns_ * rows_ * sizeof(T));
+        DenseMatrixTelemetry::emit_copy_construct();
+        DenseMatrixTelemetry::emit_allocation();
     }
 
     /**
-    * @brief Copy constructor for DenseMatrix from different type DenseMatrix.
-    *
-    * Constructs an 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
-    * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
-    *
-    * @tparam OTHER_T Scalar type of the 'other' DenseMatrix.
-    * @param other DenseMatrix to copy from.
-    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
-    */
-    template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
-    DenseMatrix(const DenseMatrix<OTHER_T>& other) : DenseMatrixBase<T>(other.rows(), other.columns()), data_(new T[this->columns_ * this->rows_]) {
-        for (std::size_t c = 0; c < this->columns_; c++) {
-            for (std::size_t r = 0; r < this->rows_; r++) {
-                DenseMatrix<T>::at(c, r) = other[c, r];
-            }
-        }
-    }
-
-    /**
-     * @brief Copy constructor for DenseMatrix from same type DenseMatrixBase.
+     * @brief Copy constructor for DenseMatrix from different type DenseMatrix.
      *
      * Constructs an 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
      * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
      *
-     * @param other DenseMatrixBase to copy from.
+     * @param other DenseMatrix to copy from.
      */
-    DenseMatrix(const DenseMatrixBase<T>& other) : DenseMatrixBase<T>(other.rows(), other.columns()), data_(new T[this->columns_ * this->rows_]) {
-        for (std::size_t c = 0; c < this->columns_; c++) {
-            for (std::size_t r = 0; r < this->rows_; r++) {
-                DenseMatrix<T>::at(c, r) = other[c, r];
-            }
+    template<scalar OTHER_T>
+    DenseMatrix(const DenseMatrix<OTHER_T>& other) : rows_(other.rows()), columns_(other.columns()), data_(new T[columns_ * rows_]) {
+        const OTHER_T* otherData = other.data();
+
+        for (std::size_t i = 0; i < columns_ * rows_; i++) {
+            data_[i] = otherData[i];
         }
+
+        DenseMatrixTelemetry::emit_copy_construct();
+        DenseMatrixTelemetry::emit_allocation();
     }
 
-    /**
-    * @brief Copy constructor for DenseMatrix from different type DenseMatrixBase.
-    *
-    * Constructs an 'other.rows x other.columns' matrix and performs a deep copy of 'other'.
-    * Allocates 'other.rows * other.columns * sizeof(T)' bytes on the heap.
-    *
-    * @tparam OTHER_T Scalar type of the 'other' DenseMatrixBase.
-    * @param other DenseMatrixBase to copy from.
-    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
-    */
-    template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
-    DenseMatrix(const DenseMatrixBase<OTHER_T>& other) : DenseMatrixBase<T>(other.rows(), other.columns()), data_(new T[this->columns_ * this->rows_]) {
-        for (std::size_t c = 0; c < this->columns_; c++) {
-            for (std::size_t r = 0; r < this->rows_; r++) {
-                DenseMatrix<T>::at(c, r) = other[c, r];
+    template<dense_matrix_like U>
+    DenseMatrix(const U& other) : rows_(other.rows()), columns_(other.columns()), data_(new T[columns_ * rows_]) {
+        for (std::size_t c = 0; c < columns_; c++) {
+            for (std::size_t r = 0; r < rows_; r++) {
+                data_[c * rows_ + r] = other.at(r, c);
             }
         }
+        DenseMatrixTelemetry::emit_allocation();
     }
 
     /**
@@ -194,10 +106,11 @@ struct DenseMatrix : DenseMatrixBase<T> {
      *
      * @param other DenseMatrix to move from.
      */
-    DenseMatrix(DenseMatrix<T>&& other) noexcept : DenseMatrixBase<T>(other.rows_, other.columns_), data_(other.data_) {
+    DenseMatrix(DenseMatrix<T>&& other) noexcept : rows_(other.rows_), columns_(other.columns_), data_(other.data_) {
         other.data_ = nullptr;
         other.rows_ = 0;
         other.columns_ = 0;
+        DenseMatrixTelemetry::emit_move_construct();
     }
 
     /**
@@ -211,101 +124,71 @@ struct DenseMatrix : DenseMatrixBase<T> {
      */
     DenseMatrix<T>& operator=(const DenseMatrix<T>& other) {
         if (this != &other) {
-            if (this->rows_ != other.rows_ || this->columns_ != other.columns_) {
+            if (rows_ != other.rows_ || columns_ != other.columns_) {
+                DenseMatrixTelemetry::emit_deallocation();
                 delete[] data_;
-                this->rows_ = other.rows_;
-                this->columns_ = other.columns_;
-                data_ = new T[this->rows_ * this->columns_];
+                rows_ = other.rows_;
+                columns_ = other.columns_;
+                data_ = new T[rows_ * columns_];
+                DenseMatrixTelemetry::emit_allocation();
             }
-            memcpy(data_, other.data_, this->columns_ * this->rows_ * sizeof(T));
+            memcpy(data_, other.data_, columns_ * rows_ * sizeof(T));
+            DenseMatrixTelemetry::emit_copy_assign();
         }
 
         return *this;
     }
 
     /**
-    * @brief Copy assignment operator for DenseMatrix from different type DenseMatrix.
-    * Replaces all elements with elements of 'other'.
-    * Does not allocate memory on the heap.
-    * @tparam OTHER_T Scalar type of the 'other' DenseMatrix.
-    * @param other DenseMatrix to copy from.
-    * @return Reference to this.
-    * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
-    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
-    * @note 'other' must be of same dimensions as this.
-    */
+     * @brief Copy assignment operator for DenseMatrix from different type DenseMatrix.
+     * Replaces all elements with elements of 'other'.
+     * Does not allocate memory on the heap.
+     * @tparam OTHER_T Scalar type of the 'other' DenseMatrix.
+     * @param other DenseMatrix to copy from.
+     * @return Reference to this.
+     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
+     * @note 'other' must be of same dimensions as this.
+     */
     template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
     DenseMatrix<T>& operator=(const DenseMatrix<OTHER_T>& other) {
         if (this->rows_ != other.rows() || this->columns_ != other.columns()) {
+            DenseMatrixTelemetry::emit_deallocation();
             delete[] data_;
-            this->rows_ = other.rows();
-            this->columns_ = other.columns();
-            data_ = new T[this->rows_ * this->columns_];
+            rows_ = other.rows();
+            columns_ = other.columns();
+            data_ = new T[rows_ * columns_];
+            DenseMatrixTelemetry::emit_allocation();
         }
 
         const OTHER_T* otherData = other.data();
 
-        for (std::size_t i = 0; i < this->columns_ * this->rows_; i++) {
+        for (std::size_t i = 0; i < columns_ * rows_; i++) {
             data_[i] = otherData[i];
         }
 
+        DenseMatrixTelemetry::emit_copy_assign();
         return *this;
     }
 
-    /**
-     * @brief Copy assignment operator for DenseMatrix from same type DenseMatrixBase.
-     * Replaces all elements with elements of 'other'.
-     * Does not allocate memory on the heap.
-     * @param other DenseMatrixBase to copy from.
-     * @return Reference to this.
-     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
-     * @note 'other' must be of same dimensions as this.
-     */
-    DenseMatrix<T>& operator=(const DenseMatrixBase<T>& other) {
-        if (static_cast<const DenseMatrixBase<T>*>(this) != &other) {
-            if (this->rows_ != other.rows() || this->columns_ != other.columns()) {
-                delete[] data_;
-                this->rows_ = other.rows();
-                this->columns_ = other.columns();
-                data_ = new T[this->rows_ * this->columns_];
-            }
-
-            for (std::size_t c = 0; c < this->columns_; c++) {
-                for (std::size_t r = 0; r < this->rows_; r++) {
-                    DenseMatrix<T>::at(c, r) = other[c, r];
-                }
-            }
-        }
-
-        return *this;
-    }
-
-    /**
-    * @brief Copy assignment operator for DenseMatrix from different type DenseMatrixBase.
-    * Replaces all elements with elements of 'other'.
-    * Does not allocate memory on the heap.
-    * @param other DenseMatrixBase to copy from.
-    * @return Reference to this.
-    * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
-    * @note 'other' must be of same dimensions as this.
-    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
-    * @tparam OTHER_T Scalar type of the 'other' DenseMatrixBase.
-    */
-    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    DenseMatrix<T>& operator=(const DenseMatrixBase<OTHER_T>& other) {
+    template<dense_matrix_like U>
+    DenseMatrix<T>& operator=(const U& other) {
         if (this->rows_ != other.rows() || this->columns_ != other.columns()) {
+            DenseMatrixTelemetry::emit_deallocation();
             delete[] data_;
-            this->rows_ = other.rows();
-            this->columns_ = other.columns();
-            data_ = new T[this->rows_ * this->columns_];
+            rows_ = other.rows();
+            columns_ = other.columns();
+            data_ = new T[rows_ * columns_];
+            DenseMatrixTelemetry::emit_allocation();
         }
 
-        for (std::size_t c = 0; c < this->columns_; c++) {
-            for (std::size_t r = 0; r < this->rows_; r++) {
-                DenseMatrix<T>::at(c, r) = other[c, r];
+        for (int c = 0; c < columns_; c++) {
+            for (int r = 0; r < rows_; r++) {
+                at(r, c) = other.at(r, c);
             }
         }
 
+        DenseMatrixTelemetry::emit_copy_assign();
         return *this;
     }
 
@@ -320,43 +203,62 @@ struct DenseMatrix : DenseMatrixBase<T> {
      */
     DenseMatrix<T>& operator=(DenseMatrix<T>&& other) noexcept {
         if (this != &other) {
+            DenseMatrixTelemetry::emit_deallocation();
             delete[] data_;
             data_ = other.data_;
             other.data_ = nullptr;
 
-            this->rows_ = other.rows_;
+            rows_ = other.rows_;
             other.rows_ = 0;
 
-            this->columns_ = other.columns_;
+            columns_ = other.columns_;
             other.columns_ = 0;
+            DenseMatrixTelemetry::emit_move_assign();
         }
 
         return *this;
     }
 
     static DenseMatrix<T> identity(const std::size_t n) {
-        DenseMatrix<T> m(n, n, false);
+        DenseMatrix<T> m(n, n, true);
 
-        for (std::size_t c = 0; c < n; c++) {
-            for (std::size_t r = 0; r < n; r++) {
-                if (c == r) {
-                    m[c, r] = 1;
-                }
-                else {
-                    m[c, r] = 0;
-                }
-            }
+        for (std::size_t i = 0; i < n; i++) {
+            m.at(i, i) = 1;
         }
 
         return std::move(m);
     }
 
-    [[nodiscard]] T& at(const std::size_t c, const std::size_t r) override {
-        return data_[c * this->rows_ + r];
+    [[nodiscard]] T& at(const std::size_t r, const std::size_t c) {
+        return data_[c * rows_ + r];
     }
 
-    [[nodiscard]] const T& at(const std::size_t c, const std::size_t r) const override {
-        return data_[c * this->rows_ + r];
+    [[nodiscard]] const T& at(const std::size_t r, const std::size_t c) const {
+        return data_[c * rows_ + r];
+    }
+
+    [[nodiscard]] T& operator[](const std::size_t r, const std::size_t c) {
+        if (r >= rows_ || c >= columns_) {
+            throw InvalidIndexException("Cannot access matrix at invalid index");
+        }
+
+        return at(r, c);
+    }
+
+    [[nodiscard]] const T& operator[](const std::size_t r, const std::size_t c) const {
+        if (r >= rows_ || c >= columns_) {
+            throw InvalidIndexException("Cannot access matrix at invalid index");
+        }
+
+        return at(r, c);
+    }
+
+    [[nodiscard]] std::size_t rows() const {
+        return rows_;
+    }
+
+    [[nodiscard]] std::size_t columns() const {
+        return columns_;
     }
 
     /**
@@ -368,23 +270,34 @@ struct DenseMatrix : DenseMatrixBase<T> {
     }
 
     /**
-    * @brief Gets the const data pointer storing the matrices elements.
-    * @return Const pointer to array of elements.
-    */
+     * @brief Gets the const data pointer storing the matrices elements.
+     * @return Const pointer to array of elements.
+     */
     [[nodiscard]] const T* data() const {
         return data_;
     }
 
-    ~DenseMatrix() override {
+    ~DenseMatrix() {
+        if (data_ != nullptr) {
+            DenseMatrixTelemetry::emit_deallocation();
+        }
         delete[] data_;
     }
 
 private:
+    std::size_t rows_;
+    std::size_t columns_;
+
     T* data_;
 };
 
 template<scalar T = float>
-struct DenseMatrixView : DenseMatrixBase<T> {
+struct DenseMatrixView {
+    using ValueType = T;
+    using UnderlyingType = underlying_type_t<T>;
+
+    static constexpr bool isComplex = is_complex_v<T>;
+
     DenseMatrixView() = delete;
 
     DenseMatrixView(DenseMatrixView<T>&& other) noexcept = delete;
@@ -394,20 +307,20 @@ struct DenseMatrixView : DenseMatrixBase<T> {
     DenseMatrixView<T>& operator=(DenseMatrixView<T>&& other) noexcept = delete;
 
     /**
-    * @brief Constructs a DenseMatrixView into an existing DenseMatrix.
-    *
-    * Creates a view of size `rows x columns` into the `owner` matrix,
-    * starting at the colOffset and rowOffset.
-    * Does not allocate new memory.
-    * The view holds a reference to the owner.
-    *
-    * @param owner DenseMatrix to create a view from.
-    * @param rows Number of rows in the view.
-    * @param columns Number of columns in the view.
-    * @param colOffset Starting column offset in the owner matrix.
-    * @param rowOffset Starting row offset in the owner matrix.
-    */
-    DenseMatrixView(const DenseMatrix<T>& owner, const std::size_t rows, const std::size_t columns, const std::size_t colOffset, const std::size_t rowOffset) : DenseMatrixBase<T>(rows, columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
+     * @brief Constructs a DenseMatrixView into an existing DenseMatrix.
+     *
+     * Creates a view of size `rows x columns` into the `owner` matrix,
+     * starting at the colOffset and rowOffset.
+     * Does not allocate new memory.
+     * The view holds a reference to the owner.
+     *
+     * @param owner DenseMatrix to create a view from.
+     * @param rows Number of rows in the view.
+     * @param columns Number of columns in the view.
+     * @param colOffset Starting column offset in the owner matrix.
+     * @param rowOffset Starting row offset in the owner matrix.
+     */
+    DenseMatrixView(const DenseMatrix<T>& owner, const std::size_t rows, const std::size_t columns, const std::size_t colOffset, const std::size_t rowOffset) : rows_(rows), columns_(columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
     }
 
 
@@ -419,19 +332,35 @@ struct DenseMatrixView : DenseMatrixBase<T> {
      *
      * @param other DenseMatrixView to copy from.
      */
-    DenseMatrixView(const DenseMatrixView<T>& other) : DenseMatrixBase<T>(other.rows_, other.columns_), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {
+    DenseMatrixView(const DenseMatrixView<T>& other) : rows_(other.rows_), columns_(other.columns_), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {
     }
 
     /**
      * @brief Trying to modify a DenseMatrix through a view is invalid.
      * @throws InvalidOperationException You cannot modify owner through a view.
      */
-    [[nodiscard]] T& at(const std::size_t, const std::size_t) override {
+    [[nodiscard]] T& at(const std::size_t, const std::size_t) {
         throw InvalidOperationException("Cannot modify owner through view");
     }
 
-    [[nodiscard]] const T& at(const std::size_t c, const std::size_t r) const override {
-        return owner_.at(c + colOffset_, r + rowOffset_);
+    [[nodiscard]] const T& at(const std::size_t r, const std::size_t c) const {
+        return owner_.at(r + rowOffset_, c + colOffset_);
+    }
+
+    [[nodiscard]] T& operator[](const std::size_t r, const std::size_t c) {
+        if (r >= rows_ || c >= columns_) {
+            throw InvalidIndexException("Cannot access matrix at invalid index");
+        }
+
+        return at(r, c);
+    }
+
+    [[nodiscard]] const T& operator[](const std::size_t r, const std::size_t c) const {
+        if (r >= rows_ || c >= columns_) {
+            throw InvalidIndexException("Cannot access matrix at invalid index");
+        }
+
+        return at(r, c);
     }
 
     /**
@@ -450,6 +379,14 @@ struct DenseMatrixView : DenseMatrixBase<T> {
         return rowOffset_;
     }
 
+    [[nodiscard]] std::size_t rows() const {
+        return rows_;
+    }
+
+    [[nodiscard]] std::size_t columns() const {
+        return columns_;
+    }
+
     /**
      * @brief Gets the const reference to the DenseMatrix owner.
      * @return Const reference to denseMatrix owner.
@@ -458,9 +395,11 @@ struct DenseMatrixView : DenseMatrixBase<T> {
         return owner_;
     }
 
-    ~DenseMatrixView() override = default;
+    ~DenseMatrixView() = default;
 
 private:
+    std::size_t rows_;
+    std::size_t columns_;
     const std::size_t colOffset_;
     const std::size_t rowOffset_;
 
@@ -468,7 +407,11 @@ private:
 };
 
 template<scalar T = float>
-struct CustomDenseMatrix : DenseMatrixBase<T> {
+struct CustomDenseMatrix {
+    using ValueType = T;
+    using UnderlyingType = underlying_type_t<T>;
+
+    static constexpr bool isComplex = is_complex_v<T>;
 
     CustomDenseMatrix() = delete;
 
@@ -495,15 +438,31 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
      * @note Length of 'data' array must be greater than '(columns - 1) x stride + (rows - 1)'.
      * @note 'data' array must be in column major ordering.
      */
-    CustomDenseMatrix(T* data, const std::size_t rows, const std::size_t columns, const std::size_t stride) : DenseMatrixBase<T>(rows, columns), stride_(stride), data_(data) {
+    CustomDenseMatrix(T* data, const std::size_t rows, const std::size_t columns, const std::size_t stride) : rows_(rows), columns_(columns), stride_(stride), data_(data) {
     }
 
-    [[nodiscard]] T& at(const std::size_t c, const std::size_t r) override {
+    [[nodiscard]] T& at(const std::size_t r, const std::size_t c) {
         return data_[c * stride_ + r];
     }
 
-    [[nodiscard]] const T& at(const std::size_t c, const std::size_t r) const override {
+    [[nodiscard]] const T& at(const std::size_t r, const std::size_t c) const {
         return data_[c * stride_ + r];
+    }
+
+    [[nodiscard]] T& operator[](const std::size_t r, const std::size_t c) {
+        if (r >= rows_ || c >= columns_) {
+            throw InvalidIndexException("Cannot access matrix at invalid index");
+        }
+
+        return at(r, c);
+    }
+
+    [[nodiscard]] const T& operator[](const std::size_t r, const std::size_t c) const {
+        if (r >= rows_ || c >= columns_) {
+            throw InvalidIndexException("Cannot access matrix at invalid index");
+        }
+
+        return at(r, c);
     }
 
     /**
@@ -512,6 +471,14 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
      */
     [[nodiscard]] std::size_t stride() const {
         return stride_;
+    }
+
+    [[nodiscard]] std::size_t rows() const {
+        return rows_;
+    }
+
+    [[nodiscard]] std::size_t columns() const {
+        return columns_;
     }
 
     /**
@@ -523,16 +490,19 @@ struct CustomDenseMatrix : DenseMatrixBase<T> {
     }
 
     /**
-    * @brief Gets the const data pointer storing the matrices elements.
-    * @return Const pointer to array of elements.
-    */
+     * @brief Gets the const data pointer storing the matrices elements.
+     * @return Const pointer to array of elements.
+     */
     [[nodiscard]] const T* data() const {
         return data_;
     }
 
-    ~CustomDenseMatrix() override = default;
+    ~CustomDenseMatrix() = default;
 
 private:
+    std::size_t rows_;
+    std::size_t columns_;
     const std::size_t stride_;
+
     T* const data_;
 };
