@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-struct DenseMatrixStats {
+struct TelemetryStats {
     std::size_t copy_constructs = 0;
     std::size_t move_constructs = 0;
     std::size_t copy_assigns = 0;
@@ -11,7 +11,7 @@ struct DenseMatrixStats {
     std::size_t deallocations = 0;
 };
 
-struct DenseMatrixTelemetry {
+struct Telemetry {
     static void emit_copy_construct() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
         ++stats_.copy_constructs;
@@ -50,20 +50,20 @@ struct DenseMatrixTelemetry {
 
     static void reset() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
-        stats_ = DenseMatrixStats{};
+        stats_ = TelemetryStats{};
 #endif
     }
 
-    [[nodiscard]] static DenseMatrixStats snapshot() noexcept {
+    [[nodiscard]] static TelemetryStats snapshot() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
         return stats_;
 #else
-        return DenseMatrixStats{};
+        return TelemetryStats{};
 #endif
     }
 
 private:
 #ifdef MATHPP_ENABLE_TELEMETRY
-    static inline thread_local DenseMatrixStats stats_{};
+    static inline thread_local TelemetryStats stats_{};
 #endif
 };

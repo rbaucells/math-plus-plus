@@ -6,15 +6,15 @@
 
 #include "mathpp/math.h"
 
-[[nodiscard]] inline DenseMatrixStats dense_matrix_telemetry_snapshot() {
-    return DenseMatrixTelemetry::snapshot();
+[[nodiscard]] inline TelemetryStats telemetry_snapshot() {
+    return Telemetry::snapshot();
 }
 
-inline void reset_dense_matrix_telemetry() {
-    DenseMatrixTelemetry::reset();
+inline void reset_telemetry() {
+    Telemetry::reset();
 }
 
-inline void assert_telemetry_stats(const DenseMatrixStats& actual, const DenseMatrixStats& expected) {
+inline void assert_telemetry_stats(const TelemetryStats& actual, const TelemetryStats& expected) {
     ASSERT_EQ(actual.copy_constructs, expected.copy_constructs) << "copy_constructs mismatch";
     ASSERT_EQ(actual.move_constructs, expected.move_constructs) << "move_constructs mismatch";
     ASSERT_EQ(actual.copy_assigns, expected.copy_assigns) << "copy_assigns mismatch";
@@ -23,14 +23,14 @@ inline void assert_telemetry_stats(const DenseMatrixStats& actual, const DenseMa
     ASSERT_EQ(actual.deallocations, expected.deallocations) << "deallocations mismatch";
 }
 
-class DenseMatrixTelemetryScope {
+class TelemetryScope {
 public:
-    DenseMatrixTelemetryScope() : baseline_(DenseMatrixTelemetry::snapshot()) {
+    TelemetryScope() : baseline_(Telemetry::snapshot()) {
     }
 
-    [[nodiscard]] DenseMatrixStats delta() const {
-        const DenseMatrixStats current = DenseMatrixTelemetry::snapshot();
-        DenseMatrixStats d;
+    [[nodiscard]] TelemetryStats delta() const {
+        const TelemetryStats current = Telemetry::snapshot();
+        TelemetryStats d;
         d.copy_constructs = current.copy_constructs - baseline_.copy_constructs;
         d.move_constructs = current.move_constructs - baseline_.move_constructs;
         d.copy_assigns = current.copy_assigns - baseline_.copy_assigns;
@@ -40,35 +40,35 @@ public:
         return d;
     }
 
-    void assert_stats_delta(const DenseMatrixStats& expected) const {
+    void assert_stats_delta(const TelemetryStats& expected) const {
         assert_telemetry_stats(delta(), expected);
     }
 
 private:
-    DenseMatrixStats baseline_;
+    TelemetryStats baseline_;
 };
 
-inline void reset_dense_matrix_copy_telemetry() {
-    DenseMatrixTelemetry::reset();
+inline void reset_copy_telemetry() {
+    Telemetry::reset();
 }
 
-[[nodiscard]] inline std::size_t dense_matrix_copy_telemetry_count() {
-    return DenseMatrixTelemetry::snapshot().copy_constructs;
+[[nodiscard]] inline std::size_t copy_telemetry_count() {
+    return Telemetry::snapshot().copy_constructs;
 }
 
-inline void assert_dense_matrix_copy_telemetry(const std::size_t expected_number_of_copies) {
-    ASSERT_EQ(dense_matrix_copy_telemetry_count(), expected_number_of_copies);
+inline void assert_copy_telemetry(const std::size_t expected_number_of_copies) {
+    ASSERT_EQ(copy_telemetry_count(), expected_number_of_copies);
 }
 
-class DenseMatrixTelemetryFixture : public ::testing::Test {
+class TelemetryFixture : public ::testing::Test {
 protected:
     void SetUp() override {
-        reset_dense_matrix_telemetry();
+        reset_telemetry();
     }
 
     template<typename RESULT, typename ACTION>
-    RESULT run_with_budget(const DenseMatrixStats& expected, ACTION&& action) {
-        const DenseMatrixTelemetryScope scope;
+    RESULT run_with_budget(const TelemetryStats& expected, ACTION&& action) {
+        const TelemetryScope scope;
         RESULT result(std::forward<ACTION>(action)());
         scope.assert_stats_delta(expected);
         return result;
@@ -76,18 +76,18 @@ protected:
 };
 
 template<typename RESULT, typename ACTION>
-RESULT run_with_budget(const DenseMatrixStats& expected, ACTION&& action) {
-    const DenseMatrixTelemetryScope scope;
+RESULT run_with_budget(const TelemetryStats& expected, ACTION&& action) {
+    const TelemetryScope scope;
     RESULT result(std::forward<ACTION>(action)());
     scope.assert_stats_delta(expected);
     return result;
 }
 
 #define START_TELEMETRY() \
-    const auto startTelemetryStats = DenseMatrixTelemetry::snapshot();
+    const auto startTelemetryStats = Telemetry::snapshot();
 
 #define END_TELEMETRY() \
-    const auto endTelemetryStats = DenseMatrixTelemetry::snapshot();
+    const auto endTelemetryStats = Telemetry::snapshot();
 
 #define ASSERT_TELEMETRY(expectedTelemetryStats) \
     ASSERT_EQ(endTelemetryStats.copy_constructs, startTelemetryStats.copy_constructs + expectedTelemetryStats.copy_constructs); \

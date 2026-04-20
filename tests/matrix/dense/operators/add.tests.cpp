@@ -30,7 +30,7 @@ TEST(dense_matrix_addition_operator, given_cf_dense_matrices_should_return_sum) 
     END_TELEMETRY()
     // assert
     ASSERT_TRUE(compare(Precision(0.001f), sum, expected));
-    ASSERT_TELEMETRY(DenseMatrixStats{.allocations = 1})
+    ASSERT_TELEMETRY(TelemetryStats{.allocations = 1})
 }
 
 TEST(dense_matrix_addition_operator, given_f_and_cf_dense_matrices_should_return_sum) {

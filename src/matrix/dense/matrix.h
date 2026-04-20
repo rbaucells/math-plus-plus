@@ -1,6 +1,6 @@
 #pragma once
 #include "helper.h"
-#include "telemetry.h"
+#include "../../telemetry.h"
 
 #include "../../exceptions.h"
 #include "../../helper.h"
@@ -25,7 +25,7 @@ struct DenseMatrix {
      * @param fill If true, initializes all elements to zero; otherwise leaves elements uninitialized.
      */
     DenseMatrix(const std::size_t rows, const std::size_t columns, const bool fill = true) : rows_(rows), columns_(columns), data_(fill ? new T[columns_ * rows_]() : new T[columns_ * rows_]) {
-        DenseMatrixTelemetry::emit_allocation();
+        Telemetry::emit_allocation();
     }
 
     /**
@@ -51,7 +51,7 @@ struct DenseMatrix {
             }
             r++;
         }
-        DenseMatrixTelemetry::emit_allocation();
+        Telemetry::emit_allocation();
     }
 
     /**
@@ -64,8 +64,8 @@ struct DenseMatrix {
      */
     DenseMatrix(const DenseMatrix<T>& other) : rows_(other.rows_), columns_(other.columns_), data_(new T[columns_ * rows_]) {
         memcpy(data_, other.data_, columns_ * rows_ * sizeof(T));
-        DenseMatrixTelemetry::emit_copy_construct();
-        DenseMatrixTelemetry::emit_allocation();
+        Telemetry::emit_copy_construct();
+        Telemetry::emit_allocation();
     }
 
     /**
@@ -84,8 +84,8 @@ struct DenseMatrix {
             data_[i] = otherData[i];
         }
 
-        DenseMatrixTelemetry::emit_copy_construct();
-        DenseMatrixTelemetry::emit_allocation();
+        Telemetry::emit_copy_construct();
+        Telemetry::emit_allocation();
     }
 
     template<dense_matrix_like U>
@@ -95,7 +95,7 @@ struct DenseMatrix {
                 data_[c * rows_ + r] = other.at(r, c);
             }
         }
-        DenseMatrixTelemetry::emit_allocation();
+        Telemetry::emit_allocation();
     }
 
     /**
@@ -110,7 +110,7 @@ struct DenseMatrix {
         other.data_ = nullptr;
         other.rows_ = 0;
         other.columns_ = 0;
-        DenseMatrixTelemetry::emit_move_construct();
+        Telemetry::emit_move_construct();
     }
 
     /**
@@ -125,15 +125,15 @@ struct DenseMatrix {
     DenseMatrix<T>& operator=(const DenseMatrix<T>& other) {
         if (this != &other) {
             if (rows_ != other.rows_ || columns_ != other.columns_) {
-                DenseMatrixTelemetry::emit_deallocation();
+                Telemetry::emit_deallocation();
                 delete[] data_;
                 rows_ = other.rows_;
                 columns_ = other.columns_;
                 data_ = new T[rows_ * columns_];
-                DenseMatrixTelemetry::emit_allocation();
+                Telemetry::emit_allocation();
             }
             memcpy(data_, other.data_, columns_ * rows_ * sizeof(T));
-            DenseMatrixTelemetry::emit_copy_assign();
+            Telemetry::emit_copy_assign();
         }
 
         return *this;
@@ -153,12 +153,12 @@ struct DenseMatrix {
     template<scalar OTHER_T> requires std::convertible_to<OTHER_T, T>
     DenseMatrix<T>& operator=(const DenseMatrix<OTHER_T>& other) {
         if (this->rows_ != other.rows() || this->columns_ != other.columns()) {
-            DenseMatrixTelemetry::emit_deallocation();
+            Telemetry::emit_deallocation();
             delete[] data_;
             rows_ = other.rows();
             columns_ = other.columns();
             data_ = new T[rows_ * columns_];
-            DenseMatrixTelemetry::emit_allocation();
+            Telemetry::emit_allocation();
         }
 
         const OTHER_T* otherData = other.data();
@@ -167,19 +167,19 @@ struct DenseMatrix {
             data_[i] = otherData[i];
         }
 
-        DenseMatrixTelemetry::emit_copy_assign();
+        Telemetry::emit_copy_assign();
         return *this;
     }
 
     template<dense_matrix_like U>
     DenseMatrix<T>& operator=(const U& other) {
         if (this->rows_ != other.rows() || this->columns_ != other.columns()) {
-            DenseMatrixTelemetry::emit_deallocation();
+            Telemetry::emit_deallocation();
             delete[] data_;
             rows_ = other.rows();
             columns_ = other.columns();
             data_ = new T[rows_ * columns_];
-            DenseMatrixTelemetry::emit_allocation();
+            Telemetry::emit_allocation();
         }
 
         for (int c = 0; c < columns_; c++) {
@@ -188,7 +188,7 @@ struct DenseMatrix {
             }
         }
 
-        DenseMatrixTelemetry::emit_copy_assign();
+        Telemetry::emit_copy_assign();
         return *this;
     }
 
@@ -203,7 +203,7 @@ struct DenseMatrix {
      */
     DenseMatrix<T>& operator=(DenseMatrix<T>&& other) noexcept {
         if (this != &other) {
-            DenseMatrixTelemetry::emit_deallocation();
+            Telemetry::emit_deallocation();
             delete[] data_;
             data_ = other.data_;
             other.data_ = nullptr;
@@ -213,7 +213,7 @@ struct DenseMatrix {
 
             columns_ = other.columns_;
             other.columns_ = 0;
-            DenseMatrixTelemetry::emit_move_assign();
+            Telemetry::emit_move_assign();
         }
 
         return *this;
@@ -279,7 +279,7 @@ struct DenseMatrix {
 
     ~DenseMatrix() {
         if (data_ != nullptr) {
-            DenseMatrixTelemetry::emit_deallocation();
+            Telemetry::emit_deallocation();
         }
         delete[] data_;
     }

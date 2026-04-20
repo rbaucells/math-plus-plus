@@ -29,7 +29,7 @@ add_library(mathpp INTERFACE
         src/matrix/dense/operators/multiply.h
         src/matrix/dense/operators/subtract.h
         src/matrix/dense/helper.h
-        src/matrix/dense/telemetry.h
+        src/telemetry.h
         src/matrix/dense/matrix.h)
 
 target_include_directories(mathpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
