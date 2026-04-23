@@ -2,8 +2,8 @@
 #include "../../../helper.h"
 #include "../matrix.h"
 
-template<dense_matrix_like T, dense_matrix_like U, dense_matrix_like... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
-DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>> multiply(const T& a, const U& b) {
+template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>
+DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType>> multiply(const T& a, const U& b) {
     assert_can_multiply(a, b);
 
     const std::size_t aRows = a.rows();
