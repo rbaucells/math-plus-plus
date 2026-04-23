@@ -12,6 +12,7 @@
 #include "../../src/matrix/sparse/matrix.h"
 #include "../../src/matrix/sparse/helper.h"
 #include "../../src/vector/dense/operators/compare.h"
+#include "../../src/vector/dense/operators/dot.h"
 #include "../../src/vector/sparse/operators/compare.h"
 #include "../../src/matrix/sparse/operators/compare.h"
 #include "../../src/matrix/dense/matrix.h"
