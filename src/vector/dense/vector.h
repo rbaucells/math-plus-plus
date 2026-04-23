@@ -22,7 +22,7 @@ struct DenseVector {
      * @param n Number of elements.
      * @param fill If true, initializes all elements to zero; otherwise leaves elements uninitialized.
      */
-    DenseVector(const std::size_t n, const bool fill) : n_(n), data_(fill ? new T[n_]() : new T[n_]) {
+    DenseVector(const std::size_t n, const bool fill = true) : n_(n), data_(fill ? new T[n_]() : new T[n_]) {
 
     }
 
