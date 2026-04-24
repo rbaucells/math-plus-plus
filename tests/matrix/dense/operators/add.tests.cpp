@@ -2,7 +2,7 @@
 
 #include "mathpp/math.h"
 
-#include "../telemetry.tests.h"
+#include "../../../telemetry.tests.h"
 
 TEST(dense_matrix_addition_operator, given_f_dense_matrices_should_return_sum) {
     // arrange

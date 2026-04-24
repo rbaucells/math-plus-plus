@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "mathpp/math.h"
 
-#include "../telemetry.tests.h"
+#include "../../../telemetry.tests.h"
 
 TEST(dense_matrix_mixed_operators, given_f_dense_matrices_should_return_a_plus_b_minus_c) {
     // arrange
