@@ -5,6 +5,8 @@
 #include "../../src/helper.h"
 #include "../../src/vector/exceptions.h"
 #include "../../src/vector/sparse/vector.h"
+#include "../../src/vector/sparse/view.h"
+#include "../../src/vector/sparse/custom.h"
 #include "../../src/vector/sparse/helper.h"
 #include "../../src/vector/dense/vector.h"
 #include "../../src/vector/dense/view.h"
