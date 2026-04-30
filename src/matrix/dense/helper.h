@@ -1,6 +1,9 @@
 #pragma once
-#include "../../exceptions.h"
 #include "../../helper.h"
+#include <cstddef>
+#include <concepts>
+#include <type_traits>
+#include "../../exceptions.h"
 
 template<scalar T>
 struct DenseMatrix;
