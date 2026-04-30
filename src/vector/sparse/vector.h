@@ -6,59 +6,12 @@
 #include "helper.h"
 
 template<scalar T = float>
-struct SparseVectorBase {
+struct SparseVector {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    [[nodiscard]] std::size_t n() const {
-        return n_;
-    }
-
-protected:
-    /**
-     * @brief Initializes the size of the vector.
-     *
-     * Internal constructor that initializes the 'n' field.
-     * Does not allocate memory for matrix elements.
-     *
-     * @param n Number of elements.
-     */
-    explicit SparseVectorBase(const std::size_t n) : n_(n) {
-    }
-
-    std::size_t n_;
-
-public:
-    /**
-     * @brief Sets the value of the element at index 'i'
-     * @param i Index of element
-     * @param value The value to set at index 'i'
-     * @throws InvalidIndexException If 'i' is negative or greater than 'n - 1'
-     */
-    virtual void set(std::size_t i, T value) = 0;
-
-    /**
-     * @brief Gets the value of the element at index 'i'
-     * @param i Index of element
-     * @return The value at index 'i'
-     * @throws InvalidIndexException If 'i' is negative or greater than 'n - 1'
-     */
-    [[nodiscard]] virtual T get(std::size_t i) const = 0;
-
-
-    /**
-    * @brief Gets the number of non-zero elements in the sparse vector.
-    * @return Number of non-zero elements.
-    */
-    [[nodiscard]] virtual std::size_t nnz() const = 0;
-
-    virtual ~SparseVectorBase() = default;
-};
-
-template<scalar T = float>
-struct SparseVector : SparseVectorBase<T> {
     SparseVector() = delete;
 
     /**
@@ -68,7 +21,7 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * @param n Size of vector.
      */
-    explicit SparseVector(const std::size_t n) : SparseVectorBase<T>(n), nnz_(0), values_(new T[0]), indices_(new std::size_t[0]) {
+    explicit SparseVector(const std::size_t n) : nnz_(0), n_(n), values_(new T[0]), indices_(new std::size_t[0]) {
     }
 
     /**
@@ -79,7 +32,7 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * @note 'initializerList' must be sorted in increasing indices.
      */
-    SparseVector(const std::size_t n, std::initializer_list<std::tuple<T, int> > initializerList) : SparseVectorBase<T>(n), nnz_(initializerList.size()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
+    SparseVector(const std::size_t n, std::initializer_list<std::tuple<T, int> > initializerList) : nnz_(initializerList.size()), n_(n), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         if (n < 0) {
             throw InvalidIndexException("Cannot construct SparseVector of negative size");
         }
@@ -100,7 +53,7 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * @param other SparseVector to copy from.
      */
-    SparseVector(const SparseVector<T>& other) : SparseVectorBase<T>(other.n_), nnz_(other.nnz_), values_(other.values_), indices_(other.indices_) {
+    SparseVector(const SparseVector<T>& other) : n_(other.n_), nnz_(other.nnz_), values_(other.values_), indices_(other.indices_) {
         memcpy(values_, other.values_, nnz_ * sizeof(T));
         memcpy(indices_, other.indices_, nnz_ * sizeof(std::size_t));
     }
@@ -116,7 +69,7 @@ struct SparseVector : SparseVectorBase<T> {
     * @tparam OTHER_T Scalar type of the 'other' SparseVector.
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseVector(const SparseVector<OTHER_T>& other) : SparseVectorBase<T>(other.n()), nnz_(other.nnz()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
+    SparseVector(const SparseVector<OTHER_T>& other) : n_(other.n()), nnz_(other.nnz()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         const OTHER_T* otherValues = other.values();
 
         for (std::size_t i = 0; i < nnz_; i++) {
@@ -126,32 +79,8 @@ struct SparseVector : SparseVectorBase<T> {
         memcpy(indices_, other.indices(), nnz_ * sizeof(std::size_t));
     }
 
-    /**
-    * @brief Copy constructor for SparseVector from same type SparseVectorBase.
-    *
-    * Constructs a vector of size 'n' and performs a deep copy of 'other'.
-    * Allocates 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes on the heap.
-    *
-    * @param other SparseVectorBase to copy from.
-    */
-    SparseVector(const SparseVectorBase<T>& other) : SparseVectorBase<T>(other.n()), nnz_(0), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
-        for (std::size_t i = 0; i < this->n_; i++) {
-            SparseVector<T>::set(i, other.get(i));
-        }
-    }
-
-    /**
-    * @brief Copy constructor for SparseVector from different type SparseVectorBase.
-    *
-    * Constructs a vector of size 'n' and performs a deep copy of 'other'.
-    * Allocates 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes on the heap.
-    *
-    * @param other SparseVectorBase to copy from.
-    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
-    * @tparam OTHER_T Scalar type of the 'other' SparseVectorBase.
-    */
-    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseVector(const SparseVectorBase<OTHER_T>& other) : SparseVectorBase<T>(other.n()), nnz_(0), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
+    template<sparse_vector_like U>
+    SparseVector(const U& other) : nnz_(0), n_(other.n()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         for (std::size_t i = 0; i < this->n_; i++) {
             SparseVector<T>::set(i, other.get(i));
         }
@@ -165,7 +94,7 @@ struct SparseVector : SparseVectorBase<T> {
      *
      * @param other SparseVector to move from.
      */
-    SparseVector(SparseVector<T>&& other) noexcept : SparseVectorBase<T>(other.n_), nnz_(other.nnz_), values_(other.values_), indices_(other.indices_) {
+    SparseVector(SparseVector<T>&& other) noexcept : nnz_(other.nnz_), n_(other.n_), values_(other.values_), indices_(other.indices_) {
         other.values_ = nullptr;
         other.indices_ = nullptr;
         other.n_ = 0;
@@ -238,41 +167,8 @@ struct SparseVector : SparseVectorBase<T> {
         return *this;
     }
 
-    /**
-    * @brief Copy assignment operator for SparseVector from same type SparseVectorBase.
-    * Replaces all elements with elements of 'other'.
-    * Allocates 'other.nnz * sizeof(T) + other.nnz * sizeof(T)' bytes of memory on the heap.
-    * @param other SparseVectorBase to copy from.
-    * @return Reference to this.
-    * @throws InvalidDimensionException If 'other' does not have same size as this.
-    * @note 'other' must be of same size as this.
-    */
-    SparseVector<T>& operator=(const SparseVectorBase<T>& other) {
-        if (static_cast<const SparseVectorBase<T>*>(this) != &other) {
-            this->nnz_ = 0;
-            this->n_ = other.n();
-
-            for (std::size_t i = 0; i < this->n_; i++) {
-                SparseVector<T>::set(i, other.get(i));
-            }
-        }
-
-        return *this;
-    }
-
-    /**
-    * @brief Copy assignment operator for SparseVector from different type SparseVectorBase.
-    * Replaces all elements with elements of 'other'.
-    * Allocates 'other.nnz * sizeof(T) + other.nnz * sizeof(T)' bytes of memory on the heap.
-    * @param other SparseVectorBase to copy from.
-    * @return Reference to this.
-    * @throws InvalidDimensionException If 'other' does not have same size as this.
-    * @note 'other' must be of same size as this.
-    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
-    * @tparam OTHER_T Scalar type of the 'other' DenseVector.
-    */
-    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseVector<T>& operator=(const SparseVectorBase<OTHER_T>& other) {
+    template<sparse_vector_like U>
+    SparseVector<T>& operator=(const U& other) {
         this->nnz_ = 0;
         this->n_ = other.n();
 
@@ -312,7 +208,7 @@ struct SparseVector : SparseVectorBase<T> {
         return *this;
     }
 
-    void set(const std::size_t i, const T value) override {
+    void set(const std::size_t i, const T value)  {
         if (i > this->n_ - 1) {
             throw InvalidIndexException("Cannot set on SparseVector with invalid index");
         }
@@ -400,7 +296,7 @@ struct SparseVector : SparseVectorBase<T> {
         nnz_++;
     }
 
-    [[nodiscard]] T get(const std::size_t i) const override {
+    [[nodiscard]] T get(const std::size_t i) const  {
         if (i > this->n_ - 1) {
             throw InvalidIndexException("Cannot get from SparseVector with invalid index");
         }
@@ -414,8 +310,12 @@ struct SparseVector : SparseVectorBase<T> {
         return 0;
     }
 
-    [[nodiscard]] std::size_t nnz() const override {
+    [[nodiscard]] std::size_t nnz() const  {
         return nnz_;
+    }
+
+    [[nodiscard]] std::size_t n() const {
+        return n_;
     }
 
     /**
@@ -450,279 +350,12 @@ struct SparseVector : SparseVectorBase<T> {
         return indices_;
     }
 
-    ~SparseVector() override = default;
+    ~SparseVector()  = default;
 
 private:
     std::size_t nnz_;
+    std::size_t n_;
+
     T* values_;
     std::size_t* indices_;
-};
-
-template<scalar T = float>
-struct SparseVectorView : SparseVectorBase<T> {
-    SparseVectorView() = delete;
-
-    SparseVectorView(SparseVectorView<T>&& other) noexcept = delete;
-
-    SparseVectorView<T>& operator=(const SparseVectorView<T>& other) = delete;
-
-    SparseVectorView<T>& operator=(SparseVectorView<T>&& other) noexcept = delete;
-
-    /**
-     * @brief Constructs a SparseVectorView into an existing SparseVector.
-     *
-     * Creates a view of size `n` into the `owner` vector,
-     * starting at 'offset'.
-     * Does not allocate new memory.
-     * The view holds a reference to the 'owner'.
-     *
-     * @param owner SparseVector to create a view from.
-     * @param n Number of elements in the view.
-     * @param offset Starting element offset into the 'owner' vector.
-     */
-    SparseVectorView(const SparseVector<T>& owner, const std::size_t n, const std::size_t offset) : SparseVectorBase<T>(n), offset_(offset), owner_(owner) {
-    }
-
-
-    /**
-     * @brief Copy constructor for SparseVectorView.
-     *
-     * Constructs a view with the same 'owner' as 'other'.
-     * Does not allocate new memory.
-     *
-     * @param other SparseVectorView to copy from.
-     */
-    SparseVectorView(const SparseVectorView<T>& other) : SparseVectorBase<T>(other.n_), offset_(other.offset_), owner_(other.owner_) {
-    }
-
-    /**
-     * @brief Trying to modify a SparseVector through a view is invalid.
-     * @throws InvalidOperationException You cannot modify owner through a view.
-     * @throws InvalidIndexException If 'i' is negative or greater than 'n - 1'
-     */
-    void set(const std::size_t i, const T) override {
-        if (i > this->n_ - 1) {
-            throw InvalidIndexException("Cannot set on view with invalid index");
-        }
-
-        throw InvalidOperationException("Cannot modify owner through view");
-    }
-
-    [[nodiscard]] T get(const std::size_t i) const override {
-        if (i > this->n_ - 1) {
-            throw InvalidIndexException("Cannot get from SparseVectorView with invalid index");
-        }
-
-        return owner_.get(i + offset_);
-    }
-
-    [[nodiscard]] std::size_t nnz() const override {
-        std::size_t nnz = 0;
-
-        for (std::size_t i = 0; i < owner_.nnz(); i++) {
-            const std::size_t curIndex = owner_.indices()[i];
-
-            if (curIndex >= offset_ && curIndex < offset_ + this->n_) {
-                nnz++;
-            }
-        }
-
-        return nnz;
-    }
-
-    /**
-     * @brief Gets the offset relative to the 'owner'.
-     * @return The offset.
-     */
-    [[nodiscard]] std::size_t offset() const {
-        return offset_;
-    }
-
-    /**
-    * @brief Gets the const reference to the SparseVector owner.
-    * @return Const reference to SparseVector owner.
-    */
-    [[nodiscard]] const SparseVector<T>& owner() const {
-        return owner_;
-    }
-
-    ~SparseVectorView() override = default;
-
-private:
-    const std::size_t offset_;
-
-    const SparseVector<T>& owner_;
-};
-
-template<scalar T = float>
-struct CustomSparseVector : SparseVectorBase<T> {
-    CustomSparseVector() = delete;
-
-    CustomSparseVector(const CustomSparseVector<T>& other) = delete;
-
-    CustomSparseVector(CustomSparseVector<T>&& other) noexcept = delete;
-
-    CustomSparseVector<T>& operator=(const CustomSparseVector<T>& other) = delete;
-
-    CustomSparseVector<T>& operator=(CustomSparseVector<T>&& other) noexcept = delete;
-
-    /**
-     * @brief Constructs a CustomSparseMatrix of size 'n'.
-     * Does not allocate any memory on the heap.
-     * CustomSparseVector instance does not own 'values' or 'indices' pointer.
-     * Think of it as a view on an arbitrary 'values' and 'indices' pointer.
-     * @param n Number of vector elements.
-     * @param values Reference to array containing non-zero elements of vector.
-     * @param indices Reference to array containing indices of non-zero elements of vector.
-     * @param nnz Reference to number of non-zero elements.
-     * @note The array 'values' and 'indices' are pointing to may change.
-     * @note Value of 'nnz' may change.
-     */
-    CustomSparseVector(const std::size_t n, T*& values, std::size_t*& indices, std::size_t& nnz) : SparseVectorBase<T>(n), nnz_(nnz), values_(values), indices_(indices) {
-    }
-
-    void set(const std::size_t i, const T value) override {
-        if (i > this->n_ - 1) {
-            throw InvalidIndexException("Cannot set on CustomSparseVector with invalid index");
-        }
-        std::size_t j;
-
-        for (j = 0; j < nnz_; j++) {
-            const std::size_t curIndex = indices_[j];
-
-            if (curIndex == i) {
-                // there is currently a non-zero element there, and we are placing a zero so we remove a non-zero element;
-                if (compare(value, 0)) {
-                    T* newValues = new T[nnz_ - 1];
-
-                    // copy everything before us
-                    memcpy(newValues, values_, j * sizeof(T));
-
-                    // copy everything after us but 1 back
-                    memcpy(&newValues[j], &values_[j + 1], (nnz_ - j - 1) * sizeof(T));
-
-                    // delete old array
-                    delete[] values_;
-
-                    // and set the new array
-                    values_ = newValues;
-
-                    std::size_t* newIndices = new std::size_t[nnz_ - 1];
-
-                    memcpy(newIndices, indices_, j * sizeof(std::size_t));
-
-                    memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(std::size_t));
-
-                    delete[] indices_;
-
-                    indices_ = newIndices;
-
-                    nnz_--;
-
-                    return;
-                }
-
-                // there is a non-zero element, and we are setting another non-zero element, indices do not need to change
-                values_[j] = value;
-
-                return;
-            }
-
-            // arrays are sorted, no reason to keep iterating
-            if (curIndex > i) {
-                break;
-            }
-        }
-
-        // there is currently a zero element, and we are setting another zero element
-        if (compare(value, 0)) {
-            return;
-        }
-
-        T* newValues = new T[nnz_ + 1];
-
-        // copy everything up to j
-        memcpy(newValues, values_, j * sizeof(T));
-
-        // set the new value
-        newValues[j] = value;
-
-        // copy everything after j
-        memcpy(&newValues[j + 1], &values_[j], (nnz_ - j) * sizeof(T));
-
-        delete[] values_;
-
-        values_ = newValues;
-
-        std::size_t* newIndices = new std::size_t[nnz_ + 1];
-
-        memcpy(newIndices, indices_, j * sizeof(std::size_t));
-
-        newIndices[j] = i;
-
-        memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(std::size_t));
-
-        delete[] indices_;
-
-        indices_ = newIndices;
-
-        nnz_++;
-    }
-
-    [[nodiscard]] T get(const std::size_t i) const override {
-        if (i > this->n_ - 1) {
-            throw InvalidIndexException("Cannot get from CustomSparseVector with invalid index");
-        }
-
-        for (std::size_t j = 0; j < nnz_; j++) {
-            if (indices_[j] == i) {
-                return values_[j];
-            }
-        }
-
-        return 0;
-    }
-
-    [[nodiscard]] std::size_t nnz() const override {
-        return nnz_;
-    }
-
-    /**
-     * @brief Gets the reference to the pointer storing the vectors non-zero elements.
-     * @return Reference to pointer containing non-zero elements.
-     */
-    [[nodiscard]] T*& values() {
-        return values_;
-    }
-
-    /**
-    * @brief Gets the const reference to the const pointer storing the vectors non-zero elements.
-    * @return Const reference to const pointer containing non-zero elements.
-    */
-    [[nodiscard]] const T* const& values() const {
-        return values_;
-    }
-
-    /**
-    * @brief Gets the reference to the pointer storing the indices of the vectors non-zero elements.
-    * @return Reference to pointer containing the indices of the non-zero elements.
-    */
-    [[nodiscard]] std::size_t*& indices() {
-        return indices_;
-    }
-
-    /**
-    * @brief Gets the const reference to the const pointer storing the indices of the vectors non-zero elements.
-    * @return Const reference to const pointer containing the indices of the non-zero elements.
-    */
-    [[nodiscard]] const std::size_t* const& indices() const {
-        return indices_;
-    }
-
-    ~CustomSparseVector() override = default;
-
-private:
-    std::size_t& nnz_;
-    T*& values_;
-    std::size_t*& indices_;
 };

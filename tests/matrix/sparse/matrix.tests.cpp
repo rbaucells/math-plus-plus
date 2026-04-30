@@ -1337,7 +1337,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
     a.set(2, 2, 2);
     a.set(4, 4, 3);
     // act
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wself-assign-overloaded"
+    // ReSharper disable once CppIdenticalOperandsInBinaryExpression
     a = a;
+#pragma GCC diagnostic pop
     const float* aValues = a.values();
     const std::size_t* aRowIndexes = a.rowIndices();
     const std::size_t* aColOffsets = a.colOffsets();
@@ -2236,7 +2240,10 @@ TEST(sparse_matrix_move_assignment_operator, given_f_self_should_do_nothing) {
     a.set(2, 2, 2);
     a.set(4, 4, 3);
     // act
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wself-move"
     a = std::move(a);
+#pragma GCC diagnostic pop
     const float* bValues = a.values();
     const std::size_t* bRowIndexes = a.rowIndices();
     const std::size_t* bColOffsets = a.colOffsets();

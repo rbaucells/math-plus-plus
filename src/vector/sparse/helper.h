@@ -4,9 +4,6 @@
 #include "../../helper.h"
 
 template<scalar T>
-struct SparseVectorBase;
-
-template<scalar T>
 struct SparseVector;
 
 template<scalar T>
@@ -15,28 +12,25 @@ struct SparseVectorView;
 template<scalar T>
 struct CustomSparseVector;
 
-// is_sparse_vector_base, is_sparse_vector_base_v, sparse_vector_base
+// sparse_vector_like
 template<typename T>
-struct is_sparse_vector_base {
-private:
-    template<typename U>
-    static std::true_type test(const SparseVectorBase<U>*) {
-        return {};
-    }
-
-    static std::false_type test(...) {
-        return {};
-    }
-
-public:
-    static constexpr bool value = decltype(test(std::declval<std::remove_cvref_t<T>*>()))::value;
+concept sparse_vector_like = requires(T v,const T constV, std::size_t n, typename T::ValueType value) {
+    typename T::ValueType;
+    T::isComplex;
+    { constV.n() } -> std::same_as<std::size_t>;
+    { constV.nnz() } -> std::same_as<std::size_t>;
+    requires std::same_as<std::remove_cvref_t<decltype(constV.get(n))>, typename T::ValueType>;
+    v.set(n, value);
 };
 
 template<typename T>
-inline constexpr bool is_sparse_vector_base_v = is_sparse_vector_base<T>::value;
+inline constexpr bool is_sparse_vector_like_v = sparse_vector_like<T>;
 
-template<typename T>
-concept sparse_vector_base = is_sparse_vector_base_v<T>;
+template<typename>
+struct is_sparse_vector_like : std::false_type {};
+
+template<sparse_vector_like T>
+struct is_sparse_vector_like<T> : std::true_type {};
 
 // is_sparse_vector, is_sparse_vector_v, sparse_vector
 template<typename>
@@ -78,7 +72,7 @@ template<typename T>
 concept custom_sparse_vector = is_custom_sparse_vector_v<T>;
 
 
-template<sparse_vector_base T>
+template<sparse_vector_like T>
 struct underlying_type<T> {
     using value_type = T::ValueType;
 };
@@ -88,12 +82,12 @@ struct underlying_type<T> {
  * @tparam T Dense vector type of 'a'.
  * @tparam U Dense vector type of 'b'.
  * @tparam ARGS Dense vector types of 'args'.
- * @param a First dense vector to compare dimensions.
- * @param b Second dense vector to compare dimensions.
- * @param args Rest of dense vectors to compare dimensions.
+ * @param a First sparse vector to compare dimensions.
+ * @param b Second sparse vector to compare dimensions.
+ * @param args Rest of sparse vectors to compare dimensions.
  * @throws InvalidDimensionException If 'a', 'b', and 'args' are not all of same size.
  */
-template<sparse_vector_base T, sparse_vector_base U, sparse_vector_base... ARGS>
+template<sparse_vector_like T, sparse_vector_like U, sparse_vector_like... ARGS>
 inline void assert_same_size(const T& a, const U& b, const ARGS&... args) {
     if (!(a.n() == b.n() && ((a.n() == args.n()) && ...))) {
         throw InvalidDimensionException("Sparse vectors must all be of same size");

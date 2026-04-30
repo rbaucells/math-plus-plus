@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PySourceRootDetectionService">
+    <option name="sourcePathsSet">
+      <set>
+        <option value="$PROJECT_DIR$/src/matrix/dense/helper.h" />
+        <option value="$PROJECT_DIR$" />
+        <option value="$PROJECT_DIR$/src/matrix/dense/operators/subtract.h" />
+        <option value="$PROJECT_DIR$/src/matrix/dense/matrix.h" />
+        <option value="$PROJECT_DIR$/src/matrix/dense/operators/add.h" />
+        <option value="$PROJECT_DIR$/src/matrix/dense/operators/compare.h" />
+        <option value="$PROJECT_DIR$/src/matrix/dense/operators/multiply.h" />
+      </set>
+    </option>
+  </component>
+</project>

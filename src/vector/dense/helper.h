@@ -3,9 +3,6 @@
 #include "../../helper.h"
 
 template<scalar T>
-struct DenseVectorBase;
-
-template<scalar T>
 struct DenseVector;
 
 template<scalar T>
@@ -14,28 +11,24 @@ struct DenseVectorView;
 template<scalar T>
 struct CustomDenseVector;
 
-// is_dense_vector_base, is_dense_vector_base_v, dense_vector_base
+// dense_vector_like
 template<typename T>
-struct is_dense_vector_base {
-private:
-    template<typename U>
-    static std::true_type test(const DenseVectorBase<U>*) {
-        return {};
-    }
-
-    static std::false_type test(...) {
-        return {};
-    }
-
-public:
-    static constexpr bool value = decltype(test(std::declval<std::remove_cvref_t<T>*>()))::value;
+concept dense_vector_like = requires(const T constV, std::size_t n) {
+    typename T::ValueType;
+    T::isComplex;
+    { constV.n() } -> std::same_as<std::size_t>;
+    requires std::same_as<std::remove_cvref_t<decltype(constV.at(n))>, typename T::ValueType>;
+    requires std::same_as<std::remove_cvref_t<decltype(constV[n])>, typename T::ValueType>;
 };
 
 template<typename T>
-inline constexpr bool is_dense_vector_base_v = is_dense_vector_base<T>::value;
+inline constexpr bool is_dense_vector_like_v = dense_vector_like<T>;
 
-template<typename T>
-concept dense_vector_base = is_dense_vector_base_v<T>;
+template<typename>
+struct is_dense_vector_like : std::false_type {};
+
+template<dense_vector_like T>
+struct is_dense_vector_like<T> : std::true_type {};
 
 // is_dense_vector, is_dense_vector_v, dense_vector
 template<typename>
@@ -77,7 +70,7 @@ template<typename T>
 concept custom_dense_vector = is_custom_dense_vector_v<T>;
 
 
-template<dense_vector_base T>
+template<dense_vector_like T>
 struct underlying_type<T> {
     using value_type = T::ValueType;
 };
@@ -92,7 +85,7 @@ struct underlying_type<T> {
  * @param args Rest of dense vectors to compare dimensions.
  * @throws InvalidDimensionException If 'a', 'b', and 'args' are not all of same size.
  */
-template<dense_vector_base T, dense_vector_base U, dense_vector_base... ARGS>
+template<dense_vector_like T, dense_vector_like U, dense_vector_like... ARGS>
 inline void assert_same_size(const T& a, const U& b, const ARGS&... args) {
     if (!(a.n() == b.n() && ((a.n() == args.n()) && ...))) {
         throw InvalidDimensionException("Dense vectors must all be of same size");

@@ -461,9 +461,15 @@ struct SparseMatrix : SparseMatrixBase<T> {
                 if (compare(value, 0)) {
                     std::size_t* newRowIndices = new std::size_t[nnz_ - 1];
 
-                    memcpy(newRowIndices, rowIndices_, i * sizeof(std::size_t));
+                    const std::size_t before_count = i;
+                    if (before_count > 0) {
+                        memcpy(newRowIndices, rowIndices_, before_count * sizeof(std::size_t));
+                    }
 
-                    memcpy(&newRowIndices[i], &rowIndices_[i + 1], (nnz_ - i - 1) * sizeof(std::size_t));
+                    const std::size_t after_count = nnz_ - i - 1;
+                    if (after_count > 0) {
+                        memcpy(newRowIndices + i, rowIndices_ + i + 1, after_count * sizeof(std::size_t));
+                    }
 
                     delete[] rowIndices_;
 
@@ -472,9 +478,13 @@ struct SparseMatrix : SparseMatrixBase<T> {
 
                     T* newValues = new T[nnz_ - 1];
 
-                    memcpy(newValues, values_, i * sizeof(T));
+                    if (before_count > 0) {
+                        memcpy(newValues, values_, before_count * sizeof(T));
+                    }
 
-                    memcpy(&newValues[i], &values_[i + 1], (nnz_ - i - 1) * sizeof(T));
+                    if (after_count > 0) {
+                        memcpy(newValues + i, values_ + i + 1, after_count * sizeof(T));
+                    }
 
                     delete[] values_;
 
@@ -506,11 +516,17 @@ struct SparseMatrix : SparseMatrixBase<T> {
 
         std::size_t* newRowIndices = new std::size_t[nnz_ + 1];
 
-        memcpy(newRowIndices, rowIndices_, i * sizeof(std::size_t));
+        const std::size_t before_count = i;
+        if (before_count > 0) {
+            memcpy(newRowIndices, rowIndices_, before_count * sizeof(std::size_t));
+        }
 
         newRowIndices[i] = r;
 
-        memcpy(&newRowIndices[i + 1], &rowIndices_[i], (nnz_ - i) * sizeof(std::size_t));
+        const std::size_t after_count = nnz_ - i;
+        if (after_count > 0) {
+            memcpy(newRowIndices + i + 1, rowIndices_ + i, after_count * sizeof(std::size_t));
+        }
 
         delete[] rowIndices_;
 
@@ -519,11 +535,15 @@ struct SparseMatrix : SparseMatrixBase<T> {
 
         T* newValues = new T[nnz_ + 1];
 
-        memcpy(newValues, values_, i * sizeof(T));
+        if (before_count > 0) {
+            memcpy(newValues, values_, before_count * sizeof(T));
+        }
 
         newValues[i] = value;
 
-        memcpy(&newValues[i + 1], &values_[i], (nnz_ - i) * sizeof(T));
+        if (after_count > 0) {
+            memcpy(newValues + i + 1, values_ + i, after_count * sizeof(T));
+        }
 
         delete[] values_;
 

@@ -210,3 +210,5 @@ enum class DotProductConjugationBehavior {
     second_argument,
     neither
 };
+
+constexpr DotProductConjugationBehavior DEFAULT_CONJUGATION_BEHAVIOR = DotProductConjugationBehavior::second_argument;

@@ -1,8 +1,11 @@
-.idea
 build
-cmake-build-debug
-cmake-build-debug-coverage
-cmake-build-release
-cmake-build-release-coverage
+cmake-build-debug-clang
+cmake-build-debug-coverage-clang
+cmake-build-release-gcc
+cmake-build-release-coverage-gcc
+cmake-build-debug-gcc
+cmake-build-debug-coverage-gcc
+cmake-build-release-clang
+cmake-build-release-coverage-clang
 cobertura-coverage.xml
 __pycache__
