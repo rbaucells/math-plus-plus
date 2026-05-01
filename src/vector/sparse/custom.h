@@ -1,6 +1,8 @@
 #pragma once
-#include "../../exceptions.h"
 #include "../../helper.h"
+#include <cstddef>
+#include "../../exceptions.h"
+#include <cstring>
 
 template<scalar T = float>
 struct CustomSparseVector {
@@ -49,10 +51,10 @@ struct CustomSparseVector {
                     T* newValues = new T[nnz_ - 1];
 
                     // copy everything before us
-                    memcpy(newValues, values_, j * sizeof(T));
+                    std::memcpy(newValues, values_, j * sizeof(T));
 
                     // copy everything after us but 1 back
-                    memcpy(&newValues[j], &values_[j + 1], (nnz_ - j - 1) * sizeof(T));
+                    std::memcpy(&newValues[j], &values_[j + 1], (nnz_ - j - 1) * sizeof(T));
 
                     // delete old array
                     delete[] values_;
@@ -62,9 +64,9 @@ struct CustomSparseVector {
 
                     std::size_t* newIndices = new std::size_t[nnz_ - 1];
 
-                    memcpy(newIndices, indices_, j * sizeof(std::size_t));
+                    std::memcpy(newIndices, indices_, j * sizeof(std::size_t));
 
-                    memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(std::size_t));
+                    std::memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(std::size_t));
 
                     delete[] indices_;
 
@@ -95,13 +97,13 @@ struct CustomSparseVector {
         T* newValues = new T[nnz_ + 1];
 
         // copy everything up to j
-        memcpy(newValues, values_, j * sizeof(T));
+        std::memcpy(newValues, values_, j * sizeof(T));
 
         // set the new value
         newValues[j] = value;
 
         // copy everything after j
-        memcpy(&newValues[j + 1], &values_[j], (nnz_ - j) * sizeof(T));
+        std::memcpy(&newValues[j + 1], &values_[j], (nnz_ - j) * sizeof(T));
 
         delete[] values_;
 
@@ -109,11 +111,11 @@ struct CustomSparseVector {
 
         std::size_t* newIndices = new std::size_t[nnz_ + 1];
 
-        memcpy(newIndices, indices_, j * sizeof(std::size_t));
+        std::memcpy(newIndices, indices_, j * sizeof(std::size_t));
 
         newIndices[j] = i;
 
-        memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(std::size_t));
+        std::memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(std::size_t));
 
         delete[] indices_;
 

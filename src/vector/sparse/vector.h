@@ -1,8 +1,10 @@
 #pragma once
-
-#include "../../exceptions.h"
 #include "../../helper.h"
-
+#include <cstddef>
+#include "../../exceptions.h"
+#include <initializer_list>
+#include <tuple>
+#include <cstring>
 #include "helper.h"
 
 template<scalar T = float>
@@ -32,7 +34,7 @@ struct SparseVector {
      *
      * @note 'initializerList' must be sorted in increasing indices.
      */
-    SparseVector(const std::size_t n, std::initializer_list<std::tuple<T, int> > initializerList) : nnz_(initializerList.size()), n_(n), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
+    SparseVector(const std::size_t n, std::initializer_list<std::tuple<T, int>> initializerList) : nnz_(initializerList.size()), n_(n), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         if (n < 0) {
             throw InvalidIndexException("Cannot construct SparseVector of negative size");
         }
@@ -54,8 +56,8 @@ struct SparseVector {
      * @param other SparseVector to copy from.
      */
     SparseVector(const SparseVector<T>& other) : n_(other.n_), nnz_(other.nnz_), values_(other.values_), indices_(other.indices_) {
-        memcpy(values_, other.values_, nnz_ * sizeof(T));
-        memcpy(indices_, other.indices_, nnz_ * sizeof(std::size_t));
+        std::memcpy(values_, other.values_, nnz_ * sizeof(T));
+        std::memcpy(indices_, other.indices_, nnz_ * sizeof(std::size_t));
     }
 
     /**
@@ -76,7 +78,7 @@ struct SparseVector {
             values_[i] = otherValues[i];
         }
 
-        memcpy(indices_, other.indices(), nnz_ * sizeof(std::size_t));
+        std::memcpy(indices_, other.indices(), nnz_ * sizeof(std::size_t));
     }
 
     template<sparse_vector_like U>
@@ -124,8 +126,8 @@ struct SparseVector {
 
             this->n_ = other.n_;
 
-            memcpy(values_, other.values_, nnz_ * sizeof(T));
-            memcpy(indices_, other.indices_, nnz_ * sizeof(std::size_t));
+            std::memcpy(values_, other.values_, nnz_ * sizeof(T));
+            std::memcpy(indices_, other.indices_, nnz_ * sizeof(std::size_t));
         }
 
         return *this;
@@ -162,7 +164,7 @@ struct SparseVector {
             values_[i] = otherValues[i];
         }
 
-        memcpy(indices(), other.indices(), nnz_ * sizeof(std::size_t));
+        std::memcpy(indices(), other.indices(), nnz_ * sizeof(std::size_t));
 
         return *this;
     }
@@ -208,7 +210,7 @@ struct SparseVector {
         return *this;
     }
 
-    void set(const std::size_t i, const T value)  {
+    void set(const std::size_t i, const T value) {
         if (i > this->n_ - 1) {
             throw InvalidIndexException("Cannot set on SparseVector with invalid index");
         }
@@ -223,10 +225,10 @@ struct SparseVector {
                     T* newValues = new T[nnz_ - 1];
 
                     // copy everything before us
-                    memcpy(newValues, values_, j * sizeof(T));
+                    std::memcpy(newValues, values_, j * sizeof(T));
 
                     // copy everything after us but 1 back
-                    memcpy(&newValues[j], &values_[j + 1], (nnz_ - j - 1) * sizeof(T));
+                    std::memcpy(&newValues[j], &values_[j + 1], (nnz_ - j - 1) * sizeof(T));
 
                     // delete old array
                     delete[] values_;
@@ -236,9 +238,9 @@ struct SparseVector {
 
                     std::size_t* newIndices = new std::size_t[nnz_ - 1];
 
-                    memcpy(newIndices, indices_, j * sizeof(std::size_t));
+                    std::memcpy(newIndices, indices_, j * sizeof(std::size_t));
 
-                    memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(std::size_t));
+                    std::memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(std::size_t));
 
                     delete[] indices_;
 
@@ -269,13 +271,13 @@ struct SparseVector {
         T* newValues = new T[nnz_ + 1];
 
         // copy everything up to j
-        memcpy(newValues, values_, j * sizeof(T));
+        std::memcpy(newValues, values_, j * sizeof(T));
 
         // set the new value
         newValues[j] = value;
 
         // copy everything after j
-        memcpy(&newValues[j + 1], &values_[j], (nnz_ - j) * sizeof(T));
+        std::memcpy(&newValues[j + 1], &values_[j], (nnz_ - j) * sizeof(T));
 
         delete[] values_;
 
@@ -283,11 +285,11 @@ struct SparseVector {
 
         std::size_t* newIndices = new std::size_t[nnz_ + 1];
 
-        memcpy(newIndices, indices_, j * sizeof(std::size_t));
+        std::memcpy(newIndices, indices_, j * sizeof(std::size_t));
 
         newIndices[j] = i;
 
-        memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(std::size_t));
+        std::memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(std::size_t));
 
         delete[] indices_;
 
@@ -296,7 +298,7 @@ struct SparseVector {
         nnz_++;
     }
 
-    [[nodiscard]] T get(const std::size_t i) const  {
+    [[nodiscard]] T get(const std::size_t i) const {
         if (i > this->n_ - 1) {
             throw InvalidIndexException("Cannot get from SparseVector with invalid index");
         }
@@ -310,7 +312,7 @@ struct SparseVector {
         return 0;
     }
 
-    [[nodiscard]] std::size_t nnz() const  {
+    [[nodiscard]] std::size_t nnz() const {
         return nnz_;
     }
 
@@ -350,7 +352,7 @@ struct SparseVector {
         return indices_;
     }
 
-    ~SparseVector()  = default;
+    ~SparseVector() = default;
 
 private:
     std::size_t nnz_;
