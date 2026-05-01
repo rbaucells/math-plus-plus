@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "mathpp/math.h"
+#include "mathpp/matrix.h"
 
 #include "../../../telemetry.tests.h"
 

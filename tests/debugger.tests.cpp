@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/math.h"
+#include "mathpp/all.h"
 
 TEST(debugger_tests, dense_matrices) {
     DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};

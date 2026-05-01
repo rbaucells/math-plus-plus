@@ -1,5 +1,8 @@
 #pragma once
-#include "../vector.h"
+#include "../helper.h"
+#include <type_traits>
+#include "../../../helper.h"
+#include <cstddef>
 
 template<dense_vector_like T, dense_vector_like U>
 std::common_type_t<typename T::ValueType, typename U::ValueType> dot(const T& a, const U& b, const DotProductConjugationBehavior behavior = DEFAULT_CONJUGATION_BEHAVIOR) {

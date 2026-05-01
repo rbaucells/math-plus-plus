@@ -1,6 +1,9 @@
 #pragma once
+#include "../helper.h"
+#include <type_traits>
 #include "../../../helper.h"
-#include "../matrix.h"
+#include <tuple>
+#include <cstddef>
 
 template<dense_matrix_like T, dense_matrix_like U, dense_matrix_like... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
 [[nodiscard]] bool compare(const T& a, const U& b, const ARGS&... args) {

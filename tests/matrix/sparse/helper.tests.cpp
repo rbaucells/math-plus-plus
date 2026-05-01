@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/math.h"
+#include "mathpp/matrix.h"
 
 #pragma region sparse_matrix_base
 TEST(sparse_matrix_base, given_sparse_matrix_should_return_true) {

@@ -1,6 +1,10 @@
 #pragma once
+#include "../helper.h"
+#include <type_traits>
 #include "../../../helper.h"
-#include "../matrix.h"
+#include <tuple>
+#include <cstddef>
+#include "../../../exceptions.h"
 
 template<dense_matrix_like... ARGS> requires has_common_type<typename ARGS::ValueType...>
 struct DenseMatrixAddExpr {

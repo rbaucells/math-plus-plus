@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/math.h"
+#include "mathpp/vector.h"
 
 #pragma region dense_vector_like
 TEST(dense_vector_like, given_dense_vector_should_return_true) {

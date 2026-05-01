@@ -1,6 +1,9 @@
 #pragma once
-#include "../matrix.h"
+#include "../helper.h"
+#include <type_traits>
 #include "../../../helper.h"
+#include <tuple>
+#include "../../../expression.h"
 
 template<sparse_matrix_base T, sparse_matrix_base U, sparse_matrix_base... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
 [[nodiscard]] bool compare(const T& a, const U& b, const ARGS&... args) {

@@ -1,10 +1,7 @@
 #pragma once
 
-#include <utility>
 
 #include "gtest/gtest.h"
-
-#include "mathpp/math.h"
 
 [[nodiscard]] inline TelemetryStats telemetry_snapshot() {
     return Telemetry::snapshot();

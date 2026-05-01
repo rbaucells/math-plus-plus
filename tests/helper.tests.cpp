@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/math.h"
+#include "mathpp/core.h"
 
 #pragma region is_complex
 TEST(is_complex, given_complex_float_then_should_return_true) {

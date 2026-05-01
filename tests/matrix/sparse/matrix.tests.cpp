@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/math.h"
+#include "mathpp/matrix.h"
 
 #pragma region sparse_matrix
 #pragma region set

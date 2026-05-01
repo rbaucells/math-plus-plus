@@ -1,6 +1,7 @@
 #pragma once
+#include "../helper.h"
 #include "../../../helper.h"
-#include "../matrix.h"
+#include <cstddef>
 
 template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>
 T& add_assign(T& a, const U& b) {

@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/math.h"
+#include "mathpp/vector.h"
 
 #pragma region dense_vector
 #pragma region indexing_operator

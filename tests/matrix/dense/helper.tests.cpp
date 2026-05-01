@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/math.h"
+#include "mathpp/matrix.h"
 
 #pragma region dense_matrix_base
 

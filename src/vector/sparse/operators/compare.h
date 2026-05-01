@@ -1,6 +1,9 @@
 #pragma once
+#include "../helper.h"
+#include <type_traits>
 #include "../../../helper.h"
-#include "../vector.h"
+#include <tuple>
+#include <cstddef>
 
 template<sparse_vector_like T, sparse_vector_like U, sparse_vector_like... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
 [[nodiscard]] bool compare(const T& a, const U& b, const ARGS&... args) {

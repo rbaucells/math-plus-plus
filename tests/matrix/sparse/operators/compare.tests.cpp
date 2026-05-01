@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/math.h"
+#include "mathpp/matrix.h"
 
 TEST(equality_operator, given_f_sparse_matrices_should_return_true) {
     // arrange
