@@ -1,6 +1,7 @@
 #pragma once
-#include "../../exceptions.h"
 #include "../../helper.h"
+#include <cstddef>
+#include "../../exceptions.h"
 
 template<scalar T = float>
 struct CustomDenseVector {

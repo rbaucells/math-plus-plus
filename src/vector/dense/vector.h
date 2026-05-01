@@ -1,10 +1,10 @@
 #pragma once
-#include <initializer_list>
-
-#include "helper.h"
-
-#include "../../exceptions.h"
 #include "../../helper.h"
+#include <cstddef>
+#include <initializer_list>
+#include <cstring>
+#include "helper.h"
+#include "../../exceptions.h"
 
 template<scalar T = float>
 struct DenseVector {
@@ -50,7 +50,7 @@ struct DenseVector {
      * @param other DenseVector to copy from.
      */
     DenseVector(const DenseVector<T>& other) : n_(other.n_), data_(new T[n_]) {
-        memcpy(data_, other.data_, this->n_ * sizeof(T));
+        std::memcpy(data_, other.data_, this->n_ * sizeof(T));
     }
 
     /**
@@ -110,7 +110,7 @@ struct DenseVector {
                 data_ = new T[this->n_];
             }
 
-            memcpy(data_, other.data_, this->n_ * sizeof(T));
+            std::memcpy(data_, other.data_, this->n_ * sizeof(T));
         }
 
         return *this;
