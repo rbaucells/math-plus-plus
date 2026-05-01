@@ -12,7 +12,7 @@ struct CooSparseVectorView;
 template<scalar T>
 struct CooCustomSparseVector;
 
-// is_sparse_vector, is_sparse_vector_v, sparse_vector
+// is_coo_sparse_vector, is_coo_sparse_vector_v, coo_sparse_vector
 template<typename>
 struct is_coo_sparse_vector : std::false_type {};
 
@@ -25,7 +25,7 @@ inline constexpr bool is_coo_sparse_vector_v = is_coo_sparse_vector<T>::value;
 template<typename T>
 concept coo_sparse_vector = is_coo_sparse_vector_v<T>;
 
-// is_sparse_vector_view, is_sparse_vector_view_v, sparse_vector_view
+// is_coo_sparse_vector_view, is_coo_sparse_vector_view_v, coo_sparse_vector_view
 template<typename>
 struct is_coo_sparse_vector_view : std::false_type {};
 
@@ -38,7 +38,7 @@ inline constexpr bool is_coo_sparse_vector_view_v = is_coo_sparse_vector_view<T>
 template<typename T>
 concept coo_sparse_vector_view = is_coo_sparse_vector_view_v<T>;
 
-// is_custom_sparse_vector, is_custom_sparse_vector_v, custom_sparse_vector
+// is_coo_custom_sparse_vector, is_coo_custom_sparse_vector_v, coo_custom_sparse_vector
 template<typename>
 struct is_coo_custom_sparse_vector : std::false_type {};
 

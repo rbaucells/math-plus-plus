@@ -16,4 +16,10 @@
 #include "../../src/vector/sparse/coo/vector.h"
 #include "../../src/vector/sparse/coo/view.h"
 
+#include "../../src/vector/sparse/dok/operators/compare.h"
+#include "../../src/vector/sparse/dok/custom.h"
+#include "../../src/vector/sparse/dok/helper.h"
+#include "../../src/vector/sparse/dok/vector.h"
+#include "../../src/vector/sparse/dok/view.h"
+
 #include "../../src/vector/exceptions.h"
