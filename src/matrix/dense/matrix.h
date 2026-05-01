@@ -1,9 +1,10 @@
 #pragma once
-#include "helper.h"
-#include "../../telemetry.h"
-
-#include "../../exceptions.h"
 #include "../../helper.h"
+#include "../../telemetry.h"
+#include <cstddef>
+#include "../../exceptions.h"
+#include <cstring>
+#include "helper.h"
 
 template<scalar T = float>
 struct DenseMatrix {
@@ -63,7 +64,7 @@ struct DenseMatrix {
      * @param other DenseMatrix to copy from.
      */
     DenseMatrix(const DenseMatrix<T>& other) : rows_(other.rows_), columns_(other.columns_), data_(new T[columns_ * rows_]) {
-        memcpy(data_, other.data_, columns_ * rows_ * sizeof(T));
+        std::memcpy(data_, other.data_, columns_ * rows_ * sizeof(T));
         Telemetry::emit_copy_construct();
         Telemetry::emit_allocation();
     }
@@ -132,7 +133,7 @@ struct DenseMatrix {
                 data_ = new T[rows_ * columns_];
                 Telemetry::emit_allocation();
             }
-            memcpy(data_, other.data_, columns_ * rows_ * sizeof(T));
+            std::memcpy(data_, other.data_, columns_ * rows_ * sizeof(T));
             Telemetry::emit_copy_assign();
         }
 

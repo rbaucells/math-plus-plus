@@ -1,7 +1,8 @@
 #pragma once
-#include "helper.h"
-#include "../../exceptions.h"
 #include "../../helper.h"
+#include "matrix.h"
+#include <cstddef>
+#include "../../exceptions.h"
 
 template<scalar T = float>
 struct DenseMatrixView {
