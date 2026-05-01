@@ -123,13 +123,13 @@ TEST(debugger_tests, custom_dense_vectors) {
 }
 
 TEST(debugger_tests, sparse_vectors) {
-    SparseVector<float> a(5, {{1, 0}, {3, 2}, {5, 4}});
+    CooSparseVector<float> a(5, {{1, 0}, {3, 2}, {5, 4}});
 }
 
 TEST(debugger_tests, sparse_vector_views) {
-    SparseVector<float> a(5, {{1, 0}, {3, 2}, {5, 4}});
+    CooSparseVector<float> a(5, {{1, 0}, {3, 2}, {5, 4}});
 
-    SparseVectorView<float> b(a, 3, 1);
+    CooSparseVectorView<float> b(a, 3, 1);
 }
 
 TEST(debugger_tests, custom_sparse_vectors) {
@@ -144,5 +144,5 @@ TEST(debugger_tests, custom_sparse_vectors) {
     indices[2] = 4;
 
     std::size_t nnz = 3;
-    CustomSparseVector<float> a(5, values, indices, nnz);
+    CooCustomSparseVector<float> a(5, values, indices, nnz);
 }

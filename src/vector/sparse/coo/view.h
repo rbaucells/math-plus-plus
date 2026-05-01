@@ -1,23 +1,23 @@
 #pragma once
-#include "../../helper.h"
-#include "vector.h"
+#include "../../../helper.h"
 #include <cstddef>
-#include "../../exceptions.h"
+#include "helper.h"
+#include "../../../exceptions.h"
 
 template<scalar T = float>
-struct SparseVectorView {
+struct CooSparseVectorView {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    SparseVectorView() = delete;
+    CooSparseVectorView() = delete;
 
-    SparseVectorView(SparseVectorView<T>&& other) noexcept = delete;
+    CooSparseVectorView(CooSparseVectorView<T>&& other) noexcept = delete;
 
-    SparseVectorView<T>& operator=(const SparseVectorView<T>& other) = delete;
+    CooSparseVectorView<T>& operator=(const CooSparseVectorView<T>& other) = delete;
 
-    SparseVectorView<T>& operator=(SparseVectorView<T>&& other) noexcept = delete;
+    CooSparseVectorView<T>& operator=(CooSparseVectorView<T>&& other) noexcept = delete;
 
     /**
      * @brief Constructs a SparseVectorView into an existing SparseVector.
@@ -31,7 +31,7 @@ struct SparseVectorView {
      * @param n Number of elements in the view.
      * @param offset Starting element offset into the 'owner' vector.
      */
-    SparseVectorView(const SparseVector<T>& owner, const std::size_t n, const std::size_t offset) : offset_(offset), n_(n), owner_(owner) {
+    CooSparseVectorView(const CooSparseVector<T>& owner, const std::size_t n, const std::size_t offset) : offset_(offset), n_(n), owner_(owner) {
     }
 
 
@@ -43,7 +43,7 @@ struct SparseVectorView {
      *
      * @param other SparseVectorView to copy from.
      */
-    SparseVectorView(const SparseVectorView<T>& other) : offset_(other.offset_), n_(other.n_), owner_(other.owner_) {
+    CooSparseVectorView(const CooSparseVectorView<T>& other) : offset_(other.offset_), n_(other.n_), owner_(other.owner_) {
     }
 
     /**
@@ -97,15 +97,15 @@ struct SparseVectorView {
     * @brief Gets the const reference to the SparseVector owner.
     * @return Const reference to SparseVector owner.
     */
-    [[nodiscard]] const SparseVector<T>& owner() const {
+    [[nodiscard]] const CooSparseVector<T>& owner() const {
         return owner_;
     }
 
-    ~SparseVectorView()  = default;
+    ~CooSparseVectorView()  = default;
 
 private:
     const std::size_t offset_;
     std::size_t n_;
 
-    const SparseVector<T>& owner_;
+    const CooSparseVector<T>& owner_;
 };

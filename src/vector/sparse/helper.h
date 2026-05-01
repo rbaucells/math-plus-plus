@@ -5,15 +5,6 @@
 #include <type_traits>
 #include "../../exceptions.h"
 
-template<scalar T>
-struct SparseVector;
-
-template<scalar T>
-struct SparseVectorView;
-
-template<scalar T>
-struct CustomSparseVector;
-
 // sparse_vector_like
 template<typename T>
 concept sparse_vector_like = requires(T v,const T constV, std::size_t n, typename T::ValueType value) {
@@ -33,46 +24,6 @@ struct is_sparse_vector_like : std::false_type {};
 
 template<sparse_vector_like T>
 struct is_sparse_vector_like<T> : std::true_type {};
-
-// is_sparse_vector, is_sparse_vector_v, sparse_vector
-template<typename>
-struct is_sparse_vector : std::false_type {};
-
-template<typename U>
-struct is_sparse_vector<SparseVector<U>> : std::true_type {};
-
-template<typename T>
-inline constexpr bool is_sparse_vector_v = is_sparse_vector<T>::value;
-
-template<typename T>
-concept sparse_vector = is_sparse_vector_v<T>;
-
-// is_sparse_vector_view, is_sparse_vector_view_v, sparse_vector_view
-template<typename>
-struct is_sparse_vector_view : std::false_type {};
-
-template<typename U>
-struct is_sparse_vector_view<SparseVectorView<U>> : std::true_type {};
-
-template<typename T>
-inline constexpr bool is_sparse_vector_view_v = is_sparse_vector_view<T>::value;
-
-template<typename T>
-concept sparse_vector_view = is_sparse_vector_view_v<T>;
-
-// is_custom_sparse_vector, is_custom_sparse_vector_v, custom_sparse_vector
-template<typename>
-struct is_custom_sparse_vector : std::false_type {};
-
-template<typename U>
-struct is_custom_sparse_vector<CustomSparseVector<U>> : std::true_type {};
-
-template<typename T>
-inline constexpr bool is_custom_sparse_vector_v = is_custom_sparse_vector<T>::value;
-
-template<typename T>
-concept custom_sparse_vector = is_custom_sparse_vector_v<T>;
-
 
 template<sparse_vector_like T>
 struct underlying_type<T> {

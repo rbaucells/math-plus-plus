@@ -14,15 +14,15 @@ add_library(mathpp INTERFACE
         src/expression.h
         src/helper.h
         src/vector/exceptions.h
-        src/vector/sparse/vector.h
-        src/vector/sparse/helper.h
+        src/vector/sparse/coo/vector.h
+        src/vector/sparse/coo/helper.h
         src/vector/dense/vector.h
         src/vector/dense/helper.h
         src/matrix/exceptions.h
         src/matrix/sparse/matrix.h
         src/matrix/sparse/helper.h
         src/vector/dense/operators/compare.h
-        src/vector/sparse/operators/compare.h
+        src/vector/sparse/coo/operators/compare.h
         src/matrix/sparse/operators/compare.h
         src/matrix/dense/operators/add.h
         src/matrix/dense/operators/compare.h
@@ -36,8 +36,10 @@ add_library(mathpp INTERFACE
         src/matrix/dense/custom.h
         src/vector/dense/view.h
         src/vector/dense/custom.h
-        src/vector/sparse/view.h
-        src/vector/sparse/custom.h)
+        src/vector/sparse/coo/view.h
+        src/vector/sparse/coo/custom.h
+        src/vector/sparse/helper.h
+)
 
 target_include_directories(mathpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 

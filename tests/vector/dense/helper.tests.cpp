@@ -20,7 +20,7 @@ TEST(dense_vector_like, given_float_should_return_false) {
 }
 
 TEST(dense_vector_like, given_sparse_vector_should_return_false) {
-    static_assert(!dense_vector_like<SparseVector<float>>, "dense_vector_like is wrong, 'SparseVector<float>' should not be dense_vector_like");
+    static_assert(!dense_vector_like<CooSparseVector<float>>, "dense_vector_like is wrong, 'SparseVector<float>' should not be dense_vector_like");
 }
 #pragma endregion
 #pragma region dense_vector

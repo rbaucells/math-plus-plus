@@ -1,25 +1,25 @@
 #pragma once
-#include "../../helper.h"
+#include "../../../helper.h"
 #include <cstddef>
-#include "../../exceptions.h"
+#include "../../../exceptions.h"
 #include <cstring>
 
 template<scalar T = float>
-struct CustomSparseVector {
+struct CooCustomSparseVector {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    CustomSparseVector() = delete;
+    CooCustomSparseVector() = delete;
 
-    CustomSparseVector(const CustomSparseVector<T>& other) = delete;
+    CooCustomSparseVector(const CooCustomSparseVector<T>& other) = delete;
 
-    CustomSparseVector(CustomSparseVector<T>&& other) noexcept = delete;
+    CooCustomSparseVector(CooCustomSparseVector<T>&& other) noexcept = delete;
 
-    CustomSparseVector<T>& operator=(const CustomSparseVector<T>& other) = delete;
+    CooCustomSparseVector<T>& operator=(const CooCustomSparseVector<T>& other) = delete;
 
-    CustomSparseVector<T>& operator=(CustomSparseVector<T>&& other) noexcept = delete;
+    CooCustomSparseVector<T>& operator=(CooCustomSparseVector<T>&& other) noexcept = delete;
 
     /**
      * @brief Constructs a CustomSparseMatrix of size 'n'.
@@ -33,7 +33,7 @@ struct CustomSparseVector {
      * @note The array 'values' and 'indices' are pointing to may change.
      * @note Value of 'nnz' may change.
      */
-    CustomSparseVector(const std::size_t n, T*& values, std::size_t*& indices, std::size_t& nnz) : nnz_(nnz), n_(n), values_(values), indices_(indices) {
+    CooCustomSparseVector(const std::size_t n, T*& values, std::size_t*& indices, std::size_t& nnz) : nnz_(nnz), n_(n), values_(values), indices_(indices) {
     }
 
     void set(const std::size_t i, const T value)  {
@@ -178,7 +178,7 @@ struct CustomSparseVector {
         return indices_;
     }
 
-    ~CustomSparseVector()  = default;
+    ~CooCustomSparseVector()  = default;
 
 private:
     std::size_t& nnz_;

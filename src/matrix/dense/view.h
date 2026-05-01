@@ -1,7 +1,7 @@
 #pragma once
 #include "../../helper.h"
-#include "matrix.h"
 #include <cstddef>
+#include "helper.h"
 #include "../../exceptions.h"
 
 template<scalar T = float>

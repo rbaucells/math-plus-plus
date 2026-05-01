@@ -6,7 +6,7 @@
 #pragma region set
 TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_f_1) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     // act
     v.set(3, 1);
     const float* vValues = v.values();
@@ -19,7 +19,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_f_2) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(2, 1);
     // act
     v.set(3, 2);
@@ -35,7 +35,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_f_3) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(2, 1);
     v.set(4, 2);
     // act
@@ -54,7 +54,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_f_4) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(2, 1);
     // act
     v.set(1, 2);
@@ -70,7 +70,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_1) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     const float* oldVValues = v.values();
     const std::size_t* oldVIndexes = v.indices();
     // act
@@ -85,7 +85,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_2) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(0, 1);
     const float* oldVValues = v.values();
     const std::size_t* oldVIndexes = v.indices();
@@ -103,7 +103,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_3) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(0, 1);
     v.set(2, 2);
     const float* oldVValues = v.values();
@@ -124,7 +124,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_4) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(3, 1);
     const float* oldVValues = v.values();
     const std::size_t* oldVIndexes = v.indices();
@@ -142,7 +142,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_f_
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_1) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(2, 1);
     const float* oldVValues = v.values();
     const std::size_t* oldVIndexes = v.indices();
@@ -160,7 +160,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_2) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(1, 2);
     v.set(2, 1);
     const float* oldVValues = v.values();
@@ -181,7 +181,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_3) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(1, 2);
     v.set(2, 1);
     v.set(3, 4);
@@ -205,7 +205,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_4) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(2, 1);
     v.set(3, 2);
     const float* oldVValues = v.values();
@@ -226,7 +226,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_f_1) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(2, 1);
     // act
     v.set(2, 0);
@@ -240,7 +240,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_f_2) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(1, 2);
     v.set(2, 1);
     // act
@@ -255,7 +255,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_f_3) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(1, 3);
     v.set(2, 1);
     v.set(3, 2);
@@ -273,7 +273,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_f_4) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(2, 1);
     v.set(3, 2);
     // act
@@ -288,7 +288,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_1) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     // act
     v.set(3, std::complex<float>(1, 2));
     const std::complex<float>* vValues = v.values();
@@ -301,7 +301,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_2) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(2, std::complex<float>(1, 2));
     // act
     v.set(3, std::complex<float>(3, 4));
@@ -317,7 +317,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_3) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(2, std::complex<float>(1, 2));
     v.set(4, std::complex<float>(3, 4));
     // act
@@ -336,7 +336,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_4) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(2, std::complex<float>(1, 2));
     // act
     v.set(1, std::complex<float>(3, 4));
@@ -352,7 +352,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf_1) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     const std::complex<float>* oldVValues = v.values();
     const std::size_t* oldVIndexes = v.indices();
     // act
@@ -367,7 +367,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf_2) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(0, std::complex<float>(1, 2));
     const std::complex<float>* oldVValues = v.values();
     const std::size_t* oldVIndexes = v.indices();
@@ -385,7 +385,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf_3) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(0, std::complex<float>(1, 2));
     v.set(2, std::complex<float>(3, 4));
     const std::complex<float>* oldVValues = v.values();
@@ -406,7 +406,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf
 
 TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf_4) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(3, std::complex<float>(1, 2));
     const std::complex<float>* oldVValues = v.values();
     const std::size_t* oldVIndexes = v.indices();
@@ -424,7 +424,7 @@ TEST(sparse_vector_set, given_index_to_zero_element_and_zero_value_should_set_cf
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_1) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(2, std::complex<float>(1, 2));
     const std::complex<float>* oldVValues = v.values();
     const std::size_t* oldVIndexes = v.indices();
@@ -442,7 +442,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_2) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(1, std::complex<float>(1, 2));
     v.set(2, std::complex<float>(3, 4));
     const std::complex<float>* oldVValues = v.values();
@@ -463,7 +463,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_3) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(1, std::complex<float>(1, 2));
     v.set(2, std::complex<float>(3, 4));
     v.set(3, std::complex<float>(5, 6));
@@ -487,7 +487,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_4) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(2, std::complex<float>(1, 2));
     v.set(3, std::complex<float>(3, 4));
     const std::complex<float>* oldVValues = v.values();
@@ -508,7 +508,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_1) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(2, std::complex<float>(1, 2));
     // act
     v.set(2, std::complex<float>(0, 0));
@@ -522,7 +522,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_2) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(1, std::complex<float>(1, 2));
     v.set(2, {3, 4});
     // act
@@ -537,7 +537,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_3) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(1, std::complex<float>(1, 2));
     v.set(2, std::complex<float>(3, 4));
     v.set(3, {5, 6});
@@ -555,7 +555,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_4) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(2, std::complex<float>(1, 2));
     v.set(3, std::complex<float>(3, 4));
     // act
@@ -570,7 +570,7 @@ TEST(sparse_vector_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_vector_set, given_big_index_should_throw) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     // act / assert
     ASSERT_THROW(v.set(5, 0), InvalidIndexException);
 }
@@ -578,7 +578,7 @@ TEST(sparse_vector_set, given_big_index_should_throw) {
 #pragma region get
 TEST(sparse_vector_get, given_index_should_return_value_f) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(2, 1);
     // act
     const float value = v.get(2);
@@ -588,7 +588,7 @@ TEST(sparse_vector_get, given_index_should_return_value_f) {
 
 TEST(sparse_vector_get, given_index_should_return_zero_f) {
     // arrange
-    SparseVector<float> v(5);
+    CooSparseVector<float> v(5);
     v.set(2, 1);
     // act
     const float value = v.get(1);
@@ -598,7 +598,7 @@ TEST(sparse_vector_get, given_index_should_return_zero_f) {
 
 TEST(sparse_vector_get, given_index_should_return_value_cf) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(2, std::complex<float>(1, 2));
     // act
     const std::complex<float> value = v.get(2);
@@ -608,7 +608,7 @@ TEST(sparse_vector_get, given_index_should_return_value_cf) {
 
 TEST(sparse_vector_get, given_index_should_return_zero_cf) {
     // arrange
-    SparseVector<std::complex<float>> v(5);
+    CooSparseVector<std::complex<float>> v(5);
     v.set(2, std::complex<float>(1, 2));
     // act
     const std::complex<float> value = v.get(1);
@@ -618,7 +618,7 @@ TEST(sparse_vector_get, given_index_should_return_zero_cf) {
 
 TEST(sparse_vector_get, given_big_index_should_throw) {
     // arrange
-    const SparseVector<float> v(5);
+    const CooSparseVector<float> v(5);
     // act / assert
     ASSERT_THROW(std::ignore = v.get(5), InvalidIndexException);
 }
@@ -626,7 +626,7 @@ TEST(sparse_vector_get, given_big_index_should_throw) {
 #pragma region default_constructor
 TEST(sparse_vector_default_constructor, given_size_should_construct_f) {
     // act
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     // assert
     ASSERT_TRUE((compare(a.n(), 5)));
     ASSERT_TRUE((compare(a.nnz(), 0)));
@@ -636,7 +636,7 @@ TEST(sparse_vector_default_constructor, given_size_should_construct_f) {
 
 TEST(sparse_vector_default_constructor, given_size_should_construct_cf) {
     // act
-    SparseVector<std::complex<float>> a(5);
+    CooSparseVector<std::complex<float>> a(5);
     // assert
     ASSERT_TRUE((compare(a.n(), 5)));
     ASSERT_TRUE((compare(a.nnz(), 0)));
@@ -647,7 +647,7 @@ TEST(sparse_vector_default_constructor, given_size_should_construct_cf) {
 #pragma region initializer_list_constructor
 TEST(sparse_vector_initializer_list_constructor, given_n_and_value_index_pairs_should_construct_f) {
     // arrange / act
-    const SparseVector<float> v(5, {{1, 0}, {3, 2}, {5, 4}});
+    const CooSparseVector<float> v(5, {{1, 0}, {3, 2}, {5, 4}});
     const float* vValues = v.values();
     const std::size_t* vIndexes = v.indices();
     // assert
@@ -663,7 +663,7 @@ TEST(sparse_vector_initializer_list_constructor, given_n_and_value_index_pairs_s
 
 TEST(sparse_vector_initializer_list_constructor, given_n_and_value_index_pairs_should_construct_cf) {
     // arrange / act
-    const SparseVector<std::complex<float>> v(5, {{{1, 2}, 0}, {{5, 6}, 2}, {{9, 10}, 4}});
+    const CooSparseVector<std::complex<float>> v(5, {{{1, 2}, 0}, {{5, 6}, 2}, {{9, 10}, 4}});
     const std::complex<float>* vValues = v.values();
     const std::size_t* vIndexes = v.indices();
     // assert
@@ -680,12 +680,12 @@ TEST(sparse_vector_initializer_list_constructor, given_n_and_value_index_pairs_s
 #pragma region copy_constructor_from_same_type_sparse_vector
 TEST(sparse_vector_copy_constructor_from_same_type_sparse_vector, given_f_sparse_vector_should_copy_construct) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
     // act
-    const SparseVector<float> b = a;
+    const CooSparseVector<float> b = a;
     const float* bValues = b.values();
     const std::size_t* bIndexes = b.indices();
     // assert
@@ -701,12 +701,12 @@ TEST(sparse_vector_copy_constructor_from_same_type_sparse_vector, given_f_sparse
 
 TEST(sparse_vector_copy_constructor_from_same_type_sparse_vector, given_cf_sparse_vector_should_copy_construct) {
     // arrange
-    SparseVector<std::complex<float>> a(5);
+    CooSparseVector<std::complex<float>> a(5);
     a.set(0, std::complex<float>(1, 2));
     a.set(2, std::complex<float>(3, 4));
     a.set(4, std::complex<float>(5, 6));
     // act
-    const SparseVector<std::complex<float>> b = a;
+    const CooSparseVector<std::complex<float>> b = a;
     const std::complex<float>* bValues = b.values();
     const std::size_t* bIndexes = b.indices();
     // assert
@@ -723,12 +723,12 @@ TEST(sparse_vector_copy_constructor_from_same_type_sparse_vector, given_cf_spars
 #pragma region copy_constructor_from_different_type_sparse_vector
 TEST(sparse_vector_copy_constructor_from_different_type_sparse_vector, given_f_sparse_vector_should_copy_construct) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
     // act
-    const SparseVector<std::complex<float>> b = a;
+    const CooSparseVector<std::complex<float>> b = a;
     const std::complex<float>* bValues = b.values();
     const std::size_t* bIndexes = b.indices();
     // assert
@@ -810,12 +810,12 @@ TEST(sparse_vector_copy_constructor_from_different_type_sparse_vector, given_f_s
 #pragma region move_constructor
 TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct_and_leave_other_empty) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
     // act
-    const SparseVector<float> b = std::move(a);
+    const CooSparseVector<float> b = std::move(a);
     const float* bValues = b.values();
     const std::size_t* bIndexes = b.indices();
     // assert
@@ -835,12 +835,12 @@ TEST(sparse_vector_move_constructor, given_f_sparse_vector_should_move_construct
 
 TEST(sparse_vector_move_constructor, given_cf_sparse_vector_should_move_construct_and_leave_other_empty) {
     // arrange
-    SparseVector<std::complex<float>> a(5);
+    CooSparseVector<std::complex<float>> a(5);
     a.set(0, {1, 2});
     a.set(2, {3, 4});
     a.set(4, {5, 6});
     // act
-    const SparseVector<std::complex<float>> b = std::move(a);
+    const CooSparseVector<std::complex<float>> b = std::move(a);
     const std::complex<float>* bValues = b.values();
     const std::size_t* bIndexes = b.indices();
     // assert
@@ -861,11 +861,11 @@ TEST(sparse_vector_move_constructor, given_cf_sparse_vector_should_move_construc
 #pragma region copy_assignment_operator_from_same_type_sparse_vector
 TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_sparse_vector_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<float> b(5);
+    CooSparseVector<float> b(5);
     // act
     b = a;
     const float* bValues = b.values();
@@ -883,11 +883,11 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_
 
 TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_sparse_vector_of_same_size_same_nnz_should_copy_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<float> b(5);
+    CooSparseVector<float> b(5);
     b.set(1, 3);
     b.set(2, 2);
     b.set(3, 1);
@@ -908,11 +908,11 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_
 
 TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_cf_sparse_vector_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
-    SparseVector<std::complex<float>> a(5);
+    CooSparseVector<std::complex<float>> a(5);
     a.set(0, {1, 2});
     a.set(2, {3, 4});
     a.set(4, {5, 6});
-    SparseVector<std::complex<float>> b(5);
+    CooSparseVector<std::complex<float>> b(5);
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
@@ -930,11 +930,11 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_
 
 TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_sparse_vector_of_diff_size_diff_nnz_should_copy_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<float> b(3);
+    CooSparseVector<float> b(3);
     // act
     b = a;
     const float* bValues = b.values();
@@ -952,11 +952,11 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_
 
 TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_sparse_vector_of_diff_size_same_nnz_should_copy_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<float> b(3);
+    CooSparseVector<float> b(3);
     b.set(0, 1);
     b.set(1, 3);
     b.set(2, 2);
@@ -977,7 +977,7 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_
 
 TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_f_self_should_do_nothing) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
@@ -1003,11 +1003,11 @@ TEST(sparse_vector_copy_assignment_operator_from_same_type_sparse_vector, given_
 #pragma region copy_assignment_operator_from_different_type_sparse_vector
 TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<std::complex<float>> b(5);
+    CooSparseVector<std::complex<float>> b(5);
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
@@ -1025,11 +1025,11 @@ TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, g
 
 TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_of_same_size_same_nnz_should_copy_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<std::complex<float>> b(5);
+    CooSparseVector<std::complex<float>> b(5);
     b.set(1, 2);
     b.set(2, 3);
     b.set(3, 4);
@@ -1050,11 +1050,11 @@ TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, g
 
 TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_of_diff_size_diff_nnz_should_copy_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<std::complex<float>> b(3);
+    CooSparseVector<std::complex<float>> b(3);
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
@@ -1072,11 +1072,11 @@ TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, g
 
 TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, given_f_sparse_vector_of_diff_size_same_nnz_should_copy_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<std::complex<float>> b(3);
+    CooSparseVector<std::complex<float>> b(3);
     b.set(0, 1);
     b.set(1, 3);
     b.set(2, 2);
@@ -1331,11 +1331,11 @@ TEST(sparse_vector_copy_assignment_operator_from_different_type_sparse_vector, g
 #pragma region move_assignment_operator
 TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_same_size_diff_nnz_should_move_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<float> b(5);
+    CooSparseVector<float> b(5);
     // act
     b = std::move(a);
     const float* bValues = b.values();
@@ -1357,11 +1357,11 @@ TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_same_size_
 
 TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_same_size_same_nnz_should_move_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<float> b(5);
+    CooSparseVector<float> b(5);
     b.set(1, 11);
     b.set(2, 22);
     b.set(4, 33);
@@ -1386,11 +1386,11 @@ TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_same_size_
 
 TEST(sparse_vector_move_assignment_operator, given_cf_sparse_vector_of_same_size_diff_nnz_should_move_assign) {
     // arrange
-    SparseVector<std::complex<float>> a(5);
+    CooSparseVector<std::complex<float>> a(5);
     a.set(0, {1, 2});
     a.set(2, {3, 4});
     a.set(4, {5, 6});
-    SparseVector<std::complex<float>> b(5);
+    CooSparseVector<std::complex<float>> b(5);
     // act
     b = std::move(a);
     const std::complex<float>* bValues = b.values();
@@ -1412,11 +1412,11 @@ TEST(sparse_vector_move_assignment_operator, given_cf_sparse_vector_of_same_size
 
 TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_diff_size_diff_nnz_should_move_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<float> b(3);
+    CooSparseVector<float> b(3);
     // act
     b = std::move(a);
     const float* bValues = b.values();
@@ -1438,11 +1438,11 @@ TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_diff_size_
 
 TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_diff_size_same_nnz_should_move_assign) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
-    SparseVector<float> b(3);
+    CooSparseVector<float> b(3);
     b.set(0, -0.2f);
     b.set(1, 20);
     b.set(2, 4);
@@ -1467,7 +1467,7 @@ TEST(sparse_vector_move_assignment_operator, given_f_sparse_vector_of_diff_size_
 
 TEST(sparse_vector_move_assignment_operator, given_f_self_should_do_nothing) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 1);
     a.set(2, 2);
     a.set(4, 3);
@@ -1494,16 +1494,16 @@ TEST(sparse_vector_move_assignment_operator, given_f_self_should_do_nothing) {
 #pragma region constructor
 TEST(sparse_vector_view_constructor, given_f_sparse_vector_should_construct) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(1, 1);
     a.set(2, 2);
     a.set(3, 3);
-    SparseVector<float> expected(3);
+    CooSparseVector<float> expected(3);
     expected.set(0, 1);
     expected.set(1, 2);
     expected.set(2, 3);
     // act
-    const SparseVectorView<float> v(a, 3, 1);
+    const CooSparseVectorView<float> v(a, 3, 1);
     // assert
     ASSERT_TRUE((compare(v.n(), 3)));
     ASSERT_TRUE((compare(v.offset(), 1)));
@@ -1512,16 +1512,16 @@ TEST(sparse_vector_view_constructor, given_f_sparse_vector_should_construct) {
 
 TEST(sparse_vector_view_constructor, given_cf_sparse_vector_should_construct) {
     // arrange
-    SparseVector<std::complex<float>> a(5);
+    CooSparseVector<std::complex<float>> a(5);
     a.set(1, {1, 2});
     a.set(2, {3, 4});
     a.set(3, {5, 6});
-    SparseVector<std::complex<float>> expected(3);
+    CooSparseVector<std::complex<float>> expected(3);
     expected.set(0, {1, 2});
     expected.set(1, {3, 4});
     expected.set(2, {5, 6});
     // act
-    const SparseVectorView<std::complex<float>> v(a, 3, 1);
+    const CooSparseVectorView<std::complex<float>> v(a, 3, 1);
     // assert
     ASSERT_TRUE((compare(v.n(), 3)));
     ASSERT_TRUE((compare(v.offset(), 1)));
@@ -1531,13 +1531,13 @@ TEST(sparse_vector_view_constructor, given_cf_sparse_vector_should_construct) {
 #pragma region copy_constructor
 TEST(sparse_vector_view_copy_constructor, given_f_sparse_vector_view_should_copy) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(1, 1);
     a.set(2, 2);
     a.set(3, 3);
-    const SparseVectorView<float> v(a, 3, 1);
+    const CooSparseVectorView<float> v(a, 3, 1);
     // act
-    const SparseVectorView<float> newView = v;
+    const CooSparseVectorView<float> newView = v;
     // assert
     ASSERT_TRUE((compare(newView.n(), 3)));
     ASSERT_TRUE((compare(newView.offset(), 1)));
@@ -1547,13 +1547,13 @@ TEST(sparse_vector_view_copy_constructor, given_f_sparse_vector_view_should_copy
 
 TEST(sparse_vector_view_copy_constructor, given_cf_sparse_vector_view_should_copy) {
     // arrange
-    SparseVector<std::complex<float>> a(5);
+    CooSparseVector<std::complex<float>> a(5);
     a.set(1, {1, 2});
     a.set(2, {3, 4});
     a.set(3, {5, 6});
-    const SparseVectorView<std::complex<float>> v(a, 3, 1);
+    const CooSparseVectorView<std::complex<float>> v(a, 3, 1);
     // act
-    const SparseVectorView<std::complex<float>> newView = v;
+    const CooSparseVectorView<std::complex<float>> newView = v;
     // assert
     ASSERT_TRUE((compare(newView.n(), 3)));
     ASSERT_TRUE((compare(newView.offset(), 1)));
@@ -1564,16 +1564,16 @@ TEST(sparse_vector_view_copy_constructor, given_cf_sparse_vector_view_should_cop
 #pragma region set
 TEST(sparse_vector_view_set, given_index_should_throw) {
     // arrange
-    SparseVector<float> a(5);
-    SparseVectorView<float> v(a, 3, 1);
+    CooSparseVector<float> a(5);
+    CooSparseVectorView<float> v(a, 3, 1);
     // act
     ASSERT_THROW(v.set(0, 1), InvalidOperationException);
 }
 
 TEST(sparse_vector_view_set, given_big_index_should_throw_1) {
     // arrange
-    SparseVector<float> a(5);
-    SparseVectorView<float> v(a, 3, 2);
+    CooSparseVector<float> a(5);
+    CooSparseVectorView<float> v(a, 3, 2);
     // act
     ASSERT_THROW(v.set(3, 1), InvalidIndexException);
 }
@@ -1581,9 +1581,9 @@ TEST(sparse_vector_view_set, given_big_index_should_throw_1) {
 #pragma region get
 TEST(sparse_vector_view_get, given_index_should_return_value_f) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(2, 1);
-    SparseVectorView<float> v(a, 3, 1);
+    CooSparseVectorView<float> v(a, 3, 1);
     // act
     const float value = v.get(1);
     // assert
@@ -1592,9 +1592,9 @@ TEST(sparse_vector_view_get, given_index_should_return_value_f) {
 
 TEST(sparse_vector_view_get, given_index_should_return_value_cf) {
     // arrange
-    SparseVector<std::complex<float>> a(5);
+    CooSparseVector<std::complex<float>> a(5);
     a.set(2, {1, 2});
-    SparseVectorView<std::complex<float>> v(a, 3, 1);
+    CooSparseVectorView<std::complex<float>> v(a, 3, 1);
     // act
     const std::complex<float> value = v.get(1);
     // assert
@@ -1603,16 +1603,16 @@ TEST(sparse_vector_view_get, given_index_should_return_value_cf) {
 
 TEST(sparse_vector_view_get, given_big_index_should_throw_f_1) {
     // arrange
-    SparseVector<float> a(5);
-    SparseVectorView<float> v(a, 3, 2);
+    CooSparseVector<float> a(5);
+    CooSparseVectorView<float> v(a, 3, 2);
     // act / assert
     ASSERT_THROW(std::ignore = v.get(3), InvalidIndexException);
 }
 
 TEST(sparse_vector_view_get, given_big_index_should_throw_f_2) {
     // arrange
-    SparseVector<float> a(5);
-    SparseVectorView<float> v(a, 3, 1);
+    CooSparseVector<float> a(5);
+    CooSparseVectorView<float> v(a, 3, 1);
     // act / assert
     ASSERT_THROW(std::ignore = v.get(3), InvalidIndexException);
 }
@@ -1620,9 +1620,9 @@ TEST(sparse_vector_view_get, given_big_index_should_throw_f_2) {
 #pragma region nnz
 TEST(sparse_vector_nnz, should_return_nnz_1) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(1, 1);
-    SparseVectorView<float> v(a, 3, 1);
+    CooSparseVectorView<float> v(a, 3, 1);
     // act
     const std::size_t nnz = v.nnz();
     // assert
@@ -1631,10 +1631,10 @@ TEST(sparse_vector_nnz, should_return_nnz_1) {
 
 TEST(sparse_vector_nnz, should_return_nnz_2) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(1, 1);
     a.set(0, 2);
-    SparseVectorView<float> v(a, 3, 1);
+    CooSparseVectorView<float> v(a, 3, 1);
     // act
     const std::size_t nnz = v.nnz();
     // assert
@@ -1643,8 +1643,8 @@ TEST(sparse_vector_nnz, should_return_nnz_2) {
 
 TEST(sparse_vector_nnz, should_return_zero_1) {
     // arrange
-    SparseVector<float> a(5);
-    SparseVectorView<float> v(a, 3, 1);
+    CooSparseVector<float> a(5);
+    CooSparseVectorView<float> v(a, 3, 1);
     // act
     const std::size_t nnz = v.nnz();
     // assert
@@ -1653,9 +1653,9 @@ TEST(sparse_vector_nnz, should_return_zero_1) {
 
 TEST(sparse_vector_nnz, should_return_zero_2) {
     // arrange
-    SparseVector<float> a(5);
+    CooSparseVector<float> a(5);
     a.set(0, 2);
-    SparseVectorView<float> v(a, 3, 1);
+    CooSparseVectorView<float> v(a, 3, 1);
     // act
     const std::size_t nnz = v.nnz();
     // assert
@@ -1665,8 +1665,8 @@ TEST(sparse_vector_nnz, should_return_zero_2) {
 #pragma region offset
 TEST(sparse_vector_view_offset, should_return_offset) {
     // arrange
-    const SparseVector<float> a(5);
-    const SparseVectorView<float> v(a, 3, 1);
+    const CooSparseVector<float> a(5);
+    const CooSparseVectorView<float> v(a, 3, 1);
     constexpr std::size_t expected = 1;
     // act
     const std::size_t offset = v.offset();
@@ -1677,10 +1677,10 @@ TEST(sparse_vector_view_offset, should_return_offset) {
 #pragma region owner
 TEST(sparse_vector_view_owner, should_return_owner) {
     // arrange
-    const SparseVector<float> a(5);
-    const SparseVectorView<float> v(a, 3, 1);
+    const CooSparseVector<float> a(5);
+    const CooSparseVectorView<float> v(a, 3, 1);
     // act
-    const SparseVector<float>& owner = v.owner();
+    const CooSparseVector<float>& owner = v.owner();
     // assert
     ASSERT_TRUE(&owner == &a);
 }
@@ -1698,7 +1698,7 @@ TEST(custom_sparse_vector_constructor, given_f_pointer_and_i_pointer_and_size_sh
     indices[0] = 4;
     std::size_t nnz = 2;
     // act
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     // assert
     ASSERT_TRUE((compare(v.n(), 5)));
     ASSERT_TRUE((compare(v.nnz(), 2)));
@@ -1719,7 +1719,7 @@ TEST(custom_sparse_vector_constructor, given_cf_pointer_and_i_pointer_and_size_s
     indices[0] = 4;
     std::size_t nnz = 2;
     // act
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     // assert
     ASSERT_TRUE((compare(v.n(), 5)));
     ASSERT_TRUE((compare(v.nnz(), 2)));
@@ -1736,7 +1736,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_non_zero_value_sh
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     // act
     v.set(3, 1);
     // assert
@@ -1753,7 +1753,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_non_zero_value_sh
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(2, 1);
     // act
     v.set(3, 2);
@@ -1773,7 +1773,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_non_zero_value_sh
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(2, 1);
     v.set(4, 2);
     // act
@@ -1796,7 +1796,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_non_zero_value_sh
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(2, 1);
     // act
     v.set(1, 2);
@@ -1816,7 +1816,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_zero_value_should
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     const float* oldVValues = values;
     const std::size_t* oldVIndexes = indices;
     // act
@@ -1835,7 +1835,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_zero_value_should
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(0, 1);
     const float* oldVValues = values;
     const std::size_t* oldVIndexes = indices;
@@ -1857,7 +1857,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_zero_value_should
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(0, 1);
     v.set(2, 2);
     const float* oldVValues = values;
@@ -1882,7 +1882,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_zero_value_should
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(3, 1);
     const float* oldVValues = values;
     const std::size_t* oldVIndexes = indices;
@@ -1904,7 +1904,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_non_zero_valu
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(2, 1);
     const float* oldVValues = values;
     const std::size_t* oldVIndexes = indices;
@@ -1926,7 +1926,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_non_zero_valu
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(1, 2);
     v.set(2, 1);
     const float* oldVValues = values;
@@ -1951,7 +1951,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_non_zero_valu
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(1, 2);
     v.set(2, 1);
     v.set(3, 4);
@@ -1979,7 +1979,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_non_zero_valu
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(2, 1);
     v.set(3, 2);
     const float* oldVValues = values;
@@ -2004,7 +2004,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_zero_value_sh
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(2, 1);
     // act
     v.set(2, 0);
@@ -2022,7 +2022,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_zero_value_sh
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(1, 2);
     v.set(2, 1);
     // act
@@ -2041,7 +2041,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_zero_value_sh
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(1, 3);
     v.set(2, 1);
     v.set(3, 2);
@@ -2063,7 +2063,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_zero_value_sh
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(2, 1);
     v.set(3, 2);
     // act
@@ -2082,7 +2082,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_non_zero_value_sh
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     // act
     v.set(3, {1, 2});
     // assert
@@ -2099,7 +2099,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_non_zero_value_sh
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(2, {1, 2});
     // act
     v.set(3, {3, 4});
@@ -2119,7 +2119,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_non_zero_value_sh
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(2, {1, 2});
     v.set(4, {3, 4});
     // act
@@ -2142,7 +2142,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_non_zero_value_sh
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(2, {1, 2});
     // act
     v.set(1, {3, 4});
@@ -2162,7 +2162,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_zero_value_should
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     const std::complex<float>* oldVValues = v.values();
     const std::size_t* oldVIndexes = indices;
     // act
@@ -2181,7 +2181,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_zero_value_should
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(0, {1, 2});
     const std::complex<float>* oldVValues = v.values();
     const std::size_t* oldVIndexes = indices;
@@ -2203,7 +2203,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_zero_value_should
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(0, {1, 2});
     v.set(2, {3, 4});
     const std::complex<float>* oldVValues = v.values();
@@ -2228,7 +2228,7 @@ TEST(custom_sparse_vector_set, given_index_to_zero_element_and_zero_value_should
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(3, {1, 2});
     const std::complex<float>* oldVValues = v.values();
     const std::size_t* oldVIndexes = indices;
@@ -2250,7 +2250,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_non_zero_valu
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(2, {1, 2});
     const std::complex<float>* oldVValues = v.values();
     const std::size_t* oldVIndexes = indices;
@@ -2272,7 +2272,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_non_zero_valu
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(1, {1, 2});
     v.set(2, {3, 4});
     const std::complex<float>* oldVValues = v.values();
@@ -2297,7 +2297,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_non_zero_valu
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(1, {1, 2});
     v.set(2, {3, 4});
     v.set(3, {5, 6});
@@ -2325,7 +2325,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_non_zero_valu
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(2, {1, 2});
     v.set(3, {3, 4});
     const std::complex<float>* oldVValues = v.values();
@@ -2350,7 +2350,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_zero_value_sh
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(2, {1, 2});
     // act
     v.set(2, {0, 0});
@@ -2368,7 +2368,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_zero_value_sh
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(1, {1, 2});
     v.set(2, {3, 4});
     // act
@@ -2387,7 +2387,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_zero_value_sh
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(1, {1, 2});
     v.set(2, {3, 4});
     v.set(3, {5, 6});
@@ -2409,7 +2409,7 @@ TEST(custom_sparse_vector_set, given_index_to_non_zero_element_and_zero_value_sh
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(2, {1, 2});
     v.set(3, {3, 4});
     // act
@@ -2428,7 +2428,7 @@ TEST(custom_sparse_vector_set, given_big_index_should_throw) {
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     // act / assert
     ASSERT_THROW(v.set(5, 0), InvalidIndexException);
     // clean up
@@ -2442,7 +2442,7 @@ TEST(custom_sparse_vector_get, given_index_should_return_value_f) {
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(2, 1);
     // act
     const float value = v.get(2);
@@ -2458,7 +2458,7 @@ TEST(custom_sparse_vector_get, given_index_should_return_zero_f) {
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     v.set(2, 1);
     // act
     const float value = v.get(1);
@@ -2474,7 +2474,7 @@ TEST(custom_sparse_vector_get, given_index_should_return_value_cf) {
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(2, {1, 2});
     // act
     const std::complex<float> value = v.get(2);
@@ -2490,7 +2490,7 @@ TEST(custom_sparse_vector_get, given_index_should_return_zero_cf) {
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
+    CooCustomSparseVector<std::complex<float>> v(5, values, indices, nnz);
     v.set(2, {1, 2});
     // act
     const std::complex<float> value = v.get(1);
@@ -2506,7 +2506,7 @@ TEST(custom_sparse_vector_get, given_big_index_should_throw) {
     float* values = new float[0];
     std::size_t* indices = new std::size_t[0];
     std::size_t nnz = 0;
-    CustomSparseVector<float> v(5, values, indices, nnz);
+    CooCustomSparseVector<float> v(5, values, indices, nnz);
     // act / assert
     ASSERT_THROW(std::ignore = v.get(5), InvalidIndexException);
     // clean up

@@ -1,20 +1,20 @@
 #pragma once
-#include "../../helper.h"
+#include "../../../helper.h"
 #include <cstddef>
-#include "../../exceptions.h"
+#include "../../../exceptions.h"
 #include <initializer_list>
 #include <tuple>
 #include <cstring>
 #include "helper.h"
 
 template<scalar T = float>
-struct SparseVector {
+struct CooSparseVector {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    SparseVector() = delete;
+    CooSparseVector() = delete;
 
     /**
      * @brief Constructs a SparseVector of size 'n'.
@@ -23,7 +23,7 @@ struct SparseVector {
      *
      * @param n Size of vector.
      */
-    explicit SparseVector(const std::size_t n) : nnz_(0), n_(n), values_(new T[0]), indices_(new std::size_t[0]) {
+    explicit CooSparseVector(const std::size_t n) : nnz_(0), n_(n), values_(new T[0]), indices_(new std::size_t[0]) {
     }
 
     /**
@@ -34,7 +34,7 @@ struct SparseVector {
      *
      * @note 'initializerList' must be sorted in increasing indices.
      */
-    SparseVector(const std::size_t n, std::initializer_list<std::tuple<T, int>> initializerList) : nnz_(initializerList.size()), n_(n), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
+    CooSparseVector(const std::size_t n, std::initializer_list<std::tuple<T, int>> initializerList) : nnz_(initializerList.size()), n_(n), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         if (n < 0) {
             throw InvalidIndexException("Cannot construct SparseVector of negative size");
         }
@@ -55,7 +55,7 @@ struct SparseVector {
      *
      * @param other SparseVector to copy from.
      */
-    SparseVector(const SparseVector<T>& other) : n_(other.n_), nnz_(other.nnz_), values_(other.values_), indices_(other.indices_) {
+    CooSparseVector(const CooSparseVector<T>& other) : n_(other.n_), nnz_(other.nnz_), values_(other.values_), indices_(other.indices_) {
         std::memcpy(values_, other.values_, nnz_ * sizeof(T));
         std::memcpy(indices_, other.indices_, nnz_ * sizeof(std::size_t));
     }
@@ -71,7 +71,7 @@ struct SparseVector {
     * @tparam OTHER_T Scalar type of the 'other' SparseVector.
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseVector(const SparseVector<OTHER_T>& other) : n_(other.n()), nnz_(other.nnz()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
+    CooSparseVector(const CooSparseVector<OTHER_T>& other) : n_(other.n()), nnz_(other.nnz()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         const OTHER_T* otherValues = other.values();
 
         for (std::size_t i = 0; i < nnz_; i++) {
@@ -82,9 +82,9 @@ struct SparseVector {
     }
 
     template<sparse_vector_like U>
-    SparseVector(const U& other) : nnz_(0), n_(other.n()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
+    CooSparseVector(const U& other) : nnz_(0), n_(other.n()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         for (std::size_t i = 0; i < this->n_; i++) {
-            SparseVector<T>::set(i, other.get(i));
+            CooSparseVector<T>::set(i, other.get(i));
         }
     }
 
@@ -96,7 +96,7 @@ struct SparseVector {
      *
      * @param other SparseVector to move from.
      */
-    SparseVector(SparseVector<T>&& other) noexcept : nnz_(other.nnz_), n_(other.n_), values_(other.values_), indices_(other.indices_) {
+    CooSparseVector(CooSparseVector<T>&& other) noexcept : nnz_(other.nnz_), n_(other.n_), values_(other.values_), indices_(other.indices_) {
         other.values_ = nullptr;
         other.indices_ = nullptr;
         other.n_ = 0;
@@ -112,7 +112,7 @@ struct SparseVector {
      * @throws InvalidDimensionException If 'other' does not have same size as this.
      * @note 'other' must be of same size as this.
      */
-    SparseVector<T>& operator=(const SparseVector<T>& other) {
+    CooSparseVector<T>& operator=(const CooSparseVector<T>& other) {
         if (this != &other) {
             if (nnz_ != other.nnz_) {
                 nnz_ = other.nnz_;
@@ -145,7 +145,7 @@ struct SparseVector {
      * @tparam OTHER_T Scalar type of the 'other' DenseVector.
      */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseVector<T>& operator=(const SparseVector<OTHER_T>& other) {
+    CooSparseVector<T>& operator=(const CooSparseVector<OTHER_T>& other) {
         if (nnz_ != other.nnz()) {
             nnz_ = other.nnz();
 
@@ -170,12 +170,12 @@ struct SparseVector {
     }
 
     template<sparse_vector_like U>
-    SparseVector<T>& operator=(const U& other) {
+    CooSparseVector<T>& operator=(const U& other) {
         this->nnz_ = 0;
         this->n_ = other.n();
 
         for (std::size_t i = 0; i < this->n_; i++) {
-            SparseVector<T>::set(i, other.get(i));
+            CooSparseVector<T>::set(i, other.get(i));
         }
 
         return *this;
@@ -190,7 +190,7 @@ struct SparseVector {
     * @throws InvalidDimensionException If 'other' does not have same size as this.
     * @note 'other' must be of same size as this.
     */
-    SparseVector<T>& operator=(SparseVector<T>&& other) noexcept {
+    CooSparseVector<T>& operator=(CooSparseVector<T>&& other) noexcept {
         if (this != &other) {
             delete[] values_;
             values_ = other.values_;
@@ -352,7 +352,7 @@ struct SparseVector {
         return indices_;
     }
 
-    ~SparseVector() = default;
+    ~CooSparseVector() = default;
 
 private:
     std::size_t nnz_;

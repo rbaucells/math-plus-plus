@@ -10,10 +10,10 @@
 #include "../../src/vector/dense/vector.h"
 #include "../../src/vector/dense/view.h"
 
-#include "../../src/vector/sparse/operators/compare.h"
-#include "../../src/vector/sparse/custom.h"
-#include "../../src/vector/sparse/helper.h"
-#include "../../src/vector/sparse/vector.h"
-#include "../../src/vector/sparse/view.h"
+#include "../../src/vector/sparse/coo/operators/compare.h"
+#include "../../src/vector/sparse/coo/custom.h"
+#include "../../src/vector/sparse/coo/helper.h"
+#include "../../src/vector/sparse/coo/vector.h"
+#include "../../src/vector/sparse/coo/view.h"
 
 #include "../../src/vector/exceptions.h"
