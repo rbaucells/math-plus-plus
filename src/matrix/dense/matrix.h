@@ -5,6 +5,7 @@
 #include "../../exceptions.h"
 #include <cstring>
 #include "helper.h"
+#include <initializer_list>
 
 template<scalar T = float>
 struct DenseMatrix {
