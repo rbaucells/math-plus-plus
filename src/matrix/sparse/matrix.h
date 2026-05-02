@@ -5,65 +5,12 @@
 #include "../../helper.h"
 
 template<scalar T = float>
-struct SparseMatrixBase {
+struct SparseMatrix : SparseMatrixBase<T> {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    [[nodiscard]] std::size_t rows() const {
-        return rows_;
-    }
-
-    [[nodiscard]] std::size_t columns() const {
-        return columns_;
-    }
-
-protected:
-    /**
-    * @brief Initializes the size of the matrix.
-    *
-    * Internal constructor that initializes the 'rows' and 'columns' fields.
-    * Does not allocate memory for matrix elements.
-    *
-    * @param rows Number of rows.
-    * @param columns Number of columns.
-    */
-    SparseMatrixBase(const std::size_t rows, const std::size_t columns) : rows_(rows), columns_(columns) {
-    }
-
-    std::size_t rows_;
-    std::size_t columns_;
-
-public:
-    /**
-     * @brief Sets the value of the element at column 'c' and row 'r'.
-     *
-     * @param c Column index.
-     * @param r Row index.
-     * @param value The value to set at 'c, r'.
-     */
-    virtual void set(std::size_t c, std::size_t r, T value) = 0;
-
-    /**
-     * @brief Gets the value of the element at column 'c' and row 'r'.
-     * @param c Column index.
-     * @param r Row index.
-     * @return The value at 'c, r'.
-     */
-    [[nodiscard]] virtual T get(std::size_t c, std::size_t r) const = 0;
-
-    /**
-     * @brief Gets the number of non-zero elements in the sparse matrix.
-     * @return Number of non-zero elements.
-     */
-    [[nodiscard]] virtual std::size_t nnz() const = 0;
-
-    virtual ~SparseMatrixBase() = default;
-};
-
-template<scalar T = float>
-struct SparseMatrix : SparseMatrixBase<T> {
     SparseMatrix() = delete;
 
     /**
@@ -446,7 +393,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
         return *this;
     }
 
-    void set(const std::size_t c, const std::size_t r, const T value) override {
+    void set(const std::size_t c, const std::size_t r, const T value) {
         if (c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
         }
@@ -557,7 +504,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
         nnz_++;
     }
 
-    [[nodiscard]] T get(const std::size_t c, const std::size_t r) const override {
+    [[nodiscard]] T get(const std::size_t c, const std::size_t r) const {
         if (c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
         }
@@ -574,7 +521,7 @@ struct SparseMatrix : SparseMatrixBase<T> {
         return 0;
     }
 
-    [[nodiscard]] std::size_t nnz() const override {
+    [[nodiscard]] std::size_t nnz() const {
         return nnz_;
     }
 
@@ -628,7 +575,15 @@ struct SparseMatrix : SparseMatrixBase<T> {
         return values_;
     }
 
-    ~SparseMatrix() override {
+    [[nodiscard]] std::size_t rows() const {
+        return rows_;
+    }
+
+    [[nodiscard]] std::size_t columns() const {
+        return columns_;
+    }
+
+    ~SparseMatrix() {
         delete[] colOffsets_;
         delete[] rowIndices_;
         delete[] values_;
@@ -639,10 +594,17 @@ private:
     T* values_;
     std::size_t* colOffsets_;
     std::size_t* rowIndices_;
+    std::size_t rows_;
+    std::size_t columns_;
 };
 
 template<scalar T = float>
 struct SparseMatrixView : SparseMatrixBase<T> {
+    using ValueType = T;
+    using UnderlyingType = underlying_type_t<T>;
+
+    static constexpr bool isComplex = is_complex_v<T>;
+
     SparseMatrixView() = delete;
 
     SparseMatrixView(SparseMatrixView<T>&& other) noexcept = delete;
@@ -682,14 +644,14 @@ struct SparseMatrixView : SparseMatrixBase<T> {
     * @brief Trying to modify a SparseMatrix through a view is invalid.
     * @throws InvalidOperationException You cannot modify owner through a view.
     */
-    void set(const std::size_t c, const std::size_t r, const T) override {
+    void set(const std::size_t c, const std::size_t r, const T) {
         if (c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot set on view with invalid index");
         }
         throw InvalidOperationException("Cannot modify owner through view");
     }
 
-    [[nodiscard]] T get(const std::size_t c, const std::size_t r) const override {
+    [[nodiscard]] T get(const std::size_t c, const std::size_t r) const {
         if ( c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot get on view with invalid index");
         }
@@ -697,7 +659,7 @@ struct SparseMatrixView : SparseMatrixBase<T> {
         return owner_.get(c + colOffset_, r + rowOffset_);
     }
 
-    [[nodiscard]] std::size_t nnz() const override {
+    [[nodiscard]] std::size_t nnz() const {
         std::size_t nnz = 0;
 
         for (std::size_t c = colOffset_; c < colOffset_ + this->columns_; c++) {
@@ -740,17 +702,32 @@ struct SparseMatrixView : SparseMatrixBase<T> {
         return owner_;
     }
 
-    ~SparseMatrixView() override = default;
+    [[nodiscard]] std::size_t rows() const {
+        return rows_;
+    }
+
+    [[nodiscard]] std::size_t columns() const {
+        return columns_;
+    }
+
+    ~SparseMatrixView() = default;
 
 private:
     const std::size_t colOffset_;
     const std::size_t rowOffset_;
+    std::size_t rows_;
+    std::size_t columns_;
 
     const SparseMatrix<T>& owner_;
 };
 
 template<scalar T = float>
 struct CustomSparseMatrix : SparseMatrixBase<T> {
+    using ValueType = T;
+    using UnderlyingType = underlying_type_t<T>;
+
+    static constexpr bool isComplex = is_complex_v<T>;
+
     CustomSparseMatrix() = delete;
 
     CustomSparseMatrix(const CustomSparseMatrix<T>& other) = delete;
@@ -785,7 +762,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
     CustomSparseMatrix(const std::size_t rows, const std::size_t columns, std::size_t*& colOffsets, std::size_t*& rowIndices, T*& values, std::size_t& nnz) : SparseMatrixBase<T>(rows, columns), nnz_(nnz), values_(values), colOffsets_(colOffsets), rowIndices_(rowIndices) {
     }
 
-    void set(const std::size_t c, const std::size_t r, const T value) override {
+    void set(const std::size_t c, const std::size_t r, const T value) {
         if (c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
         }
@@ -876,7 +853,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         nnz_++;
     }
 
-    [[nodiscard]] T get(const std::size_t c, const std::size_t r) const override {
+    [[nodiscard]] T get(const std::size_t c, const std::size_t r) const {
         if (c > this->columns_ - 1 || r > this->rows_ - 1) {
             throw InvalidIndexException("Cannot set on SparseMatrix with invalid index");
         }
@@ -893,7 +870,7 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         return 0;
     }
 
-    [[nodiscard]] std::size_t nnz() const override {
+    [[nodiscard]] std::size_t nnz() const {
         return nnz_;
     }
 
@@ -945,9 +922,19 @@ struct CustomSparseMatrix : SparseMatrixBase<T> {
         return values_;
     }
 
+    [[nodiscard]] std::size_t rows() const {
+        return rows_;
+    }
+
+    [[nodiscard]] std::size_t columns() const {
+        return columns_;
+    }
+
 private:
     std::size_t& nnz_;
     T*& values_;
     std::size_t*& colOffsets_;
     std::size_t*& rowIndices_;
+    std::size_t rows_;
+    std::size_t columns_;
 };
