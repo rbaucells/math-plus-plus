@@ -30,19 +30,19 @@ TEST(debugger_tests, custom_dense_matrices) {
 }
 
 TEST(debugger_tests, sparse_matrices) {
-    SparseMatrix<float> a(3, 3, {{1, 0, 0}, {5, 1, 1}, {6, 2, 1}, {8, 1, 2}});
-    SparseMatrix<float> b(3, 2, {{1, 0, 0}, {5, 1, 1}, {8, 1, 2}});
-    SparseMatrix<float> c(2, 3, {{1, 0, 0}, {4, 0, 1}, {5, 1, 1}});
+    CSCSparseMatrix<float> a(3, 3, {{1, 0, 0}, {5, 1, 1}, {6, 2, 1}, {8, 1, 2}});
+    CSCSparseMatrix<float> b(3, 2, {{1, 0, 0}, {5, 1, 1}, {8, 1, 2}});
+    CSCSparseMatrix<float> c(2, 3, {{1, 0, 0}, {4, 0, 1}, {5, 1, 1}});
 }
 
 TEST(debugger_tests, sparse_matrice_views) {
-    SparseMatrix<float> a(3, 3, {{1, 0, 0}, {5, 1, 1}, {6, 2, 1}, {8, 1, 2}});
-    SparseMatrix<float> b(3, 2, {{1, 0, 0}, {5, 1, 1}, {8, 1, 2}});
-    SparseMatrix<float> c(2, 3, {{1, 0, 0}, {4, 0, 1}, {5, 1, 1}});
+    CSCSparseMatrix<float> a(3, 3, {{1, 0, 0}, {5, 1, 1}, {6, 2, 1}, {8, 1, 2}});
+    CSCSparseMatrix<float> b(3, 2, {{1, 0, 0}, {5, 1, 1}, {8, 1, 2}});
+    CSCSparseMatrix<float> c(2, 3, {{1, 0, 0}, {4, 0, 1}, {5, 1, 1}});
 
-    SparseMatrixView<float> d(a, 2, 2, 0, 1);
-    SparseMatrixView<float> e(b, 3, 1, 1, 0);
-    SparseMatrixView<float> f(c, 1, 2, 0, 1);
+    CSCSparseMatrixView<float> d(a, 2, 2, 0, 1);
+    CSCSparseMatrixView<float> e(b, 3, 1, 1, 0);
+    CSCSparseMatrixView<float> f(c, 1, 2, 0, 1);
 }
 
 TEST(debugger_tests, custom_sparse_matrices) {
@@ -65,7 +65,7 @@ TEST(debugger_tests, custom_sparse_matrices) {
     values[3] = 6;
 
     std::size_t nnz = 4;
-    CustomSparseMatrix<float> a(3, 3, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> a(3, 3, colOffsets, rowIndices, values, nnz);
 
     std::size_t* colOffsets2 = new std::size_t[3];
     colOffsets2[0] = 0;
@@ -83,7 +83,7 @@ TEST(debugger_tests, custom_sparse_matrices) {
     values2[2] = 9;
 
     std::size_t nnz2 = 3;
-    CustomSparseMatrix<float> b(3, 3, colOffsets2, rowIndices2, values2, nnz2);
+    CSCCustomSparseMatrix<float> b(3, 3, colOffsets2, rowIndices2, values2, nnz2);
 
     std::size_t* colOffsets3 = new std::size_t[4];
     colOffsets3[0] = 0;
@@ -104,7 +104,7 @@ TEST(debugger_tests, custom_sparse_matrices) {
     values3[3] = 3;
 
     std::size_t nnz3 = 4;
-    CustomSparseMatrix<float> c(3, 3, colOffsets3, rowIndices3, values3, nnz3);
+    CSCCustomSparseMatrix<float> c(3, 3, colOffsets3, rowIndices3, values3, nnz3);
 }
 
 TEST(debugger_tests, dense_vectors) {

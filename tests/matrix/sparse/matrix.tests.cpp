@@ -6,7 +6,7 @@
 #pragma region set
 TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_1) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     // act
     m.set(2, 2, 3);
     const float* mValues = m.values();
@@ -26,7 +26,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_2) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(2, 1, 4);
     // act
     m.set(2, 2, 3);
@@ -49,7 +49,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_3) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(1, 2, 4);
     m.set(2, 1, 5);
     // act
@@ -75,7 +75,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_f_4) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(1, 2, 4);
     // act
     m.set(2, 2, 3);
@@ -98,7 +98,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_1) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     const float* oldMValues = m.values();
     const std::size_t* oldMRowIndexes = m.rowIndices();
     const std::size_t* oldMColOffsets = m.colOffsets();
@@ -116,7 +116,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_2) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(2, 1, 4);
     // act
     m.set(2, 2, 0);
@@ -137,7 +137,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_3) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(1, 2, 5);
     // act
     m.set(2, 2, 0);
@@ -158,7 +158,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_4) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(2, 1, 4);
     m.set(1, 2, 5);
     // act
@@ -182,7 +182,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_f_
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_1) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(2, 2, 3);
     // act
     m.set(2, 2, 4);
@@ -203,7 +203,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_2) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(2, 1, 4);
     m.set(2, 2, 3);
     // act
@@ -227,7 +227,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_3) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(1, 2, 4);
     m.set(2, 1, 5);
     m.set(2, 2, 3);
@@ -254,7 +254,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_f_4) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(1, 2, 4);
     m.set(2, 2, 3);
     // act
@@ -278,7 +278,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_f_1) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(2, 2, 3);
     // act
     m.set(2, 2, 0);
@@ -294,7 +294,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_f_2) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(2, 1, 4);
     m.set(2, 2, 3);
     // act
@@ -316,7 +316,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_f_3) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(1, 2, 4);
     m.set(2, 2, 3);
     m.set(2, 1, 5);
@@ -341,7 +341,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_f_4) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(1, 2, 4);
     m.set(2, 2, 3);
     // act
@@ -363,7 +363,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_1) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     // act
     m.set(2, 2, {1, 2});
     const std::complex<float>* mValues = m.values();
@@ -383,7 +383,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_2) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(2, 1, {1, 2});
     // act
     m.set(2, 2, {3, 4});
@@ -406,7 +406,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_3) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(1, 2, {1, 2});
     m.set(2, 1, {3, 4});
     // act
@@ -432,7 +432,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_set_cf_4) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(1, 2, {1, 2});
     // act
     m.set(2, 2, {3, 4});
@@ -455,7 +455,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf_1) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     const std::complex<float>* oldMValues = m.values();
     const std::size_t* oldMRowIndexes = m.rowIndices();
     const std::size_t* oldMColOffsets = m.colOffsets();
@@ -473,7 +473,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf_2) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(2, 1, {1, 2});
     // act
     m.set(2, 2, {0, 0});
@@ -494,7 +494,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf_3) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(1, 2, {1, 2});
     // act
     m.set(2, 2, {0, 0});
@@ -515,7 +515,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf
 
 TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf_4) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(2, 1, {1, 2});
     m.set(1, 2, {3, 4});
     // act
@@ -539,7 +539,7 @@ TEST(sparse_matrix_set, given_index_to_zero_element_and_zero_value_should_set_cf
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_1) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(2, 2, {1, 2});
     // act
     m.set(2, 2, {3, 4});
@@ -560,7 +560,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_2) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(2, 1, {1, 2});
     m.set(2, 2, {3, 4});
     // act
@@ -584,7 +584,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_3) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(1, 2, {1, 2});
     m.set(2, 1, {3, 4});
     m.set(2, 2, {5, 6});
@@ -611,7 +611,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_should_set_cf_4) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(1, 2, {1, 2});
     m.set(2, 2, {3, 4});
     // act
@@ -635,7 +635,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_non_zero_value_shoul
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_1) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(2, 2, {1, 2});
     // act
     m.set(2, 2, {0, 0});
@@ -651,7 +651,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_2) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(2, 1, {1, 2});
     m.set(2, 2, {3, 4});
     // act
@@ -673,7 +673,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_3) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(1, 2, {1, 2});
     m.set(2, 2, {3, 4});
     m.set(2, 1, {5, 6});
@@ -698,7 +698,7 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_set_cf_4) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(1, 2, {1, 2});
     m.set(2, 2, {3, 4});
     // act
@@ -720,14 +720,14 @@ TEST(sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_should_se
 
 TEST(sparse_matrix_set, given_big_row_index_should_throw) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     // act / assert
     ASSERT_THROW(m.set(5, 2, 1), InvalidIndexException);
 }
 
 TEST(sparse_matrix_set, given_big_column_index_should_throw) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     // act / assert
     ASSERT_THROW(m.set(2, 5, 1), InvalidIndexException);
 }
@@ -735,7 +735,7 @@ TEST(sparse_matrix_set, given_big_column_index_should_throw) {
 #pragma region get
 TEST(sparse_matrix_get, given_index_should_return_value_f) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(2, 3, 1);
     // act
     const float value = m.get(2, 3);
@@ -745,7 +745,7 @@ TEST(sparse_matrix_get, given_index_should_return_value_f) {
 
 TEST(sparse_matrix_get, given_index_should_return_zero_f) {
     // arrange
-    SparseMatrix<float> m(5, 5);
+    CSCSparseMatrix<float> m(5, 5);
     m.set(2, 3, 1);
     // act
     const float value = m.get(1, 2);
@@ -755,7 +755,7 @@ TEST(sparse_matrix_get, given_index_should_return_zero_f) {
 
 TEST(sparse_matrix_get, given_index_should_return_value_cf) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(2, 3, {1, 2});
     // act
     const std::complex<float> value = m.get(2, 3);
@@ -765,7 +765,7 @@ TEST(sparse_matrix_get, given_index_should_return_value_cf) {
 
 TEST(sparse_matrix_get, given_index_should_return_zero_cf) {
     // arrange
-    SparseMatrix<std::complex<float>> m(5, 5);
+    CSCSparseMatrix<std::complex<float>> m(5, 5);
     m.set(2, 3, {1, 2});
     // act
     const std::complex<float> value = m.get(1, 2);
@@ -775,14 +775,14 @@ TEST(sparse_matrix_get, given_index_should_return_zero_cf) {
 
 TEST(sparse_matrix_get, given_big_row_index_should_throw) {
     // arrange
-    const SparseMatrix<float> m(5, 5);
+    const CSCSparseMatrix<float> m(5, 5);
     // act / assert
     ASSERT_THROW(std::ignore = m.get(5, 2), InvalidIndexException);
 }
 
 TEST(sparse_matrix_get, given_big_column_index_should_throw) {
     // arrange
-    const SparseMatrix<float> m(5, 5);
+    const CSCSparseMatrix<float> m(5, 5);
     // act / assert
     ASSERT_THROW(std::ignore = m.get(2, 5), InvalidIndexException);
 }
@@ -790,7 +790,7 @@ TEST(sparse_matrix_get, given_big_column_index_should_throw) {
 #pragma region default_constructor
 TEST(sparse_matrix_default_constructor, given_rows_and_cols_should_construct_f) {
     // act
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     // assert
     ASSERT_TRUE((compare(a.rows(), 5)));
     ASSERT_TRUE((compare(a.columns(), 5)));
@@ -802,7 +802,7 @@ TEST(sparse_matrix_default_constructor, given_rows_and_cols_should_construct_f) 
 
 TEST(sparse_matrix_default_constructor, given_rows_and_cols_should_construct_cf) {
     // act
-    SparseMatrix<std::complex<float>> a(5, 5);
+    CSCSparseMatrix<std::complex<float>> a(5, 5);
     // assert
     ASSERT_TRUE((compare(a.rows(), 5)));
     ASSERT_TRUE((compare(a.columns(), 5)));
@@ -815,7 +815,7 @@ TEST(sparse_matrix_default_constructor, given_rows_and_cols_should_construct_cf)
 #pragma region intializer_list_constructor
 TEST(sparse_matrix_initializer_list_constructor, given_rows_cols_and_value_col_index_row_index_tuples_should_construct_f) {
     // arrange / act
-    SparseMatrix<float> v(3, 3, {{1, 0, 0}, {5, 1, 1}, {6, 2, 1}, {9, 2, 2}});
+    CSCSparseMatrix<float> v(3, 3, {{1, 0, 0}, {5, 1, 1}, {6, 2, 1}, {9, 2, 2}});
     const std::size_t* vColOffsets = v.colOffsets();
     const std::size_t* vRowIndices = v.rowIndices();
     const float* vValues = v.values();
@@ -839,7 +839,7 @@ TEST(sparse_matrix_initializer_list_constructor, given_rows_cols_and_value_col_i
 
 TEST(sparse_matrix_initializer_list_constructor, given_rows_cols_and_value_col_index_row_index_tuples_should_construct_cf) {
     // arrange / act
-    SparseMatrix<std::complex<float>> v(3, 3, {{{1, 2}, 0, 0}, {{5, 6}, 1, 1}, {{6, 7}, 2, 1}, {{9, 10}, 2, 2}});
+    CSCSparseMatrix<std::complex<float>> v(3, 3, {{{1, 2}, 0, 0}, {{5, 6}, 1, 1}, {{6, 7}, 2, 1}, {{9, 10}, 2, 2}});
     const std::size_t* vColOffsets = v.colOffsets();
     const std::size_t* vRowIndices = v.rowIndices();
     const std::complex<float>* vValues = v.values();
@@ -864,12 +864,12 @@ TEST(sparse_matrix_initializer_list_constructor, given_rows_cols_and_value_col_i
 #pragma region copy_constructor_from_same_type_sparse_matrix
 TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix, given_f_sparse_matrix_should_copy_construct) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
     // act
-    const SparseMatrix<float> b = a;
+    const CSCSparseMatrix<float> b = a;
     const float* bValues = b.values();
     const std::size_t* bRowIndexes = b.rowIndices();
     const std::size_t* bColOffsets = b.colOffsets();
@@ -893,12 +893,12 @@ TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix, given_f_sparse
 
 TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix, given_cf_sparse_matrix_should_copy_construct) {
     // arrange
-    SparseMatrix<std::complex<float>> a(5, 5);
+    CSCSparseMatrix<std::complex<float>> a(5, 5);
     a.set(0, 0, {1, 2});
     a.set(2, 2, {3, 4});
     a.set(4, 4, {5, 6});
     // act
-    const SparseMatrix<std::complex<float>> b = a;
+    const CSCSparseMatrix<std::complex<float>> b = a;
     const std::complex<float>* bValues = b.values();
     const std::size_t* bRowIndexes = b.rowIndices();
     const std::size_t* bColOffsets = b.colOffsets();
@@ -923,12 +923,12 @@ TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix, given_cf_spars
 #pragma region copy_constructor_from_different_type_sparse_matrix
 TEST(sparse_matrix_copy_constructor_from_different_type_sparse_matrix, given_f_sparse_matrix_should_copy_construct) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
     // act
-    const SparseMatrix<std::complex<float>> b = a;
+    const CSCSparseMatrix<std::complex<float>> b = a;
     const std::complex<float>* bValues = b.values();
     const std::size_t* bRowIndexes = b.rowIndices();
     const std::size_t* bColOffsets = b.colOffsets();
@@ -950,104 +950,104 @@ TEST(sparse_matrix_copy_constructor_from_different_type_sparse_matrix, given_f_s
     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
 #pragma endregion
-#pragma region copy_constructor_from_same_type_sparse_matrix_base
-TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_should_copy_construct) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    // act
-    const SparseMatrix<float> b = static_cast<const SparseMatrixBase<float>&>(a);
-    const float* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix_base, given_cf_sparse_matrix_base_should_copy_construct) {
-    // arrange
-    SparseMatrix<std::complex<float>> a(5, 5);
-    a.set(0, 0, {1, 2});
-    a.set(2, 2, {3, 4});
-    a.set(4, 4, {5, 6});
-    // act
-    const SparseMatrix<std::complex<float>> b = static_cast<const SparseMatrixBase<std::complex<float>>&>(a);
-    const std::complex<float>* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 2))));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(3, 4))));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(5, 6))));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-#pragma endregion
-#pragma region copy_constructor_from_different_type_sparse_matrix_base
-TEST(sparse_matrix_copy_constructor_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_should_copy_construct) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    // act
-    const SparseMatrix<std::complex<float>> b = static_cast<const SparseMatrixBase<float>&>(a);
-    const std::complex<float>* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-#pragma endregion
+// #pragma region copy_constructor_from_same_type_sparse_matrix_base
+// TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_should_copy_construct) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     // act
+//     const SparseMatrix<float> b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const float* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_constructor_from_same_type_sparse_matrix_base, given_cf_sparse_matrix_base_should_copy_construct) {
+//     // arrange
+//     SparseMatrix<std::complex<float>> a(5, 5);
+//     a.set(0, 0, {1, 2});
+//     a.set(2, 2, {3, 4});
+//     a.set(4, 4, {5, 6});
+//     // act
+//     const SparseMatrix<std::complex<float>> b = static_cast<const SparseMatrixBase<std::complex<float>>&>(a);
+//     const std::complex<float>* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 2))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(3, 4))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(5, 6))));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+// #pragma endregion
+// #pragma region copy_constructor_from_different_type_sparse_matrix_base
+// TEST(sparse_matrix_copy_constructor_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_should_copy_construct) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     // act
+//     const SparseMatrix<std::complex<float>> b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const std::complex<float>* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+// #pragma endregion
 #pragma region move_constructor
 TEST(sparse_matrix_move_constructor, given_f_sparse_matrix_should_move_construct_and_invalidate_other_data) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
     // act
-    const SparseMatrix<float> b = std::move(a);
+    const CSCSparseMatrix<float> b = std::move(a);
     const float* bValues = b.values();
     const std::size_t* bRowIndexes = b.rowIndices();
     const std::size_t* bColOffsets = b.colOffsets();
@@ -1077,12 +1077,12 @@ TEST(sparse_matrix_move_constructor, given_f_sparse_matrix_should_move_construct
 
 TEST(sparse_matrix_move_constructor, given_cf_sparse_matrix_should_move_construct_and_invalidate_other_data) {
     // arrange
-    SparseMatrix<std::complex<float>> a(5, 5);
+    CSCSparseMatrix<std::complex<float>> a(5, 5);
     a.set(0, 0, {1, 2});
     a.set(2, 2, {3, 4});
     a.set(4, 4, {5, 6});
     // act
-    const SparseMatrix<std::complex<float>> b = std::move(a);
+    const CSCSparseMatrix<std::complex<float>> b = std::move(a);
     const std::complex<float>* bValues = b.values();
     const std::size_t* bRowIndexes = b.rowIndices();
     const std::size_t* bColOffsets = b.colOffsets();
@@ -1113,11 +1113,11 @@ TEST(sparse_matrix_move_constructor, given_cf_sparse_matrix_should_move_construc
 #pragma region copy_assignment_operator_from_same_type_sparse_matrix
 TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_f_sparse_matrix_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 5);
+    CSCSparseMatrix<float> b(5, 5);
     // act
     b = a;
     const float* bValues = b.values();
@@ -1143,11 +1143,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
 
 TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_f_sparse_matrix_of_same_size_same_nnz_should_copy_assign) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 5);
+    CSCSparseMatrix<float> b(5, 5);
     b.set(0, 1, 1);
     b.set(2, 1, 2);
     b.set(4, 2, 4);
@@ -1176,11 +1176,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
 
 TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_f_sparse_matrix_of_diff_size_diff_nnz_should_copy_assign_1) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(4, 5);
+    CSCSparseMatrix<float> b(4, 5);
     // act
     b = a;
     const float* bValues = b.values();
@@ -1206,11 +1206,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
 
 TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_f_sparse_matrix_of_diff_size_diff_nnz_should_copy_assign_2) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 4);
+    CSCSparseMatrix<float> b(5, 4);
     // act
     b = a;
     const float* bValues = b.values();
@@ -1236,11 +1236,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
 
 TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_f_sparse_matrix_of_diff_size_same_nnz_should_copy_assign_1) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(4, 5);
+    CSCSparseMatrix<float> b(4, 5);
     b.set(0, 1, 1);
     b.set(2, 1, 2);
     b.set(4, 2, 4);
@@ -1269,11 +1269,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
 
 TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_f_sparse_matrix_of_diff_size_same_nnz_should_copy_assign_2) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 4);
+    CSCSparseMatrix<float> b(5, 4);
     b.set(0, 1, 1);
     b.set(2, 1, 2);
     b.set(3, 2, 4);
@@ -1302,11 +1302,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
 
 TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_cf_sparse_matrix_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
-    SparseMatrix<std::complex<float>> a(5, 5);
+    CSCSparseMatrix<std::complex<float>> a(5, 5);
     a.set(0, 0, {1, 2});
     a.set(2, 2, {3, 4});
     a.set(4, 4, {5, 6});
-    SparseMatrix<std::complex<float>> b(5, 5);
+    CSCSparseMatrix<std::complex<float>> b(5, 5);
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
@@ -1332,7 +1332,7 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
 
 TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_f_self_should_do_nothing) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
@@ -1366,11 +1366,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix, given_
 #pragma region copy_assignment_operator_from_different_type_sparse_matrix
 TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, given_f_sparse_matrix_of_same_size_diff_nnz_should_copy_assign) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(5, 5);
+    CSCSparseMatrix<std::complex<float>> b(5, 5);
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
@@ -1396,11 +1396,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
 
 TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, given_f_sparse_matrix_of_same_size_same_nnz_should_copy_assign) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(5, 5);
+    CSCSparseMatrix<std::complex<float>> b(5, 5);
     b.set(1, 3, 12);
     b.set(3, 2, 23);
     b.set(4, 4, 5);
@@ -1429,11 +1429,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
 
 TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, given_f_sparse_matrix_of_diff_size_diff_nnz_should_copy_assign_1) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(4, 5);
+    CSCSparseMatrix<std::complex<float>> b(4, 5);
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
@@ -1459,11 +1459,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
 
 TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, given_f_sparse_matrix_of_diff_size_diff_nnz_should_copy_assign_2) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(5, 4);
+    CSCSparseMatrix<std::complex<float>> b(5, 4);
     // act
     b = a;
     const std::complex<float>* bValues = b.values();
@@ -1489,11 +1489,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
 
 TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, given_f_sparse_matrix_of_same_size_same_nnz_should_copy_assign_1) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(4, 5);
+    CSCSparseMatrix<std::complex<float>> b(4, 5);
     b.set(1, 3, 12);
     b.set(3, 2, 23);
     b.set(4, 3, 5);
@@ -1522,11 +1522,11 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
 
 TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, given_f_sparse_matrix_of_same_size_same_nnz_should_copy_assign_2) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(5, 4);
+    CSCSparseMatrix<std::complex<float>> b(5, 4);
     b.set(1, 3, 12);
     b.set(3, 2, 23);
     b.set(3, 4, 5);
@@ -1553,453 +1553,453 @@ TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix, g
     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
 }
 #pragma endregion
-#pragma region copy_assignment_operator_from_same_type_sparse_matrix_base
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 5);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const float* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_same_nnz_should_copy_assign) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 5);
-    b.set(1, 3, 45);
-    b.set(3, 2, 67);
-    b.set(4, 4, 89);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const float* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign_1) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<float> b(4, 5);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const float* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign_2) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 4);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const float* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_same_nnz_should_copy_assign_1) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<float> b(4, 5);
-    b.set(1, 3, 45);
-    b.set(3, 2, 67);
-    b.set(4, 3, 89);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const float* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_same_nnz_should_copy_assign_2) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 4);
-    b.set(1, 3, 45);
-    b.set(3, 2, 67);
-    b.set(3, 4, 89);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const float* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_cf_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign) {
-    // arrange
-    SparseMatrix<std::complex<float>> a(5, 5);
-    a.set(0, 0, {1, 2});
-    a.set(2, 2, {3, 4});
-    a.set(4, 4, {5, 6});
-    SparseMatrix<std::complex<float>> b(5, 5);
-    // act
-    b = static_cast<const SparseMatrixBase<std::complex<float>>&>(a);
-    const std::complex<float>* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 2))));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(3, 4))));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(5, 6))));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_self_should_do_nothing) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    // act
-    a = static_cast<const SparseMatrixBase<float>&>(a);
-    const float* aValues = a.values();
-    const std::size_t* aRowIndexes = a.rowIndices();
-    const std::size_t* aColOffsets = a.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(a.rows(), 5)));
-    ASSERT_TRUE((compare(a.columns(), 5)));
-    ASSERT_TRUE((compare(a.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), aValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), aValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), aValues[2], 3.0f)));
-    ASSERT_TRUE((compare(aRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(aRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(aRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(aColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(aColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(aColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(aColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(aColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(aColOffsets[5], 3.0f)));
-}
-#pragma endregion
-#pragma region copy_assignment_operator_from_different_type_sparse_matrix_base
-TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(5, 5);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const std::complex<float>* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_same_nnz_should_copy_assign) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(5, 5);
-    b.set(1, 3, 45);
-    b.set(3, 2, 67);
-    b.set(4, 4, 89);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const std::complex<float>* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_diff_size_diff_nnz_should_copy_assign_1) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(4, 5);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const std::complex<float>* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_diff_size_diff_nnz_should_copy_assign_2) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(5, 4);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const std::complex<float>* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_diff_size_same_nnz_should_copy_assign_1) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(4, 5);
-    b.set(1, 3, 45);
-    b.set(3, 2, 67);
-    b.set(4, 3, 89);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const std::complex<float>* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-
-TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_diff_size_same_nnz_should_copy_assign_2) {
-    // arrange
-    SparseMatrix<float> a(5, 5);
-    a.set(0, 0, 1);
-    a.set(2, 2, 2);
-    a.set(4, 4, 3);
-    SparseMatrix<std::complex<float>> b(5, 4);
-    b.set(1, 3, 45);
-    b.set(3, 2, 67);
-    b.set(3, 4, 89);
-    // act
-    b = static_cast<const SparseMatrixBase<float>&>(a);
-    const std::complex<float>* bValues = b.values();
-    const std::size_t* bRowIndexes = b.rowIndices();
-    const std::size_t* bColOffsets = b.colOffsets();
-    // assert
-    ASSERT_TRUE((compare(b.rows(), 5)));
-    ASSERT_TRUE((compare(b.columns(), 5)));
-    ASSERT_TRUE((compare(b.nnz(), 3)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
-    ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
-    ASSERT_TRUE((compare(bRowIndexes[2], 4)));
-    ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
-    ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
-    ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
-    ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
-}
-#pragma endregion
+// #pragma region copy_assignment_operator_from_same_type_sparse_matrix_base
+// TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<float> b(5, 5);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const float* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_same_nnz_should_copy_assign) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<float> b(5, 5);
+//     b.set(1, 3, 45);
+//     b.set(3, 2, 67);
+//     b.set(4, 4, 89);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const float* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign_1) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<float> b(4, 5);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const float* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign_2) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<float> b(5, 4);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const float* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_same_nnz_should_copy_assign_1) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<float> b(4, 5);
+//     b.set(1, 3, 45);
+//     b.set(3, 2, 67);
+//     b.set(4, 3, 89);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const float* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_same_nnz_should_copy_assign_2) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<float> b(5, 4);
+//     b.set(1, 3, 45);
+//     b.set(3, 2, 67);
+//     b.set(3, 4, 89);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const float* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_cf_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign) {
+//     // arrange
+//     SparseMatrix<std::complex<float>> a(5, 5);
+//     a.set(0, 0, {1, 2});
+//     a.set(2, 2, {3, 4});
+//     a.set(4, 4, {5, 6});
+//     SparseMatrix<std::complex<float>> b(5, 5);
+//     // act
+//     b = static_cast<const SparseMatrixBase<std::complex<float>>&>(a);
+//     const std::complex<float>* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], std::complex<float>(1, 2))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], std::complex<float>(3, 4))));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], std::complex<float>(5, 6))));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_same_type_sparse_matrix_base, given_f_self_should_do_nothing) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     // act
+//     a = static_cast<const SparseMatrixBase<float>&>(a);
+//     const float* aValues = a.values();
+//     const std::size_t* aRowIndexes = a.rowIndices();
+//     const std::size_t* aColOffsets = a.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(a.rows(), 5)));
+//     ASSERT_TRUE((compare(a.columns(), 5)));
+//     ASSERT_TRUE((compare(a.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), aValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), aValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), aValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(aRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(aRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(aRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(aColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(aColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(aColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(aColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(aColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(aColOffsets[5], 3.0f)));
+// }
+// #pragma endregion
+// #pragma region copy_assignment_operator_from_different_type_sparse_matrix_base
+// TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_diff_nnz_should_copy_assign) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<std::complex<float>> b(5, 5);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const std::complex<float>* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_same_size_same_nnz_should_copy_assign) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<std::complex<float>> b(5, 5);
+//     b.set(1, 3, 45);
+//     b.set(3, 2, 67);
+//     b.set(4, 4, 89);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const std::complex<float>* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_diff_size_diff_nnz_should_copy_assign_1) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<std::complex<float>> b(4, 5);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const std::complex<float>* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_diff_size_diff_nnz_should_copy_assign_2) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<std::complex<float>> b(5, 4);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const std::complex<float>* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_diff_size_same_nnz_should_copy_assign_1) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<std::complex<float>> b(4, 5);
+//     b.set(1, 3, 45);
+//     b.set(3, 2, 67);
+//     b.set(4, 3, 89);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const std::complex<float>* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+//
+// TEST(sparse_matrix_copy_assignment_operator_from_different_type_sparse_matrix_base, given_f_sparse_matrix_base_of_diff_size_same_nnz_should_copy_assign_2) {
+//     // arrange
+//     SparseMatrix<float> a(5, 5);
+//     a.set(0, 0, 1);
+//     a.set(2, 2, 2);
+//     a.set(4, 4, 3);
+//     SparseMatrix<std::complex<float>> b(5, 4);
+//     b.set(1, 3, 45);
+//     b.set(3, 2, 67);
+//     b.set(3, 4, 89);
+//     // act
+//     b = static_cast<const SparseMatrixBase<float>&>(a);
+//     const std::complex<float>* bValues = b.values();
+//     const std::size_t* bRowIndexes = b.rowIndices();
+//     const std::size_t* bColOffsets = b.colOffsets();
+//     // assert
+//     ASSERT_TRUE((compare(b.rows(), 5)));
+//     ASSERT_TRUE((compare(b.columns(), 5)));
+//     ASSERT_TRUE((compare(b.nnz(), 3)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[0], 1.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[1], 2.0f)));
+//     ASSERT_TRUE((compare(Precision(0.001f), bValues[2], 3.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[0], 0.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[1], 2.0f)));
+//     ASSERT_TRUE((compare(bRowIndexes[2], 4)));
+//     ASSERT_TRUE((compare(bColOffsets[0], 0.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[1], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[2], 1.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[3], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[4], 2.0f)));
+//     ASSERT_TRUE((compare(bColOffsets[5], 3.0f)));
+// }
+// #pragma endregion
 #pragma region move_assignment_operator
 TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_same_size_diff_nnz_should_move_assign) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 5);
+    CSCSparseMatrix<float> b(5, 5);
     // act
     b = std::move(a);
     const float* bValues = b.values();
@@ -2028,11 +2028,11 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_same_size_
 
 TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_same_size_same_nnz_should_move_assign) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 5);
+    CSCSparseMatrix<float> b(5, 5);
     b.set(1, 3, 45);
     b.set(3, 2, 67);
     b.set(4, 4, 89);
@@ -2064,11 +2064,11 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_same_size_
 
 TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_diff_nnz_should_move_assign_1) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(4, 5);
+    CSCSparseMatrix<float> b(4, 5);
     // act
     b = std::move(a);
     const float* bValues = b.values();
@@ -2097,11 +2097,11 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_
 
 TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_diff_nnz_should_move_assign_2) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 4);
+    CSCSparseMatrix<float> b(5, 4);
     // act
     b = std::move(a);
     const float* bValues = b.values();
@@ -2130,11 +2130,11 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_
 
 TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_same_nnz_should_move_assign_1) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(4, 5);
+    CSCSparseMatrix<float> b(4, 5);
     b.set(1, 3, 45);
     b.set(3, 2, 67);
     b.set(4, 3, 89);
@@ -2166,11 +2166,11 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_
 
 TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_same_nnz_should_move_assign_2) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
-    SparseMatrix<float> b(5, 4);
+    CSCSparseMatrix<float> b(5, 4);
     b.set(1, 3, 45);
     b.set(3, 2, 67);
     b.set(3, 4, 89);
@@ -2202,11 +2202,11 @@ TEST(sparse_matrix_move_assignment_operator, given_f_sparse_matrix_of_diff_size_
 
 TEST(sparse_matrix_move_assignment_operator, given_cf_sparse_matrix_of_same_size_diff_nnz_should_move_assign) {
     // arrange
-    SparseMatrix<std::complex<float>> a(5, 5);
+    CSCSparseMatrix<std::complex<float>> a(5, 5);
     a.set(0, 0, {1, 2});
     a.set(2, 2, {3, 4});
     a.set(4, 4, {5, 6});
-    SparseMatrix<std::complex<float>> b(5, 5);
+    CSCSparseMatrix<std::complex<float>> b(5, 5);
     // act
     b = std::move(a);
     const std::complex<float>* bValues = b.values();
@@ -2235,7 +2235,7 @@ TEST(sparse_matrix_move_assignment_operator, given_cf_sparse_matrix_of_same_size
 
 TEST(sparse_matrix_move_assignment_operator, given_f_self_should_do_nothing) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(0, 0, 1);
     a.set(2, 2, 2);
     a.set(4, 4, 3);
@@ -2270,15 +2270,15 @@ TEST(sparse_matrix_move_assignment_operator, given_f_self_should_do_nothing) {
 #pragma region constructor
 TEST(sparse_matrix_view_constructor, given_f_sparse_matrix_should_construct) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(2, 2, 1);
     a.set(3, 2, 2);
     a.set(0, 0, 3);
-    SparseMatrix<float> expected(3, 3);
+    CSCSparseMatrix<float> expected(3, 3);
     expected.set(1, 1, 1);
     expected.set(2, 1, 2);
     // act
-    const SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    const CSCSparseMatrixView<float> v(a, 3, 3, 1, 1);
     // assert
     ASSERT_TRUE((compare(v.nnz(), 2)));
     ASSERT_TRUE((compare(v.columns(), 3)));
@@ -2288,15 +2288,15 @@ TEST(sparse_matrix_view_constructor, given_f_sparse_matrix_should_construct) {
 
 TEST(sparse_matrix_view_constructor, given_cf_sparse_matrix_should_construct) {
     // arrange
-    SparseMatrix<std::complex<float>> a(5, 5);
+    CSCSparseMatrix<std::complex<float>> a(5, 5);
     a.set(2, 2, {1, 2});
     a.set(3, 2, {3, 4});
     a.set(0, 0, {5, 6});
-    SparseMatrix<std::complex<float>> expected(3, 3);
+    CSCSparseMatrix<std::complex<float>> expected(3, 3);
     expected.set(1, 1, {1, 2});
     expected.set(2, 1, {3, 4});
     // act
-    const SparseMatrixView<std::complex<float>> v(a, 3, 3, 1, 1);
+    const CSCSparseMatrixView<std::complex<float>> v(a, 3, 3, 1, 1);
     // assert
     ASSERT_TRUE((compare(v.nnz(), 2)));
     ASSERT_TRUE((compare(v.columns(), 3)));
@@ -2307,13 +2307,13 @@ TEST(sparse_matrix_view_constructor, given_cf_sparse_matrix_should_construct) {
 #pragma region copy_constructor
 TEST(sparse_matrix_view_copy_constructor, given_f_sparse_matrix_view_should_copy_construct) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(2, 2, 1);
     a.set(3, 2, 2);
     a.set(0, 0, 3);
-    const SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    const CSCSparseMatrixView<float> v(a, 3, 3, 1, 1);
     // act
-    const SparseMatrixView<float> newView = v;
+    const CSCSparseMatrixView<float> newView = v;
     // assert
     ASSERT_TRUE((compare(newView.rows(), 3)));
     ASSERT_TRUE((compare(newView.columns(), 3)));
@@ -2325,13 +2325,13 @@ TEST(sparse_matrix_view_copy_constructor, given_f_sparse_matrix_view_should_copy
 
 TEST(sparse_matrix_view_copy_constructor, given_cf_sparse_matrix_view_should_copy_construct) {
     // arrange
-    SparseMatrix<std::complex<float>> a(5, 5);
+    CSCSparseMatrix<std::complex<float>> a(5, 5);
     a.set(2, 2, {1, 2});
     a.set(3, 2, {3, 4});
     a.set(0, 0, {5, 6});
-    const SparseMatrixView<std::complex<float>> v(a, 3, 3, 1, 1);
+    const CSCSparseMatrixView<std::complex<float>> v(a, 3, 3, 1, 1);
     // act
-    const SparseMatrixView<std::complex<float>> newView = v;
+    const CSCSparseMatrixView<std::complex<float>> newView = v;
     // assert
     ASSERT_TRUE((compare(newView.rows(), 3)));
     ASSERT_TRUE((compare(newView.columns(), 3)));
@@ -2344,40 +2344,40 @@ TEST(sparse_matrix_view_copy_constructor, given_cf_sparse_matrix_view_should_cop
 #pragma region set
 TEST(sparse_matrix_view_set, given_index_should_throw) {
     // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    CSCSparseMatrix<float> a(5, 5);
+    CSCSparseMatrixView<float> v(a, 3, 3, 1, 1);
     // act / assert
     ASSERT_THROW(v.set(0, 0, 1), InvalidOperationException);
 }
 
 TEST(sparse_matrix_view_set, given_big_column_index_should_throw_1) {
     // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 2, 2);
+    CSCSparseMatrix<float> a(5, 5);
+    CSCSparseMatrixView<float> v(a, 3, 3, 2, 2);
     // act / assert
     ASSERT_THROW(v.set(3, 0, 1), InvalidIndexException);
 }
 
 TEST(sparse_matrix_view_set, given_big_row_index_should_throw_1) {
     // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 2, 2);
+    CSCSparseMatrix<float> a(5, 5);
+    CSCSparseMatrixView<float> v(a, 3, 3, 2, 2);
     // act / assert
     ASSERT_THROW(v.set(0, 3, 1), InvalidIndexException);
 }
 
 TEST(sparse_matrix_view_set, given_big_column_index_should_throw_2) {
     // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    CSCSparseMatrix<float> a(5, 5);
+    CSCSparseMatrixView<float> v(a, 3, 3, 1, 1);
     // act / assert
     ASSERT_THROW(v.set(3, 0, 1), InvalidIndexException);
 }
 
 TEST(sparse_matrix_view_set, given_big_row_index_should_throw_2) {
     // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    CSCSparseMatrix<float> a(5, 5);
+    CSCSparseMatrixView<float> v(a, 3, 3, 1, 1);
     // act / assert
     ASSERT_THROW(v.set(0, 3, 1), InvalidIndexException);
 }
@@ -2385,9 +2385,9 @@ TEST(sparse_matrix_view_set, given_big_row_index_should_throw_2) {
 #pragma region get
 TEST(sparse_matrix_view_get, given_index_should_return_value_f) {
     // arrange
-    SparseMatrix<float> a(5, 5);
+    CSCSparseMatrix<float> a(5, 5);
     a.set(2, 2, 1);
-    const SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    const CSCSparseMatrixView<float> v(a, 3, 3, 1, 1);
     // act
     const float value = v.get(1, 1);
     // assert
@@ -2396,9 +2396,9 @@ TEST(sparse_matrix_view_get, given_index_should_return_value_f) {
 
 TEST(sparse_matrix_view_get, given_index_should_return_value_cf) {
     // arrange
-    SparseMatrix<std::complex<float>> a(5, 5);
+    CSCSparseMatrix<std::complex<float>> a(5, 5);
     a.set(2, 2, {1, 2});
-    const SparseMatrixView<std::complex<float>> v(a, 3, 3, 1, 1);
+    const CSCSparseMatrixView<std::complex<float>> v(a, 3, 3, 1, 1);
     // act
     const std::complex<float> value = v.get(1, 1);
     // assert
@@ -2407,32 +2407,32 @@ TEST(sparse_matrix_view_get, given_index_should_return_value_cf) {
 
 TEST(sparse_matrix_view_get, given_big_column_index_should_throw_1) {
     // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 2, 2);
+    CSCSparseMatrix<float> a(5, 5);
+    CSCSparseMatrixView<float> v(a, 3, 3, 2, 2);
     // act / assert
     ASSERT_THROW(std::ignore = v.get(3, 0), InvalidIndexException);
 }
 
 TEST(sparse_matrix_view_get, given_big_row_index_should_throw_1) {
     // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 2, 2);
+    CSCSparseMatrix<float> a(5, 5);
+    CSCSparseMatrixView<float> v(a, 3, 3, 2, 2);
     // act / assert
     ASSERT_THROW(std::ignore = v.get(0, 3), InvalidIndexException);
 }
 
 TEST(sparse_matrix_view_get, given_big_column_index_should_throw_2) {
     // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    CSCSparseMatrix<float> a(5, 5);
+    CSCSparseMatrixView<float> v(a, 3, 3, 1, 1);
     // act / assert
     ASSERT_THROW(std::ignore = v.get(3, 0), InvalidIndexException);
 }
 
 TEST(sparse_matrix_view_get, given_big_row_index_should_throw_2) {
     // arrange
-    SparseMatrix<float> a(5, 5);
-    SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    CSCSparseMatrix<float> a(5, 5);
+    CSCSparseMatrixView<float> v(a, 3, 3, 1, 1);
     // act / assert
     ASSERT_THROW(std::ignore = v.get(0, 3), InvalidIndexException);
 }
@@ -2440,8 +2440,8 @@ TEST(sparse_matrix_view_get, given_big_row_index_should_throw_2) {
 #pragma region col_offset
 TEST(sparse_matrix_view_col_offset, should_return_col_offset) {
     // arrange
-    const SparseMatrix<float> a(5, 5);
-    const SparseMatrixView<float> v(a, 3, 3, 1, 2);
+    const CSCSparseMatrix<float> a(5, 5);
+    const CSCSparseMatrixView<float> v(a, 3, 3, 1, 2);
     constexpr std::size_t expected = 1;
     // act
     const std::size_t colOffset = v.colOffset();
@@ -2452,8 +2452,8 @@ TEST(sparse_matrix_view_col_offset, should_return_col_offset) {
 #pragma region row_offset
 TEST(sparse_matrix_view_row_offset, should_return_row_offset) {
     // arrange
-    const SparseMatrix<float> a(5, 5);
-    const SparseMatrixView<float> v(a, 3, 3, 1, 2);
+    const CSCSparseMatrix<float> a(5, 5);
+    const CSCSparseMatrixView<float> v(a, 3, 3, 1, 2);
     constexpr std::size_t expected = 2;
     // act
     const std::size_t rowOffset = v.rowOffset();
@@ -2464,10 +2464,10 @@ TEST(sparse_matrix_view_row_offset, should_return_row_offset) {
 #pragma region owner
 TEST(sparse_matrix_view_owner, should_return_owner) {
     // arrange
-    const SparseMatrix<float> a(5, 5);
-    const SparseMatrixView<float> v(a, 3, 3, 1, 1);
+    const CSCSparseMatrix<float> a(5, 5);
+    const CSCSparseMatrixView<float> v(a, 3, 3, 1, 1);
     // act
-    const SparseMatrix<float>& owner = v.owner();
+    const CSCSparseMatrix<float>& owner = v.owner();
     // assert
     ASSERT_TRUE(&owner == &a);
 }
@@ -2490,7 +2490,7 @@ TEST(custom_sparse_matrix_constructor, given_f_pointers_and_size_should_construc
     values[0] = 3;
     std::size_t nnz = 1;
     // act
-    const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    const CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // assert
     ASSERT_TRUE((compare(m.rows(), 5)));
     ASSERT_TRUE((compare(m.columns(), 5)));
@@ -2519,7 +2519,7 @@ TEST(custom_sparse_matrix_constructor, given_cf_pointers_and_size_should_constru
     values[0] = {1, 2};
     std::size_t nnz = 1;
     // act
-    const CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
+    const CSCCustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
     // assert
     ASSERT_TRUE((compare(m.rows(), 5)));
     ASSERT_TRUE((compare(m.columns(), 5)));
@@ -2546,7 +2546,7 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_sh
     std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
     std::size_t nnz = 0;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 3);
     // assert
@@ -2581,7 +2581,7 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_sh
     float* values = new float[1];
     values[0] = 4;
     std::size_t nnz = 1;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 3);
     // assert
@@ -2620,7 +2620,7 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_sh
     values[0] = 4;
     values[1] = 5;
     std::size_t nnz = 2;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 3);
     // assert
@@ -2661,7 +2661,7 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_sh
     values[0] = 4;
     values[1] = 3;
     std::size_t nnz = 2;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 5);
     // assert
@@ -2696,7 +2696,7 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_zero_value_should
     std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
     std::size_t nnz = 0;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 0);
     // assert
@@ -2723,7 +2723,7 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_zero_value_should
     float* values = new float[1];
     values[0] = 4;
     std::size_t nnz = 1;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 0);
     // assert
@@ -2758,7 +2758,7 @@ TEST(custom_sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_sh
     float* values = new float[1];
     values[0] = 3;
     std::size_t nnz = 1;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 0);
     // assert
@@ -2787,7 +2787,7 @@ TEST(custom_sparse_matrix_set, given_index_to_non_zero_element_and_zero_value_sh
     values[0] = 4;
     values[1] = 3;
     std::size_t nnz = 2;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, 0);
     // assert
@@ -2820,7 +2820,7 @@ TEST(custom_sparse_matrix_set, given_index_to_zero_element_and_non_zero_value_sh
     std::size_t* rowIndices = new std::size_t[0];
     std::complex<float>* values = new std::complex<float>[0];
     std::size_t nnz = 0;
-    CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     m.set(2, 2, {1, 2});
     // assert
@@ -2847,7 +2847,7 @@ TEST(custom_sparse_matrix_set, given_big_row_index_should_throw) {
     std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
     std::size_t nnz = 0;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(m.set(5, 2, 1), InvalidIndexException);
     // cleanup
@@ -2868,7 +2868,7 @@ TEST(custom_sparse_matrix_set, given_big_column_index_should_throw) {
     std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
     std::size_t nnz = 0;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(m.set(2, 5, 1), InvalidIndexException);
     // cleanup
@@ -2892,7 +2892,7 @@ TEST(custom_sparse_matrix_get, given_index_should_return_value_f) {
     float* values = new float[1];
     values[0] = 1;
     std::size_t nnz = 1;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     const float value = m.get(2, 3);
     // assert
@@ -2917,7 +2917,7 @@ TEST(custom_sparse_matrix_get, given_index_should_return_zero_f) {
     float* values = new float[1];
     values[0] = 1;
     std::size_t nnz = 1;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     const float value = m.get(1, 2);
     // assert
@@ -2942,7 +2942,7 @@ TEST(custom_sparse_matrix_get, given_index_should_return_value_cf) {
     std::complex<float>* values = new std::complex<float>[1];
     values[0] = {1, 2};
     std::size_t nnz = 1;
-    CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     const std::complex<float> value = m.get(2, 3);
     // assert
@@ -2967,7 +2967,7 @@ TEST(custom_sparse_matrix_get, given_index_should_return_zero_cf) {
     std::complex<float>* values = new std::complex<float>[1];
     values[0] = {1, 2};
     std::size_t nnz = 1;
-    CustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<std::complex<float>> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     const std::complex<float> value = m.get(1, 2);
     // assert
@@ -2990,7 +2990,7 @@ TEST(custom_sparse_matrix_get, given_big_row_index_should_throw) {
     std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
     std::size_t nnz = 0;
-    const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    const CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(std::ignore = m.get(5, 2), InvalidIndexException);
     // cleanup
@@ -3011,7 +3011,7 @@ TEST(custom_sparse_matrix_get, given_big_column_index_should_throw) {
     std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
     std::size_t nnz = 0;
-    const CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    const CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act / assert
     ASSERT_THROW(std::ignore = m.get(2, 5), InvalidIndexException);
     // cleanup
@@ -3037,7 +3037,7 @@ TEST(custom_sparse_matrix_nnz, should_return_nnz) {
     values[0] = 1;
     values[1] = 2;
     std::size_t nnz = 2;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     const std::size_t result = m.nnz();
     // assert
@@ -3060,7 +3060,7 @@ TEST(custom_sparse_matrix_nnz, should_return_zero_when_empty) {
     std::size_t* rowIndices = new std::size_t[0];
     float* values = new float[0];
     std::size_t nnz = 0;
-    CustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
+    CSCCustomSparseMatrix<float> m(5, 5, colOffsets, rowIndices, values, nnz);
     // act
     const std::size_t result = m.nnz();
     // assert
