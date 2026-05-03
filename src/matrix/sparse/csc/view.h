@@ -1,24 +1,24 @@
 #pragma once
-#include "../../helper.h"
+#include "../../../helper.h"
 #include <cstddef>
-#include "../../exceptions.h"
+#include "../../../exceptions.h"
 #include <array>
 #include "matrix.h"
 
 template<scalar T = float>
-struct SparseMatrixView {
+struct CSCSparseMatrixView {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    SparseMatrixView() = delete;
+    CSCSparseMatrixView() = delete;
 
-    SparseMatrixView(SparseMatrixView<T>&& other) noexcept = delete;
+    CSCSparseMatrixView(CSCSparseMatrixView<T>&& other) noexcept = delete;
 
-    SparseMatrixView<T>& operator=(const SparseMatrixView<T>& other) = delete;
+    CSCSparseMatrixView<T>& operator=(const CSCSparseMatrixView<T>& other) = delete;
 
-    SparseMatrixView<T>& operator=(SparseMatrixView<T>&& other) noexcept = delete;
+    CSCSparseMatrixView<T>& operator=(CSCSparseMatrixView<T>&& other) noexcept = delete;
 
     /**
      * @brief Constructs a SparseMatrixView into an existing SparseMatrix.
@@ -33,7 +33,7 @@ struct SparseMatrixView {
      * @param colOffset Starting column offset in the 'owner' matrix.
      * @param rowOffset Starting row offset in the 'owner' matrix.
      */
-    SparseMatrixView(const SparseMatrix<T>& owner, const std::size_t rows, const std::size_t columns, const std::size_t colOffset, const std::size_t rowOffset) : rows_(rows), columns_(columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
+    CSCSparseMatrixView(const CSCSparseMatrix<T>& owner, const std::size_t rows, const std::size_t columns, const std::size_t colOffset, const std::size_t rowOffset) : rows_(rows), columns_(columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
     }
 
     /**
@@ -44,7 +44,7 @@ struct SparseMatrixView {
      *
      * @param other SparseMatrixView to copy from.
      */
-    SparseMatrixView(const SparseMatrixView<T>& other) : rows_(other.rows_), columns_(other.columns_), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {
+    CSCSparseMatrixView(const CSCSparseMatrixView<T>& other) : rows_(other.rows_), columns_(other.columns_), colOffset_(other.colOffset_), rowOffset_(other.rowOffset_), owner_(other.owner_) {
     }
 
     /**
@@ -105,7 +105,7 @@ struct SparseMatrixView {
      * @brief Gets the const reference to the DenseMatrix owner.
      * @return Const reference to denseMatrix owner.
      */
-    [[nodiscard]] const SparseMatrix<T>& owner() const {
+    [[nodiscard]] const CSCSparseMatrix<T>& owner() const {
         return owner_;
     }
 
@@ -117,7 +117,7 @@ struct SparseMatrixView {
         return columns_;
     }
 
-    ~SparseMatrixView() = default;
+    ~CSCSparseMatrixView() = default;
 
 private:
     const std::size_t colOffset_;
@@ -125,5 +125,5 @@ private:
     std::size_t rows_;
     std::size_t columns_;
 
-    const SparseMatrix<T>& owner_;
+    const CSCSparseMatrix<T>& owner_;
 };

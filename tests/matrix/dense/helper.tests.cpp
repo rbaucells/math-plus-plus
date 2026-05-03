@@ -21,7 +21,7 @@ TEST(dense_matrix_base, given_float_should_return_false) {
 }
 
 TEST(dense_matrix_base, given_sparse_matrix_should_return_false) {
-    static_assert(!dense_matrix_like<SparseMatrix<float>>, "dense_matrix_like is wrong, 'SparseMatrix<float>' should not be dense_matrix_like");
+    static_assert(!dense_matrix_like<CSCSparseMatrix<float>>, "dense_matrix_like is wrong, 'SparseMatrix<float>' should not be dense_matrix_like");
 }
 #pragma endregion
 #pragma region dense_matrix

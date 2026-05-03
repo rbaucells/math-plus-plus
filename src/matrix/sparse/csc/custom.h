@@ -1,25 +1,24 @@
 #pragma once
-#include "../../helper.h"
+#include "../../../helper.h"
 #include <cstddef>
-#include "../../exceptions.h"
-#include <array>
+#include "../../../exceptions.h"
 
 template<scalar T = float>
-struct CustomSparseMatrix {
+struct CSCCustomSparseMatrix {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    CustomSparseMatrix() = delete;
+    CSCCustomSparseMatrix() = delete;
 
-    CustomSparseMatrix(const CustomSparseMatrix<T>& other) = delete;
+    CSCCustomSparseMatrix(const CSCCustomSparseMatrix<T>& other) = delete;
 
-    CustomSparseMatrix(CustomSparseMatrix<T>&& other) noexcept = delete;
+    CSCCustomSparseMatrix(CSCCustomSparseMatrix<T>&& other) noexcept = delete;
 
-    CustomSparseMatrix<T>& operator=(const CustomSparseMatrix<T>& other) = delete;
+    CSCCustomSparseMatrix<T>& operator=(const CSCCustomSparseMatrix<T>& other) = delete;
 
-    CustomSparseMatrix<T>& operator=(CustomSparseMatrix<T>&& other) noexcept = delete;
+    CSCCustomSparseMatrix<T>& operator=(CSCCustomSparseMatrix<T>&& other) noexcept = delete;
 
     /**
      * Constructs a CustomSparseMatrix from the provided arrays of size 'rows x columns'.
@@ -42,7 +41,7 @@ struct CustomSparseMatrix {
      * @note Assumes 'colOffsets' is of size 'columns + 1'.
      * @note Assumes 'rowIndices' and 'values' is of size 'nnz'.
      */
-    CustomSparseMatrix(const std::size_t rows, const std::size_t columns, std::size_t*& colOffsets, std::size_t*& rowIndices, T*& values, std::size_t& nnz) : rows_(rows), columns_(columns), nnz_(nnz), values_(values), colOffsets_(colOffsets), rowIndices_(rowIndices) {
+    CSCCustomSparseMatrix(const std::size_t rows, const std::size_t columns, std::size_t*& colOffsets, std::size_t*& rowIndices, T*& values, std::size_t& nnz) : rows_(rows), columns_(columns), nnz_(nnz), values_(values), colOffsets_(colOffsets), rowIndices_(rowIndices) {
     }
 
     void set(const std::size_t c, const std::size_t r, const T value) {

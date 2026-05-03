@@ -5,15 +5,6 @@
 #include <type_traits>
 #include "../../exceptions.h"
 
-template<scalar T>
-struct SparseMatrix;
-
-template<scalar T>
-struct SparseMatrixView;
-
-template<scalar T>
-struct CustomSparseMatrix;
-
 template<typename T>
 concept sparse_matrix_like = requires(const T constM, T m, std::size_t c, std::size_t r, const typename T::ValueType value) {
     typename T::ValueType;
@@ -33,46 +24,6 @@ struct is_sparse_matrix_like : std::false_type {};
 
 template<sparse_matrix_like T>
 struct is_sparse_matrix_like<T> : std::true_type {};
-
-// is_sparse_matrix, is_sparse_matrix_v, sparse_matrix
-template<typename>
-struct is_sparse_matrix : std::false_type {};
-
-template<typename U>
-struct is_sparse_matrix<SparseMatrix<U>> : std::true_type {};
-
-template<typename T>
-inline constexpr bool is_sparse_matrix_v = is_sparse_matrix<T>::value;
-
-template<typename T>
-concept sparse_matrix = is_sparse_matrix_v<T>;
-
-// is_sparse_matrix_view, is_sparse_matrix_view_v, sparse_matrix_view
-template<typename>
-struct is_sparse_matrix_view : std::false_type {};
-
-template<typename U>
-struct is_sparse_matrix_view<SparseMatrixView<U>> : std::true_type {};
-
-template<typename T>
-inline constexpr bool is_sparse_matrix_view_v = is_sparse_matrix_view<T>::value;
-
-template<typename T>
-concept sparse_matrix_view = is_sparse_matrix_view_v<T>;
-
-// is_custom_sparse_matrix, is_custom_sparse_matrix_v, custom_sparse_matrix
-template<typename>
-struct is_custom_sparse_matrix : std::false_type {};
-
-template<typename U>
-struct is_custom_sparse_matrix<CustomSparseMatrix<U>> : std::true_type {};
-
-template<typename T>
-inline constexpr bool is_custom_sparse_matrix_v = is_custom_sparse_matrix<T>::value;
-
-template<typename T>
-concept custom_sparse_matrix = is_custom_sparse_matrix_v<T>;
-
 
 template<sparse_matrix_like T>
 struct underlying_type<T> {

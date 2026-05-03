@@ -1,21 +1,21 @@
 #pragma once
-#include "../../helper.h"
+#include "../../../helper.h"
 #include <cstddef>
 #include <initializer_list>
 #include <tuple>
-#include "../../exceptions.h"
+#include "../../../exceptions.h"
 #include <array>
 #include <type_traits>
 #include <cstring>
 
 template<scalar T = float>
-struct SparseMatrix {
+struct CSCSparseMatrix {
     using ValueType = T;
     using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    SparseMatrix() = delete;
+    CSCSparseMatrix() = delete;
 
     /**
      * @brief Constructs a SparseMatrix of size 'rows x columns'.
@@ -23,7 +23,7 @@ struct SparseMatrix {
      * @param rows Number of rows.
      * @param columns Number of columns.
      */
-    SparseMatrix(const std::size_t rows, const std::size_t columns) : rows_(rows), columns_(columns) {
+    CSCSparseMatrix(const std::size_t rows, const std::size_t columns) : rows_(rows), columns_(columns) {
         colOffsets_ = new std::size_t[columns + 1];
 
         for (std::size_t i = 0; i < columns + 1; i++) {
@@ -45,7 +45,7 @@ struct SparseMatrix {
      *
      * @note 'initializerList' must be sorted within each row, and between rows
      */
-    SparseMatrix(const std::size_t rows, const std::size_t columns, std::initializer_list<std::tuple<T, int, int> > initializerList) : rows_(rows), columns_(columns) {
+    CSCSparseMatrix(const std::size_t rows, const std::size_t columns, std::initializer_list<std::tuple<T, int, int> > initializerList) : rows_(rows), columns_(columns) {
         if (rows < 0 || columns < 0) {
             throw InvalidIndexException("Cannot create SparseMatrix with negative size");
         }
@@ -82,7 +82,7 @@ struct SparseMatrix {
      *
      * @param other SparseMatrix to copy from.
      */
-    SparseMatrix(const SparseMatrix<T>& other) : rows_(other.rows_), columns_(other.columns_) {
+    CSCSparseMatrix(const CSCSparseMatrix<T>& other) : rows_(other.rows_), columns_(other.columns_) {
         colOffsets_ = new std::size_t[columns_ + 1];
         std::memcpy(colOffsets_, other.colOffsets_, (columns_ + 1) * sizeof(std::size_t));
 
@@ -106,7 +106,7 @@ struct SparseMatrix {
     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
     */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseMatrix(const SparseMatrix<OTHER_T>& other) : rows_(other.rows()), columns_(other.columns()) {
+    CSCSparseMatrix(const CSCSparseMatrix<OTHER_T>& other) : rows_(other.rows()), columns_(other.columns()) {
         colOffsets_ = new std::size_t[columns_ + 1];
 
         const std::size_t* otherColOffsets = other.colOffsets();
@@ -133,7 +133,7 @@ struct SparseMatrix {
     }
 
     template<sparse_matrix_like U>
-    SparseMatrix(const U& other) : rows_(other.rows()), columns_(other.columns()) {
+    CSCSparseMatrix(const U& other) : rows_(other.rows()), columns_(other.columns()) {
         colOffsets_ = new std::size_t[columns_ + 1];
 
         for (std::size_t i = 0; i < columns_ + 1; i++) {
@@ -147,7 +147,7 @@ struct SparseMatrix {
 
         for (std::size_t c = 0; c < columns_; c++) {
             for (std::size_t r = 0; r < rows_; r++) {
-                SparseMatrix<T>::set(c, r, other.get(c, r));
+                CSCSparseMatrix<T>::set(c, r, other.get(c, r));
             }
         }
     }
@@ -160,7 +160,7 @@ struct SparseMatrix {
      *
      * @param other SparseMatrix to move from.
      */
-    SparseMatrix(SparseMatrix&& other) noexcept : rows_(other.rows_), columns_(other.columns_), nnz_(other.nnz_), values_(other.values_), colOffsets_(other.colOffsets_), rowIndices_(other.rowIndices_) {
+    CSCSparseMatrix(CSCSparseMatrix&& other) noexcept : rows_(other.rows_), columns_(other.columns_), nnz_(other.nnz_), values_(other.values_), colOffsets_(other.colOffsets_), rowIndices_(other.rowIndices_) {
         other.colOffsets_ = nullptr;
         other.rowIndices_ = nullptr;
         other.values_ = nullptr;
@@ -178,7 +178,7 @@ struct SparseMatrix {
      * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
      * @note 'other' must be of same dimensions as this.
      */
-    SparseMatrix<T>& operator=(const SparseMatrix<T>& other) {
+    CSCSparseMatrix<T>& operator=(const CSCSparseMatrix<T>& other) {
         if (this != &other) {
             if (rows_ != other.rows_ || columns_ != other.columns_) {
                 delete[] colOffsets_;
@@ -215,7 +215,7 @@ struct SparseMatrix {
      * @tparam OTHER_T Scalar type of the 'other' SparseMatrix.
      */
     template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    SparseMatrix<T>& operator=(const SparseMatrix<OTHER_T>& other) {
+    CSCSparseMatrix<T>& operator=(const CSCSparseMatrix<OTHER_T>& other) {
         if (columns_ != other.columns()) {
             delete[] colOffsets_;
             columns_ = other.columns();
@@ -244,7 +244,7 @@ struct SparseMatrix {
     }
 
     template<sparse_matrix_like U>
-    SparseMatrix<T>& operator=(const U& other) {
+    CSCSparseMatrix<T>& operator=(const U& other) {
         if (columns_ != other.columns()) {
             delete[] colOffsets_;
             columns_ = other.columns();
@@ -267,7 +267,7 @@ struct SparseMatrix {
 
         for (std::size_t c = 0; c < columns_; c++) {
             for (std::size_t r = 0; r < rows_; r++) {
-                SparseMatrix<T>::set(c, r, other.get(c, r));
+                CSCSparseMatrix<T>::set(c, r, other.get(c, r));
             }
         }
 
@@ -283,7 +283,7 @@ struct SparseMatrix {
     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
     * @note 'other' must be of same dimensions as this.
     */
-    SparseMatrix<T>& operator=(SparseMatrix<T>&& other) noexcept {
+    CSCSparseMatrix<T>& operator=(CSCSparseMatrix<T>&& other) noexcept {
         if (this != &other) {
             delete[] values_;
             delete[] rowIndices_;
@@ -498,7 +498,7 @@ struct SparseMatrix {
         return columns_;
     }
 
-    ~SparseMatrix() {
+    ~CSCSparseMatrix() {
         delete[] colOffsets_;
         delete[] rowIndices_;
         delete[] values_;
