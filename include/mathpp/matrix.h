@@ -11,7 +11,9 @@
 #include "../../src/matrix/dense/view.h"
 
 #include "../../src/matrix/sparse/operators/compare.h"
+#include "../../src/matrix/sparse/custom.h"
 #include "../../src/matrix/sparse/helper.h"
 #include "../../src/matrix/sparse/matrix.h"
+#include "../../src/matrix/sparse/view.h"
 
 #include "../../src/matrix/exceptions.h"

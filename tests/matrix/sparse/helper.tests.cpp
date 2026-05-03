@@ -2,25 +2,25 @@
 
 #include "mathpp/matrix.h"
 
-#pragma region sparse_matrix_base
-TEST(sparse_matrix_base, given_sparse_matrix_should_return_true) {
-    static_assert(sparse_matrix_base<SparseMatrix<float>>, "sparse_matrix_base is wrong, 'SparseMatrix<float>' should be sparse_matrix_base");
+#pragma region sparse_matrix_like
+TEST(sparse_matrix_like, given_sparse_matrix_should_return_true) {
+    static_assert(sparse_matrix_like<SparseMatrix<float>>, "sparse_matrix_like is wrong, 'SparseMatrix<float>' should be sparse_matrix_like");
 }
 
-TEST(sparse_matrix_base, given_sparse_matrix_view_should_return_true) {
-    static_assert(sparse_matrix_base<SparseMatrixView<float>>, "sparse_matrix_base is wrong, 'SparseMatrixView<float>' should be sparse_matrix_base");
+TEST(sparse_matrix_like, given_sparse_matrix_view_should_return_true) {
+    static_assert(sparse_matrix_like<SparseMatrixView<float>>, "sparse_matrix_like is wrong, 'SparseMatrixView<float>' should be sparse_matrix_like");
 }
 
-TEST(sparse_matrix_base, given_custom_sparse_matrix_should_return_true) {
-    static_assert(sparse_matrix_base<CustomSparseMatrix<float>>, "sparse_matrix_base is wrong, 'CustomSparseMatrix<float>' should be sparse_matrix_base");
+TEST(sparse_matrix_like, given_custom_sparse_matrix_should_return_true) {
+    static_assert(sparse_matrix_like<CustomSparseMatrix<float>>, "sparse_matrix_like is wrong, 'CustomSparseMatrix<float>' should be sparse_matrix_like");
 }
 
-TEST(sparse_matrix_base, given_float_should_return_false) {
-    static_assert(!sparse_matrix_base<float>, "sparse_matrix_base is wrong, 'float' should not be sparse_matrix_base");
+TEST(sparse_matrix_like, given_float_should_return_false) {
+    static_assert(!sparse_matrix_like<float>, "sparse_matrix_like is wrong, 'float' should not be sparse_matrix_like");
 }
 
-TEST(sparse_matrix_base, given_dense_matrix_should_return_false) {
-    static_assert(!sparse_matrix_base<DenseMatrix<float>>, "sparse_matrix_base is wrong, 'DenseMatrix<float>' should not be sparse_matrix_base");
+TEST(sparse_matrix_like, given_dense_matrix_should_return_false) {
+    static_assert(!sparse_matrix_like<DenseMatrix<float>>, "sparse_matrix_like is wrong, 'DenseMatrix<float>' should not be sparse_matrix_like");
 }
 #pragma endregion
 #pragma region sparse_matrix
@@ -35,10 +35,6 @@ TEST(sparse_matrix, given_sparse_matrix_view_should_return_false) {
 TEST(sparse_matrix, given_custom_sparse_matrix_should_return_false) {
     static_assert(!sparse_matrix<CustomSparseMatrix<float>>, "sparse_matrix is wrong, 'CustomSparseMatrix<float>' should not be sparse_matrix");
 }
-
-TEST(sparse_matrix, given_sparse_matrix_base_should_return_false) {
-    static_assert(!sparse_matrix<SparseMatrixBase<float>>, "sparse_matrix is wrong, 'SparseMatrixBase<float>' should not be sparse_matrix");
-}
 #pragma endregion
 #pragma region sparse_matrix_view
 TEST(sparse_matrix_view, given_sparse_matrix_view_should_return_true) {
@@ -51,10 +47,6 @@ TEST(sparse_matrix_view, given_sparse_matrix_should_return_false) {
 
 TEST(sparse_matrix_view, given_custom_sparse_matrix_should_return_false) {
     static_assert(!sparse_matrix_view<CustomSparseMatrix<float>>, "sparse_matrix_view is wrong, 'CustomSparseMatrix<float>' should not be sparse_matrix_view");
-}
-
-TEST(sparse_matrix_view, given_sparse_matrix_base_should_return_false) {
-    static_assert(!sparse_matrix_view<SparseMatrixBase<float>>, "sparse_matrix_view is wrong, 'SparseMatrixBase<float>' should not be sparse_matrix_view");
 }
 #pragma endregion
 #pragma region custom_sparse_matrix
@@ -69,16 +61,8 @@ TEST(custom_sparse_matrix, given_sparse_matrix_should_return_false) {
 TEST(custom_sparse_matrix, given_sparse_matrix_view_should_return_false) {
     static_assert(!custom_sparse_matrix<SparseMatrixView<float>>, "custom_sparse_matrix is wrong, 'SparseMatrixView<float>' should not be custom_sparse_matrix");
 }
-
-TEST(custom_sparse_matrix, given_sparse_matrix_base_should_return_false) {
-    static_assert(!custom_sparse_matrix<SparseMatrixBase<float>>, "custom_sparse_matrix is wrong, 'SparseMatrixBase<float>' should not be custom_sparse_matrix");
-}
 #pragma endregion
 #pragma region underlying_type
-TEST(underlying_type, given_sparse_matrix_base_templated_on_float_should_return_float) {
-    static_assert(std::is_same_v<underlying_type_t<SparseMatrixBase<float>>, float>, "underlying_type_t is wrong, 'SparseMatrixBase<float>' should be 'float'");
-}
-
 TEST(underlying_type, given_sparse_matrix_templated_on_float_should_return_float) {
     static_assert(std::is_same_v<underlying_type_t<SparseMatrix<float>>, float>, "underlying_type_t is wrong, 'SparseMatrix<float>' should be 'float'");
 }
