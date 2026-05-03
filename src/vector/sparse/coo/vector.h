@@ -6,6 +6,7 @@
 #include <tuple>
 #include <cstring>
 #include "../helper.h"
+#include <array>
 
 template<scalar T = float>
 struct CooSparseVector {

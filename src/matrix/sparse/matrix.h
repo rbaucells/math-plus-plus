@@ -1,8 +1,12 @@
 #pragma once
-#include "helper.h"
-
-#include "../../exceptions.h"
 #include "../../helper.h"
+#include <cstddef>
+#include <initializer_list>
+#include <tuple>
+#include "../../exceptions.h"
+#include <array>
+#include <type_traits>
+#include <cstring>
 
 template<scalar T = float>
 struct SparseMatrix {
@@ -80,15 +84,15 @@ struct SparseMatrix {
      */
     SparseMatrix(const SparseMatrix<T>& other) : rows_(other.rows_), columns_(other.columns_) {
         colOffsets_ = new std::size_t[columns_ + 1];
-        memcpy(colOffsets_, other.colOffsets_, (columns_ + 1) * sizeof(std::size_t));
+        std::memcpy(colOffsets_, other.colOffsets_, (columns_ + 1) * sizeof(std::size_t));
 
         nnz_ = other.nnz_;
 
         rowIndices_ = new std::size_t[nnz_];
-        memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(std::size_t));
+        std::memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(std::size_t));
 
         values_ = new T[nnz_];
-        memcpy(values_, other.values_, nnz_ * sizeof(T));
+        std::memcpy(values_, other.values_, nnz_ * sizeof(T));
     }
 
     /**
@@ -107,7 +111,7 @@ struct SparseMatrix {
 
         const std::size_t* otherColOffsets = other.colOffsets();
 
-        memcpy(colOffsets_, otherColOffsets, (columns_ + 1) * sizeof(std::size_t));
+        std::memcpy(colOffsets_, otherColOffsets, (columns_ + 1) * sizeof(std::size_t));
 
         const std::size_t otherNnz = other.nnz();
 
@@ -117,7 +121,7 @@ struct SparseMatrix {
 
         const std::size_t* otherRowIndices = other.rowIndices();
 
-        memcpy(rowIndices_, otherRowIndices, nnz_ * sizeof(std::size_t));
+        std::memcpy(rowIndices_, otherRowIndices, nnz_ * sizeof(std::size_t));
 
         values_ = new T[nnz_];
 
@@ -191,9 +195,9 @@ struct SparseMatrix {
                 rowIndices_ = new std::size_t[nnz_];
             }
 
-            memcpy(values_, other.values_, nnz_ * sizeof(T));
-            memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(std::size_t));
-            memcpy(colOffsets_, other.colOffsets_, (columns_ + 1) * sizeof(std::size_t));
+            std::memcpy(values_, other.values_, nnz_ * sizeof(T));
+            std::memcpy(rowIndices_, other.rowIndices_, nnz_ * sizeof(std::size_t));
+            std::memcpy(colOffsets_, other.colOffsets_, (columns_ + 1) * sizeof(std::size_t));
         }
 
         return *this;
@@ -233,8 +237,8 @@ struct SparseMatrix {
             values_[i] = otherValues[i];
         }
 
-        memcpy(rowIndices_, other.rowIndices(), nnz_ * sizeof(std::size_t));
-        memcpy(colOffsets_, other.colOffsets(), (columns_ + 1) * sizeof(std::size_t));
+        std::memcpy(rowIndices_, other.rowIndices(), nnz_ * sizeof(std::size_t));
+        std::memcpy(colOffsets_, other.colOffsets(), (columns_ + 1) * sizeof(std::size_t));
 
         return *this;
     }
@@ -321,12 +325,12 @@ struct SparseMatrix {
 
                     const std::size_t before_count = i;
                     if (before_count > 0) {
-                        memcpy(newRowIndices, rowIndices_, before_count * sizeof(std::size_t));
+                        std::memcpy(newRowIndices, rowIndices_, before_count * sizeof(std::size_t));
                     }
 
                     const std::size_t after_count = nnz_ - i - 1;
                     if (after_count > 0) {
-                        memcpy(newRowIndices + i, rowIndices_ + i + 1, after_count * sizeof(std::size_t));
+                        std::memcpy(newRowIndices + i, rowIndices_ + i + 1, after_count * sizeof(std::size_t));
                     }
 
                     delete[] rowIndices_;
@@ -337,11 +341,11 @@ struct SparseMatrix {
                     T* newValues = new T[nnz_ - 1];
 
                     if (before_count > 0) {
-                        memcpy(newValues, values_, before_count * sizeof(T));
+                        std::memcpy(newValues, values_, before_count * sizeof(T));
                     }
 
                     if (after_count > 0) {
-                        memcpy(newValues + i, values_ + i + 1, after_count * sizeof(T));
+                        std::memcpy(newValues + i, values_ + i + 1, after_count * sizeof(T));
                     }
 
                     delete[] values_;
@@ -376,14 +380,14 @@ struct SparseMatrix {
 
         const std::size_t before_count = i;
         if (before_count > 0) {
-            memcpy(newRowIndices, rowIndices_, before_count * sizeof(std::size_t));
+            std::memcpy(newRowIndices, rowIndices_, before_count * sizeof(std::size_t));
         }
 
         newRowIndices[i] = r;
 
         const std::size_t after_count = nnz_ - i;
         if (after_count > 0) {
-            memcpy(newRowIndices + i + 1, rowIndices_ + i, after_count * sizeof(std::size_t));
+            std::memcpy(newRowIndices + i + 1, rowIndices_ + i, after_count * sizeof(std::size_t));
         }
 
         delete[] rowIndices_;
@@ -394,13 +398,13 @@ struct SparseMatrix {
         T* newValues = new T[nnz_ + 1];
 
         if (before_count > 0) {
-            memcpy(newValues, values_, before_count * sizeof(T));
+            std::memcpy(newValues, values_, before_count * sizeof(T));
         }
 
         newValues[i] = value;
 
         if (after_count > 0) {
-            memcpy(newValues + i + 1, values_ + i, after_count * sizeof(T));
+            std::memcpy(newValues + i + 1, values_ + i, after_count * sizeof(T));
         }
 
         delete[] values_;

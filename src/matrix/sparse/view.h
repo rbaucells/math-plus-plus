@@ -1,4 +1,9 @@
 #pragma once
+#include "../../helper.h"
+#include <cstddef>
+#include "../../exceptions.h"
+#include <array>
+#include "matrix.h"
 
 template<scalar T = float>
 struct SparseMatrixView {
