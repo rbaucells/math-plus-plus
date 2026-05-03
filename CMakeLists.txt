@@ -22,7 +22,7 @@ add_library(mathpp INTERFACE
         src/matrix/sparse/matrix.h
         src/matrix/sparse/helper.h
         src/vector/dense/operators/compare.h
-        src/vector/sparse/coo/operators/compare.h
+        src/vector/sparse/common/operators/compare.h
         src/matrix/sparse/operators/compare.h
         src/matrix/dense/operators/add.h
         src/matrix/dense/operators/compare.h
@@ -39,6 +39,8 @@ add_library(mathpp INTERFACE
         src/vector/sparse/coo/view.h
         src/vector/sparse/coo/custom.h
         src/vector/sparse/helper.h
+        src/matrix/sparse/view.h
+        src/matrix/sparse/custom.h
 )
 
 target_include_directories(mathpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
