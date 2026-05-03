@@ -7,6 +7,7 @@
 #include <array>
 #include <type_traits>
 #include <cstring>
+#include "../helper.h"
 
 template<scalar T = float>
 struct CSCSparseMatrix {
