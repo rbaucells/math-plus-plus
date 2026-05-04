@@ -7,7 +7,7 @@
 #include <array>
 #include <type_traits>
 #include <cstring>
-#include "../helper.h"
+#include "../common/helper.h"
 
 template<scalar T = float>
 struct CSRSparseMatrix {

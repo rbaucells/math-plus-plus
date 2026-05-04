@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <concepts>
 #include <type_traits>
-#include "../../../exceptions.h"
+#include "../common/helper.h"
 
 template<scalar T>
 struct CSCSparseMatrix;
@@ -13,6 +13,23 @@ struct CSCSparseMatrixView;
 
 template<scalar T>
 struct CSCCustomSparseMatrix;
+
+template<typename T>
+concept csc_sparse_matrix_like = requires(const T constM, T m, std::size_t c, std::size_t r, const typename T::ValueType value) {
+    sparse_matrix_like<T>;
+    requires std::same_as<std::remove_cvref_t<decltype(constM.values())>, typename T::ValueType*>;
+    requires std::same_as<std::remove_cvref_t<decltype(constM.rowIndices())>, std::size_t*>;
+    requires std::same_as<std::remove_cvref_t<decltype(constM.colOffsets())>, std::size_t*>;
+};
+
+template<typename T>
+inline constexpr bool is_csc_sparse_matrix_like_v = csc_sparse_matrix_like<T>;
+
+template<typename>
+struct is_csc_sparse_matrix_like : std::false_type {};
+
+template<csc_sparse_matrix_like T>
+struct is_csc_sparse_matrix_like<T> : std::true_type {};
 
 // is_csc_sparse_matrix, is_csc_sparse_matrix_v, csc_sparse_matrix
 template<typename>

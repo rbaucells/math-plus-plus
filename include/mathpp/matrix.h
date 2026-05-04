@@ -10,10 +10,15 @@
 #include "../../src/matrix/dense/matrix.h"
 #include "../../src/matrix/dense/view.h"
 
-#include "../../src/matrix/sparse/operators/compare.h"
+#include "../../src/matrix/sparse/common/operators/compare.h"
+#include "../../src/matrix/sparse/common/helper.h"
 #include "../../src/matrix/sparse/csc/custom.h"
-#include "../../src/matrix/sparse/helper.h"
-#include "../../src/matrix/sparse/matrix.h"
+#include "../../src/matrix/sparse/csc/helper.h"
+#include "../../src/matrix/sparse/csc/matrix.h"
 #include "../../src/matrix/sparse/csc/view.h"
+#include "../../src/matrix/sparse/csr/custom.h"
+#include "../../src/matrix/sparse/csr/helper.h"
+#include "../../src/matrix/sparse/csr/matrix.h"
+#include "../../src/matrix/sparse/csr/view.h"
 
 #include "../../src/matrix/exceptions.h"

@@ -41,7 +41,7 @@ add_library(mathpp INTERFACE
         src/vector/sparse/helper.h
         src/matrix/sparse/csc/view.h
         src/matrix/sparse/csc/custom.h
-        src/matrix/sparse/helper.h
+        src/matrix/sparse/common/helper.h
 )
 
 target_include_directories(mathpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
