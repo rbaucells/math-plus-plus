@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/vector.h"
+#include "mathpp/vector/dense/operators.h"
 
 TEST(dot_operator, given_f_dense_vectors_should_return_dot) {
     // arrange

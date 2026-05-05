@@ -11,7 +11,6 @@ option(MATHPP_BINDINGS "Build Python bindings" ON)
 
 add_library(mathpp INTERFACE
         src/exceptions.h
-        src/expression.h
         src/helper.h
         src/vector/exceptions.h
         src/vector/sparse/coo/vector.h

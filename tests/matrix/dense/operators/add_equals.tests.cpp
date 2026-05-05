@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/matrix.h"
+#include "mathpp/matrix/dense/operators.h"
 
 TEST(dense_matrix_addition_assignment_operator, given_f_dense_matrices_should_add_assign) {
     // arrange

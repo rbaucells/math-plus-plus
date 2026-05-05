@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/matrix.h"
+#include "mathpp/matrix/dense/operators.h"
 
 #include "../../../telemetry.tests.h"
 

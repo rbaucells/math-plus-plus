@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/matrix.h"
+#include "mathpp/matrix/dense/operators.h"
 
 TEST(dense_matrix_subtraction_operator, given_f_dense_matrices_should_return_difference) {
     // arrange
