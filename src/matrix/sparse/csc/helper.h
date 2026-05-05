@@ -68,4 +68,4 @@ template<typename T>
 inline constexpr bool is_csc_custom_sparse_matrix_v = is_csc_custom_sparse_matrix<T>::value;
 
 template<typename T>
-concept custom_sparse_csc_matrix = is_csc_custom_sparse_matrix_v<T>;
+concept csc_custom_sparse_matrix = is_csc_custom_sparse_matrix_v<T>;

@@ -37,7 +37,7 @@ add_library(mathpp INTERFACE
         src/vector/dense/custom.h
         src/vector/sparse/coo/view.h
         src/vector/sparse/coo/custom.h
-        src/vector/sparse/helper.h
+        src/vector/sparse/common/helper.h
         src/matrix/sparse/csc/view.h
         src/matrix/sparse/csc/custom.h
         src/matrix/sparse/common/helper.h

@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/matrix.h"
+#include "mathpp/matrix/sparse/csc/core.h"
+#include "mathpp/matrix/dense/core.h"
 
 #pragma region sparse_matrix_like
 TEST(sparse_matrix_like, given_sparse_matrix_should_return_true) {
@@ -23,43 +24,43 @@ TEST(sparse_matrix_like, given_dense_matrix_should_return_false) {
     static_assert(!sparse_matrix_like<DenseMatrix<float>>, "sparse_matrix_like is wrong, 'DenseMatrix<float>' should not be sparse_matrix_like");
 }
 #pragma endregion
-#pragma region sparse_matrix
-TEST(sparse_matrix, given_sparse_matrix_should_return_true) {
-    static_assert(sparse_matrix<CSCSparseMatrix<float>>, "sparse_matrix is wrong, 'SparseMatrix<float>' should be sparse_matrix");
+#pragma region csc_sparse_matrix
+TEST(csc_sparse_matrix, given_csc_sparse_matrix_should_return_true) {
+    static_assert(csc_sparse_matrix<CSCSparseMatrix<float>>, "csc_sparse_matrix is wrong, 'SparseMatrix<float>' should be csc_sparse_matrix");
 }
 
-TEST(sparse_matrix, given_sparse_matrix_view_should_return_false) {
-    static_assert(!sparse_matrix<CSCSparseMatrixView<float>>, "sparse_matrix is wrong, 'SparseMatrixView<float>' should not be sparse_matrix");
+TEST(csc_sparse_matrix, given_csc_sparse_matrix_view_should_return_false) {
+    static_assert(!csc_sparse_matrix<CSCSparseMatrixView<float>>, "csc_sparse_matrix is wrong, 'SparseMatrixView<float>' should not be csc_sparse_matrix");
 }
 
-TEST(sparse_matrix, given_custom_sparse_matrix_should_return_false) {
-    static_assert(!sparse_matrix<CSCCustomSparseMatrix<float>>, "sparse_matrix is wrong, 'CustomSparseMatrix<float>' should not be sparse_matrix");
+TEST(csc_sparse_matrix, given_custom_csc_sparse_matrix_should_return_false) {
+    static_assert(!csc_sparse_matrix<CSCCustomSparseMatrix<float>>, "csc_sparse_matrix is wrong, 'CustomSparseMatrix<float>' should not be csc_sparse_matrix");
 }
 #pragma endregion
-#pragma region sparse_matrix_view
-TEST(sparse_matrix_view, given_sparse_matrix_view_should_return_true) {
-    static_assert(sparse_matrix_view<CSCSparseMatrixView<float>>, "sparse_matrix_view is wrong, 'SparseMatrixView<float>' should be sparse_matrix_view");
+#pragma region csc_sparse_matrix_view
+TEST(csc_sparse_matrix_view, given_csc_sparse_matrix_view_should_return_true) {
+    static_assert(csc_sparse_matrix_view<CSCSparseMatrixView<float>>, "csc_sparse_matrix_view is wrong, 'SparseMatrixView<float>' should be csc_sparse_matrix_view");
 }
 
-TEST(sparse_matrix_view, given_sparse_matrix_should_return_false) {
-    static_assert(!sparse_matrix_view<CSCSparseMatrix<float>>, "sparse_matrix_view is wrong, 'SparseMatrix<float>' should not be sparse_matrix_view");
+TEST(csc_sparse_matrix_view, given_csc_sparse_matrix_should_return_false) {
+    static_assert(!csc_sparse_matrix_view<CSCSparseMatrix<float>>, "csc_sparse_matrix_view is wrong, 'SparseMatrix<float>' should not be csc_sparse_matrix_view");
 }
 
-TEST(sparse_matrix_view, given_custom_sparse_matrix_should_return_false) {
-    static_assert(!sparse_matrix_view<CSCCustomSparseMatrix<float>>, "sparse_matrix_view is wrong, 'CustomSparseMatrix<float>' should not be sparse_matrix_view");
+TEST(csc_sparse_matrix_view, given_custom_csc_sparse_matrix_should_return_false) {
+    static_assert(!csc_sparse_matrix_view<CSCCustomSparseMatrix<float>>, "csc_sparse_matrix_view is wrong, 'CustomSparseMatrix<float>' should not be csc_sparse_matrix_view");
 }
 #pragma endregion
-#pragma region custom_sparse_matrix
-TEST(custom_sparse_matrix, given_custom_sparse_matrix_should_return_true) {
-    static_assert(custom_sparse_matrix<CSCCustomSparseMatrix<float>>, "custom_sparse_matrix is wrong, 'CustomSparseMatrix<float>' should be custom_sparse_matrix");
+#pragma region custom_csc_sparse_matrix
+TEST(custom_csc_sparse_matrix, given_custom_csc_sparse_matrix_should_return_true) {
+    static_assert(csc_custom_sparse_matrix<CSCCustomSparseMatrix<float>>, "custom_csc_sparse_matrix is wrong, 'CustomSparseMatrix<float>' should be custom_csc_sparse_matrix");
 }
 
-TEST(custom_sparse_matrix, given_sparse_matrix_should_return_false) {
-    static_assert(!custom_sparse_matrix<CSCSparseMatrix<float>>, "custom_sparse_matrix is wrong, 'SparseMatrix<float>' should not be custom_sparse_matrix");
+TEST(custom_csc_sparse_matrix, given_csc_sparse_matrix_should_return_false) {
+    static_assert(!csc_custom_sparse_matrix<CSCSparseMatrix<float>>, "custom_csc_sparse_matrix is wrong, 'SparseMatrix<float>' should not be custom_csc_sparse_matrix");
 }
 
-TEST(custom_sparse_matrix, given_sparse_matrix_view_should_return_false) {
-    static_assert(!custom_sparse_matrix<CSCSparseMatrixView<float>>, "custom_sparse_matrix is wrong, 'SparseMatrixView<float>' should not be custom_sparse_matrix");
+TEST(custom_csc_sparse_matrix, given_csc_sparse_matrix_view_should_return_false) {
+    static_assert(!csc_custom_sparse_matrix<CSCSparseMatrixView<float>>, "custom_csc_sparse_matrix is wrong, 'SparseMatrixView<float>' should not be custom_csc_sparse_matrix");
 }
 #pragma endregion
 #pragma region underlying_type

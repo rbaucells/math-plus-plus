@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/vector.h"
+#include "mathpp/vector/sparse/coo/core.h"
+#include "mathpp/vector/dense/core.h"
 
 #pragma region sparse_vector_like
 TEST(sparse_vector_like, given_sparse_vector_should_return_true) {

@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/vector.h"
+#include "mathpp/vector/sparse/common/operators.h"
 
 #pragma region sparse_vector
 #pragma region set

@@ -5,7 +5,7 @@
 #include <initializer_list>
 #include <tuple>
 #include <cstring>
-#include "../helper.h"
+#include "../common/helper.h"
 #include <array>
 
 template<scalar T = float>

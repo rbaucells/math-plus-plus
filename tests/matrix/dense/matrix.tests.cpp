@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/matrix/dense/core.h"
 #include "mathpp/matrix/dense/operators.h"
 
 #pragma region dense_matrix
