@@ -23,19 +23,21 @@ FetchContent_MakeAvailable(googletest)
 add_executable(mathpp-tests main.cpp
         helper.tests.cpp
         vector/dense/helper.tests.cpp
-        vector/sparse/helper.tests.cpp
+        vector/sparse/coo/helper.tests.cpp
         matrix/dense/helper.tests.cpp
-        matrix/sparse/helper.tests.cpp
+        matrix/sparse/csc/helper.tests.cpp
         vector/dense/vector.tests.cpp
+        vector/dense/view.tests.cpp
+        vector/dense/custom.tests.cpp
         matrix/dense/matrix.tests.cpp
         matrix/dense/view.tests.cpp
         matrix/dense/custom.tests.cpp
-        vector/sparse/vector.tests.cpp
-        matrix/sparse/matrix.tests.cpp
+        vector/sparse/coo/vector.tests.cpp
+        matrix/sparse/csc/matrix.tests.cpp
         matrix/dense/operators/compare.tests.cpp
         vector/dense/operators/compare.tests.cpp
-        vector/sparse/operators/compare.tests.cpp
-        matrix/sparse/operators/compare.tests.cpp
+        vector/sparse/common/operators/compare.tests.cpp
+        matrix/sparse/common/operators/compare.tests.cpp
         matrix/dense/operators/add.tests.cpp
         debugger.tests.cpp
         matrix/dense/operators/subtract.tests.cpp
