@@ -33,6 +33,8 @@ add_executable(mathpp-tests main.cpp
         matrix/dense/view.tests.cpp
         matrix/dense/custom.tests.cpp
         vector/sparse/coo/vector.tests.cpp
+        vector/sparse/coo/view.tests.cpp
+        vector/sparse/coo/custom.tests.cpp
         matrix/sparse/csc/matrix.tests.cpp
         matrix/dense/operators/compare.tests.cpp
         vector/dense/operators/compare.tests.cpp
@@ -47,6 +49,8 @@ add_executable(mathpp-tests main.cpp
         vector/dense/operators/dot.tests.cpp
         matrix/sparse/common/helper.tests.cpp
         vector/sparse/common/helper.tests.cpp
+        matrix/sparse/csc/view.tests.cpp
+        matrix/sparse/csc/custom.tests.cpp
 )
 
 # link with the math lib
