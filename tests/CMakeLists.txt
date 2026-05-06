@@ -45,6 +45,8 @@ add_executable(mathpp-tests main.cpp
         matrix/dense/operators/mixed.tests.cpp
         matrix/dense/operators/add_equals.tests.cpp
         vector/dense/operators/dot.tests.cpp
+        matrix/sparse/common/helper.tests.cpp
+        vector/sparse/common/helper.tests.cpp
 )
 
 # link with the math lib
