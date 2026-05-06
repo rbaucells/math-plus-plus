@@ -13,9 +13,9 @@ TEST(debugger_tests, dense_matrice_views) {
     DenseMatrix<float> b = {{1, 2, 3}, {4, 5, 6}};
     DenseMatrix<float> c = {{1, 2}, {3, 4}, {5, 6}};
 
-    DenseMatrixView<float> d(a, 2, 2, 1, 1);
-    DenseMatrixView<float> e(b, 1, 2, 0, 1);
-    DenseMatrixView<float> f(c, 3, 1, 1, 0);
+    DenseMatrixView<DenseMatrix<float>> d(a, 2, 2, 1, 1);
+    DenseMatrixView<DenseMatrix<float>> e(b, 1, 2, 0, 1);
+    DenseMatrixView<DenseMatrix<float>> f(c, 3, 1, 1, 0);
 }
 
 TEST(debugger_tests, custom_dense_matrices) {
