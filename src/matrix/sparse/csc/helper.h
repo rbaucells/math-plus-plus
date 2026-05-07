@@ -17,9 +17,12 @@ struct CSCCustomSparseMatrix;
 template<typename T>
 concept csc_sparse_matrix_like = requires(const T constM, T m, std::size_t c, std::size_t r, const typename T::ValueType value) {
     sparse_matrix_like<T>;
-    requires std::same_as<std::remove_cvref_t<decltype(constM.values())>, typename T::ValueType*>;
-    requires std::same_as<std::remove_cvref_t<decltype(constM.rowIndices())>, std::size_t*>;
-    requires std::same_as<std::remove_cvref_t<decltype(constM.colOffsets())>, std::size_t*>;
+    requires std::same_as<std::remove_cvref_t<decltype(constM.values())>, const typename T::ValueType*>;
+    requires std::same_as<std::remove_cvref_t<decltype(constM.rowIndices())>, const std::size_t*>;
+    requires std::same_as<std::remove_cvref_t<decltype(constM.colOffsets())>, const std::size_t*>;
+    requires std::same_as<std::remove_cvref_t<decltype(m.values())>, typename T::ValueType*>;
+    requires std::same_as<std::remove_cvref_t<decltype(m.rowIndices())>, std::size_t*>;
+    requires std::same_as<std::remove_cvref_t<decltype(m.colOffsets())>, std::size_t*>;
 };
 
 template<typename T>
