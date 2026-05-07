@@ -2,6 +2,19 @@
 
 #include "mathpp/matrix/sparse/csc/core.h"
 
+#pragma region csc_sparse_matrix_like
+TEST(csc_sparse_matrix_like, given_csc_sparse_matrix_should_return_true) {
+    static_assert(csc_sparse_matrix_like<CSCSparseMatrix<float>>, "csc_sparse_matrix_like is wrong, 'CSCSparseMatrix<float>' should be csc_sparse_matrix_like");
+}
+
+TEST(csc_sparse_matrix_like, given_csc_sparse_matrix_view_should_return_true) {
+    static_assert(csc_sparse_matrix_like<CSCSparseMatrixView<float>>, "csc_sparse_matrix_like is wrong, 'CSCSparseMatrixView<float>' should be csc_sparse_matrix_like");
+}
+
+TEST(csc_sparse_matrix_like, given_csc_custom_sparse_matrix_should_return_true) {
+    static_assert(csc_sparse_matrix_like<CSCCustomSparseMatrix<float>>, "csc_sparse_matrix_like is wrong, 'CSCCustomSparseMatrix<float>' should be csc_sparse_matrix_like");
+}
+#pragma endregion
 #pragma region csc_sparse_matrix
 TEST(csc_sparse_matrix, given_csc_sparse_matrix_should_return_true) {
     static_assert(csc_sparse_matrix<CSCSparseMatrix<float>>, "csc_sparse_matrix is wrong, 'SparseMatrix<float>' should be csc_sparse_matrix");
