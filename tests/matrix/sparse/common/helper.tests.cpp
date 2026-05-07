@@ -1,24 +1,31 @@
 #include "gtest/gtest.h"
 
-#include "mathpp/matrix/sparse/csc/core.h"
-#include "mathpp/matrix/sparse/common/base.h"
+#include "mathpp/matrix/sparse/all.h"
 #include "mathpp/matrix/dense/core.h"
 
 #pragma region sparse_matrix_like
-TEST(sparse_matrix_like, given_sparse_matrix_should_return_true) {
-    static_assert(sparse_matrix_like<CSCSparseMatrix<float>>, "sparse_matrix_like is wrong, 'SparseMatrix<float>' should be sparse_matrix_like");
+TEST(sparse_matrix_like, given_csc_sparse_matrix_should_return_true) {
+    static_assert(sparse_matrix_like<CSCSparseMatrix<float>>, "sparse_matrix_like is wrong, 'CSCSparseMatrix<float>' should be sparse_matrix_like");
 }
 
-TEST(sparse_matrix_like, given_sparse_matrix_view_should_return_true) {
-    static_assert(sparse_matrix_like<CSCSparseMatrixView<float>>, "sparse_matrix_like is wrong, 'SparseMatrixView<float>' should be sparse_matrix_like");
+TEST(sparse_matrix_like, given_csc_sparse_matrix_view_should_return_true) {
+    static_assert(sparse_matrix_like<CSCSparseMatrixView<float>>, "sparse_matrix_like is wrong, 'CSCSparseMatrixView<float>' should be sparse_matrix_like");
 }
 
-TEST(sparse_matrix_like, given_custom_sparse_matrix_should_return_true) {
-    static_assert(sparse_matrix_like<CSCCustomSparseMatrix<float>>, "sparse_matrix_like is wrong, 'CustomSparseMatrix<float>' should be sparse_matrix_like");
+TEST(sparse_matrix_like, given_csc_custom_sparse_matrix_should_return_true) {
+    static_assert(sparse_matrix_like<CSCCustomSparseMatrix<float>>, "sparse_matrix_like is wrong, 'CSCCustomSparseMatrix<float>' should be sparse_matrix_like");
 }
 
-TEST(sparse_matrix_like, given_float_should_return_false) {
-    static_assert(!sparse_matrix_like<float>, "sparse_matrix_like is wrong, 'float' should not be sparse_matrix_like");
+TEST(sparse_matrix_like, given_csr_sparse_matrix_should_return_true) {
+    static_assert(sparse_matrix_like<CSRSparseMatrix<float>>, "sparse_matrix_like is wrong, 'CSRSparseMatrix<float>' should be sparse_matrix_like");
+}
+
+TEST(sparse_matrix_like, given_csr_sparse_matrix_view_should_return_true) {
+    static_assert(sparse_matrix_like<CSRSparseMatrixView<float>>, "sparse_matrix_like is wrong, 'CSRSparseMatrixView<float>' should be sparse_matrix_like");
+}
+
+TEST(sparse_matrix_like, given_csr_custom_sparse_matrix_should_return_true) {
+    static_assert(sparse_matrix_like<CSRCustomSparseMatrix<float>>, "sparse_matrix_like is wrong, 'CSRCustomSparseMatrix<float>' should be sparse_matrix_like");
 }
 
 TEST(sparse_matrix_like, given_dense_matrix_should_return_false) {
