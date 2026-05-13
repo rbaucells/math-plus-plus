@@ -4,12 +4,12 @@
 #include "helper.h"
 #include "../../exceptions.h"
 
-template<dense_matrix_like T>
+template<scalar T = float>
 struct DenseMatrixView {
-    using ValueType = T::ValueType;
-    using UnderlyingType = underlying_type_t<typename T::ValueType>;
+    using ValueType = T;
+    using UnderlyingType = underlying_type_t<T>;
 
-    static constexpr bool isComplex = is_complex_v<typename T::ValueType>;
+    static constexpr bool isComplex = is_complex_v<T>;
 
     DenseMatrixView() = delete;
 
@@ -20,7 +20,7 @@ struct DenseMatrixView {
     DenseMatrixView<T>& operator=(DenseMatrixView<T>&& other) noexcept = delete;
 
     /**
-     * @brief Constructs a DenseMatrixView into an existing dense matrix like.
+     * @brief Constructs a DenseMatrixView into an existing DenseMatrix.
      *
      * Creates a view of size `rows x columns` into the `owner` matrix,
      * starting at the colOffset and rowOffset.
@@ -33,7 +33,7 @@ struct DenseMatrixView {
      * @param colOffset Starting column offset in the owner matrix.
      * @param rowOffset Starting row offset in the owner matrix.
      */
-    DenseMatrixView(const T& owner, const std::size_t rows, const std::size_t columns, const std::size_t colOffset, const std::size_t rowOffset) : rows_(rows), columns_(columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
+    DenseMatrixView(const DenseMatrix<T>& owner, const std::size_t rows, const std::size_t columns, const std::size_t colOffset, const std::size_t rowOffset) : rows_(rows), columns_(columns), colOffset_(colOffset), rowOffset_(rowOffset), owner_(owner) {
     }
 
 
@@ -52,15 +52,15 @@ struct DenseMatrixView {
      * @brief Trying to modify a DenseMatrix through a view is invalid.
      * @throws InvalidOperationException You cannot modify owner through a view.
      */
-    [[nodiscard]] T::ValueType& at(const std::size_t, const std::size_t) {
+    [[nodiscard]] T& at(const std::size_t, const std::size_t) {
         throw InvalidOperationException("Cannot modify owner through view");
     }
 
-    [[nodiscard]] const T::ValueType& at(const std::size_t r, const std::size_t c) const {
+    [[nodiscard]] const T& at(const std::size_t r, const std::size_t c) const {
         return owner_.at(r + rowOffset_, c + colOffset_);
     }
 
-    [[nodiscard]] T::ValueType& operator[](const std::size_t r, const std::size_t c) {
+    [[nodiscard]] T& operator[](const std::size_t r, const std::size_t c) {
         if (r >= rows_ || c >= columns_) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
@@ -68,7 +68,7 @@ struct DenseMatrixView {
         return at(r, c);
     }
 
-    [[nodiscard]] const T::ValueType& operator[](const std::size_t r, const std::size_t c) const {
+    [[nodiscard]] const T& operator[](const std::size_t r, const std::size_t c) const {
         if (r >= rows_ || c >= columns_) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
@@ -104,7 +104,7 @@ struct DenseMatrixView {
      * @brief Gets the const reference to the DenseMatrix owner.
      * @return Const reference to denseMatrix owner.
      */
-    [[nodiscard]] const T& owner() const {
+    [[nodiscard]] const DenseMatrix<T>& owner() const {
         return owner_;
     }
 
@@ -116,5 +116,5 @@ private:
     const std::size_t colOffset_;
     const std::size_t rowOffset_;
 
-    const T& owner_;
+    const DenseMatrix<T>& owner_;
 };

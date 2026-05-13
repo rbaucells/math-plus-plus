@@ -10,7 +10,7 @@ TEST(dense_matrix_base, given_dense_matrix_should_return_true) {
 }
 
 TEST(dense_matrix_base, given_dense_matrix_view_should_return_true) {
-    static_assert(dense_matrix_like<DenseMatrixView<DenseMatrix<float>>>, "dense_matrix_like is wrong, 'DenseMatrixView<DenseMatrix<float>>' should be dense_matrix_like");
+    static_assert(dense_matrix_like<DenseMatrixView<float>>, "dense_matrix_like is wrong, 'DenseMatrixView<DenseMatrix<float>>' should be dense_matrix_like");
 }
 
 TEST(dense_matrix_base, given_float_should_return_false) {
@@ -27,12 +27,12 @@ TEST(dense_matrix, given_dense_matrix_should_return_true) {
 }
 
 TEST(dense_matrix, given_dense_matrix_view_should_return_false) {
-    static_assert(!dense_matrix<DenseMatrixView<DenseMatrix<float>>>, "dense_matrix is wrong, 'DenseMatrixView<DenseMatrix<float>>' should not be dense_matrix");
+    static_assert(!dense_matrix<DenseMatrixView<float>>, "dense_matrix is wrong, 'DenseMatrixView<DenseMatrix<float>>' should not be dense_matrix");
 }
 #pragma endregion
 #pragma region dense_matrix_view
 TEST(dense_matrix_view, given_dense_matrix_view_should_return_true) {
-    static_assert(dense_matrix_view<DenseMatrixView<DenseMatrix<float>>>, "dense_matrix_view is wrong, 'DenseMatrixView<DenseMatrix<float>>' should be dense_matrix_view");
+    static_assert(dense_matrix_view<DenseMatrixView<float>>, "dense_matrix_view is wrong, 'DenseMatrixView<DenseMatrix<float>>' should be dense_matrix_view");
 }
 
 TEST(dense_matrix_view, given_dense_matrix_should_return_false) {
@@ -45,7 +45,7 @@ TEST(underlying_type, given_dense_matrix_templated_on_float_should_return_float)
 }
 
 TEST(underlying_type, given_dense_matrix_view_templated_on_float_should_return_float) {
-    static_assert(std::is_same_v<underlying_type_t<DenseMatrixView<DenseMatrix<float>>>, float>, "underlying_type_t is wrong, 'DenseMatrixView<DenseMatrix<float>>' should be 'float'");
+    static_assert(std::is_same_v<underlying_type_t<DenseMatrixView<float>>, float>, "underlying_type_t is wrong, 'DenseMatrixView<DenseMatrix<float>>' should be 'float'");
 }
 #pragma endregion
 #pragma region assert_same_dimensions

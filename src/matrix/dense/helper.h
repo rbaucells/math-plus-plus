@@ -5,6 +5,12 @@
 #include <type_traits>
 #include "../../exceptions.h"
 
+template<scalar T>
+struct DenseMatrix;
+
+template<scalar T>
+struct DenseMatrixView;
+
 // dense_matrix_like
 template<typename T>
 concept dense_matrix_like = requires(const T constM, std::size_t r, std::size_t c) {
@@ -24,12 +30,6 @@ struct is_dense_matrix_like : std::false_type {};
 
 template<dense_matrix_like T>
 struct is_dense_matrix_like<T> : std::true_type {};
-
-template<scalar T>
-struct DenseMatrix;
-
-template<dense_matrix_like T>
-struct DenseMatrixView;
 
 // is_dense_matrix, is_dense_matrix_v, dense_matrix
 template<typename>
