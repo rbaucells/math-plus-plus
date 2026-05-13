@@ -12,72 +12,53 @@ struct TelemetryStats {
 };
 
 struct Telemetry {
-    constexpr static void emit_copy_construct() noexcept {
+    static void emit_copy_construct() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
-        if !consteval {
-            ++stats_.copy_constructs;
-        }
+        ++stats_.copy_constructs;
 #endif
     }
 
-    constexpr static void emit_move_construct() noexcept {
+    static void emit_move_construct() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
-        if !consteval {
-            ++stats_.move_constructs;
-        }
+        ++stats_.move_constructs;
 #endif
     }
 
-    constexpr static void emit_copy_assign() noexcept {
+    static void emit_copy_assign() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
-        if !consteval {
-            ++stats_.copy_assigns;
-        }
+        ++stats_.copy_assigns;
 #endif
     }
 
-    constexpr static void emit_move_assign() noexcept {
+    static void emit_move_assign() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
-        if !consteval {
-            ++stats_.move_assigns;
-        }
+        ++stats_.move_assigns;
 #endif
     }
 
-    constexpr static void emit_allocation() noexcept {
+    static void emit_allocation() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
-        if !consteval {
-            ++stats_.allocations;
-        }
+        ++stats_.allocations;
 #endif
     }
 
-    constexpr static void emit_deallocation() noexcept {
+    static void emit_deallocation() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
-        if !consteval {
-            ++stats_.deallocations;
-        }
+        ++stats_.deallocations;
 #endif
     }
 
-    constexpr static void reset() noexcept {
+    static void reset() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
-        if !consteval {
-            stats_ = TelemetryStats();
-        }
+        stats_ = TelemetryStats{};
 #endif
     }
 
-    [[nodiscard]] constexpr static TelemetryStats snapshot() noexcept {
+    [[nodiscard]] static TelemetryStats snapshot() noexcept {
 #ifdef MATHPP_ENABLE_TELEMETRY
-        if !consteval {
-            return stats_;
-        }
-        else {
-            return TelemetryStats();
-        }
+        return stats_;
 #else
-        return TelemetryStats();
+        return TelemetryStats{};
 #endif
     }
 
