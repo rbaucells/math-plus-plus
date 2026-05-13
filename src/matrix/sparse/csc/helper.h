@@ -11,9 +11,6 @@ struct CSCSparseMatrix;
 template<scalar T>
 struct CSCSparseMatrixView;
 
-template<scalar T>
-struct CSCCustomSparseMatrix;
-
 template<typename T>
 concept csc_sparse_matrix_like = requires(const T constM, T m, std::size_t c, std::size_t r, const typename T::ValueType value) {
     sparse_matrix_like<T>;
@@ -59,16 +56,3 @@ inline constexpr bool is_csc_sparse_matrix_view_v = is_csc_sparse_matrix_view<T>
 
 template<typename T>
 concept csc_sparse_matrix_view = is_csc_sparse_matrix_view_v<T>;
-
-// is_csc_custom_sparse_matrix, is_csc_custom_sparse_matrix_v, csc_custom_sparse_matrix
-template<typename>
-struct is_csc_custom_sparse_matrix : std::false_type {};
-
-template<typename U>
-struct is_csc_custom_sparse_matrix<CSCCustomSparseMatrix<U>> : std::true_type {};
-
-template<typename T>
-inline constexpr bool is_csc_custom_sparse_matrix_v = is_csc_custom_sparse_matrix<T>::value;
-
-template<typename T>
-concept csc_custom_sparse_matrix = is_csc_custom_sparse_matrix_v<T>;

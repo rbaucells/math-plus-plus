@@ -12,20 +12,12 @@ TEST(sparse_matrix_like, given_csc_sparse_matrix_view_should_return_true) {
     static_assert(sparse_matrix_like<CSCSparseMatrixView<float>>, "sparse_matrix_like is wrong, 'CSCSparseMatrixView<float>' should be sparse_matrix_like");
 }
 
-TEST(sparse_matrix_like, given_csc_custom_sparse_matrix_should_return_true) {
-    static_assert(sparse_matrix_like<CSCCustomSparseMatrix<float>>, "sparse_matrix_like is wrong, 'CSCCustomSparseMatrix<float>' should be sparse_matrix_like");
-}
-
 TEST(sparse_matrix_like, given_csr_sparse_matrix_should_return_true) {
     static_assert(sparse_matrix_like<CSRSparseMatrix<float>>, "sparse_matrix_like is wrong, 'CSRSparseMatrix<float>' should be sparse_matrix_like");
 }
 
 TEST(sparse_matrix_like, given_csr_sparse_matrix_view_should_return_true) {
     static_assert(sparse_matrix_like<CSRSparseMatrixView<float>>, "sparse_matrix_like is wrong, 'CSRSparseMatrixView<float>' should be sparse_matrix_like");
-}
-
-TEST(sparse_matrix_like, given_csr_custom_sparse_matrix_should_return_true) {
-    static_assert(sparse_matrix_like<CSRCustomSparseMatrix<float>>, "sparse_matrix_like is wrong, 'CSRCustomSparseMatrix<float>' should be sparse_matrix_like");
 }
 
 TEST(sparse_matrix_like, given_dense_matrix_should_return_false) {
@@ -39,10 +31,6 @@ TEST(underlying_type, given_sparse_matrix_templated_on_float_should_return_float
 
 TEST(underlying_type, given_sparse_matrix_view_templated_on_float_should_return_float) {
     static_assert(std::is_same_v<underlying_type_t<CSCSparseMatrixView<float>>, float>, "underlying_type_t is wrong, 'SparseMatrixView<float>' should be 'float'");
-}
-
-TEST(underlying_type, given_custom_sparse_matrix_templated_on_float_should_return_float) {
-    static_assert(std::is_same_v<underlying_type_t<CSCCustomSparseMatrix<float>>, float>, "underlying_type_t is wrong, 'CustomSparseMatrix<float>' should be 'float'");
 }
 #pragma endregion
 #pragma region assert_same_dimensions

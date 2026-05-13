@@ -31,9 +31,6 @@ struct DenseMatrix;
 template<dense_matrix_like T>
 struct DenseMatrixView;
 
-template<scalar T>
-struct CustomDenseMatrix;
-
 // is_dense_matrix, is_dense_matrix_v, dense_matrix
 template<typename>
 struct is_dense_matrix : std::false_type {};
@@ -60,19 +57,6 @@ inline constexpr bool is_dense_matrix_view_v = is_dense_matrix_view<T>::value;
 
 template<typename T>
 concept dense_matrix_view = is_dense_matrix_view_v<T>;
-
-// is_custom_dense_matrix, is_custom_dense_matrix_v, custom_dense_matrix
-template<typename>
-struct is_custom_dense_matrix : std::false_type {};
-
-template<typename U>
-struct is_custom_dense_matrix<CustomDenseMatrix<U>> : std::true_type {};
-
-template<typename T>
-inline constexpr bool is_custom_dense_matrix_v = is_custom_dense_matrix<T>::value;
-
-template<typename T>
-concept custom_dense_matrix = is_custom_dense_matrix_v<T>;
 
 
 template<dense_matrix_like T>

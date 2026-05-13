@@ -32,14 +32,10 @@ add_library(mathpp INTERFACE
         src/matrix/dense/matrix.h
         src/vector/dense/operators/dot.h
         src/matrix/dense/view.h
-        src/matrix/dense/custom.h
         src/vector/dense/view.h
-        src/vector/dense/custom.h
         src/vector/sparse/coo/view.h
-        src/vector/sparse/coo/custom.h
         src/vector/sparse/common/helper.h
         src/matrix/sparse/csc/view.h
-        src/matrix/sparse/csc/custom.h
         src/matrix/sparse/common/helper.h
 )
 

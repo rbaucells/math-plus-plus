@@ -11,9 +11,6 @@ struct CSRSparseMatrix;
 template<scalar T>
 struct CSRSparseMatrixView;
 
-template<scalar T>
-struct CSRCustomSparseMatrix;
-
 template<typename T>
 concept csr_sparse_matrix_like = requires(const T constM, T m, std::size_t c, std::size_t r, const typename T::ValueType value) {
     sparse_matrix_like<T>;
@@ -56,16 +53,3 @@ inline constexpr bool is_csr_sparse_matrix_view_v = is_csr_sparse_matrix_view<T>
 
 template<typename T>
 concept csr_sparse_matrix_view = is_csr_sparse_matrix_view_v<T>;
-
-// is_csr_custom_sparse_matrix, is_csr_custom_sparse_matrix_v, csr_custom_sparse_matrix
-template<typename>
-struct is_csr_custom_sparse_matrix : std::false_type {};
-
-template<typename U>
-struct is_csr_custom_sparse_matrix<CSRCustomSparseMatrix<U>> : std::true_type {};
-
-template<typename T>
-inline constexpr bool is_csr_custom_sparse_matrix_v = is_csr_custom_sparse_matrix<T>::value;
-
-template<typename T>
-concept custom_sparse_csr_matrix = is_csr_custom_sparse_matrix_v<T>;

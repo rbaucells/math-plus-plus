@@ -12,10 +12,6 @@ TEST(dense_vector_like, given_dense_vector_view_should_return_true) {
     static_assert(dense_vector_like<DenseVectorView<DenseVector<float>>>, "dense_vector_like is wrong, 'DenseVectorView<DenseVector<float>>' should be dense_vector_like");
 }
 
-TEST(dense_vector_like, given_custom_dense_vector_should_return_true) {
-    static_assert(dense_vector_like<CustomDenseVector<float>>, "dense_vector_like is wrong, 'CustomDenseVector<float>' should be dense_vector_like");
-}
-
 TEST(dense_vector_like, given_float_should_return_false) {
     static_assert(!dense_vector_like<float>, "dense_vector_like is wrong, 'float' should not be dense_vector_like");
 }
@@ -32,10 +28,6 @@ TEST(dense_vector, given_dense_vector_should_return_true) {
 TEST(dense_vector, given_dense_vector_view_should_return_false) {
     static_assert(!dense_vector<DenseVectorView<DenseVector<float>>>, "dense_vector is wrong, 'DenseVectorView<DenseVector<float>>' should not be dense_vector");
 }
-
-TEST(dense_vector, given_custom_dense_vector_should_return_false) {
-    static_assert(!dense_vector<CustomDenseVector<float>>, "dense_vector is wrong, 'CustomDenseVector<float>' should not be dense_vector");
-}
 #pragma endregion
 #pragma region dense_vector_view
 TEST(dense_vector_view, given_dense_vector_view_should_return_true) {
@@ -45,23 +37,6 @@ TEST(dense_vector_view, given_dense_vector_view_should_return_true) {
 TEST(dense_vector_view, given_dense_vector_should_return_false) {
     static_assert(!dense_vector_view<DenseVector<float>>, "dense_vector_view is wrong, 'DenseVector<float>' should not be dense_vector_view");
 }
-
-TEST(dense_vector_view, given_custom_dense_vector_should_return_false) {
-    static_assert(!dense_vector_view<CustomDenseVector<float>>, "dense_vector_view is wrong, 'CustomDenseVector<float>' should not be dense_vector_view");
-}
-#pragma endregion
-#pragma region custom_dense_vector
-TEST(custom_dense_vector, given_custom_dense_vector_should_return_true) {
-    static_assert(custom_dense_vector<CustomDenseVector<float>>, "custom_dense_vector is wrong, 'CustomDenseVector<float>' should be custom_dense_vector");
-}
-
-TEST(custom_dense_vector, given_dense_vector_should_return_false) {
-    static_assert(!custom_dense_vector<DenseVector<float>>, "custom_dense_vector is wrong, 'DenseVector<float>' should not be custom_dense_vector");
-}
-
-TEST(custom_dense_vector, given_dense_vector_view_should_return_false) {
-    static_assert(!custom_dense_vector<DenseVectorView<DenseVector<float>>>, "custom_dense_vector is wrong, 'DenseVectorView<DenseVector<float>>' should not be custom_dense_vector");
-}
 #pragma endregion
 #pragma region underlying_type
 TEST(underlying_type, given_dense_vector_templated_on_float_should_return_float) {
@@ -70,10 +45,6 @@ TEST(underlying_type, given_dense_vector_templated_on_float_should_return_float)
 
 TEST(underlying_type, given_dense_vector_view_templated_on_float_should_return_float) {
     static_assert(std::is_same_v<underlying_type_t<DenseVectorView<DenseVector<float>>>, float>, "underlying_type_t is wrong, 'DenseVectorView<DenseVector<float>>' should be 'float'");
-}
-
-TEST(underlying_type, given_custom_dense_vector_templated_on_float_should_return_float) {
-    static_assert(std::is_same_v<underlying_type_t<CustomDenseVector<float>>, float>, "underlying_type_t is wrong, 'CustomDenseVector<float>' should be 'float'");
 }
 #pragma endregion
 #pragma region assert_same_size

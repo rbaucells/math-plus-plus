@@ -30,9 +30,6 @@ struct DenseVector;
 template<dense_vector_like T>
 struct DenseVectorView;
 
-template<scalar T>
-struct CustomDenseVector;
-
 // is_dense_vector, is_dense_vector_v, dense_vector
 template<typename>
 struct is_dense_vector : std::false_type {};
@@ -58,19 +55,6 @@ inline constexpr bool is_dense_vector_view_v = is_dense_vector_view<T>::value;
 
 template<typename T>
 concept dense_vector_view = is_dense_vector_view_v<T>;
-
-// is_custom_dense_vector, is_custom_dense_vector_v, custom_dense_vector
-template<typename>
-struct is_custom_dense_vector : std::false_type {};
-
-template<typename U>
-struct is_custom_dense_vector<CustomDenseVector<U>> : std::true_type {};
-
-template<typename T>
-inline constexpr bool is_custom_dense_vector_v = is_custom_dense_vector<T>::value;
-
-template<typename T>
-concept custom_dense_vector = is_custom_dense_vector_v<T>;
 
 
 template<dense_vector_like T>

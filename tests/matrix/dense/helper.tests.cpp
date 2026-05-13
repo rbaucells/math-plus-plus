@@ -13,10 +13,6 @@ TEST(dense_matrix_base, given_dense_matrix_view_should_return_true) {
     static_assert(dense_matrix_like<DenseMatrixView<DenseMatrix<float>>>, "dense_matrix_like is wrong, 'DenseMatrixView<DenseMatrix<float>>' should be dense_matrix_like");
 }
 
-TEST(dense_matrix_base, given_custom_dense_matrix_should_return_true) {
-    static_assert(dense_matrix_like<CustomDenseMatrix<float>>, "dense_matrix_like is wrong, 'CustomDenseMatrix<float>' should be dense_matrix_like");
-}
-
 TEST(dense_matrix_base, given_float_should_return_false) {
     static_assert(!dense_matrix_like<float>, "dense_matrix_like is wrong, 'float' should not be dense_matrix_like");
 }
@@ -33,10 +29,6 @@ TEST(dense_matrix, given_dense_matrix_should_return_true) {
 TEST(dense_matrix, given_dense_matrix_view_should_return_false) {
     static_assert(!dense_matrix<DenseMatrixView<DenseMatrix<float>>>, "dense_matrix is wrong, 'DenseMatrixView<DenseMatrix<float>>' should not be dense_matrix");
 }
-
-TEST(dense_matrix, given_custom_dense_matrix_should_return_false) {
-    static_assert(!dense_matrix<CustomDenseMatrix<float>>, "dense_matrix is wrong, 'CustomDenseMatrix<float>' should not be dense_matrix");
-}
 #pragma endregion
 #pragma region dense_matrix_view
 TEST(dense_matrix_view, given_dense_matrix_view_should_return_true) {
@@ -46,23 +38,6 @@ TEST(dense_matrix_view, given_dense_matrix_view_should_return_true) {
 TEST(dense_matrix_view, given_dense_matrix_should_return_false) {
     static_assert(!dense_matrix_view<DenseMatrix<float>>, "dense_matrix_view is wrong, 'DenseMatrix<float>' should not be dense_matrix_view");
 }
-
-TEST(dense_matrix_view, given_custom_dense_matrix_should_return_false) {
-    static_assert(!dense_matrix_view<CustomDenseMatrix<float>>, "dense_matrix_view is wrong, 'CustomDenseMatrix<float>' should not be dense_matrix_view");
-}
-#pragma endregion
-#pragma region custom_dense_matrix
-TEST(custom_dense_matrix, given_custom_dense_matrix_should_return_true) {
-    static_assert(custom_dense_matrix<CustomDenseMatrix<float>>, "custom_dense_matrix is wrong, 'CustomDenseMatrix<float>' should be custom_dense_matrix");
-}
-
-TEST(custom_dense_matrix, given_dense_matrix_should_return_false) {
-    static_assert(!custom_dense_matrix<DenseMatrix<float>>, "custom_dense_matrix is wrong, 'DenseMatrix<float>' should not be custom_dense_matrix");
-}
-
-TEST(custom_dense_matrix, given_dense_matrix_view_should_return_false) {
-    static_assert(!custom_dense_matrix<DenseMatrixView<DenseMatrix<float>>>, "custom_dense_matrix is wrong, 'DenseMatrixView<DenseMatrix<float>>' should not be custom_dense_matrix");
-}
 #pragma endregion
 #pragma region underlying_type
 TEST(underlying_type, given_dense_matrix_templated_on_float_should_return_float) {
@@ -71,10 +46,6 @@ TEST(underlying_type, given_dense_matrix_templated_on_float_should_return_float)
 
 TEST(underlying_type, given_dense_matrix_view_templated_on_float_should_return_float) {
     static_assert(std::is_same_v<underlying_type_t<DenseMatrixView<DenseMatrix<float>>>, float>, "underlying_type_t is wrong, 'DenseMatrixView<DenseMatrix<float>>' should be 'float'");
-}
-
-TEST(underlying_type, given_custom_dense_matrix_templated_on_float_should_return_float) {
-    static_assert(std::is_same_v<underlying_type_t<CustomDenseMatrix<float>>, float>, "underlying_type_t is wrong, 'CustomDenseMatrix<float>' should be 'float'");
 }
 #pragma endregion
 #pragma region assert_same_dimensions

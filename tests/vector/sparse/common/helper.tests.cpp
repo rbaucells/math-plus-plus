@@ -12,10 +12,6 @@ TEST(sparse_vector_like, given_sparse_vector_view_should_return_true) {
     static_assert(sparse_vector_like<CooSparseVectorView<float>>, "sparse_vector_like is wrong, 'SparseVectorView<float>' should be sparse_vector_like");
 }
 
-TEST(sparse_vector_like, given_custom_sparse_vector_should_return_true) {
-    static_assert(sparse_vector_like<CooCustomSparseVector<float>>, "sparse_vector_like is wrong, 'CustomSparseVector<float>' should be sparse_vector_like");
-}
-
 TEST(sparse_vector_like, given_float_should_return_false) {
     static_assert(!sparse_vector_like<float>, "sparse_vector_like is wrong, 'float' should not be sparse_vector_like");
 }
@@ -31,10 +27,6 @@ TEST(underlying_type, given_sparse_vector_templated_on_float_should_return_float
 
 TEST(underlying_type, given_sparse_vector_view_templated_on_float_should_return_float) {
     static_assert(std::is_same_v<underlying_type_t<CooSparseVectorView<float>>, float>, "underlying_type_t is wrong, 'SparseVectorView<float>' should be 'float'");
-}
-
-TEST(underlying_type, given_custom_sparse_vector_templated_on_float_should_return_float) {
-    static_assert(std::is_same_v<underlying_type_t<CooCustomSparseVector<float>>, float>, "underlying_type_t is wrong, 'CustomSparseVector<float>' should be 'float'");
 }
 #pragma endregion
 #pragma region assert_same_size

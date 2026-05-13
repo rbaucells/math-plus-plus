@@ -9,9 +9,6 @@ struct DokSparseVector;
 template<scalar T>
 struct DokSparseVectorView;
 
-template<scalar T>
-struct DokCustomSparseVector;
-
 // is_dok_sparse_vector, is_dok_sparse_vector_v, dok_sparse_vector
 template<typename>
 struct is_dok_sparse_vector : std::false_type {};
@@ -37,16 +34,3 @@ inline constexpr bool is_dok_sparse_vector_view_v = is_dok_sparse_vector_view<T>
 
 template<typename T>
 concept dok_sparse_vector_view = is_dok_sparse_vector_view_v<T>;
-
-// is_custom_dok_sparse_vector, is_custom_dok_sparse_vector_v, custom_dok_sparse_vector
-template<typename>
-struct is_custom_dok_sparse_vector : std::false_type {};
-
-template<typename U>
-struct is_custom_dok_sparse_vector<DokCustomSparseVector<U>> : std::true_type {};
-
-template<typename T>
-inline constexpr bool is_custom_dok_sparse_vector_v = is_custom_dok_sparse_vector<T>::value;
-
-template<typename T>
-concept custom_dok_sparse_vector = is_custom_dok_sparse_vector_v<T>;
