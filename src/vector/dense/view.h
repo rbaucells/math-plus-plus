@@ -4,12 +4,12 @@
 #include <cstddef>
 #include "../../exceptions.h"
 
-template<dense_vector_like T>
+template<scalar T = float>
 struct DenseVectorView {
-    using ValueType = T::ValueType;
-    using UnderlyingType = underlying_type_t<typename T::ValueType>;
+    using ValueType = T;
+    using UnderlyingType = underlying_type_t<T>;
 
-    static constexpr bool isComplex = is_complex_v<typename T::ValueType>;
+    static constexpr bool isComplex = is_complex_v<T>;
 
     DenseVectorView() = delete;
 
@@ -20,7 +20,7 @@ struct DenseVectorView {
     DenseVectorView<T>& operator=(DenseVectorView<T>&& other) noexcept = delete;
 
     /**
-     * @brief Constructs a DenseVectorView into an existing dense vector like.
+     * @brief Constructs a DenseVectorView into an existing DenseVector.
      *
      * Creates a view of size 'n' into the 'owner' vector, starting at offset.
      * Does not allocate new memory.
@@ -30,7 +30,7 @@ struct DenseVectorView {
      * @param n Number of elements in the view.
      * @param offset Starting index offset in the owner vector.
      */
-    DenseVectorView(const T& owner, const std::size_t n, const std::size_t offset) : offset_(offset), n_(n), owner_(owner) {
+    DenseVectorView(const DenseVector<T>& owner, const std::size_t n, const std::size_t offset) : offset_(offset), n_(n), owner_(owner) {
     }
 
     /**
@@ -48,15 +48,15 @@ struct DenseVectorView {
      * @brief Trying to modify a DenseVector through a view is invalid.
      * @throws InvalidOperationException You cannot modify owner through a view.
      */
-    [[nodiscard]] T::ValueType& at(const std::size_t) {
+    [[nodiscard]] T& at(const std::size_t) {
         throw InvalidOperationException("Cannot modify owner through view");
     }
 
-    [[nodiscard]] const T::ValueType& at(const std::size_t i) const {
+    [[nodiscard]] const T& at(const std::size_t i) const {
         return owner_.at(i + offset_);
     }
 
-    [[nodiscard]] T::ValueType& operator[](const std::size_t i) {
+    [[nodiscard]] T& operator[](const std::size_t i) {
         if (i >= n_) {
             throw InvalidIndexException("Cannot access vector at invalid index");
         }
@@ -64,7 +64,7 @@ struct DenseVectorView {
         return at(i);
     }
 
-    [[nodiscard]] const T::ValueType& operator[](const std::size_t i) const {
+    [[nodiscard]] const T& operator[](const std::size_t i) const {
         if (i >= n_) {
             throw InvalidIndexException("Cannot access vector at invalid index");
         }
@@ -81,10 +81,10 @@ struct DenseVectorView {
     }
 
     /**
-    * @brief Gets the const reference to the dense vector owner.
-    * @return Const reference to dense vector owner.
+    * @brief Gets the const reference to the DenseMatrix owner.
+    * @return Const reference to DenseMatrix owner.
     */
-    [[nodiscard]] const T& owner() const {
+    [[nodiscard]] const DenseVector<T>& owner() const {
         return owner_;
     }
 
@@ -98,5 +98,5 @@ private:
     const std::size_t offset_;
     std::size_t n_;
 
-    const T& owner_;
+    const DenseVector<T>& owner_;
 };

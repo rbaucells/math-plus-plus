@@ -5,6 +5,12 @@
 #include <type_traits>
 #include "../../exceptions.h"
 
+template<scalar T>
+struct DenseVector;
+
+template<scalar T>
+struct DenseVectorView;
+
 // dense_vector_like
 template<typename T>
 concept dense_vector_like = requires(const T constV, std::size_t n) {
@@ -23,12 +29,6 @@ struct is_dense_vector_like : std::false_type {};
 
 template<dense_vector_like T>
 struct is_dense_vector_like<T> : std::true_type {};
-
-template<scalar T>
-struct DenseVector;
-
-template<dense_vector_like T>
-struct DenseVectorView;
 
 // is_dense_vector, is_dense_vector_v, dense_vector
 template<typename>

@@ -41,7 +41,7 @@ TEST(debugger_tests, dense_vectors) {
 TEST(debugger_tests, dense_vector_views) {
     DenseVector<float> a = {1, 2, 3};
 
-    DenseVectorView<DenseVector<float>> b(a, 2, 0);
+    DenseVectorView<float> b(a, 2, 0);
 }
 
 TEST(debugger_tests, sparse_vectors) {

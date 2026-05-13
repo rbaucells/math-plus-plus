@@ -9,7 +9,7 @@ TEST(dense_vector_view_constructor, given_f_dense_vector_should_construct) {
     const DenseVector<float> a = {1, 2, 3, 4, 5};
     const DenseVector<float> expected = {2, 3, 4};
     // act
-    const DenseVectorView<DenseVector<float>> view = DenseVectorView<DenseVector<float>>(a, 3, 1);
+    const DenseVectorView<float> view = DenseVectorView<float>(a, 3, 1);
     // assert
     ASSERT_TRUE((compare(view.n(), 3)));
     ASSERT_TRUE((compare(view.offset(), 1)));
@@ -21,7 +21,7 @@ TEST(dense_vector_view_constructor, given_cf_dense_vector_should_construct) {
     const DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}};
     const DenseVector<std::complex<float>> expected = {{3, 4}, {5, 6}, {7, 8}};
     // act
-    const DenseVectorView<DenseVector<std::complex<float>>> view = DenseVectorView<DenseVector<std::complex<float>>>(a, 3, 1);
+    const DenseVectorView<std::complex<float>> view = DenseVectorView<std::complex<float>>(a, 3, 1);
     // assert
     ASSERT_TRUE((compare(view.n(), 3)));
     ASSERT_TRUE((compare(view.offset(), 1)));
@@ -32,9 +32,9 @@ TEST(dense_vector_view_constructor, given_cf_dense_vector_should_construct) {
 TEST(dense_vector_view_copy_constructor, given_f_dense_vector_view_should_copy) {
     // arrange
     const DenseVector<float> v = {1, 2, 3, 4, 5};
-    const DenseVectorView<DenseVector<float>> view(v, 3, 2);
+    const DenseVectorView<float> view(v, 3, 2);
     // act
-    const DenseVectorView<DenseVector<float>> newView = view;
+    const DenseVectorView<float> newView = view;
     // assert
     ASSERT_TRUE((compare(newView.n(), 3)));
     ASSERT_TRUE((compare(newView.offset(), 2)));
@@ -45,9 +45,9 @@ TEST(dense_vector_view_copy_constructor, given_f_dense_vector_view_should_copy) 
 TEST(dense_vector_view_copy_constructor, given_cf_dense_vector_view_should_copy) {
     // arrange
     const DenseVector<std::complex<float>> v = {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}};
-    const DenseVectorView<DenseVector<std::complex<float>>> view(v, 3, 2);
+    const DenseVectorView<std::complex<float>> view(v, 3, 2);
     // act
-    const DenseVectorView<DenseVector<std::complex<float>>> newView = view;
+    const DenseVectorView<std::complex<float>> newView = view;
     // assert
     ASSERT_TRUE((compare(newView.n(), 3)));
     ASSERT_TRUE((compare(newView.offset(), 2)));
@@ -59,7 +59,7 @@ TEST(dense_vector_view_copy_constructor, given_cf_dense_vector_view_should_copy)
 TEST(dense_vector_view_indexing_operator, given_index_should_throw) {
     // arrange
     const DenseVector<float> a = {1, 2, 3, 4, 5};
-    DenseVectorView<DenseVector<float>> v(a, 3, 2);
+    DenseVectorView<float> v(a, 3, 2);
     // act / assert
     ASSERT_THROW(std::ignore = v[2], InvalidOperationException);
 }
@@ -67,7 +67,7 @@ TEST(dense_vector_view_indexing_operator, given_index_should_throw) {
 TEST(dense_vector_view_indexing_operator, given_big_index_should_throw_1) {
     // arrange
     const DenseVector<float> a = {1, 2, 3, 4, 5};
-    DenseVectorView<DenseVector<float>> v(a, 3, 2);
+    DenseVectorView<float> v(a, 3, 2);
     // act / assert
     ASSERT_THROW(std::ignore = v[3], InvalidIndexException);
 }
@@ -75,7 +75,7 @@ TEST(dense_vector_view_indexing_operator, given_big_index_should_throw_1) {
 TEST(dense_vector_view_indexing_operator, given_big_index_should_throw_2) {
     // arrange
     const DenseVector<float> a = {1, 2, 3, 4, 5};
-    DenseVectorView<DenseVector<float>> v(a, 3, 1);
+    DenseVectorView<float> v(a, 3, 1);
     // act / assert
     ASSERT_THROW(std::ignore = v[3], InvalidIndexException);
 }
@@ -84,7 +84,7 @@ TEST(dense_vector_view_indexing_operator, given_big_index_should_throw_2) {
 TEST(dense_vector_view_const_indexing_operator, given_index_should_return_const_reference_f) {
     // arrange
     const DenseVector<float> a = {1, 2, 3, 4, 5};
-    const DenseVectorView<DenseVector<float>> v(a, 3, 2);
+    const DenseVectorView<float> v(a, 3, 2);
     // act
     const float& v0 = v[0];
     const float& v1 = v[1];
@@ -98,7 +98,7 @@ TEST(dense_vector_view_const_indexing_operator, given_index_should_return_const_
 TEST(dense_vector_view_const_indexing_operator, given_index_should_return_const_reference_cf) {
     // arrange
     const DenseVector<std::complex<float>> a = {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}};
-    const DenseVectorView<DenseVector<std::complex<float>>> v(a, 3, 2);
+    const DenseVectorView<std::complex<float>> v(a, 3, 2);
     // act
     const std::complex<float>& v0 = v[0];
     const std::complex<float>& v1 = v[1];
@@ -112,7 +112,7 @@ TEST(dense_vector_view_const_indexing_operator, given_index_should_return_const_
 TEST(dense_vector_view_const_indexing_operator, given_big_index_should_throw_1) {
     // arrange
     const DenseVector<float> a = {1, 2, 3, 4, 5};
-    DenseVectorView<DenseVector<float>> v(a, 3, 2);
+    DenseVectorView<float> v(a, 3, 2);
     // act / assert
     ASSERT_THROW(std::ignore = v[3], InvalidIndexException);
 }
@@ -120,7 +120,7 @@ TEST(dense_vector_view_const_indexing_operator, given_big_index_should_throw_1) 
 TEST(dense_vector_view_const_indexing_operator, given_big_index_should_throw_2) {
     // arrange
     const DenseVector<float> a = {1, 2, 3, 4, 5};
-    DenseVectorView<DenseVector<float>> v(a, 3, 1);
+    DenseVectorView<float> v(a, 3, 1);
     // act / assert
     ASSERT_THROW(std::ignore = v[3], InvalidIndexException);
 }
@@ -129,7 +129,7 @@ TEST(dense_vector_view_const_indexing_operator, given_big_index_should_throw_2) 
 TEST(dense_vector_view_offset, should_return_offset) {
     // arrange
     const DenseVector<float> a = {1, 2, 3, 4, 5};
-    const DenseVectorView<DenseVector<float>> v(a, 3, 1);
+    const DenseVectorView<float> v(a, 3, 1);
     constexpr int expected = 1;
     // act
     const int offset = v.offset();
@@ -141,7 +141,7 @@ TEST(dense_vector_view_offset, should_return_offset) {
 TEST(dense_vector_view_owner, should_return_owner) {
     // arrange
     const DenseVector<float> a = {1, 2, 3, 4, 5};
-    const DenseVectorView<DenseVector<float>> v(a, 3, 1);
+    const DenseVectorView<float> v(a, 3, 1);
     // act
     const DenseVector<float>& owner = v.owner();
     // assert

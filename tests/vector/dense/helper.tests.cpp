@@ -9,7 +9,7 @@ TEST(dense_vector_like, given_dense_vector_should_return_true) {
 }
 
 TEST(dense_vector_like, given_dense_vector_view_should_return_true) {
-    static_assert(dense_vector_like<DenseVectorView<DenseVector<float>>>, "dense_vector_like is wrong, 'DenseVectorView<DenseVector<float>>' should be dense_vector_like");
+    static_assert(dense_vector_like<DenseVectorView<float>>, "dense_vector_like is wrong, 'DenseVectorView<DenseVector<float>>' should be dense_vector_like");
 }
 
 TEST(dense_vector_like, given_float_should_return_false) {
@@ -26,12 +26,12 @@ TEST(dense_vector, given_dense_vector_should_return_true) {
 }
 
 TEST(dense_vector, given_dense_vector_view_should_return_false) {
-    static_assert(!dense_vector<DenseVectorView<DenseVector<float>>>, "dense_vector is wrong, 'DenseVectorView<DenseVector<float>>' should not be dense_vector");
+    static_assert(!dense_vector<DenseVectorView<float>>, "dense_vector is wrong, 'DenseVectorView<DenseVector<float>>' should not be dense_vector");
 }
 #pragma endregion
 #pragma region dense_vector_view
 TEST(dense_vector_view, given_dense_vector_view_should_return_true) {
-    static_assert(dense_vector_view<DenseVectorView<DenseVector<float>>>, "dense_vector_view is wrong, 'DenseVectorView<DenseVector<float>>' should be dense_vector_view");
+    static_assert(dense_vector_view<DenseVectorView<float>>, "dense_vector_view is wrong, 'DenseVectorView<DenseVector<float>>' should be dense_vector_view");
 }
 
 TEST(dense_vector_view, given_dense_vector_should_return_false) {
@@ -44,7 +44,7 @@ TEST(underlying_type, given_dense_vector_templated_on_float_should_return_float)
 }
 
 TEST(underlying_type, given_dense_vector_view_templated_on_float_should_return_float) {
-    static_assert(std::is_same_v<underlying_type_t<DenseVectorView<DenseVector<float>>>, float>, "underlying_type_t is wrong, 'DenseVectorView<DenseVector<float>>' should be 'float'");
+    static_assert(std::is_same_v<underlying_type_t<DenseVectorView<float>>, float>, "underlying_type_t is wrong, 'DenseVectorView<DenseVector<float>>' should be 'float'");
 }
 #pragma endregion
 #pragma region assert_same_size
