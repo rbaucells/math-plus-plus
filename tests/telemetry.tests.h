@@ -1,7 +1,7 @@
 #pragma once
 
 #include "gtest/gtest.h"
-#include "mathpp/core.h"
+#include "mathpp/implementation/common/telemetry.h"
 
 struct TelemetryTests {
     static void start() {
@@ -19,6 +19,7 @@ struct TelemetryTests {
         ASSERT_EQ(endTelemetryStats.move_assigns, startTelemetryStats.move_assigns + expected.move_assigns);
         ASSERT_EQ(endTelemetryStats.allocations, startTelemetryStats.allocations + expected.allocations);
         ASSERT_EQ(endTelemetryStats.deallocations, startTelemetryStats.deallocations + expected.deallocations);
+        ASSERT_EQ(endTelemetryStats.dimensions_checks, startTelemetryStats.dimensions_checks + expected.dimensions_checks);
     }
 private:
     static inline TelemetryStats startTelemetryStats = {};

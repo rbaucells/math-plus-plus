@@ -1,8 +1,8 @@
 #pragma once
 
-#include "core.h"
-#include "../../../../src/vector/dense/operators/add.h"
-#include "../../../../src/vector/dense/operators/add_assign.h"
-#include "../../../../src/vector/dense/operators/compare.h"
-#include "../../../../src/vector/dense/operators/dot.h"
-#include "../../../../src/vector/dense/operators/subtract.h"
+#include "types.h"
+#include "mathpp/implementation/vector/dense/operators/add.h"
+#include "mathpp/implementation/vector/dense/operators/add_assign.h"
+#include "mathpp/implementation/vector/dense/operators/compare.h"
+#include "mathpp/implementation/vector/dense/operators/dot.h"
+#include "mathpp/implementation/vector/dense/operators/subtract.h"

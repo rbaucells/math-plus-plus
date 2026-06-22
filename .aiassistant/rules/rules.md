@@ -2,131 +2,66 @@
 apply: always
 ---
 
-# Code Style Guidelines
+## General Principles
 
-## Naming Conventions
-- **Classes/Structs**: PascalCase
-- **Namespaces**: PascalCase
-- **Concepts**: snake_case
-- **Usings/typedefs**: PascalCase
-- **Compile-time const variables**: ALL_CAPS
-- **Template parameters**: ALL_CAPS
-- **Macros**: ALL_CAPS
-- **Local variables**: camelCase
-- **Global variables**: camelCase
-- **Member functions**: camelCase
-- **Free functions**: snake_case
-- **Loop variables**: Single letter (i, j, k, c, r, etc.)
-- **Private member variables**: Suffix with underscore (e.g., `value_`)
-- **File names**: Short and snake_case
-- **Enums**: PascalCase with snake_case enumerators
+*   **Idiomatic C++23:** All generated code must be modern C++23, following established best practices for performance and readability.
+*   **Consistency:** Always refer to existing code for style, patterns, and conventions before introducing new code.
+*   **Explicitness:** Prioritize explicit declarations and type safety. Avoid `auto` unless absolutely necessary (e.g., lambdas, `std::apply`).
+*   **Security:** Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
 
-## Code Structure
-- **Formatting**: Use clang-format (LLVM style, 4-space indentation, column limit: 0)
-- **One action per line**: Don't increment a pointer, dereference it, and call a method in one line
-- **Be explicit**: Write `MyClass<T>` instead of `MyClass`; avoid `auto` unless absolutely needed (e.g., std::apply on tuples)
-- **Delete unused constructors**: Even if implicitly deleted
-- **Follow mathematical definitions closely**: Provide workarounds/shortcuts as optional parameters (e.g., allowing Cholesky on PSD matrices)
+## Code Style
 
-## Code Patterns
-- **Use structs** for data types with primarily public members
-- **Use classes** for types with private members
-- **Avoid overusing** `using` and `typedef` statements
-- **Always use explicit template parameters**: Don't rely on deduction in class templates
+Adhere strictly to the `.clang-format` file and the following conventions:
 
-# Function Comments
+*   **Naming:**
+    *   Classes/Structs, Namespaces, Usings/typedefs, Enums: `PascalCase`
+    *   Concepts, Free functions, File names, Enumerators: `snake_case`
+    *   Compile-time const variables, Template parameters, Macros: `ALL_CAPS`
+    *   Local variables, Global variables, Member functions: `camelCase`
+    *   Private member variables: `_` suffix (e.g., `myVariable_`)
+    *   Loop variables: single letter (e.g., `i`, `j`, `k`)
+*   **Structure:**
+    *   Use `struct` for primarily public data types; `class` otherwise.
+    *   Explicitly delete or define constructors/assignment operators.
+    *   Avoid overusing `using` and `typedef` statements.
+*   **File Organization:**
+    *   Follow the existing directory structure (e.g., `src/common`, `src/matrix/common`, etc.).
 
-All functions must include comprehensive documentation with these required sections:
+## Code Documentation
 
-## Required Sections
-1. **@brief**: One-liner description of what the function does
-2. **@tparam**: For each template parameter
-3. **@param**: For each function parameter
-4. **@return** or **@returns**: If the function returns a value
-5. **@throws**: If the function may throw exceptions
+Comprehensive and accurate documentation is **CRITICAL**. Every function, class, struct, and complex algorithm **MUST** be thoroughly documented.
 
-## Additional Documentation
-When appropriate, include:
-- **Memory allocation**: State how much memory is allocated in bytes
-- **Complexity**: Time and space complexity in Big O notation
-- **Reference/Link**: For complex algorithms, reference a paper or article if told to do so
-- **Use cases**: Show how and when to use for common scenarios (e.g., solving Ax = b)
-- **@note**: Any important caveats or behavior details
+*   **Function Comments:** Every function **MUST** include:
+    *   A one-liner `@brief` section.
+    *   A `@param` section for every argument.
+    *   An `@returns` section if the function returns a value.
+    *   A `@tparam` section for template parameters.
+    *   A `@throws` section if the function may throw exceptions.
+*   **Algorithm Documentation (for complex algorithms):**
+    *   Provide a link to a relevant paper or article for more information.
+    *   Show how and when to use the algorithm for common use cases (e.g., solving `Ax = b`).
+    *   State the time complexity in Big O notation.
+    *   Mention memory allocation in bytes.
 
-## Comment Format Example
-```cpp
-/**
- * @brief Compares arguments up to the specified precision.
- *
- * @tparam T Scalar type of 'a'.
- * @tparam U Scalar type of 'b'.
- * @tparam ARGS Scalar types of 'args'.
- * @param precision How precise the comparison should be (inclusive).
- * @param a First scalar argument.
- * @param b Second scalar argument.
- * @param args Remaining scalar arguments.
- *
- * @return Whether all arguments are equal up to the specified precision.
- * @note Inclusive comparison: 1, 0.9, and 1.1 are all equal up to precision 0.1
- */
-```
+## Unit Testing
 
-## Inline Comments
-- Comment only code that needs clarification
-- Don't over-comment obvious code
-- Use clear, concise language
+All new features and bug fixes **MUST** be accompanied by comprehensive unit tests.
 
-# Test Writing Guidelines
-
-## Compile-Time Tests
-- Use `static_assert` for compile-time checks
-- Format assertions as: `<functionality being tested> is wrong, '<param passed>' should/shouldn't be <functionality>`
-- Example: `static_assert(dense_vector_view<DenseVectorView<float>>, "dense_vector_view is wrong, 'DenseVectorView<float>' should be dense_vector_view");`
-
-## Runtime Tests
-- Use 'arrange/act/assert' comments ONLY
-- Optional: Add 'cleanup' comments for heap-allocated memory
-
-### Test Coverage
-- Test with **at least** `float` and `std::complex<float>` unless not applicable
-- Assertions must use comparison functions:
-  - **Equal**: `compare(Precision<T>, value1, value2)`
-- **Precision**: Always use `0.001` unless not applicable (e.g., integer tests)
-
-### Variable Naming in Tests
-- **Vectors**: Use `v` or `a`, `b`, `c`, etc.
-- **Matrices**: Use `m` or `a`, `b`, `c`, etc.
-
-### Test Structure
-- **Test files**: End in `.tests.cpp`
-- **One test file per header**: `src/myfeature.h` → `tests/myfeature.tests.cpp`
-- **Use pragma regions**: Organize tests by functionality with `#pragma region`/`#pragma endregion`
-- **Explicit types**: Always write `DenseVector<float>` instead of relying on default template params.
-
-### Test Naming
-- Format: `given_<input_or_condition>_should_<expected_result>`
-- Example: `given_dense_matrix_should_return_true`
-- For multiple tests with similar logic: Append `_1`, `_2`, etc. to distinguish
-- Example: `given_set_of_non_orthogonal_vectors_return_false_1` (orthogonality), `_2` (normalization)
-
-### Test Quality
-- Prefer **mathematical condition coverage** over code coverage (but aim for 100% code coverage)
-- Test **internal data structures** when possible to minimize dependencies
-- When testing functions that can fail: Create multiple test cases for each failure reason
-- Example: If a function can fail because of missing orthogonality or normalization, test both cases separately
-
-### Example Test Pattern
-```cpp
-#pragma region euclidian_norm
-TEST(euclidian_norm, given_float_vector_should_calculate_correct_norm) {
-    // arrange
-    const DenseVector<float> a = {1, 2, 3};
-    constexpr float expected = 3.74166f;
-    // act
-    const float euclidianNorm = euclidianNorm(a);
-    // assert
-    ASSERT_TRUE(compare(Precision(0.001f), euclidianNorm, expected));
-}
-#pragma endregion
-```
-
+*   **GoogleTest (GTEST):** Use the existing GoogleTest framework.
+*   **Coverage:** Test all functions and operators at both runtime and compile time.
+*   **Interface Testing:** Tests should primarily focus on the public interface, minimizing reliance on internal data structures.
+*   **File Naming:** Test files **MUST** end in `.tests.cpp`.
+*   **Structure:**
+    *   Google Test Suites should be separated into pragma regions.
+    *   There should be one test file for each header file in `src` of the same name.
+*   **Test Naming:**
+    *   Overall suite names should reflect the functionality being tested.
+    *   Individual test cases **MUST** follow: `given_<input_or_condition>_should_<expected_result>`.
+    *   For multiple failure/edge cases of the same functionality, suffix with `_1`, `_2`, etc. (e.g., `given_set_of_non_orthogonal_vectors_return_false_1`).
+*   **Run-Time Tests:**
+    *   Use `// arrange`, `// act`, and `// assert` comments. Add `// cleanup` if heap memory is used.
+    *   Variable Naming: `v` or `a, b, c` for vectors; `m` or `a, b, c` for matrices.
+    *   Floating-point comparisons **MUST** use the `compare` function with explicit precisions (e.g., `0.001f`) instead of epsilon.
+*   **Compile-Time Tests:**
+    *   Use `static_asserts`.
+    *   Messages **MUST** follow: `'<param passed to function/functionality>' should/shouldn't be <functionality being tested>'`.

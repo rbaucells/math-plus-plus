@@ -1,0 +1,75 @@
+#pragma once
+#include <cstddef>
+
+struct TelemetryStats {
+    std::size_t copy_constructs = 0;
+    std::size_t move_constructs = 0;
+    std::size_t copy_assigns = 0;
+    std::size_t move_assigns = 0;
+    std::size_t allocations = 0;
+    std::size_t deallocations = 0;
+    std::size_t dimensions_checks = 0;
+};
+
+struct Telemetry {
+    static void emit_copy_construct() noexcept {
+#ifdef MATHPP_ENABLE_TELEMETRY
+        ++stats_.copy_constructs;
+#endif
+    }
+
+    static void emit_move_construct() noexcept {
+#ifdef MATHPP_ENABLE_TELEMETRY
+        ++stats_.move_constructs;
+#endif
+    }
+
+    static void emit_copy_assign() noexcept {
+#ifdef MATHPP_ENABLE_TELEMETRY
+        ++stats_.copy_assigns;
+#endif
+    }
+
+    static void emit_move_assign() noexcept {
+#ifdef MATHPP_ENABLE_TELEMETRY
+        ++stats_.move_assigns;
+#endif
+    }
+
+    static void emit_allocation() noexcept {
+#ifdef MATHPP_ENABLE_TELEMETRY
+        ++stats_.allocations;
+#endif
+    }
+
+    static void emit_deallocation() noexcept {
+#ifdef MATHPP_ENABLE_TELEMETRY
+        ++stats_.deallocations;
+#endif
+    }
+
+    static void emit_dimension_check() noexcept {
+#ifdef MATHPP_ENABLE_TELEMETRY
+        ++stats_.dimensions_checks;
+#endif
+    }
+
+    static void reset() noexcept {
+#ifdef MATHPP_ENABLE_TELEMETRY
+        stats_ = TelemetryStats();
+#endif
+    }
+
+    [[nodiscard]] static TelemetryStats snapshot() noexcept {
+#ifdef MATHPP_ENABLE_TELEMETRY
+        return stats_;
+#else
+        return {};
+#endif
+    }
+
+private:
+#ifdef MATHPP_ENABLE_TELEMETRY
+    static inline thread_local TelemetryStats stats_{};
+#endif
+};

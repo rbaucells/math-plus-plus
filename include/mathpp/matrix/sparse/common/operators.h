@@ -1,5 +1,4 @@
 #pragma once
 
-#include "../csc/core.h"
-#include "../csr/core.h"
-#include "../../../../src/matrix/sparse/common/operators/compare.h"
+#include "base.h"
+#include "mathpp/implementation/matrix/sparse/common/operators/compare.h"
