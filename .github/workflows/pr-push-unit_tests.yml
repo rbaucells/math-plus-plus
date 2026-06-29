@@ -25,4 +25,4 @@ jobs:
         run: cmake --build build
       
       - name: Run unit tests
-        run: (cd build && ./tests/mathpp-tests)
+        run: (cd build && ./mathpp-tests)
