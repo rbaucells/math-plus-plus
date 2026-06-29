@@ -5,99 +5,123 @@
 #include "mathpp/implementation/common/exceptions.h"
 #include "mathpp/implementation/common/traits.h"
 
-template<scalar T = float>
+/**
+ * @brief Non-owning view on a DenseVector<T>.
+ * @note Owner DenseVector must outlive view.
+ * @tparam T Scalar type of vector elements.
+ */
+template<scalar T>
 struct DenseVectorView {
     using ValueType = T;
-    using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
     DenseVectorView() = delete;
-
+    DenseVectorView(const DenseVectorView<T>& other) = delete;
     DenseVectorView(DenseVectorView<T>&& other) noexcept = delete;
-
     DenseVectorView<T>& operator=(const DenseVectorView<T>& other) = delete;
-
     DenseVectorView<T>& operator=(DenseVectorView<T>&& other) noexcept = delete;
 
     /**
-     * @brief Constructs a DenseVectorView into an existing DenseVector.
+     * @brief Owner constructor.
      *
-     * Creates a view of size 'n' into the 'owner' vector, starting at offset.
-     * Does not allocate new memory.
-     * The view holds a reference to the owner.
+     * Creates a view of the owner vector of size 'n'.
+     * View starts at offset.
+     * Does not allocate memory on heap.
      *
-     * @param owner DenseVector to create the view from.
-     * @param n Number of elements in the view.
-     * @param offset Starting index offset in the owner vector.
+     * @param owner DenseVector owner containing real data.
+     * @param n Number of elements in constructed view.
+     * @param offset Zero-based index at which the view starts relative to owner.
+     *
+     * @note DenseVector owner must outlive view.
      */
-    DenseVectorView(const DenseVector<T>& owner, const std::size_t n, const std::size_t offset) : offset_(offset), n_(n), owner_(owner) {
+    DenseVectorView(const DenseVector<T>& owner, const std::size_t n, const std::size_t offset) : n_(n), offset_(offset), owner_(owner) {}
+
+    /**
+     * @brief Accesses the element at a provided index.
+     *
+     * Retrieves a const reference to the element at (i) relative to where the view starts.
+     * Implemented by accessing owner at i + offset.
+     * Does not check bounds of provided index.
+     * Does not allocate memory on the heap.
+     *
+     * @param i Zero-based index of element.
+     *
+     * @see DenseVectorView::at(const std::size_t i).
+     *
+     * @return Const-reference to element at (i).
+     * @note Undefined behavior if i (plus offset) is out of bounds of the owner vector.
+     */
+    const T& operator[](const std::size_t i) const {
+        return owner_[i + offset_];
     }
 
     /**
-    * @brief Copy constructor for DenseVectorView.
-    *
-    * Constructs a view with the same 'owner' as 'other'.
-    * Does not allocate new memory.
-    *
-    * @param other DenseVectorView to copy from.
+    * @warning InvalidOperationException Modifying owner through view is illegal.
     */
-    DenseVectorView(const DenseVectorView<T>& other) : offset_(other.offset_), n_(other.n_), owner_(other.owner_) {
+    T& operator[](const std::size_t) {
+        // ReSharper disable once CppStaticAssertFailure
+        static_assert(false, "Cannot modify owner through view");
     }
 
     /**
-     * @brief Trying to modify a DenseVector through a view is invalid.
-     * @throws InvalidOperationException You cannot modify owner through a view.
+     * @brief Accesses the element at a provided index.
+     *
+     * Retrieves a const reference to the element at (i) relative to where the view starts.
+     * Implemented by accessing owner at i + offset.
+     * Checks bounds of provided index relative to view AND to owner.
+     * Does not allocate memory on the heap.
+     *
+     * @param i Zero-based index of element.
+     *
+     * @see DenseVectorView::operator[](const std::size_t i).
+     *
+     * @throws InvalidIndexException If index is not withing view OR i + offset is not within owner vector.
+     * @note Index must be within size of view AND i + offset must be within size of owner vector.
+     * @return Const-reference to element at (r, c).
      */
-    [[nodiscard]] T& at(const std::size_t) {
-        throw InvalidOperationException("Cannot modify owner through view");
-    }
+    const T& at(const std::size_t i) const {
+        if (i >= n_) {
+            throw InvalidIndexException("Cannot access view at invalid index");
+        }
 
-    [[nodiscard]] const T& at(const std::size_t i) const {
         return owner_.at(i + offset_);
     }
 
-    [[nodiscard]] T& operator[](const std::size_t i) {
-        if (i >= n_) {
-            throw InvalidIndexException("Cannot access vector at invalid index");
-        }
-
-        return at(i);
-    }
-
-    [[nodiscard]] const T& operator[](const std::size_t i) const {
-        if (i >= n_) {
-            throw InvalidIndexException("Cannot access vector at invalid index");
-        }
-
-        return at(i);
+    /**
+     * @throws InvalidOperationException Modifying owner through view is illegal.
+     */
+    T& at(const std::size_t) {
+        throw InvalidOperationException("Cannot modify owner through view");
     }
 
     /**
-     * @brief Gets the offset relative to the 'owner'.
-     * @return The offset.
+     * @return Number of elements to offset view by relative to owner vector.
      */
     [[nodiscard]] std::size_t offset() const {
         return offset_;
     }
 
     /**
-    * @brief Gets the const reference to the DenseMatrix owner.
-    * @return Const reference to DenseMatrix owner.
+    * @return Number of elements in DenseVector.
     */
-    [[nodiscard]] const DenseVector<T>& owner() const {
-        return owner_;
-    }
-
     [[nodiscard]] std::size_t n() const {
         return n_;
     }
 
+    [[nodiscard]] const DenseVector<T>& owner() const {
+        return owner_;
+    }
+
     ~DenseVectorView() = default;
 
-private:
-    const std::size_t offset_;
-    std::size_t n_;
 
+private:
+    // number of elements
+    const std::size_t n_;
+    // offset relative to owner
+    const std::size_t offset_;
+
+    // owner dense vector
     const DenseVector<T>& owner_;
 };

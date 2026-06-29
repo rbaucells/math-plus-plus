@@ -115,7 +115,7 @@ struct DenseMatrixCompareExpr {
  * @tparam U Dense matrix like type of second param.
  * @param a First dense matrix like object param.
  * @param b First dense matrix like object param.
- * @return Expression object that lazily computes comparison of a variadic number of matrices
+ * @return Expression object that lazily computes comparison of a variadic number of matrices.
  * @note Matrices of different size will always return false.
  */
 template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>

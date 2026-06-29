@@ -24,5 +24,5 @@ struct is_vector_like<T> : std::true_type {};
 
 template<vector_like T>
 struct underlying_type<T> {
-    using value_type = T::ValueType;
+    using ValueType = T::ValueType;
 };

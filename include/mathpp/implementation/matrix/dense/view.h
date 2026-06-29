@@ -42,7 +42,7 @@ struct DenseMatrixView {
     /**
      * @brief Accesses the element at a provided row and column.
      *
-     * Retrieves a reference to the element at coordinates (r, c) relative to where the view starts.
+     * Retrieves a const reference to the element at coordinates (r, c) relative to where the view starts.
      * Implemented by accessing owner at r + rowOffset, c + colOffset.
      * Does not check bounds of provided r and c indices.
      * Does not allocate memory on the heap.
@@ -70,7 +70,7 @@ struct DenseMatrixView {
     /**
      * @brief Accesses the element at a provided row and column.
      *
-     * Retrieves a reference to the element at coordinates (r, c) relative to where the view starts.
+     * Retrieves a const reference to the element at coordinates (r, c) relative to where the view starts.
      * Implemented by accessing owner at r + rowOffset, c + colOffset.
      * Checks bounds of provided r and c indices relative to view AND to owner.
      * Does not allocate memory on the heap.
@@ -155,6 +155,8 @@ struct DenseMatrixView {
     [[nodiscard]] const DenseMatrix<T>& owner() const {
         return owner_;
     }
+
+    ~DenseMatrixView() = default;
 
 private:
     // number of rows

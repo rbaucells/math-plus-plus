@@ -359,7 +359,7 @@ struct DenseMatrix {
      *
      * @return Reference to the element at (r, c).
      * @note Indices must be withing matrix bounds.
-     * @throws InvalidIndexException If r or c indices are out of bounds (ie. greater than rows/columns.
+     * @throws InvalidIndexException If r or c indices are out of bounds (ie. greater than rows/columns).
      */
     [[nodiscard]] T& at(const std::size_t r, const std::size_t c) {
         if (r >= rows_ || c >= columns_) {
@@ -383,7 +383,7 @@ struct DenseMatrix {
      *
      * @return Const-reference to the element at (r, c).
      * @note Indices must be withing matrix bounds.
-     * @throws InvalidIndexException If r or c indices are out of bounds (ie. greater than rows/columns.
+     * @throws InvalidIndexException If r or c indices are out of bounds (ie. greater than rows/columns).
      */
     [[nodiscard]] const T& at(const std::size_t r, const std::size_t c) const {
         if (r >= rows_ || c >= columns_) {
