@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSC_MATRIX
+#define MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSC_MATRIX
+
 #include <cstddef>
 #include <cstring>
 #include <initializer_list>
@@ -514,3 +516,5 @@ private:
     std::size_t rows_;
     std::size_t columns_;
 };
+
+#endif // MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSC_MATRIX

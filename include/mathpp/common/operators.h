@@ -1,1 +1,5 @@
-#pragma once
+#ifndef MATHPP_COMMON_OPERATORS
+#define MATHPP_COMMON_OPERATORS
+
+
+#endif // MATHPP_COMMON_OPERATORS

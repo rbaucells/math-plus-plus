@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATHPP_COMMON_BASE
+#define MATHPP_COMMON_BASE
 
 #include "mathpp/implementation/common/compare.h"
 #include "mathpp/implementation/common/dot_behavior.h"
@@ -8,3 +9,5 @@
 #include "mathpp/implementation/common/rotations.h"
 #include "mathpp/implementation/common/telemetry.h"
 #include "mathpp/implementation/common/traits.h"
+
+#endif // MATHPP_COMMON_BASE

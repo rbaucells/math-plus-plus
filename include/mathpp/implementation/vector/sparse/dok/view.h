@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_SPARSE_DOK_VIEW
+#define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_DOK_VIEW
+
 #include <cstddef>
 
 #include "vector.h"
@@ -110,3 +112,4 @@ private:
 
     const DokSparseVector<T>& owner_;
 };
+#endif // MATHPP_IMPLEMENTATION_VECTOR_SPARSE_DOK_VIEW

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_SUBTRACT
+#define MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_SUBTRACT
+
 #include <tuple>
 #include <type_traits>
 #include <cstddef>
@@ -56,3 +58,4 @@ DenseMatrixSubtractExpr<T, U, ARGS...> subtract(const T& a, const U& b, const AR
     assert_same_dimensions(a, b, args...);
     return DenseMatrixSubtractExpr<T, U, ARGS...>(a, b, args...);
 }
+#endif // MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_SUBTRACT

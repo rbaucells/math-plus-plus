@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_VIEW
+#define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_VIEW
+
 #include <cstddef>
 
 #include "vector.h"
@@ -110,3 +112,5 @@ private:
 
     const CooSparseVector<T>& owner_;
 };
+
+#endif // MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_VIEW

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_ASSERTS
+#define MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_ASSERTS
+
 #include "mathpp/implementation/common/exceptions.h"
 
 #include "traits.h"
@@ -16,3 +18,5 @@ inline void assert_square(const T& m) {
         throw InvalidDimensionException("Sparse matrix must be square");
     }
 }
+
+#endif // MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_ASSERTS

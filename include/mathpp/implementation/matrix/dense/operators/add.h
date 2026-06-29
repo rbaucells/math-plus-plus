@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_ADD
+#define MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_ADD
+
 #include <tuple>
 #include <type_traits>
 #include <cstddef>
@@ -55,3 +57,5 @@ DenseMatrixAddExpr<T, U, ARGS...> add(const T& a, const U& b, const ARGS&... arg
     assert_same_dimensions(a, b, args...);
     return DenseMatrixAddExpr<T, U, ARGS...>(a, b, args...);
 }
+
+#endif // MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_ADD

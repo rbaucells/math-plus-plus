@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATHPP_TESTS_TELEMETRY_TESTS
+#define MATHPP_TESTS_TELEMETRY_TESTS
 
 #include "gtest/gtest.h"
 #include "mathpp/implementation/common/telemetry.h"
@@ -25,3 +26,5 @@ private:
     static inline TelemetryStats startTelemetryStats = {};
     static inline TelemetryStats endTelemetryStats = {};
 };
+
+#endif // MATHPP_TESTS_TELEMETRY_TESTS

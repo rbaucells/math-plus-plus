@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_COMMON_COMPARE_H
+#define MATHPP_IMPLEMENTATION_COMMON_COMPARE_H
+
 #include <algorithm>
 #include <type_traits>
 
@@ -65,3 +67,5 @@ template<scalar T, scalar U, scalar... ARGS> requires has_common_type<underlying
 [[nodiscard]] bool compare(const T a, const U b, const ARGS... args) {
     return compare(Precision(epsilon<std::common_type_t<underlying_type_t<T>, underlying_type_t<U>, underlying_type_t<ARGS>...>>()), a, b, args...);
 }
+
+#endif // MATHPP_IMPLEMENTATION_COMMON_COMPARE_H

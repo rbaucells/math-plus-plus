@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_COMMON_EXCEPTIONS
+#define MATHPP_IMPLEMENTATION_COMMON_EXCEPTIONS
+
 #include <stdexcept>
 
 /**
@@ -21,3 +23,5 @@ struct InvalidOperationException final : std::logic_error {
 struct InvalidIndexException final : std::invalid_argument {
     using std::invalid_argument::invalid_argument;
 };
+
+#endif // MATHPP_IMPLEMENTATION_COMMON_EXCEPTIONS

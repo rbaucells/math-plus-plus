@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_DENSE_VIEW
+#define MATHPP_IMPLEMENTATION_MATRIX_DENSE_VIEW
+
 #include <cstddef>
 
 #include "matrix.h"
@@ -171,3 +173,5 @@ private:
     // owner dense matrix
     const DenseMatrix<T>& owner_;
 };
+
+#endif // MATHPP_IMPLEMENTATION_MATRIX_DENSE_VIEW

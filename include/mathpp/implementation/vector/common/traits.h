@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_COMMON_TRAITS
+#define MATHPP_IMPLEMENTATION_VECTOR_COMMON_TRAITS
+
 #include <concepts>
 #include <cstddef>
 #include "mathpp/implementation/common/traits.h"
@@ -26,3 +28,5 @@ template<vector_like T>
 struct underlying_type<T> {
     using ValueType = T::ValueType;
 };
+
+#endif // MATHPP_IMPLEMENTATION_VECTOR_COMMON_TRAITS

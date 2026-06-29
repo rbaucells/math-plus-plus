@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_COMMON_ASSERTS
+#define MATHPP_IMPLEMENTATION_VECTOR_COMMON_ASSERTS
+
 #include "mathpp/implementation/common/exceptions.h"
 #include "mathpp/implementation/common/telemetry.h"
 
@@ -11,3 +13,5 @@ inline void assert_same_size(const T& a, const U& b, const ARGS&... args) {
         throw InvalidDimensionException("Dense vectors must all be of same size");
     }
 }
+
+#endif // MATHPP_IMPLEMENTATION_VECTOR_COMMON_ASSERTS

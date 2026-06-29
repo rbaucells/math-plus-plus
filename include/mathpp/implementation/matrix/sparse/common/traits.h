@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_TRAITS
+#define MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_TRAITS
+
 #include <concepts>
 #include <type_traits>
 #include "mathpp/implementation/common/traits.h"
@@ -27,3 +29,5 @@ template<sparse_matrix_like T>
 struct underlying_type<T> {
     using value_type = T::ValueType;
 };
+
+#endif // MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_TRAITS

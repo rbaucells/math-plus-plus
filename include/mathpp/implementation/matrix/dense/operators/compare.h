@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_COMPARE
+#define MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_COMPARE
+
 #include <cstddef>
 #include <tuple>
 #include <type_traits>
@@ -122,3 +124,5 @@ template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<type
 DenseMatrixCompareExpr<T, U> operator==(const T& a, const U& b) {
     return DenseMatrixCompareExpr<T, U>(a, b);
 }
+
+#endif // MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_COMPARE

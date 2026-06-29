@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_ADD_ASSIGN
+#define MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_ADD_ASSIGN
+
 #include <cstddef>
 
 #include "mathpp/implementation/common/traits.h"
@@ -54,3 +56,4 @@ T& add_assign(T& a, const U& b) {
     assert_same_dimensions(a, b);
     return a += b;
 }
+#endif // MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_ADD_ASSIGN

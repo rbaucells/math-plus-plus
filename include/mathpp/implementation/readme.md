@@ -48,3 +48,15 @@
  - src/matrix/sparse/common = things that use both storage types of sparse matrices. 
  - src/vector/common = things that use both sparse and dense vectors.
  - src/vector/sparse/common = things that use both storage types of sparse vectors.
+
+# Include Guards
+ - Since gcc is stupid, you cant use #pragma once because it freaks out when files are called the same thing so use normal macro include guards.
+ - Include guard names state where the file is located
+ - Example
+   ```c++
+    #ifndef MATHPP_IMPLEMENTATION_MATRIX_COMMON_ASSERTS
+    #define MATHPP_IMPLEMENTATION_MATRIX_COMMON_ASSERTS
+  
+     ...
+  
+    #endif // MATHPP_TESTS_TELEMETRY_TESTS

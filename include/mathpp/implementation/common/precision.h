@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_COMMON_PRECISION
+#define MATHPP_IMPLEMENTATION_COMMON_PRECISION
+
 #include <concepts>
 #include <limits>
 #include "traits.h"
@@ -41,3 +43,5 @@ template<real T>
 struct Precision {
     T value;
 };
+
+#endif // MATHPP_IMPLEMENTATION_COMMON_PRECISION

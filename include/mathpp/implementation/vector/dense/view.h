@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_DENSE_VIEW
+#define MATHPP_IMPLEMENTATION_VECTOR_DENSE_VIEW
+
 #include <cstddef>
 
 #include "vector.h"
@@ -125,3 +127,5 @@ private:
     // owner dense vector
     const DenseVector<T>& owner_;
 };
+
+#endif // MATHPP_IMPLEMENTATION_VECTOR_DENSE_VIEW

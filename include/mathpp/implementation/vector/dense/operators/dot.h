@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_DENSE_OPERATORS_DOT
+#define MATHPP_IMPLEMENTATION_VECTOR_DENSE_OPERATORS_DOT
+
 #include <complex>
 #include <type_traits>
 #include <cstddef>
@@ -92,3 +94,4 @@ std::common_type_t<typename T::ValueType, typename U::ValueType> dot(const T& a,
 
     return result;
 }
+#endif // MATHPP_IMPLEMENTATION_VECTOR_DENSE_OPERATORS_DOT

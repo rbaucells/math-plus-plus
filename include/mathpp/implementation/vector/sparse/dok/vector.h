@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_SPARSE_DOK_VECTOR
+#define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_DOK_VECTOR
+
 #include <cstddef>
 #include <cstring>
 #include <initializer_list>
@@ -362,3 +364,5 @@ private:
     T* values_;
     std::size_t* indices_;
 };
+
+#endif // MATHPP_IMPLEMENTATION_VECTOR_SPARSE_DOK_VECTOR

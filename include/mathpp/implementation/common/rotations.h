@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_COMMON_ROTATIONS
+#define MATHPP_IMPLEMENTATION_COMMON_ROTATIONS
+
 #include <numbers>
 #include "traits.h"
 
@@ -60,3 +62,4 @@ template<scalar T>
 
     return value;
 }
+#endif // MATHPP_IMPLEMENTATION_COMMON_ROTATIONS

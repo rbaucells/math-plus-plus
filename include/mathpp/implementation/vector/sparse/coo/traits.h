@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_TRAITS
+#define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_TRAITS
+
 #include <type_traits>
 #include "mathpp/implementation/common/traits.h"
 
@@ -34,3 +36,5 @@ inline constexpr bool is_coo_sparse_vector_view_v = is_coo_sparse_vector_view<T>
 
 template<typename T>
 concept coo_sparse_vector_view = is_coo_sparse_vector_view_v<T>;
+
+#endif // MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_TRAITS

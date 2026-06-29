@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSC_VIEW
+#define MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSC_VIEW
+
 #include <cstddef>
 
 #include "matrix.h"
@@ -127,3 +129,5 @@ private:
 
     const CSCSparseMatrix<T>& owner_;
 };
+
+#endif // MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSC_VIEW

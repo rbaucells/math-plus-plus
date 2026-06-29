@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_DENSE_VECTOR
+#define MATHPP_IMPLEMENTATION_VECTOR_DENSE_VECTOR
+
 #include <algorithm>
 #include <cstddef>
 #include <initializer_list>
@@ -439,3 +441,5 @@ private:
     // data array
     T* data_;
 };
+
+#endif // MATHPP_IMPLEMENTATION_VECTOR_DENSE_VECTOR

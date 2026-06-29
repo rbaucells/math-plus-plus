@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_COMMON_TRAITS_H
+#define MATHPP_IMPLEMENTATION_COMMON_TRAITS_H
+
 #include <complex>
 #include <type_traits>
 
@@ -53,3 +55,5 @@ using underlying_type_t = underlying_type<T>::ValueType;
 
 template<typename... T>
 concept has_common_type = requires { typename std::common_type_t<T...>; };
+
+#endif // MATHPP_IMPLEMENTATION_COMMON_TRAITS_H

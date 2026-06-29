@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_COMMON_TELEMETRY
+#define MATHPP_IMPLEMENTATION_COMMON_TELEMETRY
+
 #include <cstddef>
 
 struct TelemetryStats {
@@ -73,3 +75,5 @@ private:
     static inline thread_local TelemetryStats stats_{};
 #endif
 };
+
+#endif // MATHPP_IMPLEMENTATION_COMMON_TELEMETRY

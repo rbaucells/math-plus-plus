@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COMMON_TRAITS
+#define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COMMON_TRAITS
+
 #include <concepts>
 #include <type_traits>
 #include <cstddef>
@@ -28,3 +30,5 @@ template<sparse_vector_like T>
 struct underlying_type<T> {
     using value_type = T::ValueType;
 };
+
+#endif // MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COMMON_TRAITS

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_MULTIPLY
+#define MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_MULTIPLY
+
 #include <type_traits>
 #include <cstddef>
 
@@ -62,3 +64,4 @@ DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType>> mu
     assert_can_multiply(a, b);
     return a * b;
 }
+#endif // MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_MULTIPLY

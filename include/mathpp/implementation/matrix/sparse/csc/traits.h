@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSC_TRAITS
+#define MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSC_TRAITS
+
 #include <concepts>
 #include <type_traits>
 #include <cstddef>
@@ -16,7 +18,7 @@ struct CSCSparseMatrixView;
 // csc_sparse_matrix_like
 template<typename T>
 concept csc_sparse_matrix_like = requires(const T constM, T m, std::size_t c, std::size_t r, const typename T::ValueType value) {
-    sparse_matrix_like<T>;
+    requires sparse_matrix_like<T>;
     requires std::same_as<std::remove_cvref_t<decltype(constM.values())>, const typename T::ValueType*>;
     requires std::same_as<std::remove_cvref_t<decltype(constM.rowIndices())>, const std::size_t*>;
     requires std::same_as<std::remove_cvref_t<decltype(constM.colOffsets())>, const std::size_t*>;
@@ -59,3 +61,4 @@ inline constexpr bool is_csc_sparse_matrix_view_v = is_csc_sparse_matrix_view<T>
 
 template<typename T>
 concept csc_sparse_matrix_view = is_csc_sparse_matrix_view_v<T>;
+#endif // MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSC_TRAITS

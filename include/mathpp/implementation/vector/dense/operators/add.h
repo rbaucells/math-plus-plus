@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_DENSE_OPERATORS_ADD
+#define MATHPP_IMPLEMENTATION_VECTOR_DENSE_OPERATORS_ADD
+
 #include <tuple>
 #include <type_traits>
 #include <cstddef>
@@ -45,3 +47,5 @@ DenseVectorAddExpr<T, U, ARGS...> add(const T& a, const U& b, const ARGS&... arg
     assert_same_size(a, b, args...);
     return DenseVectorAddExpr<T, U, ARGS...>(a, b, args...);
 }
+
+#endif // MATHPP_IMPLEMENTATION_VECTOR_DENSE_OPERATORS_ADD

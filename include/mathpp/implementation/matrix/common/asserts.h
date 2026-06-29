@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_COMMON_ASSERTS
+#define MATHPP_IMPLEMENTATION_MATRIX_COMMON_ASSERTS
+
 #include "mathpp/implementation/common/exceptions.h"
 #include "mathpp/implementation/common/telemetry.h"
 #include "traits.h"
@@ -42,3 +44,5 @@ void assert_can_multiply(const T& a, const U& b) {
         throw InvalidDimensionException("Provided matrices must have matching inner dimensions to multiply (a.columns() == b.rows())");
     }
 }
+
+#endif // MATHPP_IMPLEMENTATION_MATRIX_COMMON_ASSERTS
