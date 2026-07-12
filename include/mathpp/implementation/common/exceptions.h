@@ -4,9 +4,9 @@
 #include <stdexcept>
 
 /**
- * @brief Thrown when arguments (matrices/vectors) don't have the expected size/shape.
+ * @brief Thrown when arguments (matrices/vectors/arrays) don't have the expected size/shape.
  */
-struct InvalidDimensionException final : std::invalid_argument {
+struct InvalidSizeException final : std::invalid_argument {
     using std::invalid_argument::invalid_argument;
 };
 

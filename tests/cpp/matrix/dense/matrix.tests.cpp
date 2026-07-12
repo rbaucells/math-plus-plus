@@ -67,7 +67,7 @@ TEST(dense_matrix_initializer_list_constructor, given_nested_initializer_list_sh
 
 TEST(dense_matrix_initializer_list_constructor, given_differently_sized_nested_initializer_list_should_throw) {
     // act / assert
-    ASSERT_THROW(DenseMatrix<float>({{1, 2}, {3, 4, 5}}), InvalidDimensionException);
+    ASSERT_THROW(DenseMatrix<float>({{1, 2}, {3, 4, 5}}), InvalidSizeException);
 }
 #pragma endregion
 #pragma region copy_constructor_from_same_type

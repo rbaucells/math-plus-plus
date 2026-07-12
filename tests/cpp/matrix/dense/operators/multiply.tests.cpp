@@ -24,7 +24,7 @@ TEST(dense_matrix_multiply, given_2_dense_matrices_of_non_multipliable_size_shou
     const DenseMatrix<float> a = {{1, 2}, {3, 4}};
     const DenseMatrix<int> b = {{3, 5, 8}, {3, -1, 5}, {4, -6, 8}};
     // act / assert
-    ASSERT_THROW(multiply(a, b), InvalidDimensionException);
+    ASSERT_THROW(multiply(a, b), InvalidSizeException);
 }
 
 TEST(dense_matrix_multiplication_operator, given_dense_matrix_should_return_product) {

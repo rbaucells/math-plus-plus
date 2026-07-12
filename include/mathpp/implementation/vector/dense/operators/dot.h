@@ -62,7 +62,7 @@ std::common_type_t<typename T::ValueType, typename U::ValueType> operator*(const
  * @param a First dense vector like param.
  * @param b Second dense vector like param.
  * @return The vector-vector dot of 'a' and 'b'.
- * @throws InvalidDimensionException If the size of 'a' and 'b' are not same.
+ * @throws InvalidSizeException If the size of 'a' and 'b' are not same.
  * @note 'a' and 'b' must have same size.
  */
 template<dense_vector_like T, dense_vector_like U>

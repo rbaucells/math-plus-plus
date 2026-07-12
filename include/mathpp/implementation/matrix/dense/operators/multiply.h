@@ -56,7 +56,7 @@ DenseMatrix<std::common_type_t<typename T::ValueType, typename U::ValueType>> op
  * @param a First dense matrix like param.
  * @param b Second dense matrix like param.
  * @return The matrix-matrix multiplication of 'a' and 'b'.
- * @throws InvalidDimensionException If the dimensions of 'a' and 'b' are not multipliable (inner dimensions don't match).
+ * @throws InvalidSizeException If the dimensions of 'a' and 'b' are not multipliable (inner dimensions don't match).
  * @note 'a' and 'b' must be multipliable in terms of their matching inner dimensions.
  */
 template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>

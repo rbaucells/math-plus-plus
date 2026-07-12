@@ -61,13 +61,13 @@ struct DenseMatrix {
      *
      * @note All nested initializer lists must all have the same size.
      * @param initializerList Nested initializer lists of matrix elements
-     * @throws InvalidDimensionException If all nested initializer lists are not of same size.
+     * @throws InvalidSizeException If all nested initializer lists are not of same size.
      */
     DenseMatrix(const std::initializer_list<std::initializer_list<T>>& initializerList) : rows_(initializerList.size()), columns_(initializerList.begin()->size()), data_(new T[rows_ * columns_]) {
         std::size_t r = 0;
         for (const auto& row: initializerList) {
             if (row.size() != columns_) {
-                throw InvalidDimensionException("Nested initializer lists must all have the same size");
+                throw InvalidSizeException("Nested initializer lists must all have the same size");
             }
 
             std::size_t c = 0;

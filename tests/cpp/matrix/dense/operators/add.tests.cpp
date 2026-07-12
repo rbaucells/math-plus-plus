@@ -70,7 +70,7 @@ TEST(dense_matrix_add, given_2_dense_matrices_of_diff_size_should_throw) {
     const DenseMatrix<float> a = {{1, 2}, {3, 4}};
     const DenseMatrix<int> b = {{3, 5, 8}, {3, -1, 5}, {4, -6, 8}};
     // act / assert
-    ASSERT_THROW(add(a, b), InvalidDimensionException);
+    ASSERT_THROW(add(a, b), InvalidSizeException);
 }
 
 TEST(dense_matrix_addition_operator, given_2_dense_matrices_should_return_dense_matrix) {

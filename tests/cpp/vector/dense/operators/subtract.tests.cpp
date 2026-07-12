@@ -70,7 +70,7 @@ TEST(dense_vector_subtract, given_2_dense_matrices_of_diff_size_should_throw) {
     const DenseVector<float> a = {1, 2};
     const DenseVector<int> b = {3, 5, 8};
     // act / assert
-    ASSERT_THROW(subtract(a, b), InvalidDimensionException);
+    ASSERT_THROW(subtract(a, b), InvalidSizeException);
 }
 
 TEST(dense_vector_subtractition_operator, given_2_dense_matrices_should_return_dense_vector) {

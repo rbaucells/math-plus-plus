@@ -7,7 +7,7 @@
 template<sparse_vector_like T, sparse_vector_like U, sparse_vector_like... ARGS>
 inline void assert_same_size(const T& a, const U& b, const ARGS&... args) {
     if (!(a.n() == b.n() && ((a.n() == args.n()) && ...))) {
-        throw InvalidDimensionException("Sparse vectors must all be of same size");
+        throw InvalidSizeException("Sparse vectors must all be of same size");
     }
 }
 

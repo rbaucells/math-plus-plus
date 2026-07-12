@@ -108,7 +108,7 @@ TEST(dense_vector_dot, given_2_dense_vectors_of_diff_size_should_throw) {
     const DenseVector<float> a = {1, 2, 3};
     const DenseVector<int> b = {1, 2, 3, 4};
     // act / assert
-    ASSERT_THROW(dot(a, b), InvalidDimensionException);
+    ASSERT_THROW(dot(a, b), InvalidSizeException);
 }
 
 TEST(dense_vector_multiplication_operator, given_2_dense_vectors_should_return_dot_and_conjugate_default) {

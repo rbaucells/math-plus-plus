@@ -1,0 +1,21 @@
+[build-system]
+requires = ['setuptools>=61.0', 'wheel']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'mathpy'
+version = '0.0.9'
+description = 'C++ Math Library'
+requires-python = '>=3.10'
+dependencies = [
+    'pybind11>=2.10',
+    'numpy>=2.5.0'
+]
+
+# find them in this pwd
+[tool.setuptools.packages.find]
+where = ['.']
+
+# include .so and .pyi
+[tool.setuptools.package-data]
+mathpy = ['*.so', '*.pyi']

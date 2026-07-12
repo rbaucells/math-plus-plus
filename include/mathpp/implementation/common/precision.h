@@ -41,6 +41,7 @@ template<complex T>
  */
 template<real T>
 struct Precision {
+    using ValueType = T;
     T value;
 };
 

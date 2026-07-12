@@ -179,7 +179,7 @@ struct CSCSparseMatrix {
      * May allocate memory if nnz != other.nnz, if not then 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes of memory are allocated on the heap.
      * @param other SparseMatrix to copy from.
      * @return Reference to this.
-     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+     * @throws InvalidSizeException If 'other' does not have same dimensions as this.
      * @note 'other' must be of same dimensions as this.
      */
     CSCSparseMatrix<T>& operator=(const CSCSparseMatrix<T>& other) {
@@ -213,7 +213,7 @@ struct CSCSparseMatrix {
      * May allocate memory if nnz != other.nnz, if not then 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes of memory are allocated on the heap.
      * @param other SparseMatrix to copy from.
      * @return Reference to this.
-     * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+     * @throws InvalidSizeException If 'other' does not have same dimensions as this.
      * @note 'other' must be of same dimensions as this.
      * @note 'OTHER_T' must be able to implicitly convert to 'T'.
      * @tparam OTHER_T Scalar type of the 'other' SparseMatrix.
@@ -284,7 +284,7 @@ struct CSCSparseMatrix {
     * Does not allocate memory on the heap.
     * @param other SparseMatrix to move from.
     * @return Reference to this.
-    * @throws InvalidDimensionException If 'other' does not have same dimensions as this.
+    * @throws InvalidSizeException If 'other' does not have same dimensions as this.
     * @note 'other' must be of same dimensions as this.
     */
     CSCSparseMatrix<T>& operator=(CSCSparseMatrix<T>&& other) noexcept {

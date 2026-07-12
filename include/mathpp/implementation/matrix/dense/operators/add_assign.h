@@ -48,7 +48,7 @@ T& operator+=(T& a, const U& b) {
  *
  *
  * @return Reference to 'a' matrix.
- * @throws InvalidDimensionException If 'a', and 'b' are not of same dimensions.
+ * @throws InvalidSizeException If 'a', and 'b' are not of same dimensions.
  * @note Both dense matrix like object params must be of same dimensions.
  */
 template<dense_matrix_like T, dense_matrix_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>

@@ -45,7 +45,7 @@ T& operator+=(T& a, const U& b) {
  *
  *
  * @return Reference to 'a' vector.
- * @throws InvalidDimensionException If 'a', and 'b' are not of same size.
+ * @throws InvalidSizeException If 'a', and 'b' are not of same size.
  * @note Both dense vector like object params must be of same size.
  */
 template<dense_vector_like T, dense_vector_like U> requires has_common_type<typename T::ValueType, typename U::ValueType>

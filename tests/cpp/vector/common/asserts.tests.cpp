@@ -27,5 +27,5 @@ TEST(vector_assert_same_size, given_vector_of_diff_size_should_return_false) {
     constexpr sized_vector_like<2, int> b;
     constexpr sized_vector_like<3, std::complex<double>> c;
     // act / assert
-    ASSERT_THROW(assert_same_size(a, b, c), InvalidDimensionException);
+    ASSERT_THROW(assert_same_size(a, b, c), InvalidSizeException);
 }

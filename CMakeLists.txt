@@ -40,7 +40,7 @@ if (MATHPP_BUILD_TESTS)
     FetchContent_MakeAvailable(googletest)
 
     # get all test source files
-    file(GLOB_RECURSE TEST_SRCS "tests/*.cpp")
+    file(GLOB_RECURSE TEST_SRCS "tests/cpp/*.cpp")
 
     # define gtest executable
     add_executable(mathpp-tests ${TEST_SRCS})
@@ -92,11 +92,45 @@ if (MATHPP_PYTHON_BINDINGS)
     # make sure python 3 is installed
     find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
 
+    # find all py bindings source files
+    file(GLOB_RECURSE PYTHON_BINDINGS_SRCS "bindings/python/*.cpp")
+
     # add py module
-    pybind11_add_module(mathpp-py-bindings bindings/python.cpp)
+    pybind11_add_module(mathpy MODULE ${PYTHON_BINDINGS_SRCS} bindings/python/main.h)
 
     # link with mathpp
-    target_link_libraries(mathpp-py-bindings PRIVATE mathpp)
+    target_link_libraries(mathpy PRIVATE mathpp)
+
+    # packaging stuff
+    set(MATHPY_STAGING_DIR "${CMAKE_CURRENT_BINARY_DIR}/wheel_staging")
+    set(MATHPY_MODULE_DIR "${MATHPY_STAGING_DIR}/mathpy")
+
+    add_custom_target(mathpy-package
+            # delete old stuff
+            COMMAND ${Python_EXECUTABLE} -c "import shutil; shutil.rmtree(r'${MATHPY_STAGING_DIR}', ignore_errors=True)"
+            # make module directory
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${MATHPY_MODULE_DIR}"
+
+            # copy .so bindings into staging module folder
+            COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:mathpy>" "${MATHPY_MODULE_DIR}/"
+
+            COMMAND ${Python_EXECUTABLE} -c "with open(r'${MATHPY_MODULE_DIR}/__init__.py', 'w') as f: f.write('from .mathpy import *\\n')"
+
+            # generate stubs into staging folder
+            COMMAND ${Python_EXECUTABLE} -m pybind11_stubgen mathpy
+            --output-dir "${MATHPY_STAGING_DIR}"
+
+            # write into staging dir a pyproject.toml
+            COMMAND ${Python_EXECUTABLE} -c "with open(r'${CMAKE_SOURCE_DIR}/bindings/python/pyproject.toml', 'r') as i, open(r'${MATHPY_STAGING_DIR}/pyproject.toml', 'w') as o: o.write(i.read())"
+
+            # build the wheel from pyproject.toml
+            COMMAND ${Python_EXECUTABLE} -m build --wheel "${MATHPY_STAGING_DIR}"
+
+            # dont do this stuff until mathpy is alr built
+            DEPENDS mathpy
+            COMMENT "Generating stubbs and packaging mathpy wheel..."
+            VERBATIM
+    )
 endif ()
 
 # other bindings (etc.)

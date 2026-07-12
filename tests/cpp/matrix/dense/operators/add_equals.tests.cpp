@@ -33,7 +33,7 @@ TEST(dense_matrix_add_assign, given_2_dense_matrices_of_diff_size_should_throw) 
     DenseMatrix<float> a = {{1, 2}, {3, 4}};
     const DenseMatrix<int> b = {{3, 5, 8}, {3, -1, 5}, {4, -6, 8}};
     // act / assert
-    ASSERT_THROW(add_assign(a, b), InvalidDimensionException);
+    ASSERT_THROW(add_assign(a, b), InvalidSizeException);
 }
 
 TEST(dense_matrix_add_equals_operator, given_dense_matrix_should_modify_dense_matrix) {

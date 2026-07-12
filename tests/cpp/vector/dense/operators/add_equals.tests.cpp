@@ -33,7 +33,7 @@ TEST(dense_vector_add_assign, given_2_dense_matrices_of_diff_size_should_throw) 
     DenseVector<float> a = {1, 2, 3};
     const DenseVector<int> b = {1, 2, 3, 4};
     // act / assert
-    ASSERT_THROW(add_assign(a, b), InvalidDimensionException);
+    ASSERT_THROW(add_assign(a, b), InvalidSizeException);
 }
 
 TEST(dense_vector_add_equals_operator, given_dense_vector_should_modify_dense_vector) {

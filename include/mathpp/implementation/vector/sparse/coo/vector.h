@@ -111,7 +111,7 @@ struct CooSparseVector {
      * May allocate 'other.nnz * sizeof(T) + other.nnz * sizeof(std::size_t)' bytes of memory on the heap if number of non-zero elements here doesn't match number of non-zero elements in 'other'.
      * @param other SparseVector to copy from.
      * @return Reference to this.
-     * @throws InvalidDimensionException If 'other' does not have same size as this.
+     * @throws InvalidSizeException If 'other' does not have same size as this.
      * @note 'other' must be of same size as this.
      */
     CooSparseVector<T>& operator=(const CooSparseVector<T>& other) {
@@ -141,7 +141,7 @@ struct CooSparseVector {
      * May allocate 'other.nnz * sizeof(T) + other.nnz * sizeof(std::size_t)' bytes of memory on the heap if number of non-zero elements here doesn't match number of non-zero elements in 'other'.
      * @param other SparseVector to copy from.
      * @return Reference to this.
-     * @throws InvalidDimensionException If 'other' does not have same size as this.
+     * @throws InvalidSizeException If 'other' does not have same size as this.
      * @note 'other' must be of same size as this.
      * @note 'OTHER_T' must be able to implicitly convert to 'T'.
      * @tparam OTHER_T Scalar type of the 'other' DenseVector.
@@ -189,7 +189,7 @@ struct CooSparseVector {
     * Does not allocate memory on the heap.
     * @param other SparseVector to move from.
     * @return Reference to this.
-    * @throws InvalidDimensionException If 'other' does not have same size as this.
+    * @throws InvalidSizeException If 'other' does not have same size as this.
     * @note 'other' must be of same size as this.
     */
     CooSparseVector<T>& operator=(CooSparseVector<T>&& other) noexcept {

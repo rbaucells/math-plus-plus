@@ -10,7 +10,7 @@ template<vector_like T, vector_like U, vector_like... ARGS>
 inline void assert_same_size(const T& a, const U& b, const ARGS&... args) {
     Telemetry::emit_dimension_check();
     if (!(a.n() == b.n() && ((a.n() == args.n()) && ...))) {
-        throw InvalidDimensionException("Dense vectors must all be of same size");
+        throw InvalidSizeException("Dense vectors must all be of same size");
     }
 }
 
