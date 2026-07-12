@@ -118,7 +118,7 @@ if (MATHPP_PYTHON_BINDINGS)
 
             # generate stubs into staging folder
             COMMAND ${Python_EXECUTABLE} -m pybind11_stubgen mathpy
-            --output-dir "${MATHPY_STAGING_DIR}"
+            --output-dir "${MATHPY_MODULE_DIR}"
 
             # write into staging dir a pyproject.toml
             COMMAND ${Python_EXECUTABLE} -c "with open(r'${CMAKE_SOURCE_DIR}/bindings/python/pyproject.toml', 'r') as i, open(r'${MATHPY_STAGING_DIR}/pyproject.toml', 'w') as o: o.write(i.read())"
