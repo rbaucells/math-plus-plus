@@ -16,40 +16,40 @@ PYBIND11_MODULE(mathpy, m) {
     compare_bindings(m);
 }
 
-py::dtype get_py_int_dtype(const py::int_& obj) {
-    const bool negative = obj < py::int_(0);
+py::dtype get_py_int_dtype(const py::int_& pyInt) {
+    const bool negative = pyInt < py::int_(0);
 
     if (negative) { // signed
-        if (obj > py::int_(std::numeric_limits<int8_t>::min())) {
+        if (pyInt > py::int_(std::numeric_limits<int8_t>::min())) {
             return py::dtype::of<int8_t>();
         }
 
-        if (obj > py::int_(std::numeric_limits<int16_t>::min())) {
+        if (pyInt > py::int_(std::numeric_limits<int16_t>::min())) {
             return py::dtype::of<int16_t>();
         }
 
-        if (obj > py::int_(std::numeric_limits<int32_t>::min())) {
+        if (pyInt > py::int_(std::numeric_limits<int32_t>::min())) {
             return py::dtype::of<int32_t>();
         }
 
-        if (obj > py::int_(std::numeric_limits<int64_t>::min())) {
+        if (pyInt > py::int_(std::numeric_limits<int64_t>::min())) {
             return py::dtype::of<int64_t>();
         }
     }
     else { // unsigned
-        if (obj < py::int_(std::numeric_limits<uint8_t>::max())) {
+        if (pyInt < py::int_(std::numeric_limits<uint8_t>::max())) {
             return py::dtype::of<uint8_t>();
         }
 
-        if (obj < py::int_(std::numeric_limits<uint16_t>::max())) {
+        if (pyInt < py::int_(std::numeric_limits<uint16_t>::max())) {
             return py::dtype::of<uint16_t>();
         }
 
-        if (obj < py::int_(std::numeric_limits<uint32_t>::max())) {
+        if (pyInt < py::int_(std::numeric_limits<uint32_t>::max())) {
             return py::dtype::of<uint32_t>();
         }
 
-        if (obj < py::int_(std::numeric_limits<uint64_t>::max())) {
+        if (pyInt < py::int_(std::numeric_limits<uint64_t>::max())) {
             return py::dtype::of<uint64_t>();
         }
     }
@@ -81,9 +81,9 @@ py::dtype get_dtype(const py::handle& obj) {
     throw py::type_error("Unsupported object type");
 }
 
-py::dtype get_common_dtype(const py::object& obj) {
-    if (py::isinstance<py::array>(obj)) {
-        const auto arr = py::cast<py::array>(obj);
+py::dtype get_common_dtype(const py::iterable& iterable) {
+    if (py::isinstance<py::array>(iterable)) {
+        const auto arr = py::cast<py::array>(iterable);
         const auto dt = arr.dtype();
 
         if (!dt.is(py::dtype::of<py::object>())) {
@@ -91,12 +91,10 @@ py::dtype get_common_dtype(const py::object& obj) {
         }
     }
 
-    const py::iterable values = obj;
-
-    py::tuple dtypes(py::len(values));
+    py::tuple dtypes(py::len(iterable));
 
     std::size_t i = 0;
-    for (py::handle val: values) {
+    for (py::handle val: iterable) {
         dtypes[i] = get_dtype(val);
         ++i;
     }

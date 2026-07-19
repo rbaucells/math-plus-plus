@@ -120,9 +120,9 @@ struct PyWrapper {
     PyWrapper(T v) : storage(std::move(v)) {}
 };
 
-py::dtype get_py_int_dtype(const py::int_& obj);
+py::dtype get_py_int_dtype(const py::int_& pyInt);
 py::dtype get_dtype(const py::handle& obj);
-py::dtype get_common_dtype(const py::object& obj);
+py::dtype get_common_dtype(const py::iterable& iterable);
 
 void compare_bindings(pybind11::module_& m);
 
