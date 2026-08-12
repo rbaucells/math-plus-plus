@@ -4,7 +4,7 @@
 
 TEST(scalar_compare, given_int_and_double_should_return_true) {
     // act
-    const bool result = compare(1, 1.l);
+    const bool result = compare(1, 1);
     // assert
     ASSERT_TRUE(result);
 }

@@ -35,7 +35,6 @@ def test_get_common_dtype():
     # act / assert
     assert mathpy.get_common_dtype(a) == numpy.dtypes.Int16DType()
     # arrange
-    # b = numpy.array(numpy.int32(-12), numpy.uint32(12))
     b = [numpy.int32(-12), numpy.uint32(12)]
     # act / assert
     assert mathpy.get_common_dtype(b) == numpy.dtypes.Int64DType()
