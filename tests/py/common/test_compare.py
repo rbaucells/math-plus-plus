@@ -171,3 +171,129 @@ def test_precision_and_iterable_compare():
     # act
     with pytest.raises(TypeError):
         mathpy.compare(mathpy.Precision(numpy.uint8(4)), numpy.array([m, n, o]))
+
+def test_args_compare():
+    # arrange
+    a = 1.0
+    b = 1.0
+    # act
+    abResult = mathpy.compare(a, b)
+    # assert
+    assert abResult
+    # arrange
+    c = numpy.float64(1.0)
+    d = 1.0
+    # act
+    cdResult = mathpy.compare(c, d)
+    # assert
+    assert cdResult
+    # arrange
+    e = 1.0
+    f = 0.9
+    # act
+    efResult = mathpy.compare(e, f)
+    # assert
+    assert not efResult
+    # arrange
+    g = numpy.complex128(2 - 4j)
+    h = numpy.complex64(2 - 4j)
+    # act
+    ghResult = mathpy.compare(g, h)
+    # assert
+    assert ghResult
+    # arrange
+    i = numpy.complex64(2 - 4j)
+    j = numpy.complex64(1.9 - 3.9j)
+    # act
+    ijResult = mathpy.compare(i, j)
+    # assert
+    assert not ijResult
+    # arrange
+    k = 1
+    l = numpy.uint16(1)
+    # act
+    klResult = mathpy.compare(k, l)
+    # assert
+    assert klResult
+    # arrange
+    m = 1
+    n = 2
+    o = 3
+    # act
+    mnoResult = mathpy.compare(m, n, o)
+    # assert
+    assert not mnoResult
+    # arrange
+    p = 1
+    q = 1.0
+    r = 1 + 0j
+    # act
+    pqrResult = mathpy.compare(p, q, r)
+    # assert
+    assert pqrResult
+    # arrange / act / assert
+    with pytest.raises(TypeError):
+        mathpy.compare("hello", 1.0)
+
+def test_iterable_compare():
+    # arrange
+    a = 1.0
+    b = 1.0
+    # act
+    abResult = mathpy.compare([a, b])
+    # assert
+    assert abResult
+    # arrange
+    c = numpy.float64(1.0)
+    d = numpy.int64(1)
+    # act
+    cdResult = mathpy.compare(numpy.array([c, d]))
+    # assert
+    assert cdResult
+    # arrange
+    e = 1.0
+    f = 0.9
+    # act
+    efResult = mathpy.compare([e, f])
+    # assert
+    assert not efResult
+    # arrange
+    g = numpy.complex64(2 - 4j)
+    h = numpy.complex128(2 - 4j)
+    # act
+    ghResult = mathpy.compare(numpy.array([g, h]))
+    # assert
+    assert ghResult
+    # arrange
+    i = numpy.complex64(2 - 4j)
+    j = numpy.complex64(1.9 - 3.9j)
+    # act
+    ijResult = mathpy.compare(numpy.array([i, j]))
+    # assert
+    assert not ijResult
+    # arrange
+    k = 1
+    l = numpy.uint32(1)
+    # act
+    klResult = mathpy.compare([k, l])
+    # assert
+    assert klResult
+    # arrange
+    m = 1
+    n = 2
+    o = 3
+    # act
+    mnoResult = mathpy.compare([m, n, o])
+    # assert
+    assert not mnoResult
+    # arrange
+    p = 1
+    q = 1.0
+    r = 1 + 0j
+    # act
+    pqrResult = mathpy.compare([p, q, r])
+    # assert
+    assert pqrResult
+    # arrange / act / assert
+    with pytest.raises(TypeError):
+        mathpy.compare(["hello", 1.0])
