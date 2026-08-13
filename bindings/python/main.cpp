@@ -13,7 +13,10 @@ PYBIND11_MODULE(mathpy, m) {
     m.def("get_py_int_dtype", &get_py_int_dtype, py::arg("obj"), "Given a py builtin int type calculates the numpy dtype that can fit the int");
     m.def("get_dtype", &get_dtype, py::arg("obj"), "Given a numpy number or builtin py type gives a numpy dtype");
     m.def("get_common_dtype", &get_common_dtype, py::arg("obj"), "Given a container of py builtin number types or numpy types computes a common dtype");
+
     compare_bindings(m);
+    precision_bindings(m);
+    rotation_bindings(m);
 }
 
 py::dtype get_py_int_dtype(const py::int_& pyInt) {

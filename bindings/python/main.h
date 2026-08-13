@@ -125,5 +125,7 @@ py::dtype get_dtype(const py::handle& obj);
 py::dtype get_common_dtype(const py::iterable& iterable);
 
 void compare_bindings(pybind11::module_& m);
+void precision_bindings(pybind11::module_& m);
+void rotation_bindings(pybind11::module_& m);
 
 #endif //MATHPP_PYTHON_BINDINGS_MAIN_H
