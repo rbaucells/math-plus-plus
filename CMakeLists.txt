@@ -21,7 +21,7 @@ if (MATHPP_PYTHON_BINDINGS)
 endif ()
 
 # find all impl headers
-file(GLOB_RECURSE IMPL_HEADERS "mathpp/implementation/*.h")
+file(GLOB_RECURSE IMPL_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/include/mathpp/implementation/*.h")
 
 # header only library
 add_library(mathpp INTERFACE ${IMPL_HEADERS})

@@ -105,7 +105,7 @@ struct DenseMatrix {
      * @tparam U Scalar type of other DenseMatrix.
      * @param other DenseMatrix to copy from.
      */
-    template<scalar U> requires std::is_convertible_v<U, T>
+    template<scalar U> requires is_lossless_convertible<U, T>
     DenseMatrix(const DenseMatrix<U>& other) : rows_(other.rows()), columns_(other.columns()), data_(new T[columns_ * rows_]) {
         std::copy(other.rawData(), other.rawData() + (rows_ * columns_), data_);
 
@@ -122,7 +122,7 @@ struct DenseMatrix {
      * @tparam U Type that fulfills 'dense_matrix_like' concept.
      * @param other Dense matrix like object to copy from.
      */
-    template<dense_matrix_like U> requires std::is_convertible_v<typename U::ValueType, T>
+    template<dense_matrix_like U> requires is_lossless_convertible<typename U::ValueType, T>
     DenseMatrix(const U& other) : rows_(other.rows()), columns_(other.columns()), data_(new T[columns_ * rows_]) {
         for (std::size_t c = 0; c < columns_; c++) {
             for (std::size_t r = 0; r < rows_; r++) {
@@ -188,7 +188,7 @@ struct DenseMatrix {
      * @param other DenseMatrix to copy from.
      * @return Reference to this matrix.
      */
-    template<scalar U> requires std::convertible_to<U, T>
+    template<scalar U> requires is_lossless_convertible<U, T>
     DenseMatrix<T>& operator=(const U& other) {
         if (this->rows_ != other.rows() || this->columns_ != other.columns()) {
             Telemetry::emit_deallocation();
@@ -216,7 +216,7 @@ struct DenseMatrix {
      * @param other Dense matrix like object to copy from.
      * @return Reference to this matrix
      */
-    template<dense_matrix_like U> requires std::convertible_to<typename U::ValueType, T>
+    template<dense_matrix_like U> requires is_lossless_convertible<typename U::ValueType, T>
     DenseMatrix<T>& operator=(const U& other) {
         if (this->rows_ != other.rows() || this->columns_ != other.columns()) {
             Telemetry::emit_deallocation();
@@ -345,6 +345,33 @@ struct DenseMatrix {
         Telemetry::emit_deallocation();
 
         data_ = newData;
+    }
+
+    /**
+     * @brief Creates a new matrix that is an exact copy of this represented as a DenseMatrix<U>.
+     * @tparam U Scalar type of new dense matrix.
+     * @return Copy of this of type DenseMatrix<U>.
+     * @warning Does not follow standard conversion rules, will convert any type to any type even if it means losing precision.
+     */
+    template<scalar U>
+    DenseMatrix<U> as_type() {
+        if constexpr (std::is_same_v<U, T>) {
+            return *this;
+        }
+        else if constexpr (is_lossless_convertible<U, T>) {
+            return DenseMatrix<U>(*this);
+        }
+        else {
+            DenseMatrix<U> result = DenseMatrix<U>(rows(), columns(), false);
+
+            for (int r = 0; r < rows(); r++) {
+                for (int c = 0; c < columns(); c++) {
+                    result[r, c] = static_cast<U>(std::real((*this)[r, c]));
+                }
+            }
+
+            return result;
+        }
     }
 
     /**

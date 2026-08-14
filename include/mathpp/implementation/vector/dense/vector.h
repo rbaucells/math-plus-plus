@@ -93,7 +93,7 @@ struct DenseVector {
      * @tparam U Scalar type of other DenseVector.
      * @param other DenseVector to copy from.
      */
-    template<scalar U> requires std::is_convertible_v<U, T>
+    template<scalar U> requires is_lossless_convertible<U, T>
     DenseVector(const DenseVector<U>& other) : n_(other.n()), data_(new T[n_]) {
         std::copy(other.rawData(), other.rawData() + n_, data_);
 
@@ -110,7 +110,7 @@ struct DenseVector {
      * @tparam U Type that fulfills 'dense_vector_like' concept.
      * @param other Dense vector like object to copy from.
      */
-    template<dense_vector_like U> requires std::is_convertible_v<typename U::ValueType, T>
+    template<dense_vector_like U> requires is_lossless_convertible<typename U::ValueType, T>
     DenseVector(const U& other) : n_(other.n()), data_(new T[n_]) {
         for (std::size_t i = 0; i < n_; i++) {
             data_[i] = other[i];
@@ -173,7 +173,7 @@ struct DenseVector {
      * @param other DenseVector to copy from.
      * @return Reference to this vector.
      */
-    template<scalar U> requires std::convertible_to<U, T>
+    template<scalar U> requires is_lossless_convertible<U, T>
     DenseVector<T>& operator=(const U& other) {
         if (this->n_ != other.n()) {
             Telemetry::emit_deallocation();
@@ -200,7 +200,7 @@ struct DenseVector {
      * @param other Dense vector like object to copy from.
      * @return Reference to this vector
      */
-    template<dense_vector_like U> requires std::convertible_to<typename U::ValueType, T>
+    template<dense_vector_like U> requires is_lossless_convertible<typename U::ValueType, T>
     DenseVector<T>& operator=(const U& other) {
         if (this->n_ != other.n()) {
             Telemetry::emit_deallocation();
@@ -315,6 +315,31 @@ struct DenseVector {
         Telemetry::emit_deallocation();
 
         data_ = newData;
+    }
+
+    /**
+     * @brief Creates a new vector that is an exact copy of this represented as a DenseVector<U>.
+     * @tparam U Scalar type of new dense vector.
+     * @return Copy of this of type DenseVector<U>.
+     * @warning Does not follow standard conversion rules, will convert any type to any type even if it means losing precision.
+     */
+    template<scalar U>
+    DenseVector<U> as_type() {
+        if constexpr (std::is_same_v<U, T>) {
+            return *this;
+        }
+        else if constexpr (is_lossless_convertible<U, T>) {
+            return DenseVector<U>(*this);
+        }
+        else {
+            DenseVector<U> result = DenseVector<U>(n(), false);
+
+            for (int i = 0; i < n(); i++) {
+                result[i] = static_cast<U>(std::real(data_[i]));
+            }
+
+            return result;
+        }
     }
 
     /**

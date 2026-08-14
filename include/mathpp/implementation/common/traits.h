@@ -56,4 +56,9 @@ using underlying_type_t = underlying_type<T>::ValueType;
 template<typename... T>
 concept has_common_type = requires { typename std::common_type_t<T...>; };
 
+template <typename From, typename To>
+concept is_lossless_convertible = requires(From f) {
+    { To{f} };
+};
+
 #endif // MATHPP_IMPLEMENTATION_COMMON_TRAITS_H
