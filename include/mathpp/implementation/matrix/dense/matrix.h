@@ -354,7 +354,7 @@ struct DenseMatrix {
      * @warning Does not follow standard conversion rules, will convert any type to any type even if it means losing precision.
      */
     template<scalar U>
-    DenseMatrix<U> as_type() {
+    DenseMatrix<U> as_type() const {
         if constexpr (std::is_same_v<U, T>) {
             return *this;
         }
