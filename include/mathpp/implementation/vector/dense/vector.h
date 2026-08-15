@@ -328,7 +328,7 @@ struct DenseVector {
         if constexpr (std::is_same_v<U, T>) {
             return *this;
         }
-        else if constexpr (is_lossless_convertible<U, T>) {
+        else if constexpr (is_lossless_convertible<T, U>) {
             return DenseVector<U>(*this);
         }
         else {
