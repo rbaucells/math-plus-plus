@@ -1,5 +1,5 @@
-#ifndef MATHPP_IMPLEMENTATION_VECTOR_DENSE_VECTOR
-#define MATHPP_IMPLEMENTATION_VECTOR_DENSE_VECTOR
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_DENSE_VECTOR_H
+#define MATHPP_IMPLEMENTATION_VECTOR_DENSE_VECTOR_H
 
 #include <algorithm>
 #include <cstddef>
@@ -93,7 +93,7 @@ struct DenseVector {
      * @tparam U Scalar type of other DenseVector.
      * @param other DenseVector to copy from.
      */
-    template<scalar U> requires is_lossless_convertible<U, T>
+    template<scalar U> requires lossless_convertible<U, T>
     DenseVector(const DenseVector<U>& other) : n_(other.n()), data_(new T[n_]) {
         std::copy(other.rawData(), other.rawData() + n_, data_);
 
@@ -110,7 +110,7 @@ struct DenseVector {
      * @tparam U Type that fulfills 'dense_vector_like' concept.
      * @param other Dense vector like object to copy from.
      */
-    template<dense_vector_like U> requires is_lossless_convertible<typename U::ValueType, T>
+    template<dense_vector_like U> requires lossless_convertible<typename U::ValueType, T>
     DenseVector(const U& other) : n_(other.n()), data_(new T[n_]) {
         for (std::size_t i = 0; i < n_; i++) {
             data_[i] = other[i];
@@ -173,7 +173,7 @@ struct DenseVector {
      * @param other DenseVector to copy from.
      * @return Reference to this vector.
      */
-    template<scalar U> requires is_lossless_convertible<U, T>
+    template<scalar U> requires lossless_convertible<U, T>
     DenseVector<T>& operator=(const U& other) {
         if (this->n_ != other.n()) {
             Telemetry::emit_deallocation();
@@ -200,7 +200,7 @@ struct DenseVector {
      * @param other Dense vector like object to copy from.
      * @return Reference to this vector
      */
-    template<dense_vector_like U> requires is_lossless_convertible<typename U::ValueType, T>
+    template<dense_vector_like U> requires lossless_convertible<typename U::ValueType, T>
     DenseVector<T>& operator=(const U& other) {
         if (this->n_ != other.n()) {
             Telemetry::emit_deallocation();
@@ -328,7 +328,7 @@ struct DenseVector {
         if constexpr (std::is_same_v<U, T>) {
             return *this;
         }
-        else if constexpr (is_lossless_convertible<T, U>) {
+        else if constexpr (lossless_convertible<T, U>) {
             return DenseVector<U>(*this);
         }
         else {
@@ -467,4 +467,4 @@ private:
     T* data_;
 };
 
-#endif // MATHPP_IMPLEMENTATION_VECTOR_DENSE_VECTOR
+#endif // MATHPP_IMPLEMENTATION_VECTOR_DENSE_VECTOR_H

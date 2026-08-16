@@ -1,7 +1,7 @@
-#ifndef MATHPP_VECTOR_COMMON_ALL
-#define MATHPP_VECTOR_COMMON_ALL
+#ifndef MATHPP_VECTOR_COMMON_ALL_H
+#define MATHPP_VECTOR_COMMON_ALL_H
 
 #include "base.h"
 #include "operators.h"
 
-#endif // MATHPP_VECTOR_COMMON_ALL
+#endif // MATHPP_VECTOR_COMMON_ALL_H

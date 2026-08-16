@@ -1,5 +1,5 @@
-#ifndef MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_OPERATORS_COMPARE
-#define MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_OPERATORS_COMPARE
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_OPERATORS_COMPARE_H
+#define MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_OPERATORS_COMPARE_H
 
 #include <type_traits>
 #include <cstddef>
@@ -77,4 +77,4 @@ SparseMatrixCompareExpr<T, U> operator==(const T& a, const U& b) {
     return SparseMatrixCompareExpr<T, U>(Precision(epsilon<underlying_type_t<std::common_type_t<typename T::ValueType, typename U::ValueType>>>()), a, b);
 }
 
-#endif // MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_OPERATORS_COMPARE
+#endif // MATHPP_IMPLEMENTATION_MATRIX_SPARSE_COMMON_OPERATORS_COMPARE_H

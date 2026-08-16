@@ -1,5 +1,5 @@
-#ifndef MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSR_TRAITS
-#define MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSR_TRAITS
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSR_TRAITS_H
+#define MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSR_TRAITS_H
 
 #include <concepts>
 #include <type_traits>
@@ -59,4 +59,4 @@ inline constexpr bool is_csr_sparse_matrix_view_v = is_csr_sparse_matrix_view<T>
 template<typename T>
 concept csr_sparse_matrix_view = is_csr_sparse_matrix_view_v<T>;
 
-#endif // MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSR_TRAITS
+#endif // MATHPP_IMPLEMENTATION_MATRIX_SPARSE_CSR_TRAITS_H

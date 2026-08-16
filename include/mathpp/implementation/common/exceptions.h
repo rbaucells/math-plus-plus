@@ -1,5 +1,5 @@
-#ifndef MATHPP_IMPLEMENTATION_COMMON_EXCEPTIONS
-#define MATHPP_IMPLEMENTATION_COMMON_EXCEPTIONS
+#ifndef MATHPP_IMPLEMENTATION_COMMON_EXCEPTIONS_H
+#define MATHPP_IMPLEMENTATION_COMMON_EXCEPTIONS_H
 
 #include <stdexcept>
 
@@ -24,4 +24,4 @@ struct InvalidIndexException final : std::invalid_argument {
     using std::invalid_argument::invalid_argument;
 };
 
-#endif // MATHPP_IMPLEMENTATION_COMMON_EXCEPTIONS
+#endif // MATHPP_IMPLEMENTATION_COMMON_EXCEPTIONS_H

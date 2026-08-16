@@ -1,4 +1,4 @@
-#ifndef MATHPP_MATRIX_SPARSE_ALL
+#ifndef MATHPP_MATRIX_SPARSE_ALL_H
 #define MATHPP_MATRIX_SPARSE_ALL_H
 
 #include "common/all.h"

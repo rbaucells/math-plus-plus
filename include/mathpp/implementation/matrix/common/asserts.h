@@ -1,5 +1,5 @@
-#ifndef MATHPP_IMPLEMENTATION_MATRIX_COMMON_ASSERTS
-#define MATHPP_IMPLEMENTATION_MATRIX_COMMON_ASSERTS
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_COMMON_ASSERTS_H
+#define MATHPP_IMPLEMENTATION_MATRIX_COMMON_ASSERTS_H
 
 #include "mathpp/implementation/common/exceptions.h"
 #include "mathpp/implementation/common/telemetry.h"
@@ -45,4 +45,4 @@ void assert_can_multiply(const T& a, const U& b) {
     }
 }
 
-#endif // MATHPP_IMPLEMENTATION_MATRIX_COMMON_ASSERTS
+#endif // MATHPP_IMPLEMENTATION_MATRIX_COMMON_ASSERTS_H

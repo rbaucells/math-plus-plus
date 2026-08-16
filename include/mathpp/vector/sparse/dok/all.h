@@ -1,8 +1,8 @@
-#ifndef MATHPP_VECTOR_SPARSE_DOK_ALL
-#define MATHPP_VECTOR_SPARSE_DOK_ALL
+#ifndef MATHPP_VECTOR_SPARSE_DOK_ALL_H
+#define MATHPP_VECTOR_SPARSE_DOK_ALL_H
 
 #include "base.h"
 #include "operators.h"
 #include "types.h"
 
-#endif // MATHPP_VECTOR_SPARSE_DOK_ALL
+#endif // MATHPP_VECTOR_SPARSE_DOK_ALL_H

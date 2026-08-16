@@ -57,8 +57,19 @@ template<typename... T>
 concept has_common_type = requires { typename std::common_type_t<T...>; };
 
 template <typename From, typename To>
-concept is_lossless_convertible = requires(From f) {
-    { To{f} };
+struct is_lossless_convertible {
+    static constexpr bool int_to_int_narrowing = std::is_integral_v<From> && std::is_integral_v<To> && std::numeric_limits<To>::digits < std::numeric_limits<From>::digits;
+    static constexpr bool float_to_int_narrowing = std::is_floating_point_v<From> && std::is_integral_v<To>;
+    static constexpr bool int_to_float_narrowing = std::is_integral_v<From> && std::is_floating_point_v<To> && std::numeric_limits<From>::digits < std::numeric_limits<To>::digits;
+    static constexpr bool float_to_float_narrowing = std::is_floating_point_v<From> && std::is_floating_point_v<To> && (sizeof(To) < sizeof(From));
+
+    static constexpr bool value = !(int_to_int_narrowing || float_to_int_narrowing || int_to_float_narrowing || float_to_float_narrowing);
 };
+
+template <typename From, typename To>
+inline constexpr bool is_lossless_convertible_v = is_lossless_convertible<From, To>::value;
+
+template <typename From, typename To>
+concept lossless_convertible = is_lossless_convertible_v<From, To>;
 
 #endif // MATHPP_IMPLEMENTATION_COMMON_TRAITS_H

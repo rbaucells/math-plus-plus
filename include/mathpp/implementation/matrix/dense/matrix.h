@@ -1,5 +1,5 @@
-#ifndef MATHPP_IMPLEMENTATION_MATRIX_DENSE_MATRIX
-#define MATHPP_IMPLEMENTATION_MATRIX_DENSE_MATRIX
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_DENSE_MATRIX_H
+#define MATHPP_IMPLEMENTATION_MATRIX_DENSE_MATRIX_H
 
 #include <algorithm>
 #include <cstddef>
@@ -123,7 +123,7 @@ struct DenseMatrix {
      * @tparam U Scalar type of other DenseMatrix.
      * @param other DenseMatrix to copy from.
      */
-    template<scalar U> requires is_lossless_convertible<U, T>
+    template<scalar U> requires lossless_convertible<U, T>
     DenseMatrix(const DenseMatrix<U>& other) : rows_(other.rows()), columns_(other.columns()), data_(new T[columns_ * rows_]) {
         std::copy(other.rawData(), other.rawData() + (rows_ * columns_), data_);
 
@@ -140,7 +140,7 @@ struct DenseMatrix {
      * @tparam U Type that fulfills 'dense_matrix_like' concept.
      * @param other Dense matrix like object to copy from.
      */
-    template<dense_matrix_like U> requires is_lossless_convertible<typename U::ValueType, T>
+    template<dense_matrix_like U> requires lossless_convertible<typename U::ValueType, T>
     DenseMatrix(const U& other) : rows_(other.rows()), columns_(other.columns()), data_(new T[columns_ * rows_]) {
         for (std::size_t c = 0; c < columns_; c++) {
             for (std::size_t r = 0; r < rows_; r++) {
@@ -206,7 +206,7 @@ struct DenseMatrix {
      * @param other DenseMatrix to copy from.
      * @return Reference to this matrix.
      */
-    template<scalar U> requires is_lossless_convertible<U, T>
+    template<scalar U> requires lossless_convertible<U, T>
     DenseMatrix<T>& operator=(const U& other) {
         if (this->rows_ != other.rows() || this->columns_ != other.columns()) {
             Telemetry::emit_deallocation();
@@ -234,7 +234,7 @@ struct DenseMatrix {
      * @param other Dense matrix like object to copy from.
      * @return Reference to this matrix
      */
-    template<dense_matrix_like U> requires is_lossless_convertible<typename U::ValueType, T>
+    template<dense_matrix_like U> requires lossless_convertible<typename U::ValueType, T>
     DenseMatrix<T>& operator=(const U& other) {
         if (this->rows_ != other.rows() || this->columns_ != other.columns()) {
             Telemetry::emit_deallocation();
@@ -376,7 +376,7 @@ struct DenseMatrix {
         if constexpr (std::is_same_v<U, T>) {
             return *this;
         }
-        else if constexpr (is_lossless_convertible<T, U>) {
+        else if constexpr (lossless_convertible<T, U>) {
             return DenseMatrix<U>(*this);
         }
         else {
@@ -556,4 +556,4 @@ private:
     T* data_;
 };
 
-#endif // MATHPP_IMPLEMENTATION_MATRIX_DENSE_MATRIX
+#endif // MATHPP_IMPLEMENTATION_MATRIX_DENSE_MATRIX_H

@@ -1,5 +1,5 @@
-#ifndef MATHPP_IMPLEMENTATION_MATRIX_DENSE_TRAITS
-#define MATHPP_IMPLEMENTATION_MATRIX_DENSE_TRAITS
+#ifndef MATHPP_IMPLEMENTATION_MATRIX_DENSE_TRAITS_H
+#define MATHPP_IMPLEMENTATION_MATRIX_DENSE_TRAITS_H
 
 #include <concepts>
 #include <type_traits>
@@ -62,4 +62,4 @@ inline constexpr bool is_dense_matrix_view_v = is_dense_matrix_view<T>::value;
 template<typename T>
 concept dense_matrix_view = is_dense_matrix_view_v<T>;
 
-#endif // MATHPP_IMPLEMENTATION_MATRIX_DENSE_TRAITS
+#endif // MATHPP_IMPLEMENTATION_MATRIX_DENSE_TRAITS_H

@@ -1,5 +1,5 @@
-#ifndef MATHPP_IMPLEMENTATION_VECTOR_COMMON_ASSERTS
-#define MATHPP_IMPLEMENTATION_VECTOR_COMMON_ASSERTS
+#ifndef MATHPP_IMPLEMENTATION_VECTOR_COMMON_ASSERTS_H
+#define MATHPP_IMPLEMENTATION_VECTOR_COMMON_ASSERTS_H
 
 #include "mathpp/implementation/common/exceptions.h"
 #include "mathpp/implementation/common/telemetry.h"
@@ -14,4 +14,4 @@ inline void assert_same_size(const T& a, const U& b, const ARGS&... args) {
     }
 }
 
-#endif // MATHPP_IMPLEMENTATION_VECTOR_COMMON_ASSERTS
+#endif // MATHPP_IMPLEMENTATION_VECTOR_COMMON_ASSERTS_H

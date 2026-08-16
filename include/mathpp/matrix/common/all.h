@@ -1,4 +1,4 @@
-#ifndef MATHPP_MATRIX_COMMON_ALL
+#ifndef MATHPP_MATRIX_COMMON_ALL_H
 #define MATHPP_MATRIX_COMMON_ALL_H
 
 #include "base.h"
