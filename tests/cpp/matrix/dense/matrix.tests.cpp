@@ -597,3 +597,48 @@ TEST(dense_matrix_raw_data, given_dense_matrix_should_return_data_pointer) {
     TelemetryTests::asserts({});
 }
 #pragma endregion
+#pragma region as_type
+TEST(dense_matrix_as_type, given_float_should_convert_to_double) {
+    // arrange
+    const DenseMatrix<float> expected = {{1.5f, 2.5f}, {3.5f, 4.5f}};
+    // act
+    TelemetryTests::start();
+    const DenseMatrix<double> result = expected.as_type<double>();
+    TelemetryTests::end();
+    // assert
+    ASSERT_TRUE(compare(result.rows(), 2));
+    ASSERT_TRUE(compare(result.columns(), 2));
+    ASSERT_TRUE(compare(Precision(0.001), result, expected));
+    TelemetryTests::asserts({.copy_constructs = 1, .allocations = 1});
+}
+
+TEST(dense_matrix_as_type, given_int_should_truncate_to_short) {
+    // arrange
+    const DenseMatrix<int> a = {{1, 2}, {3, 4}};
+    const DenseMatrix<short> expected = {{1, 2}, {3, 4}};
+    // act
+    TelemetryTests::start();
+    const DenseMatrix<short> result = a.as_type<short>();
+    TelemetryTests::end();
+    // assert
+    ASSERT_TRUE(compare(result.rows(), 2));
+    ASSERT_TRUE(compare(result.columns(), 2));
+    ASSERT_TRUE(compare(result, expected));
+    TelemetryTests::asserts({.allocations = 1});
+}
+
+TEST(dense_matrix_as_type, given_complex_double_should_truncate_to_float) {
+    // arrange
+    const DenseMatrix<std::complex<double>> a = {{1.5, 2.5}, {3.5, 4.5}};
+    const DenseMatrix<float> expected = {{1.5f, 2.5f}, {3.5f, 4.5f}};
+    // act
+    TelemetryTests::start();
+    const DenseMatrix<float> result = a.as_type<float>();
+    TelemetryTests::end();
+    // assert
+    ASSERT_TRUE(compare(result.rows(), 2));
+    ASSERT_TRUE(compare(result.columns(), 2));
+    ASSERT_TRUE(compare(Precision(0.001f), result, expected));
+    TelemetryTests::asserts({.allocations = 1});
+}
+#pragma endregion

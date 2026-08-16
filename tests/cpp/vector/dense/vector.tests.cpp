@@ -457,3 +457,45 @@ TEST(dense_vector_raw_data, given_dense_vector_should_return_data_pointer) {
     TelemetryTests::asserts({});
 }
 #pragma endregion
+#pragma region as_type
+TEST(dense_vector_as_type, given_float_should_convert_to_double) {
+    // arrange
+    const DenseVector<float> expected = {1.5f, 2.5f, 3.5f, 4.5f};
+    // act
+    TelemetryTests::start();
+    const DenseVector<double> result = expected.as_type<double>();
+    TelemetryTests::end();
+    // assert
+    ASSERT_TRUE(compare(result.n(), 4));
+    ASSERT_TRUE(compare(Precision(0.001), result, expected));
+    TelemetryTests::asserts({.copy_constructs = 1, .allocations = 1});
+}
+
+TEST(dense_vector_as_type, given_int_should_truncate_to_short) {
+    // arrange
+    const DenseVector<int> a = {1, 2, 3, 4};
+    const DenseVector<short> expected = {1, 2, 3, 4};
+    // act
+    TelemetryTests::start();
+    const DenseVector<short> result = a.as_type<short>();
+    TelemetryTests::end();
+    // assert
+    ASSERT_TRUE(compare(result.n(), 4));
+    ASSERT_TRUE(compare(result, expected));
+    TelemetryTests::asserts({.allocations = 1});
+}
+
+TEST(dense_vector_as_type, given_complex_double_should_truncate_to_float) {
+    // arrange
+    const DenseVector<std::complex<double>> a = {1.5, 2.5, 3.5, 4.5};
+    const DenseVector<float> expected = {1.5f, 2.5f, 3.5f, 4.5f};
+    // act
+    TelemetryTests::start();
+    const DenseVector<float> result = a.as_type<float>();
+    TelemetryTests::end();
+    // assert
+    ASSERT_TRUE(compare(result.n(), 4));
+    ASSERT_TRUE(compare(Precision(0.001f), result, expected));
+    TelemetryTests::asserts({.allocations = 1});
+}
+#pragma endregion
