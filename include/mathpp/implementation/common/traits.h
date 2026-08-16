@@ -60,7 +60,7 @@ template <typename From, typename To>
 struct is_lossless_convertible {
     static constexpr bool int_to_int_narrowing = std::is_integral_v<underlying_type_t<From>> && std::is_integral_v<underlying_type_t<To>> && std::numeric_limits<underlying_type_t<To>>::digits < std::numeric_limits<underlying_type_t<From>>::digits;
     static constexpr bool float_to_int_narrowing = std::is_floating_point_v<underlying_type_t<From>> && std::is_integral_v<underlying_type_t<To>>;
-    static constexpr bool int_to_float_narrowing = std::is_integral_v<underlying_type_t<From>> && std::is_floating_point_v<underlying_type_t<To>> && std::numeric_limits<underlying_type_t<From>>::digits < std::numeric_limits<underlying_type_t<To>>::digits;
+    static constexpr bool int_to_float_narrowing = std::is_integral_v<underlying_type_t<From>> && std::is_floating_point_v<underlying_type_t<To>> && std::numeric_limits<underlying_type_t<To>>::digits < std::numeric_limits<underlying_type_t<From>>::digits;
     static constexpr bool float_to_float_narrowing = std::is_floating_point_v<underlying_type_t<From>> && std::is_floating_point_v<underlying_type_t<To>> && (sizeof(underlying_type_t<To>) < sizeof(underlying_type_t<From>));
     static constexpr bool complex_to_real_narrowing = complex<From> && real<To>;
 

@@ -124,3 +124,87 @@ TEST(has_common_type, given_int_float_and_double_should_return_true) {
 TEST(has_common_type, given_int_and_complex_int_and_floatshould_return_true) {
     static_assert(has_common_type<int, float, std::complex<int>> == true);
 }
+
+TEST(is_lossless_convertible, given_float_to_double_should_return_true) {
+    static_assert(is_lossless_convertible<float, double>::value == true);
+}
+
+TEST(is_lossless_convertible, given_int_to_short_should_return_false) {
+    static_assert(is_lossless_convertible<int, short>::value == false);
+}
+
+TEST(is_lossless_convertible, given_complex_double_to_float_should_return_false) {
+    static_assert(is_lossless_convertible<std::complex<double>, float>::value == false);
+}
+
+TEST(is_lossless_convertible, given_double_to_int_should_return_false) {
+    static_assert(is_lossless_convertible<double, int>::value == false);
+}
+
+TEST(is_lossless_convertible, given_short_to_int_should_return_true) {
+    static_assert(is_lossless_convertible<short, int>::value == true);
+}
+
+TEST(is_lossless_convertible, given_long_double_to_float_should_return_false) {
+    static_assert(is_lossless_convertible<long double, float>::value == false);
+}
+
+TEST(is_lossless_convertible, given_int_to_float_should_return_false) {
+    static_assert(is_lossless_convertible<int, float>::value == false);
+}
+
+TEST(is_lossless_convertible_v, given_float_to_double_should_return_true) {
+    static_assert(is_lossless_convertible_v<float, double> == true);
+}
+
+TEST(is_lossless_convertible_v, given_int_to_short_should_return_false) {
+    static_assert(is_lossless_convertible_v<int, short> == false);
+}
+
+TEST(is_lossless_convertible_v, given_complex_double_to_float_should_return_false) {
+    static_assert(is_lossless_convertible_v<std::complex<double>, float> == false);
+}
+
+TEST(is_lossless_convertible_v, given_double_to_int_should_return_false) {
+    static_assert(is_lossless_convertible_v<double, int> == false);
+}
+
+TEST(is_lossless_convertible_v, given_short_to_int_should_return_true) {
+    static_assert(is_lossless_convertible_v<short, int> == true);
+}
+
+TEST(is_lossless_convertible_v, given_long_double_to_float_should_return_false) {
+    static_assert(is_lossless_convertible_v<long double, float> == false);
+}
+
+TEST(is_lossless_convertible_v, given_int_to_float_should_return_false) {
+    static_assert(is_lossless_convertible_v<int, float> == false);
+}
+
+TEST(lossless_convertible, given_float_to_double_should_return_true) {
+    static_assert(lossless_convertible<float, double> == true);
+}
+
+TEST(lossless_convertible, given_int_to_short_should_return_false) {
+    static_assert(lossless_convertible<int, short> == false);
+}
+
+TEST(lossless_convertible, given_complex_double_to_float_should_return_false) {
+    static_assert(lossless_convertible<std::complex<double>, float> == false);
+}
+
+TEST(lossless_convertible, given_double_to_int_should_return_false) {
+    static_assert(lossless_convertible<double, int> == false);
+}
+
+TEST(lossless_convertible, given_short_to_int_should_return_true) {
+    static_assert(lossless_convertible<short, int> == true);
+}
+
+TEST(lossless_convertible, given_long_double_to_float_should_return_false) {
+    static_assert(lossless_convertible<long double, float> == false);
+}
+
+TEST(lossless_convertible, given_int_to_float_should_return_false) {
+    static_assert(lossless_convertible<int, float> == false);
+}
