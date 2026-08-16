@@ -8,7 +8,7 @@
 #include "mathpp/implementation/matrix/dense/traits.h"
 
 void dense_matrix_like_bindings(py::module_& m) {
-    py::class_<DenseMatrixLikeBase>(m, "DenseMatrixLike", py::base<MatrixLikeBase>())
+    py::class_<DenseMatrixLikeBase, MatrixLikeBase>(m, "DenseMatrixLike")
         .def("at", [](const std::size_t r, const std::size_t c) -> py::object {
             PyErr_SetString(PyExc_NotImplementedError, "at function not implemented");
             throw py::error_already_set();

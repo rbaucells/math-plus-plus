@@ -112,6 +112,8 @@ struct PyWrapper {
 
     template<typename T>
     PyWrapper(T v) : storage(std::move(v)) {}
+
+    virtual ~PyWrapper() = default;
 };
 
 py::dtype get_py_int_dtype(const py::int_& pyInt);
