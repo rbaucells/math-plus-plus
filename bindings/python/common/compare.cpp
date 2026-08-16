@@ -24,7 +24,7 @@ void common_compare_bindings(pybind11::module_& m) {
             return std::visit([&](const auto& p) -> bool {
                 using U = std::decay_t<decltype(p)>::ValueType;
 
-                if constexpr (is_lossless_convertible<UnderlyingT, U>) {
+                if constexpr (lossless_convertible<UnderlyingT, U>) {
                     const Precision<UnderlyingT> casted(p.value);
 
                     return compare(casted, std::span<const T>(vec));
@@ -65,7 +65,7 @@ void common_compare_bindings(pybind11::module_& m) {
             return std::visit([&](const auto& p) -> bool {
                 using U = std::decay_t<decltype(p)>::ValueType;
 
-                if constexpr (is_lossless_convertible<U, T>) {
+                if constexpr (lossless_convertible<U, T>) {
                     using UnderlyingT = underlying_type_t<T>;
                     const Precision<UnderlyingT> casted(p.value);
 

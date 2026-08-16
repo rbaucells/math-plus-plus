@@ -36,7 +36,7 @@ void dense_matrix_bindings(py::module_& m) {
             using U = std::decay_t<decltype(otherMat)>::ValueType;
 
             return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
-                if constexpr (is_lossless_convertible<U, T>) {
+                if constexpr (lossless_convertible<U, T>) {
                     return Py_DenseMatrix(DenseMatrix<T>(otherMat));
                 }
                 else {
