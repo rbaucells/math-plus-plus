@@ -1,7 +1,6 @@
-#ifndef MATHPP_PYTHON_BINDINGS_MAIN_H
-#define MATHPP_PYTHON_BINDINGS_MAIN_H
+#ifndef MATHPY_PYTHON_BINDINGS_MAIN_H
+#define MATHPY_PYTHON_BINDINGS_MAIN_H
 
-#include <iostream>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
@@ -105,11 +104,6 @@ decltype(auto) dispatch_dt_no_complex(const py::dtype& dt, F func) {
     throw py::type_error("Invalid type");
 }
 
-template <typename From, typename To>
-concept is_lossless_convertible = requires(From f) {
-    { To{f} };
-};
-
 template<typename Variant>
 struct PyWrapper {
     Variant storage;
@@ -124,8 +118,4 @@ py::dtype get_py_int_dtype(const py::int_& pyInt);
 py::dtype get_dtype(const py::handle& obj);
 py::dtype get_common_dtype(const py::iterable& iterable);
 
-void compare_bindings(pybind11::module_& m);
-void precision_bindings(pybind11::module_& m);
-void rotation_bindings(pybind11::module_& m);
-
-#endif //MATHPP_PYTHON_BINDINGS_MAIN_H
+#endif //MATHPY_PYTHON_BINDINGS_MAIN_H

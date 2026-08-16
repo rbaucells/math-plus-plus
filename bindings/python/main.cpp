@@ -1,22 +1,21 @@
-#include <pybind11/pybind11.h>
+#include <iostream>
 #include <pybind11/complex.h>
 #include <pybind11/numpy.h>
+#include <pybind11/pybind11.h>
+
+#include "common/main.h"
+#include "matrix/main.h"
+#include "vector/main.h"
 #include "main.h"
-
-#include <iostream>
-
-#include "mathpp/implementation/vector/dense/operators/compare.h"
-
-namespace py = pybind11;
 
 PYBIND11_MODULE(mathpy, m) {
     m.def("get_py_int_dtype", &get_py_int_dtype, py::arg("obj"), "Given a py builtin int type calculates the numpy dtype that can fit the int");
     m.def("get_dtype", &get_dtype, py::arg("obj"), "Given a numpy number or builtin py type gives a numpy dtype");
     m.def("get_common_dtype", &get_common_dtype, py::arg("obj"), "Given a container of py builtin number types or numpy types computes a common dtype");
 
-    compare_bindings(m);
-    precision_bindings(m);
-    rotation_bindings(m);
+    common_bindings(m);
+    matrix_bindings(m);
+    vector_bindings(m);
 }
 
 py::dtype get_py_int_dtype(const py::int_& pyInt) {
@@ -63,7 +62,7 @@ py::dtype get_py_int_dtype(const py::int_& pyInt) {
 py::dtype get_dtype(const py::handle& obj) {
     // numpy scalar
     if (py::hasattr(obj, "dtype")) {
-        return py::cast<py::dtype>(obj.attr("dtype"));;
+        return py::cast<py::dtype>(obj.attr("dtype"));
     }
 
     // py int

@@ -3,7 +3,7 @@
 #include "../main.h"
 #include "mathpp/implementation/common/rotations.h"
 
-void rotation_bindings(pybind11::module_& m) {
+void common_rotation_bindings(pybind11::module_& m) {
     py::enum_<RotationType>(m, "RotationType")
         .value("degrees", RotationType::degrees)
         .value("radians", RotationType::radians);

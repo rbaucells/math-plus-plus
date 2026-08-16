@@ -6,7 +6,7 @@
 #include "mathpp/implementation/common/compare.h"
 #include "precision.h"
 
-void compare_bindings(pybind11::module_& m) {
+void common_compare_bindings(pybind11::module_& m) {
     m.def("compare", [](const Py_Precision& precision, const py::iterable& iterable) {
         const py::dtype dt = get_common_dtype(iterable);
 

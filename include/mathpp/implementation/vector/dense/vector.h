@@ -334,7 +334,7 @@ struct DenseVector {
         else {
             DenseVector<U> result = DenseVector<U>(n(), false);
 
-            for (int i = 0; i < n(); i++) {
+            for (std::size_t i = 0; i < n(); i++) {
                 result[i] = static_cast<U>(std::real(data_[i]));
             }
 

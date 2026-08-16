@@ -6,7 +6,7 @@
 #include "mathpp/implementation/common/precision.h"
 #include "precision.h"
 
-void precision_bindings(pybind11::module_& m) {
+void common_precision_bindings(pybind11::module_& m) {
     py::class_<Py_Precision>(m, "Precision")
             .def(py::init([](const py::object& value) {
                 const py::dtype dt = get_dtype(value);

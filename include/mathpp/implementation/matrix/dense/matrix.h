@@ -81,6 +81,24 @@ struct DenseMatrix {
         Telemetry::emit_allocation();
     }
 
+    DenseMatrix(const std::vector<std::vector<T>>& elements) : rows_(elements.size()), columns_(elements.begin()->size()), data_(new T[rows_ * columns_]) {
+        std::size_t r = 0;
+        for (const auto& row: elements) {
+            if (row.size() != columns_) {
+                throw InvalidSizeException("Nested vectors must all have the same size");
+            }
+
+            std::size_t c = 0;
+            for (const T element: row) {
+                (*this)[r, c] = element;
+                c++;
+            }
+            r++;
+        }
+
+        Telemetry::emit_allocation();
+    }
+
     /**
      * @brief Copy constructor from same type DenseMatrix.
      *
@@ -364,8 +382,8 @@ struct DenseMatrix {
         else {
             DenseMatrix<U> result = DenseMatrix<U>(rows(), columns(), false);
 
-            for (int r = 0; r < rows(); r++) {
-                for (int c = 0; c < columns(); c++) {
+            for (std::size_t r = 0; r < rows(); r++) {
+                for (std::size_t c = 0; c < columns(); c++) {
                     result[r, c] = static_cast<U>(std::real((*this)[r, c]));
                 }
             }
