@@ -54,5 +54,47 @@ void dense_matrix_bindings(py::module_& m) {
                     return py::cast(mat.template as_type<T>());
                 });
             }, self.storage);
-        }, py::arg("dt"));
+        }, py::arg("dt"))
+        .def("columns", [](Py_DenseMatrix& self) -> std::size_t {
+            return std::visit([&](const auto& mat) {
+                return mat.columns();
+            }, self.storage);
+        })
+        .def("rows", [](Py_DenseMatrix& self) -> std::size_t {
+            return std::visit([&](const auto& mat) {
+                return mat.rows();
+            }, self.storage);
+        })
+        .def("is_complex", [](Py_DenseMatrix& self) -> bool {
+            return std::visit([&](const auto& mat) {
+                using U = std::decay_t<decltype(mat)>;
+                return U::isComplex;
+            }, self.storage);
+        })
+        .def("at", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c) -> py::object {
+            return std::visit([&](const auto& mat) {
+                 return py::cast(mat.at(r, c));
+             }, self.storage);
+        }, py::arg("c"), py::arg("r"))
+        .def("__getitem__", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c) -> py::object {
+            return std::visit([&](const auto& mat) {
+                 return py::cast(mat[r, c]);
+             }, self.storage);
+        }, py::arg("c"), py::arg("r"))
+        .def("__setitem__", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c, const py::object v) {
+            const py::dtype dt = get_common_dtype(v);
+
+            dispatch_dt(dt, [&]<typename T>(){
+                std::visit([&](auto& mat) {
+                    using U = std::decay_t<decltype(mat)>::ValueType;
+
+                    if constexpr (std::is_convertible_v<T, U>) {
+                        mat[r, c] = py::cast<T>(v);
+                    }
+                    else {
+                        throw py::type_error("Cannot assign to matrix element with non convertible dt");
+                    }
+                }, self.storage);
+            });
+        }, py::arg("c"), py::arg("r"), py::arg("v"));;
 }
