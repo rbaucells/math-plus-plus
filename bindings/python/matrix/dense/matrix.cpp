@@ -71,12 +71,12 @@ void dense_matrix_bindings(py::module_& m) {
                 return U::isComplex;
             }, self.storage);
         })
-        .def("at", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c) -> py::object {
+        .def("get", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c) -> py::object {
             return std::visit([&](const auto& mat) {
                  return py::cast(mat.get(r, c));
              }, self.storage);
         }, py::arg("c"), py::arg("r"))
-        .def("at", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c, const py::object v) {
+        .def("set", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c, const py::object& v) {
             const py::dtype dt = get_dtype(v);
 
             dispatch_dt(dt, [&]<typename T>(){
@@ -84,10 +84,10 @@ void dense_matrix_bindings(py::module_& m) {
                     using U = std::decay_t<decltype(mat)>::ValueType;
 
                     if (std::is_convertible_v<T, U>) {
-                        mat.get(r, c) = py::cast<U>(v);
+                        mat.set(r, c, py::cast<U>(v));
                     }
                     else {
-                        throw py::type_error("Cannot assign to DenseMatrix with incomatible arg type");
+                        throw py::type_error("Cannot assign to DenseMatrix element with incomatible arg type");
                     }
                 }, self.storage);
             });
@@ -100,7 +100,7 @@ void dense_matrix_bindings(py::module_& m) {
                  return py::cast(mat[r, c]);
              }, self.storage);
         }, py::arg("indices"))
-        .def("__setitem__", [](Py_DenseMatrix& self, const std::pair<std::size_t, std::size_t>& indices, const py::object v) {
+        .def("__setitem__", [](Py_DenseMatrix& self, const std::pair<std::size_t, std::size_t>& indices, const py::object& v) {
             const std::size_t r = indices.first;
             const std::size_t c = indices.second;
 

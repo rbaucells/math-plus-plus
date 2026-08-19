@@ -9,19 +9,15 @@
 
 void dense_matrix_like_bindings(py::module_& m) {
     py::class_<DenseMatrixLikeBase, MatrixLikeBase>(m, "DenseMatrixLike")
-        .def("at", [](const DenseMatrixLikeBase& self, const std::size_t r, const std::size_t c) -> py::object {
-            PyErr_SetString(PyExc_NotImplementedError, "at function not implemented");
-            throw py::error_already_set();
-        }, py::arg("r"), py::arg("c"))
-        .def("__getitem__", [](const DenseMatrixLikeBase& self, const std::size_t r, const std::size_t c) -> py::object {
+        .def("__getitem__", [](DenseMatrixLikeBase&, const std::pair<std::size_t, std::size_t>&) -> py::object {
             PyErr_SetString(PyExc_NotImplementedError, "__getitem__ function not implemented");
             throw py::error_already_set();
-        }, py::arg("r"), py::arg("c"))
-        .def("__setitem__", [](const DenseMatrixLikeBase& self, const std::size_t r, const std::size_t c, const py::object v) -> void {
+        }, py::arg("indices"))
+        .def("__setitem__", [](DenseMatrixLikeBase&, const std::pair<std::size_t, std::size_t>&, const py::object&) -> void {
             PyErr_SetString(PyExc_NotImplementedError, "__setitem__ function not implemented");
             throw py::error_already_set();
-        }, py::arg("r"), py::arg("c"), py::arg("v"))
-        .def("data", [](const DenseMatrixLikeBase& self, const std::size_t i) -> py::object {
+        }, py::arg("indices"), py::arg("v"))
+        .def("data", [](DenseMatrixLikeBase&, std::size_t) -> py::object {
             PyErr_SetString(PyExc_NotImplementedError, "data function not implemented");
             throw py::error_already_set();
         }, py::arg("i"));
