@@ -6,13 +6,17 @@
 #include "mathpp/implementation/common/traits.h"
 
 template<typename T>
-concept vector_like = requires(T v,  const T constV, const std::size_t i) {
+concept vector_like = requires(T v,  const T constV, const std::size_t i, typename T::ValueType val) {
     // compile time
     typename T::ValueType;
     T::isComplex;
 
     // dimensions
     { constV.n() } -> std::same_as<std::size_t>;
+
+    // accessing
+    requires std::same_as<std::remove_cvref_t<decltype(constV.get(i))>, typename T::ValueType>;
+    { v.set(i, val) } -> std::same_as<void>;
 };
 
 template<typename T>

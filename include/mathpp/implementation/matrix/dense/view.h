@@ -86,18 +86,18 @@ struct DenseMatrixView {
      * @note Indices r and c must be within size of view AND r + rowOffset and c + colOffset must be within size of owner matrix.
      * @return Const-reference to element at (r, c).
      */
-    const T& at(const std::size_t r, const std::size_t c) const {
+    [[nodiscard]] T get(const std::size_t r, const std::size_t c) const {
         if (r >= rows_ || c >= columns_) {
             throw InvalidIndexException("Cannot access view at invalid index");
         }
 
-        return owner_.at(r + rowOffset_, c + colOffset_);
+        return owner_.get(r + rowOffset_, c + colOffset_);
     }
 
     /**
      * @throws InvalidOperationException Modifying owner through view is illegal.
      */
-    T& at(const std::size_t, const std::size_t) {
+    void set(const std::size_t, const std::size_t, const T) {
         throw InvalidOperationException("Cannot modify owner through view");
     }
 

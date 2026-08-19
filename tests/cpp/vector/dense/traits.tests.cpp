@@ -9,7 +9,8 @@ struct should_be_dense_vector_like {
 
     [[nodiscard]] std::size_t n() const;
 
-    [[nodiscard]] GetterReturnType at(std::size_t) const;
+    [[nodiscard]] GetterReturnType get(std::size_t) const;
+    void set(std::size_t, TValueType);
     [[nodiscard]] GetterReturnType operator[](std::size_t) const;
 };
 

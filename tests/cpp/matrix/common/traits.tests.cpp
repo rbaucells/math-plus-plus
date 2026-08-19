@@ -9,6 +9,9 @@ struct should_be_matrix_like {
 
     [[nodiscard]] std::size_t rows() const;
     [[nodiscard]] std::size_t columns() const;
+
+    [[nodiscard]] TValueType get(std::size_t, std::size_t) const;
+    void set(std::size_t, std::size_t, TValueType);
 };
 
 TEST(matrix_like, given_should_be_matrix_like_should_return_true_1) {

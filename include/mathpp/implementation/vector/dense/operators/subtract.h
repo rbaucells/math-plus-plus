@@ -30,10 +30,14 @@ struct DenseVectorSubtractExpr {
         }, tuple);
     }
 
-    [[nodiscard]] ValueType at(const std::size_t i) const {
+    [[nodiscard]] ValueType get(const std::size_t i) const {
         return std::apply([i](const auto&... args) {
-            return (... - args.at(i));
+            return (... - args.get(i));
         }, tuple);
+    }
+
+    void set(const std::size_t i, const ValueType) {
+        throw InvalidOperationException("Cannot set on DenseVectorSubtractExpr");
     }
 };
 

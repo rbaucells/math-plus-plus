@@ -343,21 +343,21 @@ struct DenseVector {
     }
 
     /**
-     * @brief Accesses the element at a provided row and column.
+     * @brief Accesses the element at a provided index.
      *
-     * Retrieves a reference to the element at coordinates (r, c).
-     * Checks bounds of provided r and c indices.
+     * Retrieves a the element at (i).
+     * Checks bounds of provided i index.
      * Does not allocate memory on the heap.
      *
      * @param i Zero-based index of element.
      *
      * @see DenseVector::operator[](const std::size_t i).
      *
-     * @return Reference to the element at (i).
+     * @return The element at (i).
      * @note Index must be withing vector bounds.
      * @throws InvalidIndexException If index 'i' is out of bounds (i.e. bigger than n).
      */
-    [[nodiscard]] T& at(const std::size_t i) {
+    [[nodiscard]] T get(const std::size_t i) const {
         if (i >= n_) {
             throw InvalidIndexException("Cannot access vector at invalid index");
         }
@@ -366,26 +366,26 @@ struct DenseVector {
     }
 
     /**
-     * @brief Accesses the element at a provided row and column.
+     * @brief Sets the element at a provided index to a provided value.
      *
-     * Retrieves a const reference to the element at coordinates (r, c).
-     * Checks bounds of provided r and c indices.
+     * Retrieves a const reference to the element at (i).
+     * Checks bounds of provided i index.
      * Does not allocate memory on the heap.
      *
      * @param i Zero-based index of element.
+     * @param v Value to set in a element.
      *
      * @see DenseVector::operator[](const std::size_t i).
      *
-     * @return Const reference to the element at (i).
      * @note Index must be withing vector bounds.
      * @throws InvalidIndexException If index 'i' is out of bounds (i.e. bigger than n).
      */
-    [[nodiscard]] const T& at(const std::size_t i) const {
+    void set(const std::size_t i, const T v) const {
         if (i >= n_) {
             throw InvalidIndexException("Cannot access vector at invalid index");
         }
 
-        return data_[i];
+        data_[i] = v;
     }
 
     /**

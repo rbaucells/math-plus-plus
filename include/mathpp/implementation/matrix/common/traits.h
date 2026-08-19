@@ -6,7 +6,7 @@
 #include "mathpp/implementation/common/traits.h"
 
 template<typename T>
-concept matrix_like = requires(T m, const T constM, std::size_t r, std::size_t c, std::size_t i) {
+concept matrix_like = requires(T m, const T constM, std::size_t r, std::size_t c, std::size_t i, typename T::ValueType v) {
     // compile time
     typename T::ValueType;
     T::isComplex;
@@ -14,6 +14,10 @@ concept matrix_like = requires(T m, const T constM, std::size_t r, std::size_t c
     // dimensions
     { constM.rows() } -> std::same_as<std::size_t>;
     { constM.columns() } -> std::same_as<std::size_t>;
+
+    // accessing
+    requires std::same_as<std::remove_cvref_t<decltype(constM.get(r, c))>, typename T::ValueType>;
+    { m.set(r, c, v) } -> std::same_as<void>;
 };
 
 template<typename T>

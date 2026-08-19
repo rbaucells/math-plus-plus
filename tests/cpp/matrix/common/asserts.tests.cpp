@@ -14,6 +14,9 @@ struct sized_matrix_like {
     [[nodiscard]] std::size_t columns() const {
         return COLUMNS;
     }
+
+    [[nodiscard]] T get(std::size_t, std::size_t) const;
+    void set(std::size_t, std::size_t, T);
 };
 
 TEST(assert_assert_square, given_square_should_not_throw) {

@@ -34,10 +34,14 @@ struct DenseMatrixSubtractExpr {
         }, tuple);
     }
 
-    [[nodiscard]] ValueType at(const std::size_t r, const std::size_t c) const {
+    [[nodiscard]] ValueType get(const std::size_t r, const std::size_t c) const {
         return std::apply([r, c](const auto&... args) {
-            return (... - args.at(r, c));
+            return (... - args.get(r, c));
         }, tuple);
+    }
+
+    void set(const std::size_t, const std::size_t, const ValueType) {
+        throw InvalidOperationException("Cannot set on DenseMatrixSubtractExpr");
     }
 
     [[nodiscard]] ValueType data(const std::size_t i) const {

@@ -395,7 +395,7 @@ struct DenseMatrix {
     /**
      * @brief Accesses the element at a provided row and column.
      *
-     * Retrieves a reference to the element at coordinates (r, c).
+     * Retrieves the element at coordinates (r, c).
      * Checks bounds of provided r and c indices.
      * Does not allocate memory on the heap.
      *
@@ -404,11 +404,11 @@ struct DenseMatrix {
      *
      * @see DenseMatrix::operator[](const std::size_t r, const std::size_t c).
      *
-     * @return Reference to the element at (r, c).
+     * @return Element at (r, c).
      * @note Indices must be withing matrix bounds.
      * @throws InvalidIndexException If r or c indices are out of bounds (ie. greater than rows/columns).
      */
-    [[nodiscard]] T& at(const std::size_t r, const std::size_t c) {
+    [[nodiscard]] T get(const std::size_t r, const std::size_t c) const {
         if (r >= rows_ || c >= columns_) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
@@ -417,27 +417,27 @@ struct DenseMatrix {
     }
 
     /**
-     * @brief Accesses the element at a provided row and column.
+     * @brief Sets the element at a provided row and column to a provided value.
      *
-     * Retrieves a const-reference to the element at coordinates (r, c).
+     * Sets the element at coordinates (r, c) to v.
      * Checks bounds of provided r and c indices.
      * Does not allocate memory on the heap.
      *
      * @param r Zero-based row index of element.
      * @param c Zero-based columns index of element.
+     * @param v Value to set in element.
      *
      * @see DenseMatrix::operator[](const std::size_t r, const std::size_t c).
      *
-     * @return Const-reference to the element at (r, c).
      * @note Indices must be withing matrix bounds.
      * @throws InvalidIndexException If r or c indices are out of bounds (ie. greater than rows/columns).
      */
-    [[nodiscard]] const T& at(const std::size_t r, const std::size_t c) const {
+    void set(const std::size_t r, const std::size_t c, const T v) {
         if (r >= rows_ || c >= columns_) {
             throw InvalidIndexException("Cannot access matrix at invalid index");
         }
 
-        return data_[c * rows_ + r];
+        data_[c * rows_ + r] = v;
     }
 
     /**

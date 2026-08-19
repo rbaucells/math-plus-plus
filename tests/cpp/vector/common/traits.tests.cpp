@@ -8,6 +8,9 @@ struct should_be_vector_like {
     static constexpr bool isComplex = TisComplex;
 
     [[nodiscard]] std::size_t n() const;
+
+    [[nodiscard]] TValueType get(std::size_t) const;
+    void set(std::size_t, TValueType);
 };
 
 TEST(vector_like, given_should_be_vector_like_should_return_true_1) {

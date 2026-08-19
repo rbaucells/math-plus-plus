@@ -82,18 +82,18 @@ struct DenseVectorView {
      * @note Index must be within size of view AND i + offset must be within size of owner vector.
      * @return Const-reference to element at (r, c).
      */
-    const T& at(const std::size_t i) const {
+    [[nodiscard]] T get(const std::size_t i) const {
         if (i >= n_) {
             throw InvalidIndexException("Cannot access view at invalid index");
         }
 
-        return owner_.at(i + offset_);
+        return owner_.get(i + offset_);
     }
 
     /**
      * @throws InvalidOperationException Modifying owner through view is illegal.
      */
-    T& at(const std::size_t) {
+    void set(const std::size_t, const T) {
         throw InvalidOperationException("Cannot modify owner through view");
     }
 

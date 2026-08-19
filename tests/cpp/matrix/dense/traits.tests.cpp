@@ -10,7 +10,8 @@ struct should_be_dense_matrix_like {
     [[nodiscard]] std::size_t rows() const;
     [[nodiscard]] std::size_t columns() const;
 
-    [[nodiscard]] GetterReturnType at(std::size_t, std::size_t) const;
+    [[nodiscard]] GetterReturnType get(std::size_t, std::size_t) const;
+    void set(std::size_t, std::size_t, TValueType);
     [[nodiscard]] GetterReturnType operator[](std::size_t, std::size_t) const;
 
     [[nodiscard]] GetterReturnType data(std::size_t) const;
