@@ -395,61 +395,84 @@ TEST(dense_matrix_reshape, given_new_dimensions_and_preserve_and_value_should_re
     TelemetryTests::asserts({.allocations = 1, .deallocations = 1});
 }
 #pragma endregion
-#pragma region at
-TEST(dense_matrix_at, given_valid_indices_should_return_ref) {
+#pragma region get
+TEST(dense_matrix_get, given_valid_indices_should_return_value) {
     // arrange
     DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act
     TelemetryTests::start();
-    float& ref = a.at(2, 2);
+    float val = a.get(2, 2);
     TelemetryTests::end();
     // assert
-    ASSERT_TRUE(compare(Precision(0.001f), ref, 9));
-    ref = 4;
-    ASSERT_TRUE(compare(Precision(0.001f), ref, 4));
-    ASSERT_TRUE(&ref == &a.rawData()[8]);
+    ASSERT_TRUE(compare(Precision(0.001f), val, 9));
     TelemetryTests::asserts({});
 }
 
-TEST(dense_matrix_at, given_valid_indices_should_return_const_ref) {
+TEST(dense_matrix_get, given_valid_indices_should_return_const_value) {
     // arrange
     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act
     TelemetryTests::start();
-    const float& ref = a.at(2, 2);
+    const float val = a.get(2, 2);
     TelemetryTests::end();
     // assert
-    ASSERT_TRUE(compare(Precision(0.001f), ref, 9));
-    ASSERT_TRUE(&ref == &a.rawData()[8]);
+    ASSERT_TRUE(compare(Precision(0.001f), val, 9));
     TelemetryTests::asserts({});
 }
 
-TEST(dense_matrix_at, given_invalid_indices_should_throw_1) {
+TEST(dense_matrix_get, given_invalid_indices_should_throw_1) {
     // arrange
     const DenseMatrix<float> a(3, 3);
     // act / assert
-    ASSERT_THROW([[maybe_unused]] const float& ref = a.at(4, 0), InvalidIndexException);
+    ASSERT_THROW([[maybe_unused]] const float val = a.get(4, 0), InvalidIndexException);
 }
 
-TEST(dense_matrix_at, given_invalid_indices_should_throw_2) {
+TEST(dense_matrix_get, given_invalid_indices_should_throw_2) {
     // arrange
     DenseMatrix<float> a(3, 3);
     // act / assert
-    ASSERT_THROW([[maybe_unused]] float& ref = a.at(4, 0), InvalidIndexException);
+    ASSERT_THROW([[maybe_unused]] float val = a.get(4, 0), InvalidIndexException);
 }
 
-TEST(dense_matrix_at, given_invalid_indices_should_throw_3) {
+TEST(dense_matrix_get, given_invalid_indices_should_throw_3) {
     // arrange
     const DenseMatrix<float> a(3, 3);
     // act / assert
-    ASSERT_THROW([[maybe_unused]] const float& ref = a.at(0, 4), InvalidIndexException);
+    ASSERT_THROW([[maybe_unused]] const float val = a.get(0, 4), InvalidIndexException);
 }
 
-TEST(dense_matrix_at, given_invalid_indices_should_throw_5) {
+TEST(dense_matrix_get, given_invalid_indices_should_throw_5) {
     // arrange
     DenseMatrix<float> a(3, 3);
     // act / assert
-    ASSERT_THROW([[maybe_unused]] float& ref = a.at(0, 4), InvalidIndexException);
+    ASSERT_THROW([[maybe_unused]] float val = a.get(0, 4), InvalidIndexException);
+}
+#pragma endregion
+#pragma region set
+TEST(dense_matrix_set, given_valid_indices_should_set_value) {
+    // arrange
+    DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    // act
+    TelemetryTests::start();
+    a.set(2, 2, 4);
+    TelemetryTests::end();
+    // assert
+    ASSERT_TRUE(compare(Precision(0.001f), a.get(2, 2), 4));
+    TelemetryTests::asserts({});
+}
+
+TEST(dense_matrix_set, given_invalid_indices_should_throw_row) {
+    // arrange
+    DenseMatrix<float> a(3, 3);
+    // act / assert
+    ASSERT_THROW(a.set(4, 0, 5), InvalidIndexException);
+}
+
+TEST(dense_matrix_set, given_invalid_indices_should_throw_col) {
+    // arrange
+    DenseMatrix<float> a(3, 3);
+    // act / assert
+    ASSERT_THROW(a.set(0, 4, 5), InvalidIndexException);
 }
 #pragma endregion
 #pragma region indexing_operator

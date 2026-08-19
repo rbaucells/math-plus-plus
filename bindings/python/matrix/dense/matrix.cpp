@@ -73,16 +73,38 @@ void dense_matrix_bindings(py::module_& m) {
         })
         .def("at", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c) -> py::object {
             return std::visit([&](const auto& mat) {
-                 return py::cast(mat.at(r, c));
+                 return py::cast(mat.get(r, c));
              }, self.storage);
         }, py::arg("c"), py::arg("r"))
-        .def("__getitem__", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c) -> py::object {
+        .def("at", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c, const py::object v) {
+            const py::dtype dt = get_dtype(v);
+
+            dispatch_dt(dt, [&]<typename T>(){
+                return std::visit([&](auto& mat) {
+                    using U = std::decay_t<decltype(mat)>::ValueType;
+
+                    if (std::is_convertible_v<T, U>) {
+                        mat.get(r, c) = py::cast<U>(v);
+                    }
+                    else {
+                        throw py::type_error("Cannot assign to DenseMatrix with incomatible arg type");
+                    }
+                }, self.storage);
+            });
+        }, py::arg("c"), py::arg("r"), py::arg("v"))
+        .def("__getitem__", [](Py_DenseMatrix& self, const std::pair<std::size_t, std::size_t>& indices) -> py::object {
+            const std::size_t r = indices.first;
+            const std::size_t c = indices.second;
+
             return std::visit([&](const auto& mat) {
                  return py::cast(mat[r, c]);
              }, self.storage);
-        }, py::arg("c"), py::arg("r"))
-        .def("__setitem__", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c, const py::object v) {
-            const py::dtype dt = get_common_dtype(v);
+        }, py::arg("indices"))
+        .def("__setitem__", [](Py_DenseMatrix& self, const std::pair<std::size_t, std::size_t>& indices, const py::object v) {
+            const std::size_t r = indices.first;
+            const std::size_t c = indices.second;
+
+            const py::dtype dt = get_dtype(v);
 
             dispatch_dt(dt, [&]<typename T>(){
                 std::visit([&](auto& mat) {
@@ -96,5 +118,5 @@ void dense_matrix_bindings(py::module_& m) {
                     }
                 }, self.storage);
             });
-        }, py::arg("c"), py::arg("r"), py::arg("v"));;
+        }, py::arg("indices"), py::arg("v"));;
 }

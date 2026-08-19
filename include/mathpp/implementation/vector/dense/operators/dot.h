@@ -34,17 +34,17 @@ std::common_type_t<typename T::ValueType, typename U::ValueType> operator*(const
     for (std::size_t i = 0; i < n; i++) {
         if constexpr (T::isComplex || U::isComplex) {
             if constexpr (DEFAULT_CONJUGATION_BEHAVIOR == DotProductConjugationBehavior::first_argument) {
-                result += std::conj(a.at(i)) * b.at(i);
+                result += std::conj(a.get(i)) * b.get(i);
             }
             else if constexpr (DEFAULT_CONJUGATION_BEHAVIOR == DotProductConjugationBehavior::neither) {
-                result += a.at(i) * b.at(i);
+                result += a.get(i) * b.get(i);
             }
             else if constexpr (DEFAULT_CONJUGATION_BEHAVIOR == DotProductConjugationBehavior::second_argument) {
-                result += a.at(i) * std::conj(b.at(i));
+                result += a.get(i) * std::conj(b.get(i));
             }
         }
         else {
-            result += a.at(i) * b.at(i);
+            result += a.get(i) * b.get(i);
         }
     }
 
@@ -77,18 +77,18 @@ std::common_type_t<typename T::ValueType, typename U::ValueType> dot(const T& a,
         if constexpr (T::isComplex || U::isComplex) {
             switch (behavior) {
                 case DotProductConjugationBehavior::first_argument:
-                    result += std::conj(a.at(i)) * b.at(i);
+                    result += std::conj(a.get(i)) * b.get(i);
                     break;
                 case DotProductConjugationBehavior::neither:
-                    result += a.at(i) * b.at(i);
+                    result += a.get(i) * b.get(i);
                     break;
                 case DotProductConjugationBehavior::second_argument:
-                    result += a.at(i) * std::conj(b.at(i));
+                    result += a.get(i) * std::conj(b.get(i));
                     break;
             }
         }
         else {
-            result += a.at(i) * b.at(i);
+            result += a.get(i) * b.get(i);
         }
     }
 

@@ -341,43 +341,57 @@ TEST(dense_vector_reshape, given_new_size_and_preserve_and_value_should_reshape)
     TelemetryTests::asserts({.allocations = 1, .deallocations = 1});
 }
 #pragma endregion
-#pragma region at
-TEST(dense_vector_at, given_valid_index_should_return_ref) {
+#pragma region get
+TEST(dense_vector_get, given_valid_index_should_return_value) {
     // arrange
     DenseVector<float> a = {1, 2, 3};
     // act
     TelemetryTests::start();
-    float& ref = a.at(2);
+    float val = a.get(2);
     TelemetryTests::end();
     // assert
-    ASSERT_TRUE(compare(Precision(0.001f), ref, 3));
-    ref = 67;
-    ASSERT_TRUE(compare(Precision(0.001f), a[2], 67));
-    ASSERT_TRUE(&ref == &a.rawData()[2]);
+    ASSERT_TRUE(compare(Precision(0.001f), val, 3));
     TelemetryTests::asserts({});
 }
 
-TEST(dense_vector_at, given_valid_index_should_return_const_ref) {
+TEST(dense_vector_get, given_valid_index_should_return_const_value) {
     // arrange
     const DenseVector<float> a = {1, 2, 3};
     // act
     TelemetryTests::start();
-    const float& ref = a.at(2);
+    const float val = a.get(2);
     TelemetryTests::end();
     // assert
-    ASSERT_TRUE(compare(Precision(0.001f), ref, 3));
-    ASSERT_TRUE(&ref == &a.rawData()[2]);
+    ASSERT_TRUE(compare(Precision(0.001f), val, 3));
     TelemetryTests::asserts({});
 }
 
-TEST(dense_vector_at, given_invalid_index_should_throw_1) {
+TEST(dense_vector_get, given_invalid_index_should_throw_1) {
     const DenseVector<float> a(3);
-    ASSERT_THROW([[maybe_unused]] const float& ref = a.at(3), InvalidIndexException);
+    ASSERT_THROW([[maybe_unused]] const float val = a.get(3), InvalidIndexException);
 }
 
-TEST(dense_vector_at, given_invalid_index_should_throw_2) {
+TEST(dense_vector_get, given_invalid_index_should_throw_2) {
     DenseVector<float> a(3);
-    ASSERT_THROW([[maybe_unused]] float& ref = a.at(3), InvalidIndexException);
+    ASSERT_THROW([[maybe_unused]] float val = a.get(3), InvalidIndexException);
+}
+#pragma endregion
+#pragma region set
+TEST(dense_vector_set, given_valid_index_should_set_value) {
+    // arrange
+    DenseVector<float> a = {1, 2, 3};
+    // act
+    TelemetryTests::start();
+    a.set(2, 67);
+    TelemetryTests::end();
+    // assert
+    ASSERT_TRUE(compare(Precision(0.001f), a.get(2), 67));
+    TelemetryTests::asserts({});
+}
+
+TEST(dense_vector_set, given_invalid_index_should_throw) {
+    DenseVector<float> a(3);
+    ASSERT_THROW(a.set(3, 5), InvalidIndexException);
 }
 #pragma endregion
 #pragma region indexing_operator

@@ -38,44 +38,53 @@ TEST(dense_vector_view_indexing_operator, given_valid_index_should_return_const_
     TelemetryTests::asserts({});
 }
 #pragma endregion
-#pragma region at
-TEST(dense_vector_view_at, given_valid_index_should_return_const_ref) {
+#pragma region get
+TEST(dense_vector_view_get, given_valid_index_should_return_value) {
     // arrange
     DenseVector<long> a = {1, 2, 3, 4, 5};
     const DenseVectorView<long> view(a, 3, 1);
     // act
     TelemetryTests::start();
-    const long& ref = view.at(1);
+    const long val = view.get(1);
     TelemetryTests::end();
     // assert
-    ASSERT_TRUE(compare(ref, 3));
+    ASSERT_TRUE(compare(val, 3));
     a[2] = 67;
-    ASSERT_TRUE(compare(ref, 67));
+    ASSERT_TRUE(compare(view.get(1), 67));
     TelemetryTests::asserts({});
 }
 
-TEST(dense_vector_view_at, given_invalid_index_should_throw_1) {
+TEST(dense_vector_view_get, given_invalid_index_should_throw_1) {
     // arrange
     DenseVector<long> a = {1, 2, 3, 4, 5};
     const DenseVectorView<long> view(a, 3, 1);
     // act / assert
-    ASSERT_THROW(view.at(3), InvalidIndexException);
+    ASSERT_THROW(view.get(3), InvalidIndexException);
 }
 
-TEST(dense_vector_view_at, given_invalid_index_should_throw_2) {
+TEST(dense_vector_view_get, given_invalid_index_should_throw_2) {
     // arrange
     DenseVector<long> a = {1, 2, 3, 4, 5};
     const DenseVectorView<long> view(a, 3, 1);
     // act / assert
-    ASSERT_THROW(view.at(4), InvalidIndexException);
+    ASSERT_THROW(view.get(4), InvalidIndexException);
 }
-
-TEST(dense_vector_view_at, given_valid_index_should_throw) {
+#pragma endregion
+#pragma region set
+TEST(dense_vector_view_set, given_valid_index_should_throw) {
     // arrange
     DenseVector<long> a = {1, 2, 3, 4, 5};
     DenseVectorView<long> view(a, 3, 1);
     // act / assert
-    ASSERT_THROW(long& ref = view.at(0), InvalidOperationException);
+    ASSERT_THROW(view.set(0, 5), InvalidOperationException);
+}
+
+TEST(dense_vector_view_set, given_invalid_index_should_throw) {
+    // arrange
+    DenseVector<long> a = {1, 2, 3, 4, 5};
+    DenseVectorView<long> view(a, 3, 1);
+    // act / assert
+    ASSERT_THROW(view.set(3, 5), InvalidOperationException);
 }
 #pragma endregion
 #pragma region offset

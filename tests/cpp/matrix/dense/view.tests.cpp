@@ -40,44 +40,53 @@ TEST(dense_matrix_view_indexing_operator, given_valid_indices_should_return_cons
     TelemetryTests::asserts({});
 }
 #pragma endregion
-#pragma region at
-TEST(dense_matrix_view_at, given_valid_indices_should_return_const_ref) {
+#pragma region get
+TEST(dense_matrix_view_get, given_valid_indices_should_return_value) {
     // arrange
     DenseMatrix<long> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     const DenseMatrixView<long> view(a, 2, 2, 1, 0);
     // act
     TelemetryTests::start();
-    const long& ref = view.at(1, 0);
+    const long val = view.get(1, 0);
     TelemetryTests::end();
     // assert
-    ASSERT_TRUE(compare(ref, 7));
+    ASSERT_TRUE(compare(val, 7));
     a[2, 0] = 67;
-    ASSERT_TRUE(compare(ref, 67));
+    ASSERT_TRUE(compare(view.get(1, 0), 67));
     TelemetryTests::asserts({});
 }
 
-TEST(dense_matrix_view_at, given_invalid_indices_should_throw_1) {
+TEST(dense_matrix_view_get, given_invalid_indices_should_throw_1) {
     // arrange
     DenseMatrix<long> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     const DenseMatrixView<long> view(a, 2, 2, 1, 0);
     // act / assert
-    ASSERT_THROW(view.at(4, 0), InvalidIndexException);
+    ASSERT_THROW(view.get(4, 0), InvalidIndexException);
 }
 
-TEST(dense_matrix_view_at, given_invalid_indices_should_throw_2) {
+TEST(dense_matrix_view_get, given_invalid_indices_should_throw_2) {
     // arrange
     DenseMatrix<long> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     const DenseMatrixView<long> view(a, 2, 2, 1, 0);
     // act / assert
-    ASSERT_THROW(view.at(4, 0), InvalidIndexException);
+    ASSERT_THROW(view.get(4, 0), InvalidIndexException);
 }
-
-TEST(dense_matrix_view_at, given_valid_indices_should_throw) {
+#pragma endregion
+#pragma region set
+TEST(dense_matrix_view_set, given_valid_indices_should_throw) {
     // arrange
     DenseMatrix<long> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     DenseMatrixView<long> view(a, 2, 2, 1, 0);
     // act / assert
-    ASSERT_THROW(long& ref = view.at(0, 1), InvalidOperationException);
+    ASSERT_THROW(view.set(0, 1, 5), InvalidOperationException);
+}
+
+TEST(dense_matrix_view_set, given_invalid_indices_should_throw) {
+    // arrange
+    DenseMatrix<long> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    DenseMatrixView<long> view(a, 2, 2, 1, 0);
+    // act / assert
+    ASSERT_THROW(view.set(3, 1, 5), InvalidOperationException);
 }
 #pragma endregion
 #pragma region row_offset
