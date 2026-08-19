@@ -88,7 +88,7 @@ TEST(dense_matrix_copy_constructor_from_same_type, given_dense_matrix_should_cop
 #pragma region copy_constructor_from_diff_type
 TEST(dense_matrix_copy_constructor_from_diff_type, given_i_dense_matrix_should_copy) {
     // arrange
-    const DenseMatrix<int> expected = {{1, 2}, {3, 4}};
+    const DenseMatrix<int16_t> expected = {{1, 2}, {3, 4}};
     // act
     TelemetryTests::start();
     const DenseMatrix<std::complex<float>> b = expected;

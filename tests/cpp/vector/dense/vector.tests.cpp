@@ -77,11 +77,11 @@ TEST(dense_vector_copy_constructor_from_diff_type, given_dense_vector_should_cop
     const DenseVector<int> expected = {1, 2, 3};
     // act
     TelemetryTests::start();
-    const DenseVector<std::complex<float>> b = expected;
+    const DenseVector<std::complex<double>> b = expected;
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(compare(b.n(), 3));
-    ASSERT_TRUE(compare(Precision(0.001f), b, expected));
+    ASSERT_TRUE(compare(Precision(0.001), b, expected));
     TelemetryTests::asserts({.copy_constructs = 1, .allocations = 1});
 }
 #pragma endregion
