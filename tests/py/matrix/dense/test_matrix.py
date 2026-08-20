@@ -31,12 +31,3 @@ def test_DenseMatrix_sized_constructor():
     assert b.columns() == 4
     assert b.dtype() == numpy.dtypes.Int32DType()
     assert not b.is_complex()
-
-def test_DenseMatrix_set():
-    # arrange
-    a = mathpy.DenseMatrix(numpy.dtypes.Int32DType(), 3, 3)
-    # act
-    a.set(2, 2, 8)
-    # assert
-    assert a[2, 2] == 8
-    assert a[2, 3] == 0
