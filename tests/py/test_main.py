@@ -82,3 +82,15 @@ def test_get_common_dtype():
     m = numpy.array([numpy.int32(-14), numpy.float32(4.13)], dtype=numpy.complex128)
     # act / assert
     assert mathpy.get_common_dtype(m) == numpy.dtypes.Complex128DType()
+    # arrange
+    n = [[1, 2], [3, 4]]
+    # act / assert
+    assert mathpy.get_common_dtype(n) == numpy.dtypes.UInt8DType()
+    # arrange
+    o = numpy.array([[1, -5], [2, 130], [4, 6]])
+    # act / assert
+    assert mathpy.get_common_dtype(o) == numpy.dtypes.Int16DType()
+    # arrange
+    p = [[[3, 4], [-2, 5]], [[-3.14, 5], [1000, 12]]]
+    # act / assert
+    assert mathpy.get_common_dtype(p) == numpy.dtypes.Float64DType()
