@@ -9,9 +9,9 @@
 #include "main.h"
 
 PYBIND11_MODULE(mathpy, m) {
-    m.def("get_py_int_dtype", &get_py_int_dtype, py::arg("obj"), "Given a py builtin int type calculates the numpy dtype that can fit the int");
+    m.def("get_py_int_dtype", &get_py_int_dtype, py::arg("pyInt"), "Given a py builtin int type calculates the numpy dtype that can fit the int");
     m.def("get_dtype", &get_dtype, py::arg("obj"), "Given a numpy number or builtin py type gives a numpy dtype");
-    m.def("get_common_dtype", &get_common_dtype, py::arg("obj"), "Given a container of py builtin number types or numpy types computes a common dtype");
+    m.def("get_common_dtype", &get_common_dtype, py::arg("iterable"), "Given a container of py builtin number types or numpy types computes a common dtype");
 
     common_bindings(m);
     matrix_bindings(m);
@@ -22,36 +22,36 @@ py::dtype get_py_int_dtype(const py::int_& pyInt) {
     const bool negative = pyInt < py::int_(0);
 
     if (negative) { // signed
-        if (pyInt > py::int_(std::numeric_limits<int8_t>::min())) {
+        if (pyInt >= py::int_(std::numeric_limits<int8_t>::min())) {
             return py::dtype::of<int8_t>();
         }
 
-        if (pyInt > py::int_(std::numeric_limits<int16_t>::min())) {
+        if (pyInt >= py::int_(std::numeric_limits<int16_t>::min())) {
             return py::dtype::of<int16_t>();
         }
 
-        if (pyInt > py::int_(std::numeric_limits<int32_t>::min())) {
+        if (pyInt >= py::int_(std::numeric_limits<int32_t>::min())) {
             return py::dtype::of<int32_t>();
         }
 
-        if (pyInt > py::int_(std::numeric_limits<int64_t>::min())) {
+        if (pyInt >= py::int_(std::numeric_limits<int64_t>::min())) {
             return py::dtype::of<int64_t>();
         }
     }
     else { // unsigned
-        if (pyInt < py::int_(std::numeric_limits<uint8_t>::max())) {
+        if (pyInt <= py::int_(std::numeric_limits<uint8_t>::max())) {
             return py::dtype::of<uint8_t>();
         }
 
-        if (pyInt < py::int_(std::numeric_limits<uint16_t>::max())) {
+        if (pyInt <= py::int_(std::numeric_limits<uint16_t>::max())) {
             return py::dtype::of<uint16_t>();
         }
 
-        if (pyInt < py::int_(std::numeric_limits<uint32_t>::max())) {
+        if (pyInt <= py::int_(std::numeric_limits<uint32_t>::max())) {
             return py::dtype::of<uint32_t>();
         }
 
-        if (pyInt < py::int_(std::numeric_limits<uint64_t>::max())) {
+        if (pyInt <= py::int_(std::numeric_limits<uint64_t>::max())) {
             return py::dtype::of<uint64_t>();
         }
     }
@@ -85,19 +85,27 @@ py::dtype get_dtype(const py::handle& obj) {
 
 py::dtype get_common_dtype(const py::iterable& iterable) {
     if (py::isinstance<py::array>(iterable)) {
-        const auto arr = py::cast<py::array>(iterable);
-        const auto dt = arr.dtype();
+        const py::array arr = py::reinterpret_borrow<py::array>(iterable);
+        const py::dtype dt = arr.dtype();
 
         if (!dt.is(py::dtype::of<py::object>())) {
             return dt;
         }
+
     }
 
-    py::tuple dtypes(py::len(iterable));
+    const std::size_t size = py::len(iterable);
+    py::tuple dtypes(size);
 
     std::size_t i = 0;
-    for (py::handle val: iterable) {
-        dtypes[i] = get_dtype(val);
+    for (const py::handle inner : py::reinterpret_borrow<py::iterable>(iterable)) {
+        if (py::isinstance<py::iterable>(inner)) {
+            dtypes[i] = get_common_dtype(py::reinterpret_borrow<py::iterable>(inner));
+        }
+        else {
+            dtypes[i] = get_dtype(inner);
+        }
+
         ++i;
     }
 
