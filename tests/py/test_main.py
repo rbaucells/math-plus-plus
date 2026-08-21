@@ -87,7 +87,7 @@ def test_get_common_dtype():
     # act / assert
     assert mathpy.get_common_dtype(n) == numpy.dtypes.UInt8DType()
     # arrange
-    o = numpy.array([[1, -5], [2, 130], [4, 6]])
+    o = numpy.array([[1, -5], [2, 130], [4, 6]], dtype=numpy.int16)
     # act / assert
     assert mathpy.get_common_dtype(o) == numpy.dtypes.Int16DType()
     # arrange
