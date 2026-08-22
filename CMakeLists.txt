@@ -105,6 +105,9 @@ if (MATHPP_PYTHON_BINDINGS)
     # link with mathpp
     target_link_libraries(mathpy PRIVATE mathpp)
 
+    # turn on telemetry
+    target_compile_definitions(mathpy PRIVATE MATHPP_ENABLE_TELEMETRY)
+
     # packaging stuff
     set(MATHPY_STAGING_DIR "${CMAKE_CURRENT_BINARY_DIR}/wheel_staging")
     set(MATHPY_MODULE_DIR "${MATHPY_STAGING_DIR}/mathpy")

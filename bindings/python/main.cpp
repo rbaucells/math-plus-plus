@@ -99,7 +99,7 @@ py::dtype get_common_dtype(const py::iterable& iterable) {
 
     std::size_t i = 0;
     for (const py::handle inner : py::reinterpret_borrow<py::iterable>(iterable)) {
-        if (py::isinstance<py::iterable>(inner)) {
+        if (py::isinstance<py::iterable>(inner) && !py::isinstance<py::str>(inner) && !py::isinstance<py::bytes>(inner) && !py::isinstance<py::bytearray>(inner)) {
             dtypes[i] = get_common_dtype(py::reinterpret_borrow<py::iterable>(inner));
         }
         else {
