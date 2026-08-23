@@ -42,7 +42,7 @@ def test_DenseMatrix_copy_constructor():
     a[2, 3] = 8
     telemetry_tests.start()
     # act
-    b = mathpy.DenseMatrix(a)
+    b = mathpy.DenseMatrix.copy(a)
     telemetry_tests.end()
     # assert
     assert b.rows() == 3
@@ -52,4 +52,4 @@ def test_DenseMatrix_copy_constructor():
     assert b.get(1, 1) == 4
     assert b[0, 2] == 6
     assert b.get(2, 3) == 8
-    telemetry_tests.asserts(mathpy.TelemetryStats(copy_constructs=1))
+    telemetry_tests.asserts(mathpy.TelemetryStats(copy_constructs=1, move_constructs=1, allocations=1))

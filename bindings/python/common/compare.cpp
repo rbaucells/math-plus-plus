@@ -24,7 +24,10 @@ void common_compare_bindings(pybind11::module_& m) {
             return std::visit([&](const auto& p) -> bool {
                 using U = std::decay_t<decltype(p)>::ValueType;
 
-                if constexpr (lossless_convertible<UnderlyingT, U>) {
+                if constexpr (std::is_same_v<U, T>) {
+                    return compare(p, std::span<const T>(vec));
+                }
+                else if constexpr (lossless_convertible<UnderlyingT, U>) {
                     const Precision<UnderlyingT> casted(p.value);
 
                     return compare(casted, std::span<const T>(vec));
@@ -32,7 +35,7 @@ void common_compare_bindings(pybind11::module_& m) {
                 else {
                     throw py::type_error("Precision type does not match args type");
                 }
-            }, precision.storage);
+            }, precision);
         });
     });
 
@@ -65,7 +68,10 @@ void common_compare_bindings(pybind11::module_& m) {
             return std::visit([&](const auto& p) -> bool {
                 using U = std::decay_t<decltype(p)>::ValueType;
 
-                if constexpr (lossless_convertible<U, T>) {
+                if constexpr (std::is_same_v<U, T>) {
+                    return compare(p, std::span<const T>(vec));
+                }
+                else if constexpr (lossless_convertible<U, T>) {
                     using UnderlyingT = underlying_type_t<T>;
                     const Precision<UnderlyingT> casted(p.value);
 
@@ -74,7 +80,7 @@ void common_compare_bindings(pybind11::module_& m) {
                 else {
                     throw py::type_error("Precision type does not match args type");
                 }
-            }, precision.storage);
+            }, precision);
         });
     });
 

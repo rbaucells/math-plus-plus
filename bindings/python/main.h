@@ -104,18 +104,6 @@ decltype(auto) dispatch_dt_no_complex(const py::dtype& dt, F func) {
     throw py::type_error("Invalid type");
 }
 
-template<typename Variant>
-struct PyWrapper {
-    Variant storage;
-
-    PyWrapper() = default;
-
-    template<typename T>
-    PyWrapper(T v) : storage(std::move(v)) {}
-
-    virtual ~PyWrapper() = default;
-};
-
 py::dtype get_py_int_dtype(const py::int_& pyInt);
 py::dtype get_dtype(const py::handle& obj);
 py::dtype get_common_dtype(const py::iterable& iterable);

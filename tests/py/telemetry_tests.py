@@ -14,6 +14,7 @@ def end():
     __endTelemetryStats__ = mathpy.Telemetry.snapshot()
 
 def asserts(expected: mathpy.TelemetryStats):
+    global __startTelemetryStats__, __endTelemetryStats__
     assert __endTelemetryStats__.copy_constructs - __startTelemetryStats__.copy_constructs == expected.copy_constructs
     assert __endTelemetryStats__.move_constructs - __startTelemetryStats__.move_constructs == expected.move_constructs
     assert __endTelemetryStats__.copy_assigns - __startTelemetryStats__.copy_assigns == expected.copy_assigns

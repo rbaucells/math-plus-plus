@@ -12,67 +12,74 @@ void dense_matrix_bindings(py::module_& m) {
     py::class_<Py_DenseMatrix, DenseMatrixLikeBase>(m, "DenseMatrix")
         .def(py::init([](const py::dtype& dt) -> Py_DenseMatrix {
             return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
-                return Py_DenseMatrix(DenseMatrix<T>());
+                return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>);
             });
         }), py::arg("dt"))
         .def(py::init([](const py::dtype& dt, const std::size_t rows, const std::size_t columns, const bool fill) -> Py_DenseMatrix {
             return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
-                return Py_DenseMatrix(DenseMatrix<T>(rows, columns, fill));
+                return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, rows, columns, fill);
             });
         }), py::arg("dt"), py::arg("rows"), py::arg("columns"), py::arg("fill") = true)
-        .def(py::init([](const Py_DenseMatrix& other) -> Py_DenseMatrix {
+        .def_static("copy", [](const Py_DenseMatrix& other) -> Py_DenseMatrix {
             return std::visit([](const auto& otherMat) -> Py_DenseMatrix {
                 using U = std::decay_t<decltype(otherMat)>::ValueType;
-                return Py_DenseMatrix(DenseMatrix<U>(otherMat));
-            }, other.storage);
-        }), py::arg("other"))
-        .def(py::init([](const py::dtype& dt, const Py_DenseMatrix& other) -> Py_DenseMatrix {
+                return Py_DenseMatrix(std::in_place_type<DenseMatrix<U>>, otherMat);
+            }, other);
+        }, py::arg("other"))
+        .def_static("copy", [](const py::dtype& dt, const Py_DenseMatrix& other) -> Py_DenseMatrix {
             return std::visit([&](const auto& otherMat) -> Py_DenseMatrix {
                 using U = std::decay_t<decltype(otherMat)>::ValueType;
 
                 return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
                     if constexpr (lossless_convertible<U, T>) {
-                        return Py_DenseMatrix(DenseMatrix<T>(otherMat));
+                        return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, otherMat);
                     }
                     else {
                         throw py::type_error("Cannot copy construct a Dense Matrix from another with non convertible type");
                     }
                 });
-            }, other.storage);
-        }), py::arg("dt"), py::arg("other"))
+            }, other);
+        }, py::arg("dt"), py::arg("other"))
+        .def_static("move", [](Py_DenseMatrix& other) -> Py_DenseMatrix {
+            return std::visit([](const auto& otherMat) -> Py_DenseMatrix {
+                using U = std::decay_t<decltype(otherMat)>::ValueType;
+                return Py_DenseMatrix(std::in_place_type<DenseMatrix<U>>, std::move(otherMat));
+            }, other);
+        }, py::arg("other"))
         .def("dtype", [](Py_DenseMatrix& self) -> py::dtype {
             return std::visit([](const auto& mat) -> py::dtype {
                 using T = std::decay_t<decltype(mat)>::ValueType;
                 return py::dtype::of<T>();
-            }, self.storage);
+            }, self);
         })
         .def("as_type", [](Py_DenseMatrix& self, const py::dtype& dt) -> Py_DenseMatrix {
             return std::visit([&](const auto& mat) -> Py_DenseMatrix {
                 return dispatch_dt(dt, [&]<scalar T>() -> Py_DenseMatrix {
-                    return Py_DenseMatrix(mat.template as_type<T>());
+                    // TODO: This likely moves the constructed rvalue into the variant
+                    return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, mat.template as_type<T>());
                 });
-            }, self.storage);
+            }, self);
         }, py::arg("dt"))
         .def("columns", [](Py_DenseMatrix& self) -> std::size_t {
             return std::visit([&](const auto& mat) -> std::size_t {
                 return mat.columns();
-            }, self.storage);
+            }, self);
         })
         .def("rows", [](Py_DenseMatrix& self) -> std::size_t {
             return std::visit([&](const auto& mat) -> std::size_t {
                 return mat.rows();
-            }, self.storage);
+            }, self);
         })
         .def("is_complex", [](Py_DenseMatrix& self) -> bool {
             return std::visit([&](const auto& mat) -> bool {
                 using U = std::decay_t<decltype(mat)>;
                 return U::isComplex;
-            }, self.storage);
+            }, self);
         })
         .def("get", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c) -> py::object {
             return std::visit([&](const auto& mat) -> py::object {
                  return py::cast(mat.get(r, c));
-             }, self.storage);
+             }, self);
         }, py::arg("c"), py::arg("r"))
         .def("set", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c, const py::object& v) -> void {
             const py::dtype dt = get_dtype(v);
@@ -87,7 +94,7 @@ void dense_matrix_bindings(py::module_& m) {
                     else {
                         throw py::type_error("Cannot assign to DenseMatrix element with incomatible arg type");
                     }
-                }, self.storage);
+                }, self);
             });
         }, py::arg("c"), py::arg("r"), py::arg("v"))
         .def("__getitem__", [](Py_DenseMatrix& self, const std::pair<std::size_t, std::size_t>& indices) -> py::object {
@@ -96,7 +103,7 @@ void dense_matrix_bindings(py::module_& m) {
 
             return std::visit([&](const auto& mat) -> py::object {
                  return py::cast(mat[r, c]);
-             }, self.storage);
+             }, self);
         }, py::arg("indices"))
         .def("__setitem__", [](Py_DenseMatrix& self, const std::pair<std::size_t, std::size_t>& indices, const py::object& v) -> void {
             const std::size_t r = indices.first;
@@ -114,7 +121,7 @@ void dense_matrix_bindings(py::module_& m) {
                     else {
                         throw py::type_error("Cannot assign to matrix element with non convertible dt");
                     }
-                }, self.storage);
+                }, self);
             });
         }, py::arg("indices"), py::arg("v"));;
 }
