@@ -1,6 +1,8 @@
 import mathpy
 import numpy
 import pytest
+from ... import telemetry_tests
+
 
 def test_DenseMatrix_empty_constructor():
     # act
@@ -31,3 +33,23 @@ def test_DenseMatrix_sized_constructor():
     assert b.columns() == 4
     assert b.dtype() == numpy.dtypes.Int32DType()
     assert not b.is_complex()
+
+def test_DenseMatrix_copy_constructor():
+    # arrange
+    a = mathpy.DenseMatrix(numpy.dtypes.Int32DType(), 3, 4, True)
+    a[1, 1] = 4
+    a[0, 2] = 6
+    a[2, 3] = 8
+    telemetry_tests.start()
+    # act
+    b = mathpy.DenseMatrix(a)
+    telemetry_tests.end()
+    # assert
+    assert b.rows() == 3
+    assert b.columns() == 4
+    assert b.dtype() == numpy.dtypes.Int32DType()
+    assert not b.is_complex()
+    assert b.get(1, 1) == 4
+    assert b[0, 2] == 6
+    assert b.get(2, 3) == 8
+    telemetry_tests.asserts(mathpy.TelemetryStats(copy_constructs=1))
