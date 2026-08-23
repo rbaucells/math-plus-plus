@@ -21,11 +21,11 @@ concept dense_matrix_like = requires(T m, const T constM, std::size_t r, std::si
 
     // accessing
     requires std::same_as<std::remove_cvref_t<decltype(constM[r, c])>, typename T::ValueType>;
-    requires std::same_as<std::remove_cvref_t<decltype(m[r, c])>, typename T::ValueType>;
+    { m[r, c] } -> std::same_as<typename T::ValueType&>;
 
     // arrays
     requires std::same_as<std::remove_cvref_t<decltype(constM.data(i))>, typename T::ValueType>;
-    requires std::same_as<std::remove_cvref_t<decltype(m.data(i))>, typename T::ValueType>;
+    { m.data(i) } -> std::same_as<typename T::ValueType&>;
 };
 
 template<typename T>

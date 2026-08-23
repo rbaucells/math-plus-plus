@@ -12,6 +12,7 @@ struct should_be_dense_vector_like {
     [[nodiscard]] GetterReturnType get(std::size_t) const;
     void set(std::size_t, TValueType);
     [[nodiscard]] GetterReturnType operator[](std::size_t) const;
+    [[nodiscard]] ValueType& operator[](std::size_t);
 };
 
 TEST(dense_vector_like, given_should_be_dense_vector_like_should_return_true_1) {

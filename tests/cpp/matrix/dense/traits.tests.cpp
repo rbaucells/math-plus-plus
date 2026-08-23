@@ -13,8 +13,10 @@ struct should_be_dense_matrix_like {
     [[nodiscard]] GetterReturnType get(std::size_t, std::size_t) const;
     void set(std::size_t, std::size_t, TValueType);
     [[nodiscard]] GetterReturnType operator[](std::size_t, std::size_t) const;
+    [[nodiscard]] ValueType& operator[](std::size_t, std::size_t);
 
     [[nodiscard]] GetterReturnType data(std::size_t) const;
+    [[nodiscard]] ValueType& data(std::size_t);
 };
 
 TEST(dense_matrix_like, given_should_be_dense_matrix_like_should_return_true_1) {

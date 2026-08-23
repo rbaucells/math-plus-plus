@@ -30,6 +30,10 @@ struct DenseVectorAddExpr {
         }, tuple);
     }
 
+    [[nodiscard]] ValueType& operator[](const std::size_t) {
+        throw InvalidOperationException("Cannot get non const ref on DenseVectorAddExpr");
+    }
+
     [[nodiscard]] ValueType get(const std::size_t i) const {
         return std::apply([i](const auto&... args) {
             return (... + args.get(i));

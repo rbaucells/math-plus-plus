@@ -34,6 +34,10 @@ struct DenseMatrixAddExpr {
         }, tuple);
     }
 
+    [[nodiscard]] ValueType& operator[](const std::size_t, const std::size_t) {
+        throw InvalidOperationException("Cannot get non const ref on DenseMatrixAddExpr");
+    }
+
     [[nodiscard]] ValueType get(const std::size_t r, const std::size_t c) const {
         return std::apply([r, c](const auto&... args) {
             return (... + args.get(r, c));
@@ -48,6 +52,10 @@ struct DenseMatrixAddExpr {
         return std::apply([i](const auto&... args) {
             return (... + args.data(i));
         }, tuple);
+    }
+
+    [[nodiscard]] ValueType& data(const std::size_t) {
+        throw InvalidOperationException("Cannot set data on DenseMatrixAddExpr");
     }
 };
 
