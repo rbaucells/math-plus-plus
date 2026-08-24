@@ -21,6 +21,66 @@ void dense_matrix_bindings(py::module_& m) {
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, rows, columns, fill);
             });
         }), py::arg("dt"), py::arg("rows"), py::arg("columns"), py::arg("fill") = true)
+        .def(py::init([](const py::iterable& rowsIterable) -> Py_DenseMatrix {
+            if (py::isinstance<py::array>(rowsIterable)) {
+                py::array arr = py::cast<py::array>(rowsIterable);
+
+                if (arr.ndim() != 2) {
+                    throw py::type_error("Expected 2d array to construct DenseMatrix");
+                }
+
+                const std::size_t rows = arr.shape()[0];
+                const std::size_t columns = arr.shape()[1];
+
+                const py::dtype dt = get_common_dtype(arr);
+
+                return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
+                    const py::detail::unchecked_reference<T, 2> arr2d = arr.unchecked<T, 2>();
+
+                    Py_DenseMatrix denseMatrix = Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, rows, columns, false);
+                    DenseMatrix<T>& mat = std::get<DenseMatrix<T>>(denseMatrix);
+
+                    for (std::size_t c = 0; c < columns; c++) {
+                        for (std::size_t r = 0; r < rows; r++) {
+                            mat[r, c] = arr2d(r, c);
+                        }
+                    }
+
+                    return denseMatrix;
+                });
+            }
+
+            const py::dtype dt = get_common_dtype(rowsIterable);
+
+            return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
+                const std::size_t rows = py::len(rowsIterable);
+                const std::size_t columns = py::len(*rowsIterable.begin());
+
+                Py_DenseMatrix denseMatrix = Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, rows, columns, false);
+                DenseMatrix<T>& mat = std::get<DenseMatrix<T>>(denseMatrix);
+
+                std::size_t r = 0;
+                for (auto row : rowsIterable) {
+                    if (!py::isinstance<py::iterable>(row) || py::isinstance<py::str>(row) || py::isinstance<py::bytes>(row) || py::isinstance<py::bytearray>(row)) {
+                        throw py::type_error("Expected 2d list to construct DenseMatrix");
+                    }
+
+                    if (py::len(row) != columns) {
+                        throw py::type_error("All nested lists must be of same size");
+                    }
+
+                    std::size_t c = 0;
+                    for (const py::handle elementObject : row) {
+                        mat[r, c] = py::cast<T>(elementObject);
+                        ++c;
+                    }
+
+                    ++r;
+                }
+
+                return denseMatrix;
+            });
+        }), py::arg("data"))
         .def_static("copy", [](const Py_DenseMatrix& other) -> Py_DenseMatrix {
             return std::visit([](const auto& otherMat) -> Py_DenseMatrix {
                 using U = std::decay_t<decltype(otherMat)>::ValueType;
