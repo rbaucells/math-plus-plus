@@ -145,40 +145,6 @@ TEST(dense_matrix_view_columns, given_dense_matrix_view_should_return_columns) {
     TelemetryTests::asserts({});
 }
 #pragma endregion
-#pragma region data
-TEST(dense_matrix_view_data, given_index_should_return_const_reference) {
-    // arrange
-    DenseMatrix<int> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    const DenseMatrixView<int> view(a, 2, 3, 0, 0);
-    // act
-    TelemetryTests::start();
-    const int& view00 = view.data(0);
-    const int& view10 = view.data(1);
-    const int& view01 = view.data(2);
-    const int& view11 = view.data(3);
-    const int& view02 = view.data(4);
-    const int& view12 = view.data(5);
-    TelemetryTests::end();
-    // assert
-    ASSERT_TRUE(compare(view00, 1));
-    ASSERT_TRUE(compare(view10, 4));
-    ASSERT_TRUE(compare(view01, 2));
-    ASSERT_TRUE(compare(view11, 5));
-    ASSERT_TRUE(compare(view02, 3));
-    ASSERT_TRUE(compare(view12, 6));
-    a[1, 2] = 67;
-    ASSERT_TRUE(compare(view12, 67));
-    TelemetryTests::asserts({});
-}
-
-TEST(dense_matrix_view_data, given_index_should_throw) {
-    // arrange
-    DenseMatrix<long long> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    DenseMatrixView<long long> view(a, 2, 3, 0, 0);
-    // act / assert
-    ASSERT_THROW(long long& ref = view.data(0), InvalidOperationException);
-}
-#pragma endregion
 #pragma region owner
 TEST(dense_matrix_view_owner, given_dense_matrix_should_return_owner) {
     // arrange

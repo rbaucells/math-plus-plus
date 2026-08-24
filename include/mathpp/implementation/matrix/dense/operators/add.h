@@ -47,16 +47,6 @@ struct DenseMatrixAddExpr {
     void set(const std::size_t, const std::size_t, const ValueType) {
         throw InvalidOperationException("Cannot set on DenseMatrixAddExpr");
     }
-
-    [[nodiscard]] ValueType data(const std::size_t i) const {
-        return std::apply([i](const auto&... args) {
-            return (... + args.data(i));
-        }, tuple);
-    }
-
-    [[nodiscard]] ValueType& data(const std::size_t) {
-        throw InvalidOperationException("Cannot set data on DenseMatrixAddExpr");
-    }
 };
 
 template<dense_matrix_like T, dense_matrix_like U>

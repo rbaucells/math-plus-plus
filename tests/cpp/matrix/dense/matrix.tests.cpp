@@ -530,55 +530,6 @@ TEST(dense_matrix_columns, given_dense_matrix_should_return_columns) {
     TelemetryTests::asserts({});
 }
 #pragma endregion
-#pragma region data
-TEST(dense_matrix_data, given_index_should_return_const_reference) {
-    // arrange
-    DenseMatrix<int> a = {{1, 2, 3}, {4, 5, 6}};
-    // act
-    TelemetryTests::start();
-    const int& a00 = a.data(0);
-    const int& a10 = a.data(1);
-    const int& a01 = a.data(2);
-    const int& a11 = a.data(3);
-    const int& a02 = a.data(4);
-    const int& a12 = a.data(5);
-    TelemetryTests::end();
-    // assert
-    ASSERT_TRUE(compare(a00, 1));
-    ASSERT_TRUE(compare(a10, 4));
-    ASSERT_TRUE(compare(a01, 2));
-    ASSERT_TRUE(compare(a11, 5));
-    ASSERT_TRUE(compare(a02, 3));
-    ASSERT_TRUE(compare(a12, 6));
-    a[1, 2] = 67;
-    ASSERT_TRUE(compare(a12, 67));
-    TelemetryTests::asserts({});
-}
-
-TEST(dense_matrix_data, given_dense_matrix_should_return_data_pointer) {
-    // arrange
-    DenseMatrix<int> a = {{1, 2, 3}, {4, 5, 6}};
-    // act
-    TelemetryTests::start();
-    int& a00 = a.data(0);
-    int& a10 = a.data(1);
-    int& a01 = a.data(2);
-    int& a11 = a.data(3);
-    int& a02 = a.data(4);
-    int& a12 = a.data(5);
-    TelemetryTests::end();
-    // assert
-    ASSERT_TRUE(compare(a00, 1));
-    ASSERT_TRUE(compare(a10, 4));
-    ASSERT_TRUE(compare(a01, 2));
-    ASSERT_TRUE(compare(a11, 5));
-    ASSERT_TRUE(compare(a02, 3));
-    ASSERT_TRUE(compare(a12, 6));
-    a12 = 67;
-    ASSERT_TRUE(compare(a[1, 2], 67));
-    TelemetryTests::asserts({});
-}
-#pragma endregion
 #pragma region raw_data
 TEST(dense_matrix_raw_data, given_dense_matrix_should_return_const_data_pointer) {
     // arrange

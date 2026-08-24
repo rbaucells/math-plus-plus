@@ -493,32 +493,6 @@ struct DenseMatrix {
     }
 
     /**
-     * @brief Accesses the matrix's data array at a provided index.
-     *
-     * Does not check bounds of index i.
-     * Does not allocate memory.
-     *
-     * @param i Zero-based linear index to index into data array.
-     * @return Const-reference to element at index i of data array.
-     */
-    const T& data(const std::size_t i) const {
-        return data_[i];
-    }
-
-    /**
-     * @brief Accesses the matrix's data array at a provided index.
-     *
-     * Does not check bounds of index i.
-     * Does not allocate memory.
-     *
-     * @param i Zero-based linear index to index into data array.
-     * @return Reference to element at index i of data array.
-     */
-    T& data(const std::size_t i) {
-        return data_[i];
-    }
-
-    /**
     * @return Pointer to flat array containing all matrix elements in column major order.
     * @note Pointer to array of size rows * columns.
     */

@@ -129,31 +129,6 @@ struct DenseMatrixView {
         return columns_;
     }
 
-    /**
-     * @brief Accesses the matrix at a provided linear index.
-     *
-     * Works as if the view has a contiguous linear data array.
-     * Implemented by converting linear index to r and c indices and then accessing owner matrix at r + rowOffset, c + colOffset.
-     * Does not check bounds of index i.
-     * Does not allocate memory.
-     *
-     * @param i Zero-based linear index to index into simulated data array.
-     * @return Const-reference to element at linear index i of what the view 'sees'.
-     */
-    [[nodiscard]] const T& data(const std::size_t i) const {
-        const std::size_t r = i % rows_;
-        const std::size_t c = i / rows_;
-
-        return owner_[r + rowOffset_, c + colOffset_];
-    }
-
-    /**
-     * @throws InvalidOperationException Modifying owner through view is illegal.
-     */
-    [[nodiscard]] T& data(const std::size_t) {
-        throw InvalidOperationException("Cannot modify owner through view");
-    }
-
     [[nodiscard]] const DenseMatrix<T>& owner() const {
         return owner_;
     }
