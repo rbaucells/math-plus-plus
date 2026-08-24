@@ -59,7 +59,7 @@ struct DenseVectorView {
     }
 
     /**
-    * @warning InvalidOperationException Modifying owner through view is illegal.
+    * @warning Modifying owner through view is illegal.
     */
     T& operator[](const std::size_t) {
         // ReSharper disable once CppStaticAssertFailure
@@ -91,10 +91,11 @@ struct DenseVectorView {
     }
 
     /**
-     * @throws InvalidOperationException Modifying owner through view is illegal.
+     * @warning Modifying owner through view is illegal.
      */
     void set(const std::size_t, const T) {
-        throw InvalidOperationException("Cannot modify owner through view");
+        // ReSharper disable once CppStaticAssertFailure
+        static_assert(false, "Cannot modify owner through view");
     }
 
     /**

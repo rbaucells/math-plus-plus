@@ -35,7 +35,8 @@ struct DenseMatrixSubtractExpr {
     }
 
     [[nodiscard]] ValueType& operator[](const std::size_t, const std::size_t) {
-        throw InvalidOperationException("Cannot get non const ref on DenseMatrixSubtractExpr");
+        // ReSharper disable once CppStaticAssertFailure
+        static_assert(false, "Cannot get ref on DenseMatrixSubtractExpr");
     }
 
     [[nodiscard]] ValueType get(const std::size_t r, const std::size_t c) const {
@@ -45,7 +46,8 @@ struct DenseMatrixSubtractExpr {
     }
 
     void set(const std::size_t, const std::size_t, const ValueType) {
-        throw InvalidOperationException("Cannot set on DenseMatrixSubtractExpr");
+        // ReSharper disable once CppStaticAssertFailure
+        static_assert(false, "Cannot set on DenseMatrixSubtractExpr");
     }
 };
 
