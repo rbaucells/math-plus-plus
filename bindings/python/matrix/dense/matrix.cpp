@@ -3,6 +3,7 @@
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
 #include "mathpp/implementation/matrix/dense/matrix.h"
+#include "mathpp/implementation/common/traits.h"
 #include "../../main.h"
 #include "matrix.h"
 
@@ -39,6 +40,37 @@ void dense_matrix_bindings(py::module_& m) {
                     }
                 });
             }, other);
+        }, py::arg("dt"), py::arg("other"))
+        .def_static("copy", [](const py::object& other) -> Py_DenseMatrix {
+            if (!py::isinstance<DenseMatrixLikeBase>(other)) {
+                throw py::type_error("Cannot copy construct from object that doesn't derive from DenseMatrixLike");
+            }
+
+            const py::dtype dt = getattr(other, "dtype")();
+
+            return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
+                DenseMatrixLikePyWrapper<T> wrapper = DenseMatrixLikePyWrapper<T>(other);
+                return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
+            });
+        }, py::arg("other"))
+        .def_static("copy", [](const py::dtype& dt, const py::object& other) -> Py_DenseMatrix {
+            if (!py::isinstance<DenseMatrixLikeBase>(other)) {
+                throw py::type_error("Cannot copy construct from object that doesn't derive from DenseMatrixLike");
+            }
+
+            const py::dtype otherDt = getattr(other, "dtype")();
+
+            return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
+                return dispatch_dt(otherDt, [&]<typename U>() -> Py_DenseMatrix {
+                    if constexpr (lossless_convertible<U, T>) {
+                        DenseMatrixLikePyWrapper<U> wrapper = DenseMatrixLikePyWrapper<U>(other);
+                        return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
+                    }
+                    else {
+                        throw py::type_error("Cannot copy construct a Dense Matrix from dense matrix like with non convertible type");
+                    }
+                });
+            });
         }, py::arg("dt"), py::arg("other"))
         .def_static("move", [](Py_DenseMatrix& other) -> Py_DenseMatrix {
             return std::visit([](const auto& otherMat) -> Py_DenseMatrix {

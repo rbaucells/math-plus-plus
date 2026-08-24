@@ -16,9 +16,5 @@ void dense_matrix_like_bindings(py::module_& m) {
         .def("__setitem__", [](DenseMatrixLikeBase&, const std::pair<std::size_t, std::size_t>&, const py::object&) -> void {
             PyErr_SetString(PyExc_NotImplementedError, "__setitem__ function not implemented");
             throw py::error_already_set();
-        }, py::arg("indices"), py::arg("v"))
-        .def("data", [](DenseMatrixLikeBase&, std::size_t) -> py::object {
-            PyErr_SetString(PyExc_NotImplementedError, "data function not implemented");
-            throw py::error_already_set();
-        }, py::arg("i"));
+        }, py::arg("indices"), py::arg("v"));
 }
