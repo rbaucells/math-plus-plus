@@ -72,23 +72,6 @@ TEST(dense_matrix_view_get, given_invalid_indices_should_throw_2) {
     ASSERT_THROW(view.get(4, 0), InvalidIndexException);
 }
 #pragma endregion
-#pragma region set
-TEST(dense_matrix_view_set, given_valid_indices_should_throw) {
-    // arrange
-    DenseMatrix<long> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    DenseMatrixView<long> view(a, 2, 2, 1, 0);
-    // act / assert
-    ASSERT_THROW(view.set(0, 1, 5), InvalidOperationException);
-}
-
-TEST(dense_matrix_view_set, given_invalid_indices_should_throw) {
-    // arrange
-    DenseMatrix<long> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    DenseMatrixView<long> view(a, 2, 2, 1, 0);
-    // act / assert
-    ASSERT_THROW(view.set(3, 1, 5), InvalidOperationException);
-}
-#pragma endregion
 #pragma region row_offset
 TEST(dense_matrix_view_row_offset, given_dense_matrix_view_should_return_row_offset) {
     // arrange

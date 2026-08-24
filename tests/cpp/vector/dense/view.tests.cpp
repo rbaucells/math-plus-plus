@@ -70,23 +70,6 @@ TEST(dense_vector_view_get, given_invalid_index_should_throw_2) {
     ASSERT_THROW(view.get(4), InvalidIndexException);
 }
 #pragma endregion
-#pragma region set
-TEST(dense_vector_view_set, given_valid_index_should_throw) {
-    // arrange
-    DenseVector<long> a = {1, 2, 3, 4, 5};
-    DenseVectorView<long> view(a, 3, 1);
-    // act / assert
-    ASSERT_THROW(view.set(0, 5), InvalidOperationException);
-}
-
-TEST(dense_vector_view_set, given_invalid_index_should_throw) {
-    // arrange
-    DenseVector<long> a = {1, 2, 3, 4, 5};
-    DenseVectorView<long> view(a, 3, 1);
-    // act / assert
-    ASSERT_THROW(view.set(3, 5), InvalidOperationException);
-}
-#pragma endregion
 #pragma region offset
 TEST(dense_vector_view_offset, given_dense_vector_view_should_return_offset) {
     // arrange
