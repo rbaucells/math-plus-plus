@@ -1,10 +1,12 @@
 #include "../../telemetry.tests.h"
 #include "gtest/gtest.h"
 
+#include "mathpp/implementation/common/traits.h"
 #include "mathpp/implementation/common/compare.h"
 #include "mathpp/implementation/matrix/dense/matrix.h"
-#include "mathpp/implementation/matrix/dense/view.h"
 #include "mathpp/implementation/matrix/dense/operators/compare.h"
+
+#include "simple_dense_matrix_like.h"
 
 #pragma region default_constructor
 TEST(dense_matrix_default_constructor, given_dense_matrix_should_default_construct) {
@@ -101,10 +103,9 @@ TEST(dense_matrix_copy_constructor_from_diff_type, given_i_dense_matrix_should_c
 }
 #pragma endregion
 #pragma region copy_constructors_from_like
-TEST(dense_matrix_copy_constructors_from_like, given_view_should_copy) {
+TEST(dense_matrix_copy_constructors_from_like, given_simple_like_should_copy) {
     // arrange
-    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    const DenseMatrixView<float> expected(a, 2, 2, 0, 0);
+    const SimpleDenseMatrixLike<float> expected = {{2, 4}, {6, 8}};
     // act
     TelemetryTests::start();
     const DenseMatrix<float> b = expected;
@@ -208,10 +209,9 @@ TEST(dense_matrix_copy_assignment_operator_from_diff_type, given_f_dense_matrix_
 }
 #pragma endregion
 #pragma region copy_assignment_operator_from_like
-TEST(dense_matrix_copy_assignment_operator_from_like, given_view_of_same_size_should_copy_assign) {
+TEST(dense_matrix_copy_assignment_operator_from_like, given_simple_like_of_same_size_should_copy_assign) {
     // arrange
-    const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    const DenseMatrixView<float> expected(a, 2, 2, 0, 0);
+    const SimpleDenseMatrixLike<float> expected = {{2, 4}, {6, 8}};
     DenseMatrix<float> b(2, 2);
     // act
     TelemetryTests::start();
@@ -222,10 +222,10 @@ TEST(dense_matrix_copy_assignment_operator_from_like, given_view_of_same_size_sh
     TelemetryTests::asserts({.copy_assigns = 1});
 }
 
-TEST(dense_matrix_copy_assignment_operator_from_like, given_view_of_diff_size_should_copy_assign) {
+TEST(dense_matrix_copy_assignment_operator_from_like, given_simple_like_of_diff_size_should_copy_assign) {
     // arrange
     const DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    const DenseMatrixView<float> expected(a, 2, 2, 0, 0);
+    const SimpleDenseMatrixLike<float> expected = {{2, 4}, {6, 8}};
     DenseMatrix<float> b(3, 3);
     // act
     TelemetryTests::start();

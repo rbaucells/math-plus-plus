@@ -1,10 +1,13 @@
 #include "../../telemetry.tests.h"
 #include "gtest/gtest.h"
 
+#include "mathpp/implementation/common/traits.h"
 #include "mathpp/implementation/common/compare.h"
 #include "mathpp/implementation/vector/dense/vector.h"
 #include "mathpp/implementation/vector/dense/view.h"
 #include "mathpp/implementation/vector/dense/operators/compare.h"
+
+#include "simple_dense_vector_like.h"
 
 #pragma region default_constructor
 TEST(dense_vector_default_constructor, given_dense_vector_should_default_construct) {
@@ -88,8 +91,7 @@ TEST(dense_vector_copy_constructor_from_diff_type, given_dense_vector_should_cop
 #pragma region copy_constructor_from_like
 TEST(dense_vector_copy_constructor_from_like, given_view_should_copy) {
     // arrange
-    const DenseVector<float> a = {1, 2, 3, 4, 5};
-    const DenseVectorView<float> expected(a, 3, 1);
+    const SimpleDenseVectorLike<float> expected = {3, 6, 3};
     // act
     TelemetryTests::start();
     const DenseVector<float> b = expected;
@@ -190,8 +192,7 @@ TEST(dense_vector_copy_assignment_operator_from_diff_type, given_dense_vector_of
 #pragma region copy_assignment_operator_from_like
 TEST(dense_vector_copy_assignment_operator_from_like, given_view_of_same_size_should_copy_assign) {
     // arrange
-    const DenseVector<float> a = {1, 2, 3, 4};
-    const DenseVectorView<float> expected(a, 2, 1);
+    const SimpleDenseVectorLike<float> expected = {3, 6};
     DenseVector<float> b(2);
     // act
     TelemetryTests::start();
@@ -204,15 +205,14 @@ TEST(dense_vector_copy_assignment_operator_from_like, given_view_of_same_size_sh
 
 TEST(dense_vector_copy_assignment_operator_from_like, given_view_of_diff_size_should_copy_assign) {
     // arrange
-    const DenseVector<float> a = {1, 2, 3, 4};
-    const DenseVectorView<float> expected(a, 2, 1);
+    const SimpleDenseVectorLike<float> expected = {3, 6, 9};
     DenseVector<float> b(4);
     // act
     TelemetryTests::start();
     b = expected;
     TelemetryTests::end();
     // assert
-    ASSERT_TRUE(compare(b.n(), 2));
+    ASSERT_TRUE(compare(b.n(), 3));
     ASSERT_TRUE(compare(Precision(0.001f), b, expected));
     TelemetryTests::asserts({.copy_assigns = 1, .allocations = 1, .deallocations = 1});
 }
