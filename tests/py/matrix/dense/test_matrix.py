@@ -45,7 +45,6 @@ def test_DenseMatrix_sized_constructor():
     telemetry_tests.asserts(TelemetryStats(allocations=1, move_constructs=1))
     # TODO: Check if data is not nullptr
 
-# TODO: Add Telemetry
 def test_DenseMatrix_list_constructor():
     # act
     telemetry_tests.start()

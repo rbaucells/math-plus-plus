@@ -125,7 +125,7 @@ struct DenseMatrix {
      */
     template<scalar U> requires lossless_convertible<U, T>
     DenseMatrix(const DenseMatrix<U>& other) : rows_(other.rows()), columns_(other.columns()), data_(new T[columns_ * rows_]) {
-        std::copy(other.rawData(), other.rawData() + (rows_ * columns_), data_);
+        std::copy(other.data(), other.data() + (rows_ * columns_), data_);
 
         Telemetry::emit_copy_construct();
         Telemetry::emit_allocation();
@@ -217,7 +217,7 @@ struct DenseMatrix {
             Telemetry::emit_allocation();
         }
 
-        std::copy(other.rawData(), other.rawData() + (rows_ * columns_), data_);
+        std::copy(other.data(), other.data() + (rows_ * columns_), data_);
 
         Telemetry::emit_copy_assign();
         return *this;
@@ -496,7 +496,7 @@ struct DenseMatrix {
     * @return Pointer to flat array containing all matrix elements in column major order.
     * @note Pointer to array of size rows * columns.
     */
-    [[nodiscard]] T* rawData() {
+    [[nodiscard]] T* data() {
         return data_;
     }
 
@@ -504,7 +504,7 @@ struct DenseMatrix {
      * @return Const-pointer to flat array containing all matrix elements in column major order.
      * @note Const-pointer to array of size rows * columns.
      */
-    [[nodiscard]] const T* rawData() const {
+    [[nodiscard]] const T* data() const {
         return data_;
     }
 

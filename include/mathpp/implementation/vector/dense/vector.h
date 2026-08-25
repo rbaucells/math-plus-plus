@@ -95,7 +95,7 @@ struct DenseVector {
      */
     template<scalar U> requires lossless_convertible<U, T>
     DenseVector(const DenseVector<U>& other) : n_(other.n()), data_(new T[n_]) {
-        std::copy(other.rawData(), other.rawData() + n_, data_);
+        std::copy(other.data(), other.data() + n_, data_);
 
         Telemetry::emit_copy_construct();
         Telemetry::emit_allocation();
@@ -183,7 +183,7 @@ struct DenseVector {
             Telemetry::emit_allocation();
         }
 
-        std::copy(other.rawData(), other.rawData() + n_, data_);
+        std::copy(other.data(), other.data() + n_, data_);
 
         Telemetry::emit_copy_assign();
         return *this;
@@ -435,7 +435,7 @@ struct DenseVector {
     * @return Pointer to array containing all vector elements.
     * @note Pointer to array of size n.
     */
-    [[nodiscard]] T* rawData() {
+    [[nodiscard]] T* data() {
         return data_;
     }
 
@@ -443,7 +443,7 @@ struct DenseVector {
      * @return Const-pointer to array containing all vector elements.
      * @note Const-pointer to array of size n.
      */
-    [[nodiscard]] const T* rawData() const {
+    [[nodiscard]] const T* data() const {
         return data_;
     }
 

@@ -17,7 +17,7 @@ TEST(dense_matrix_default_constructor, given_dense_matrix_should_default_constru
     // assert
     ASSERT_TRUE(compare(a.rows(), 0));
     ASSERT_TRUE(compare(a.columns(), 0));
-    ASSERT_TRUE(a.rawData() == nullptr);
+    ASSERT_TRUE(a.data() == nullptr);
     TelemetryTests::asserts({});
 }
 #pragma endregion
@@ -44,7 +44,7 @@ TEST(dense_matrix_sized_constructor, given_rows_and_columns_and_no_fill_should_c
     // assert
     ASSERT_TRUE(compare(a.rows(), 2));
     ASSERT_TRUE(compare(a.columns(), 3));
-    ASSERT_TRUE(a.rawData() != nullptr);
+    ASSERT_TRUE(a.data() != nullptr);
     TelemetryTests::asserts({.allocations = 1});
 }
 #pragma endregion
@@ -129,7 +129,7 @@ TEST(dense_matrix_move_constructor, given_dense_matrix_should_move) {
     // assert
     ASSERT_TRUE(compare(a.rows(), 0));
     ASSERT_TRUE(compare(a.columns(), 0));
-    ASSERT_TRUE(a.rawData() == nullptr);
+    ASSERT_TRUE(a.data() == nullptr);
     ASSERT_TRUE(compare(b.rows(), 3));
     ASSERT_TRUE(compare(b.columns(), 3));
     ASSERT_TRUE(compare(Precision(0.001l), b, expected));
@@ -169,11 +169,11 @@ TEST(dense_matrix_copy_assignment_operator_from_same_type, given_self_should_do_
     // arrange
     DenseMatrix<float> b = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act
-    const float* before = b.rawData();
+    const float* before = b.data();
     TelemetryTests::start();
     b = b;
     TelemetryTests::end();
-    const float* after = b.rawData();
+    const float* after = b.data();
     // assert
     ASSERT_TRUE(before == after);
     TelemetryTests::asserts({});
@@ -251,7 +251,7 @@ TEST(dense_matrix_move_assignment_oerator, given_dense_matrix_of_should_move_ass
     // assert
     ASSERT_TRUE(compare(a.rows(), 0));
     ASSERT_TRUE(compare(a.columns(), 0));
-    ASSERT_TRUE(a.rawData() == nullptr);
+    ASSERT_TRUE(a.data() == nullptr);
     ASSERT_TRUE(compare(b.rows(), 3));
     ASSERT_TRUE(compare(b.columns(), 3));
     ASSERT_TRUE(compare(Precision(0.001f), b, expected));
@@ -262,11 +262,11 @@ TEST(dense_matrix_move_assignment_operator_from_same_type, given_self_should_do_
     // arrange
     DenseMatrix<float> b = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act
-    const float* before = b.rawData();
+    const float* before = b.data();
     TelemetryTests::start();
     b = std::move(b);
     TelemetryTests::end();
-    const float* after = b.rawData();
+    const float* after = b.data();
     // assert
     ASSERT_TRUE(before == after);
     TelemetryTests::asserts({});
@@ -329,11 +329,11 @@ TEST(dense_matrix_reshape, given_new_dimensions_and_no_preserve_should_reshape) 
     // arrange
     DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act
-    const float* before = a.rawData();
+    const float* before = a.data();
     TelemetryTests::start();
     a.reshape(2, 3, false);
     TelemetryTests::end();
-    const float* after = a.rawData();
+    const float* after = a.data();
     // assert
     ASSERT_TRUE(compare(a.rows(), 2));
     ASSERT_TRUE(compare(a.columns(), 3));
@@ -346,11 +346,11 @@ TEST(dense_matrix_reshape, given_new_dimensions_and_preserve_should_reshape) {
     const DenseMatrix<float> expected = {{1, 2, 3}, {4, 5, 6}};
     DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act
-    const float* before = a.rawData();
+    const float* before = a.data();
     TelemetryTests::start();
     a.reshape(2, 3, true);
     TelemetryTests::end();
-    const float* after = a.rawData();
+    const float* after = a.data();
     // assert
     ASSERT_TRUE(compare(a.rows(), 2));
     ASSERT_TRUE(compare(a.columns(), 3));
@@ -364,11 +364,11 @@ TEST(dense_matrix_reshape, given_new_dimensions_and_no_preserve_and_value_should
     const DenseMatrix<float> expected = {{67, 67, 67}, {67, 67, 67}};
     DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act
-    const float* before = a.rawData();
+    const float* before = a.data();
     TelemetryTests::start();
     a.reshape(2, 3, false, 67);
     TelemetryTests::end();
-    const float* after = a.rawData();
+    const float* after = a.data();
     // assert
     ASSERT_TRUE(compare(a.rows(), 2));
     ASSERT_TRUE(compare(a.columns(), 3));
@@ -382,11 +382,11 @@ TEST(dense_matrix_reshape, given_new_dimensions_and_preserve_and_value_should_re
     const DenseMatrix<float> expected = {{1, 2, 3, 67}, {4, 5, 6, 67}};
     DenseMatrix<float> a = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     // act
-    const float* before = a.rawData();
+    const float* before = a.data();
     TelemetryTests::start();
     a.reshape(2, 4, true, 67);
     TelemetryTests::end();
-    const float* after = a.rawData();
+    const float* after = a.data();
     // assert
     ASSERT_TRUE(compare(a.rows(), 2));
     ASSERT_TRUE(compare(a.columns(), 4));
@@ -487,7 +487,7 @@ TEST(dense_matrix_indexing_operator, given_valid_indices_should_return_ref) {
     ASSERT_TRUE(compare(Precision(0.001f), ref, 9));
     ref = 4;
     ASSERT_TRUE(compare(Precision(0.001f), ref, 4));
-    ASSERT_TRUE(&ref == &a.rawData()[8]);
+    ASSERT_TRUE(&ref == &a.data()[8]);
     TelemetryTests::asserts({});
 }
 
@@ -500,7 +500,7 @@ TEST(dense_matrix_indexing_operator, given_valid_indices_should_return_const_ref
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(compare(Precision(0.001f), ref, 9));
-    ASSERT_TRUE(&ref == &a.rawData()[8]);
+    ASSERT_TRUE(&ref == &a.data()[8]);
     TelemetryTests::asserts({});
 }
 #pragma endregion
@@ -530,13 +530,13 @@ TEST(dense_matrix_columns, given_dense_matrix_should_return_columns) {
     TelemetryTests::asserts({});
 }
 #pragma endregion
-#pragma region raw_data
-TEST(dense_matrix_raw_data, given_dense_matrix_should_return_const_data_pointer) {
+#pragma region data
+TEST(dense_matrix_data, given_dense_matrix_should_return_const_data_pointer) {
     // arrange
     DenseMatrix<int> a = {{1, 2, 3}, {4, 5, 6}};
     // act
     TelemetryTests::start();
-    const int* data = a.rawData();
+    const int* data = a.data();
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(data != nullptr);
@@ -551,12 +551,12 @@ TEST(dense_matrix_raw_data, given_dense_matrix_should_return_const_data_pointer)
     TelemetryTests::asserts({});
 }
 
-TEST(dense_matrix_raw_data, given_dense_matrix_should_return_data_pointer) {
+TEST(dense_matrix_data, given_dense_matrix_should_return_data_pointer) {
     // arrange
     DenseMatrix<int> a = {{1, 2, 3}, {4, 5, 6}};
     // act
     TelemetryTests::start();
-    int* data = a.rawData();
+    int* data = a.data();
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(data != nullptr);

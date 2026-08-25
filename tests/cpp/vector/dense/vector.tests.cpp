@@ -17,7 +17,7 @@ TEST(dense_vector_default_constructor, given_dense_vector_should_default_constru
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(compare(a.n(), 0));
-    ASSERT_TRUE(a.rawData() == nullptr);
+    ASSERT_TRUE(a.data() == nullptr);
     TelemetryTests::asserts({});
 }
 #pragma endregion
@@ -42,7 +42,7 @@ TEST(dense_vector_sized_constructor, given_n_and_no_fill_should_construct) {
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(compare(a.n(), 3));
-    ASSERT_TRUE(a.rawData() != nullptr);
+    ASSERT_TRUE(a.data() != nullptr);
     TelemetryTests::asserts({.allocations = 1});
 }
 #pragma endregion
@@ -113,7 +113,7 @@ TEST(dense_vector_move_constructor, given_dense_vector_should_move) {
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(compare(a.n(), 0));
-    ASSERT_TRUE(a.rawData() == nullptr);
+    ASSERT_TRUE(a.data() == nullptr);
     ASSERT_TRUE(compare(b.n(), 3));
     ASSERT_TRUE(compare(Precision(0.001l), b, expected));
     TelemetryTests::asserts({.move_constructs = 1});
@@ -151,11 +151,11 @@ TEST(dense_vector_copy_assignment_operator_from_same_type, given_self_should_do_
     // arrange
     DenseVector<float> b = {1, 2, 3};
     // act
-    const float* before = b.rawData();
+    const float* before = b.data();
     TelemetryTests::start();
     b = b;
     TelemetryTests::end();
-    const float* after = b.rawData();
+    const float* after = b.data();
     // assert
     ASSERT_TRUE(before == after);
     TelemetryTests::asserts({});
@@ -229,7 +229,7 @@ TEST(dense_vector_move_assignment_operator, given_dense_vector_should_move_assig
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(compare(a.n(), 0));
-    ASSERT_TRUE(a.rawData() == nullptr);
+    ASSERT_TRUE(a.data() == nullptr);
     ASSERT_TRUE(compare(b.n(), 3));
     ASSERT_TRUE(compare(Precision(0.001f), b, expected));
     TelemetryTests::asserts({.move_assigns = 1, .deallocations = 1});
@@ -239,11 +239,11 @@ TEST(dense_vector_move_assignment_operator, given_self_should_do_nothing) {
     // arrange
     DenseVector<float> b = {1, 2, 3};
     // act
-    const float* before = b.rawData();
+    const float* before = b.data();
     TelemetryTests::start();
     b = std::move(b);
     TelemetryTests::end();
-    const float* after = b.rawData();
+    const float* after = b.data();
     // assert
     ASSERT_TRUE(before == after);
     TelemetryTests::asserts({});
@@ -295,11 +295,11 @@ TEST(dense_vector_reshape, given_new_size_and_preserve_should_reshape) {
     const DenseVector<float> expected = {1, 2};
     DenseVector<float> a = {1, 2, 3};
     // act
-    const float* before = a.rawData();
+    const float* before = a.data();
     TelemetryTests::start();
     a.reshape(2, true);
     TelemetryTests::end();
-    const float* after = a.rawData();
+    const float* after = a.data();
     // assert
     ASSERT_TRUE(compare(a.n(), 2));
     ASSERT_TRUE(before != after);
@@ -312,11 +312,11 @@ TEST(dense_vector_reshape, given_new_size_and_no_preserve_and_value_should_resha
     const DenseVector<float> expected = {67, 67};
     DenseVector<float> a = {1, 2, 3};
     // act
-    const float* before = a.rawData();
+    const float* before = a.data();
     TelemetryTests::start();
     a.reshape(2, false, 67);
     TelemetryTests::end();
-    const float* after = a.rawData();
+    const float* after = a.data();
     // assert
     ASSERT_TRUE(compare(a.n(), 2));
     ASSERT_TRUE(before != after);
@@ -329,11 +329,11 @@ TEST(dense_vector_reshape, given_new_size_and_preserve_and_value_should_reshape)
     const DenseVector<float> expected = {1, 2, 3, 67};
     DenseVector<float> a = {1, 2, 3};
     // act
-    const float* before = a.rawData();
+    const float* before = a.data();
     TelemetryTests::start();
     a.reshape(4, true, 67);
     TelemetryTests::end();
-    const float* after = a.rawData();
+    const float* after = a.data();
     // assert
     ASSERT_TRUE(compare(a.n(), 4));
     ASSERT_TRUE(before != after);
@@ -406,7 +406,7 @@ TEST(dense_vector_indexing_operator, given_valid_index_should_return_ref) {
     ASSERT_TRUE(compare(Precision(0.001f), ref, 3));
     ref = 67;
     ASSERT_TRUE(compare(Precision(0.001f), a[2], 67));
-    ASSERT_TRUE(&ref == &a.rawData()[2]);
+    ASSERT_TRUE(&ref == &a.data()[2]);
     TelemetryTests::asserts({});
 }
 
@@ -419,7 +419,7 @@ TEST(dense_vector_indexing_operator, given_valid_index_should_return_const_ref) 
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(compare(Precision(0.001f), ref, 3));
-    ASSERT_TRUE(&ref == &a.rawData()[2]);
+    ASSERT_TRUE(&ref == &a.data()[2]);
     TelemetryTests::asserts({});
 }
 #pragma endregion
@@ -436,13 +436,13 @@ TEST(dense_vector_n, given_dense_vector_should_return_n) {
     TelemetryTests::asserts({});
 }
 #pragma endregion
-#pragma region raw_data
-TEST(dense_vector_raw_data, given_dense_vector_should_return_const_data_pointer) {
+#pragma region data
+TEST(dense_vector_data, given_dense_vector_should_return_const_data_pointer) {
     // arrange
     DenseVector<int> a = {1, 2, 3};
     // act
     TelemetryTests::start();
-    const int* data = a.rawData();
+    const int* data = a.data();
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(data != nullptr);
@@ -454,12 +454,12 @@ TEST(dense_vector_raw_data, given_dense_vector_should_return_const_data_pointer)
     TelemetryTests::asserts({});
 }
 
-TEST(dense_vector_raw_data, given_dense_vector_should_return_data_pointer) {
+TEST(dense_vector_data, given_dense_vector_should_return_data_pointer) {
     // arrange
     DenseVector<int> a = {1, 2, 3};
     // act
     TelemetryTests::start();
-    int* data = a.rawData();
+    int* data = a.data();
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(data != nullptr);
