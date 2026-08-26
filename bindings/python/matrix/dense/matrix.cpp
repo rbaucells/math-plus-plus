@@ -289,5 +289,26 @@ void dense_matrix_bindings(py::module_& m) {
                     }
                 }, self);
             });
-        }, py::arg("indices"), py::arg("v"));;
+        }, py::arg("indices"), py::arg("v"))
+        .def("reshape", [](Py_DenseMatrix& self, const std::size_t newRows, const std::size_t newColumns, const bool preserve) {
+            return std::visit([&](auto& mat) {
+                mat.reshape(newRows, newColumns, preserve);
+            }, self);
+        }, py::arg("newRows"), py::arg("newColumns"), py::arg("preserve"))
+        .def("reshape", [](Py_DenseMatrix& self, const std::size_t newRows, const std::size_t newColumns, const bool preserve, const py::object& value) {
+            const py::dtype dt = get_dtype(value);
+
+            return dispatch_dt(dt, [&]<typename T>() {
+                return std::visit([&](auto& mat) {
+                    using U = std::decay_t<decltype(mat)>::ValueType;
+
+                    if constexpr (lossless_convertible<T, U>) {
+                        mat.reshape(newRows, newColumns, preserve, py::cast<U>(value));
+                    }
+                    else {
+                        throw py::type_error("Cannot reshape with value of non convertible dtype");
+                    }
+                }, self);
+            });
+        }, py::arg("newRows"), py::arg("newColumns"), py::arg("preserve"), py::arg("value"));
 }
