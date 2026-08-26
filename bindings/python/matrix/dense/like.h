@@ -16,46 +16,25 @@ struct DenseMatrixLikeElementPyWrapper {
     std::size_t c;
 
     DenseMatrixLikeElementPyWrapper& operator=(const T& v) {
-        object.attr("__setitem__")(r, c, v);
+        object.attr("__setitem__")(std::pair(r, c), v);
         return *this;
     }
 
     operator T() const {
-        return py::cast<T>(object.attr("__getitem__")(r, c));
+        return py::cast<T>(object.attr("__getitem__")(std::pair(r, c)));
     }
 };
 
 template<scalar T>
-struct DenseMatrixLikePyWrapper {
-    using ValueType = T;
-    static constexpr bool isComplex = is_complex_v<T>;
+struct DenseMatrixLikePyWrapper : MatrixLikePyWrapper<T> {
+    using MatrixLikePyWrapper<T>::MatrixLikePyWrapper;
 
-    py::object object;
-
-    DenseMatrixLikePyWrapper(py::object obj) : object(std::move(obj)) {}
-
-    [[nodiscard]] std::size_t rows() const {
-        return py::cast<std::size_t>(object.attr("rows")());
+    [[nodiscard]] T operator[](const std::size_t r, const std::size_t c) const {
+        return py::cast<T>(this->object.attr("__getitem__")(std::pair(r, c)));
     }
 
-    [[nodiscard]] std::size_t columns() const {
-        return py::cast<std::size_t>(object.attr("columns")());
-    }
-
-    [[nodiscard]] T get(const std::size_t r, const std::size_t c) const {
-        return py::cast<T>(object.attr("get")(r, c));
-    }
-
-    void set(const std::size_t r, const std::size_t c, const T v) const {
-        object.attr("set")(r, c, v);
-    }
-
-    [[nodiscard]] T operator[](const std::size_t c, const std::size_t r) const {
-        return py::cast<T>(object.attr("__getitem__")(r, c));
-    }
-
-    [[nodiscard]] DenseMatrixLikeElementPyWrapper<T> operator[](const std::size_t c, const std::size_t r) {
-        return DenseMatrixLikeElementPyWrapper<T>(object, r, c);
+    [[nodiscard]] DenseMatrixLikeElementPyWrapper<T> operator[](const std::size_t r, const std::size_t c) {
+        return DenseMatrixLikeElementPyWrapper<T>(this->object, std::pair(r, c));
     }
 };
 

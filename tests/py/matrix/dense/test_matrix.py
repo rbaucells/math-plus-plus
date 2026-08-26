@@ -1,6 +1,8 @@
 from mathpy import *
 import numpy
 import pytest
+
+from .simple_dense_matrix_like import SimpleDenseMatrixLike
 from ... import telemetry_tests
 
 
@@ -178,3 +180,37 @@ def test_DenseMatrix_copy_constructor_from_diff_type():
     assert b[2, 2] == 12
     assert b[2, 3] == 99
     telemetry_tests.asserts(TelemetryStats(copy_constructs=1, move_constructs=1, allocations=1))
+
+def test_DenseMatrix_copy_constructor_from_like_of_same_type():
+    # arrange
+    a = SimpleDenseMatrixLike([[1, 2], [3, 4]])
+    # act
+    telemetry_tests.start()
+    b = DenseMatrix.copy(a)
+    telemetry_tests.end()
+    # assert
+    assert b.rows() == 2
+    assert b.columns() == 2
+    assert b.dtype() == numpy.dtypes.UInt8DType()
+    assert not b.is_complex()
+    assert b[0, 0] == 1
+    assert b[0, 1] == 2
+    assert b[1, 0] == 3
+    assert b[1, 1] == 4
+
+def test_DenseMatrix_copy_constructor_from_like_of_diff_type():
+    # arrange
+    a = SimpleDenseMatrixLike([[1, 2], [3, 4]])
+    # act
+    telemetry_tests.start()
+    b = DenseMatrix.copy(numpy.dtypes.Complex64DType(), a)
+    telemetry_tests.end()
+    # assert
+    assert b.rows() == 2
+    assert b.columns() == 2
+    assert b.dtype() == numpy.dtypes.Complex64DType()
+    assert b.is_complex()
+    assert b[0, 0] == 1
+    assert b[0, 1] == 2
+    assert b[1, 0] == 3
+    assert b[1, 1] == 4

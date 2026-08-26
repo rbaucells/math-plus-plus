@@ -9,6 +9,7 @@
 
 void dense_matrix_like_bindings(py::module_& m) {
     py::class_<DenseMatrixLikeBase, MatrixLikeBase>(m, "DenseMatrixLike")
+        .def(py::init<>())
         .def("__getitem__", [](DenseMatrixLikeBase&, const std::pair<std::size_t, std::size_t>&) -> py::object {
             PyErr_SetString(PyExc_NotImplementedError, "__getitem__ function not implemented");
             throw py::error_already_set();

@@ -8,6 +8,7 @@
 
 void matrix_common_matrix_like_bindings(py::module_& m) {
     py::class_<MatrixLikeBase>(m, "MatrixLike")
+        .def(py::init<>())
         .def("dtype", [](MatrixLikeBase&) -> py::dtype {
             PyErr_SetString(PyExc_NotImplementedError, "dtype function not implemented");
             throw py::error_already_set();
