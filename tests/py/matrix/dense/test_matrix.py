@@ -197,6 +197,7 @@ def test_DenseMatrix_copy_constructor_from_like_of_same_type():
     assert b[0, 1] == 2
     assert b[1, 0] == 3
     assert b[1, 1] == 4
+    telemetry_tests.asserts(TelemetryStats(copy_constructs=1, allocations=1, move_constructs=1))
 
 def test_DenseMatrix_copy_constructor_from_like_of_diff_type():
     # arrange
@@ -210,6 +211,27 @@ def test_DenseMatrix_copy_constructor_from_like_of_diff_type():
     assert b.columns() == 2
     assert b.dtype() == numpy.dtypes.Complex64DType()
     assert b.is_complex()
+    assert b[0, 0] == 1
+    assert b[0, 1] == 2
+    assert b[1, 0] == 3
+    assert b[1, 1] == 4
+    telemetry_tests.asserts(TelemetryStats(copy_constructs=1, allocations=1, move_constructs=1))
+
+def test_DenseMatrix_move_constructor():
+    # arrange
+    a = DenseMatrix([[1, 2], [3, 4]])
+    # act
+    telemetry_tests.start()
+    b = DenseMatrix.move(a)
+    telemetry_tests.end()
+    # assert
+    assert a.rows() == 0
+    assert a.columns() == 0
+    # TODO: Assert a data is nullptr
+    assert b.rows() == 2
+    assert b.columns() == 2
+    assert b.dtype() == numpy.dtypes.UInt8DType()
+    assert not b.is_complex()
     assert b[0, 0] == 1
     assert b[0, 1] == 2
     assert b[1, 0] == 3

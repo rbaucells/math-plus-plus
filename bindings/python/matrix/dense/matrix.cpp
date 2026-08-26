@@ -207,7 +207,7 @@ void dense_matrix_bindings(py::module_& m) {
             });
         }, py::arg("dt"), py::arg("other"))
         .def_static("move", [](Py_DenseMatrix& other) -> Py_DenseMatrix {
-            return std::visit([](const auto& otherMat) -> Py_DenseMatrix {
+            return std::visit([](auto& otherMat) -> Py_DenseMatrix {
                 using U = std::decay_t<decltype(otherMat)>::ValueType;
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<U>>, std::move(otherMat));
             }, other);
