@@ -11,24 +11,24 @@ struct MatrixLikePyWrapper {
     using ValueType = T;
     static constexpr bool isComplex = is_complex_v<T>;
 
-    py::object object;
+    py::handle handle;
 
-    MatrixLikePyWrapper(py::object obj) : object(std::move(obj)) {}
+    MatrixLikePyWrapper(py::handle obj) : handle(obj) {}
 
     [[nodiscard]] std::size_t rows() const {
-        return py::cast<std::size_t>(object.attr("rows")());
+        return py::cast<std::size_t>(handle.attr("rows")());
     }
 
     [[nodiscard]] std::size_t columns() const {
-        return py::cast<std::size_t>(object.attr("columns")());
+        return py::cast<std::size_t>(handle.attr("columns")());
     }
 
     [[nodiscard]] T get(const std::size_t r, const std::size_t c) const {
-        return py::cast<T>(object.attr("get")(r, c));
+        return py::cast<T>(handle.attr("get")(r, c));
     }
 
     void set(const std::size_t r, const std::size_t c, const T v) const {
-        object.attr("set")(r, c, v);
+        handle.attr("set")(r, c, v);
     }
 };
 

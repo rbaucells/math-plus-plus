@@ -11,17 +11,17 @@ struct DenseMatrixLikeBase : MatrixLikeBase {
 
 template<scalar T>
 struct DenseMatrixLikeElementPyWrapper {
-    const py::object& object;
+    py::handle handle;
     std::size_t r;
     std::size_t c;
 
     DenseMatrixLikeElementPyWrapper& operator=(const T& v) {
-        object.attr("__setitem__")(std::pair(r, c), v);
+        handle.attr("__setitem__")(std::pair(r, c), v);
         return *this;
     }
 
     operator T() const {
-        return py::cast<T>(object.attr("__getitem__")(std::pair(r, c)));
+        return py::cast<T>(handle.attr("__getitem__")(std::pair(r, c)));
     }
 };
 
@@ -30,11 +30,11 @@ struct DenseMatrixLikePyWrapper : MatrixLikePyWrapper<T> {
     using MatrixLikePyWrapper<T>::MatrixLikePyWrapper;
 
     [[nodiscard]] T operator[](const std::size_t r, const std::size_t c) const {
-        return py::cast<T>(this->object.attr("__getitem__")(std::pair(r, c)));
+        return py::cast<T>(this->handle.attr("__getitem__")(std::pair(r, c)));
     }
 
     [[nodiscard]] DenseMatrixLikeElementPyWrapper<T> operator[](const std::size_t r, const std::size_t c) {
-        return DenseMatrixLikeElementPyWrapper<T>(this->object, std::pair(r, c));
+        return DenseMatrixLikeElementPyWrapper<T>(this->handle, std::pair(r, c));
     }
 };
 
