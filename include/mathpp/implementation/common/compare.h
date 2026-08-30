@@ -71,7 +71,7 @@ template<std::ranges::sized_range R, scalar T = std::ranges::range_value_t<R>> r
 
     if constexpr (real<T>) {
         // get min and max, then compare withing precision
-        auto [min, max] = std::minmax_element(args.begin(), args.end());
+        auto [min, max] = std::ranges::minmax_element(args.begin(), args.end());
 
         return (*max - *min) <= precision.value;
     }
