@@ -63,8 +63,8 @@ template<scalar T, scalar U, scalar... ARGS> requires has_common_type<underlying
  * @return Whether all elements of 'args' are equal up to the specified precision.
  * @note Inclusive comparison, meaning 1, 0.9, and 1.1 are not all equal up to a precision of 0.1
  */
-template<scalar T>
-[[nodiscard]] bool compare(const Precision<underlying_type_t<T>> precision, const std::span<const T>& args) {
+template<std::ranges::sized_range R, scalar T = std::ranges::range_value_t<R>> requires scalar<std::ranges::range_value_t<R>>
+[[nodiscard]] bool compare(const Precision<underlying_type_t<T>> precision, const R& args) {
     if (args.size() < 2) {
         throw InvalidSizeException("Cannot compare with less than 2 scalar arguments");
     }
@@ -129,8 +129,8 @@ template<scalar T, scalar U, scalar... ARGS> requires has_common_type<underlying
  * @return Whether all elements of 'args' are equal up to machine epsilon precision.
  * @see bool compare(const Precision<underlying_type_t<T>> precision, const std::span<T>& args)
  */
-template<scalar T>
-[[nodiscard]] bool compare(const std::span<const T>& args) {
+template<std::ranges::sized_range R, scalar T = std::ranges::range_value_t<R>> requires scalar<std::ranges::range_value_t<R>>
+[[nodiscard]] bool compare(const R& args) {
     if (args.size() < 2) {
         throw InvalidSizeException("Cannot compare with less than 2 scalar arguments");
     }
