@@ -6,95 +6,147 @@
 #include "mathpp/implementation/common/compare.h"
 #include "precision.h"
 
+#include <ranges>
+
 void common_compare_bindings(pybind11::module_& m) {
-    m.def("compare", [](const Py_Precision& precision, const py::iterable& iterable) {
-        const py::dtype dt = get_common_dtype(iterable);
+    m.def("compare", [](const Py_Precision& precision, const py::sequence& sequence) -> bool {
+        const auto [dt, et, size] = get_sequence_info(sequence);
 
-        return dispatch_dt(dt, [&]<typename T>() {
-            using UnderlyingT = underlying_type_t<T>;
-
-            std::vector<T> vec(py::len(iterable));
-
-            std::size_t i = 0;
-            for (const py::handle val : iterable) {
-                vec[i] = py::cast<T>(val);
-                ++i;
-            }
-
+        return dispatch_dt(dt, [&]<typename T>() -> bool {
             return std::visit([&](const auto& p) -> bool {
                 using U = std::decay_t<decltype(p)>::ValueType;
 
-                if constexpr (std::is_same_v<U, T>) {
-                    return compare(p, std::span<const T>(vec));
-                }
-                else if constexpr (lossless_convertible<UnderlyingT, U>) {
-                    const Precision<UnderlyingT> casted(p.value);
+                if constexpr (lossless_convertible<U, underlying_type_t<T>>) {
+                    const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
 
-                    return compare(casted, std::span<const T>(vec));
+                    if (et == EType::scalar) {
+                        auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
+                            return py::cast<T>(sequence[i]);
+                        });
+
+                        return compare(casted_precision, wrapper);
+                    }
+
+                    throw py::type_error("Unknown et");
                 }
                 else {
-                    throw py::type_error("Precision type does not match args type");
+                    throw py::type_error("Cannot convert");
                 }
             }, precision);
         });
     });
 
-    m.def("compare", [](const py::iterable& iterable) {
-        const py::dtype dt = get_common_dtype(iterable);
+    m.def("compare", [](const Py_Precision& precision, const py::array& array) -> bool {
+        const auto [dt, et, size] = get_array_info(array);
 
-        return dispatch_dt(dt, [&]<typename T>() {
-            std::vector<T> vec(py::len(iterable));
-
-            std::size_t i = 0;
-            for (const py::handle val : iterable) {
-                vec[i] = py::cast<T>(val);
-                ++i;
-            }
-
-            return compare(Precision<underlying_type_t<T>>(epsilon<T>()), std::span<const T>(vec));
-        });
-    });
-
-    m.def("compare", [](const Py_Precision& precision, const py::args& args) {
-        const py::dtype dt = get_common_dtype(args);
-
-        return dispatch_dt(dt, [&]<typename T>() {
-            std::vector<T> vec(args.size());
-
-            for (std::size_t i = 0; i < args.size(); i++) {
-                vec[i] = py::cast<T>(args[i]);
-            }
-
+        return dispatch_dt(dt, [&]<typename T>() -> bool {
             return std::visit([&](const auto& p) -> bool {
                 using U = std::decay_t<decltype(p)>::ValueType;
 
-                if constexpr (std::is_same_v<U, T>) {
-                    return compare(p, std::span<const T>(vec));
-                }
-                else if constexpr (lossless_convertible<U, T>) {
-                    using UnderlyingT = underlying_type_t<T>;
-                    const Precision<UnderlyingT> casted(p.value);
+                if constexpr (lossless_convertible<U, underlying_type_t<T>>) {
+                    const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
 
-                    return compare(casted, std::span<const T>(vec));
+                    if (et == EType::scalar) {
+                        const py::detail::unchecked_reference<T, 1> unchecked = array.unchecked<T, 1>();
+
+                        auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
+                            return unchecked(i);
+                        });
+
+                        return compare(casted_precision, wrapper);
+                    }
+
+                    throw py::type_error("Unknown et");
                 }
                 else {
-                    throw py::type_error("Precision type does not match args type");
+                    throw py::type_error("Cannot convert");
                 }
             }, precision);
         });
     });
 
-    m.def("compare", [](const py::args& args) {
-        const py::dtype dt = get_common_dtype(args);
+    m.def("compare", [](const py::sequence& sequence) -> bool {
+        const auto [dt, et, size] = get_sequence_info(sequence);
 
-        return dispatch_dt(dt, [&]<typename T>() {
-            std::vector<T> vec(args.size());
+        return dispatch_dt(dt, [&]<typename T>() -> bool {
+            const Precision<underlying_type_t<T>> precision = Precision<underlying_type_t<T>>(epsilon<T>());
 
-            for (std::size_t i = 0; i < args.size(); i++) {
-                vec[i] = py::cast<T>(args[i]);
+            if (et == EType::scalar) {
+                auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
+                    return py::cast<T>(sequence[i]);
+                });
+
+                return compare(precision, wrapper);
             }
 
-            return compare(Precision<underlying_type_t<T>>(epsilon<T>()), std::span<const T>(vec));
+            throw py::type_error("Unknown et");
+        });
+    });
+
+    m.def("compare", [](const py::array& array) -> bool {
+        const auto [dt, et, size] = get_array_info(array);
+
+        return dispatch_dt(dt, [&]<typename T>() -> bool {
+            const Precision<underlying_type_t<T>> precision = Precision<underlying_type_t<T>>(epsilon<T>());
+
+            if (et == EType::scalar) {
+                const py::detail::unchecked_reference<T, 1> iterator = array.unchecked<T, 1>();
+
+                auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
+                    return iterator[i];
+                });
+
+                return compare(precision, wrapper);
+            }
+
+            throw py::type_error("Unknown et");
+        });
+    });
+
+    m.def("compare", [](const Py_Precision& precision, const py::args& args) -> bool {
+        const auto [dt, et, size] = get_sequence_info(args);
+
+        return dispatch_dt(dt, [&]<typename T>() -> bool {
+            return std::visit([&](const auto& p) -> bool {
+                using U = std::decay_t<decltype(p)>::ValueType;
+
+                if constexpr (lossless_convertible<U, underlying_type_t<T>>) {
+                    const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
+
+                    py::print("et = ", et);
+
+                    if (et == EType::scalar) {
+                        auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
+                            return py::cast<T>(args[i]);
+                        });
+
+                        return compare(casted_precision, wrapper);
+                    }
+
+                    throw py::type_error("Unknown et");
+                }
+                else {
+                    throw py::type_error("Cannot convert");
+                }
+            }, precision);
+        });
+    });
+
+    m.def("compare", [](const py::args& args) -> bool {
+        const auto [dt, et, size] = get_sequence_info(args);
+
+        return dispatch_dt(dt, [&]<typename T>() -> bool {
+            const Precision<underlying_type_t<T>> precision = Precision<underlying_type_t<T>>(epsilon<T>());
+
+            if (et == EType::scalar) {
+                auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
+                    return py::cast<T>(args[i]);
+                });
+
+                return compare(precision, wrapper);
+            }
+
+            throw py::type_error("Unknown et");
         });
     });
 }

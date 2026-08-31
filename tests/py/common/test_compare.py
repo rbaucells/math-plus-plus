@@ -64,7 +64,7 @@ def test_precision_and_iterable_compare():
     f = 0
     # act / assert
     with pytest.raises(TypeError):
-        mathpy.compare(mathpy.Precision(numpy.uint8(4)), numpy.array([d, e, f]))
+        mathpy.compare(mathpy.Precision(numpy.float32(4)), numpy.array([d, e, f]))
     # arrange
     g = numpy.complex64(2 - 4j)
     h = numpy.complex64(1.9 - 3.9j)
@@ -93,7 +93,7 @@ def test_precision_and_iterable_compare():
     o = numpy.uint8(0)
     # act
     with pytest.raises(TypeError):
-        mathpy.compare(mathpy.Precision(numpy.uint8(4)), numpy.array([m, n, o]))
+        mathpy.compare(mathpy.Precision(numpy.int32(4)), numpy.array([m, n, o]))
 
 def test_args_compare():
     # arrange

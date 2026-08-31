@@ -9,6 +9,8 @@
 
 #include "like.h"
 
+#include <ranges>
+
 void dense_matrix_bindings(py::module_& m) {
     py::class_<Py_DenseMatrix, DenseMatrixLikeBase>(m, "DenseMatrix")
         .def(py::init([](const py::dtype& dt) -> Py_DenseMatrix {
@@ -21,136 +23,104 @@ void dense_matrix_bindings(py::module_& m) {
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, rows, columns, fill);
             });
         }), py::arg("dt"), py::arg("rows"), py::arg("columns"), py::arg("fill") = true)
-        .def(py::init([](const py::iterable& rowsIterable) -> Py_DenseMatrix {
-            if (py::isinstance<py::array>(rowsIterable)) {
-                py::array arr = py::cast<py::array>(rowsIterable);
+        .def(py::init([](const py::sequence& sequence) -> Py_DenseMatrix {
+            const auto [dt, et, size, nestedSize] = get_sequence_info_2d(sequence);
 
-                if (arr.ndim() != 2) {
-                    throw py::type_error("Expected 2d array to construct DenseMatrix");
-                }
-
-                const std::size_t rows = arr.shape()[0];
-                const std::size_t columns = arr.shape()[1];
-
-                const py::dtype dt = get_common_dtype(arr);
-
-                return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
-                    const py::detail::unchecked_reference<T, 2> arr2d = arr.unchecked<T, 2>();
-
-                    Py_DenseMatrix denseMatrix = Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, rows, columns, false);
-                    DenseMatrix<T>& mat = std::get<DenseMatrix<T>>(denseMatrix);
-
-                    for (std::size_t c = 0; c < columns; c++) {
-                        for (std::size_t r = 0; r < rows; r++) {
-                            mat[r, c] = arr2d(r, c);
-                        }
-                    }
-
-                    return denseMatrix;
-                });
+            if (et != EType::scalar) {
+                throw py::type_error();
             }
-
-            const py::dtype dt = get_common_dtype(rowsIterable);
 
             return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
-                const std::size_t rows = py::len(rowsIterable);
-                const std::size_t columns = py::len(*rowsIterable.begin());
+                auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t r) {
+                    const py::object inner = sequence[r];
 
-                Py_DenseMatrix denseMatrix = Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, rows, columns, false);
-                DenseMatrix<T>& mat = std::get<DenseMatrix<T>>(denseMatrix);
-
-                std::size_t r = 0;
-                for (auto row : rowsIterable) {
-                    if (!py::isinstance<py::iterable>(row) || py::isinstance<py::str>(row) || py::isinstance<py::bytes>(row) || py::isinstance<py::bytearray>(row)) {
-                        throw py::type_error("Expected 2d list to construct DenseMatrix");
+                    if (!py::isinstance<py::sequence>(inner)) {
+                        throw py::type_error("nested sequence to initialize matrix must be nested sequences");
                     }
 
-                    if (py::len(row) != columns) {
-                        throw py::type_error("All nested lists must be of same size");
-                    }
+                    const py::sequence innerSequence = inner;
 
-                    std::size_t c = 0;
-                    for (const py::handle elementObject : row) {
-                        mat[r, c] = py::cast<T>(elementObject);
-                        ++c;
-                    }
-
-                    ++r;
-                }
-
-                return denseMatrix;
-            });
-        }), py::arg("rows"))
-        .def(py::init([](const py::dtype& dt, const py::iterable& rowsIterable) -> Py_DenseMatrix {
-            if (py::isinstance<py::array>(rowsIterable)) {
-                py::array arr = py::cast<py::array>(rowsIterable);
-
-                if (arr.ndim() != 2) {
-                    throw py::type_error("Expected 2d array to construct DenseMatrix");
-                }
-
-                const std::size_t rows = arr.shape()[0];
-                const std::size_t columns = arr.shape()[1];
-
-                const py::dtype arrDt = get_common_dtype(arr);
-
-                return dispatch_dt(arrDt, [&]<typename T>() -> Py_DenseMatrix {
-                    return dispatch_dt(dt, [&]<typename U>() -> Py_DenseMatrix {
-                        if constexpr (lossless_convertible<T, U>) {
-                            const py::detail::unchecked_reference<T, 2> arr2d = arr.unchecked<T, 2>();
-
-                            Py_DenseMatrix denseMatrix = Py_DenseMatrix(std::in_place_type<DenseMatrix<U>>, rows, columns, false);
-                            DenseMatrix<U>& mat = std::get<DenseMatrix<U>>(denseMatrix);
-
-                            for (std::size_t c = 0; c < columns; c++) {
-                                for (std::size_t r = 0; r < rows; r++) {
-                                    mat[r, c] = arr2d(r, c);
-                                }
-                            }
-
-                            return denseMatrix;
-                        }
-                        else {
-                            throw py::type_error("Cannot construct DenseMatrix from 2d array of non convertible dtype");
-                        }
+                    return std::views::iota(0u, nestedSize) | std::views::transform([innerSequence](const std::size_t c) -> T {
+                        return py::cast<T>(innerSequence[c]);
                     });
                 });
+
+                return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
+            });
+        }), py::arg("rows"))
+        .def(py::init([](const py::array& array) -> Py_DenseMatrix {
+            const auto [dt, et, size, nestedSize] = get_array_info_2d(array);
+
+            if (et != EType::scalar) {
+                throw py::type_error();
             }
 
-            const py::dtype arrDt = get_common_dtype(rowsIterable);
+            return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
+                py::detail::unchecked_reference<T, 2> unchecked = array.unchecked<T, 2>();
 
-            return dispatch_dt(arrDt, [&]<typename T>() -> Py_DenseMatrix {
-                return dispatch_dt(dt, [&]<typename U>() -> Py_DenseMatrix {
-                    if constexpr (lossless_convertible<T, U>) {
-                        const std::size_t rows = py::len(rowsIterable);
-                        const std::size_t columns = py::len(*rowsIterable.begin());
+                auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t r) {
+                    return std::views::iota(0u, nestedSize) | std::views::transform([&](const std::size_t c) -> T {
+                        return unchecked(r, c);
+                    });
+                });
 
-                        Py_DenseMatrix denseMatrix = Py_DenseMatrix(std::in_place_type<DenseMatrix<U>>, rows, columns, false);
-                        DenseMatrix<U>& mat = std::get<DenseMatrix<U>>(denseMatrix);
+                return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
+            });
+        }), py::arg("rows"))
+        .def(py::init([](const py::dtype& dt, const py::sequence& sequence) -> Py_DenseMatrix {
+            const auto [sequenceDt, sequenceEt, size, nestedSize] = get_sequence_info_2d(sequence);
 
-                        std::size_t r = 0;
-                        for (auto row : rowsIterable) {
-                            if (!py::isinstance<py::iterable>(row) || py::isinstance<py::str>(row) || py::isinstance<py::bytes>(row) || py::isinstance<py::bytearray>(row)) {
-                                throw py::type_error("Expected 2d list to construct DenseMatrix");
+            if (sequenceEt != EType::scalar) {
+                throw py::type_error();
+            }
+
+            return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
+                return dispatch_dt(sequenceDt, [&]<typename U>() -> Py_DenseMatrix {
+                    if constexpr (lossless_convertible<U, T>) {
+                        auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t r) {
+                            const py::object inner = sequence[r];
+
+                            if (!py::isinstance<py::sequence>(inner)) {
+                                throw py::type_error("nested sequence to initialize matrix must be nested sequences");
                             }
 
-                            if (py::len(row) != columns) {
-                                throw py::type_error("All nested lists must be of same size");
-                            }
+                            const py::sequence innerSequence = inner;
 
-                            std::size_t c = 0;
-                            for (const py::handle elementObject : row) {
-                                mat[r, c] = py::cast<U>(elementObject);
-                                ++c;
-                            }
+                            return std::views::iota(0u, nestedSize) | std::views::transform([innerSequence](const std::size_t c) -> T {
+                                return py::cast<T>(innerSequence[c]);
+                            });
+                        });
 
-                            ++r;
-                        }
-
-                        return denseMatrix;
+                        return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
                     }
                     else {
-                        throw py::type_error("Cannot construct DenseMatrix from 2d iterable of non convertible dtype");
+                        throw py::type_error();
+                    }
+                });
+            });
+        }), py::arg("dt"), py::arg("rows"))
+        .def(py::init([](const py::dtype& dt, const py::array& array) -> Py_DenseMatrix {
+            const auto [arrayDt, arrayEt, size, nestedSize] = get_array_info_2d(array);
+
+            if (arrayEt != EType::scalar) {
+                throw py::type_error();
+            }
+
+            return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
+                return dispatch_dt(arrayDt, [&]<typename U>() -> Py_DenseMatrix {
+                    if constexpr (lossless_convertible<U, T>) {
+                        py::detail::unchecked_reference<U, 2> unchecked = array.unchecked<U, 2>();
+
+                        auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t r) {
+                            return std::views::iota(0u, nestedSize) | std::views::transform([&](const std::size_t c) -> T {
+                                return static_cast<T>(unchecked(r, c));
+                            });
+                        });
+
+                        return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
+                    }
+                    else {
+                        throw py::type_error();
                     }
                 });
             });

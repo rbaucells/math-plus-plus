@@ -10,7 +10,7 @@ class SimpleDenseMatrixLike(DenseMatrixLike):
         self.data: list[list[Any]] = data
         self.rows_ = len(data)
         self.columns_ = len(data[0])
-        self.dtype_ = get_common_dtype(data)
+        self.dtype_ = get_sequence_info_2d(data)[0]
 
     def __getitem__(self, indices: tuple[typing.SupportsInt | typing.SupportsIndex, typing.SupportsInt | typing.SupportsIndex]) -> typing.Any:
         return self.data[indices[0]][indices[1]]
