@@ -82,7 +82,7 @@ struct DenseMatrix {
     }
 
     template<std::ranges::sized_range R> requires std::ranges::sized_range<std::ranges::range_value_t<R>> && lossless_convertible<std::ranges::range_value_t<std::ranges::range_value_t<R>>, T>
-    DenseMatrix(const R& elements) : rows_(elements.size()), columns_(elements.begin()->size()), data_(new T[rows_ * columns_]) {
+    DenseMatrix(const R& elements) : rows_(elements.size()), columns_((*elements.begin()).size()), data_(new T[rows_ * columns_]) {
         std::size_t r = 0;
         for (const auto& row: elements) {
             if (row.size() != columns_) {
