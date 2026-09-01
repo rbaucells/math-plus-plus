@@ -56,9 +56,10 @@ template<scalar T, scalar U, scalar... ARGS> requires has_common_type<underlying
  *
  * O(2m) time complexity where 'm' is number of arguments
  *
+ * @tparam R Range of scalar objects.
  * @tparam T Scalar type of elements of 'args'.
  * @param precision How precise the comparison should be. (inclusive).
- * @param args Span of scalar arguments.
+ * @param args Range of scalar arguments.
  *
  * @return Whether all elements of 'args' are equal up to the specified precision.
  * @note Inclusive comparison, meaning 1, 0.9, and 1.1 are not all equal up to a precision of 0.1

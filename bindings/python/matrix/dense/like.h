@@ -34,7 +34,7 @@ struct DenseMatrixLikePyWrapper : MatrixLikePyWrapper<T> {
     }
 
     [[nodiscard]] DenseMatrixLikeElementPyWrapper<T> operator[](const std::size_t r, const std::size_t c) {
-        return DenseMatrixLikeElementPyWrapper<T>(this->handle, std::pair(r, c));
+        return DenseMatrixLikeElementPyWrapper<T>(this->handle, r, c);
     }
 };
 
