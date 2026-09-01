@@ -7,8 +7,10 @@
 #include "../common/like.h"
 #include "mathpp/implementation/matrix/dense/traits.h"
 
-void dense_matrix_like_bindings(py::module_& m) {
-    py::class_<DenseMatrixLikeBase, MatrixLikeBase>(m, "DenseMatrixLike")
+py::class_<DenseMatrixLikeBase, MatrixLikeBase> dense_matrix_like_bindings(py::module_& m) {
+    py::class_<DenseMatrixLikeBase, MatrixLikeBase> dense_matrix_like_base_py(m, "DenseMatrixLike");
+
+    dense_matrix_like_base_py
         .def(py::init<>())
         .def("__getitem__", [](DenseMatrixLikeBase&, const std::pair<std::size_t, std::size_t>&) -> py::object {
             PyErr_SetString(PyExc_NotImplementedError, "__getitem__ function not implemented");
@@ -18,4 +20,6 @@ void dense_matrix_like_bindings(py::module_& m) {
             PyErr_SetString(PyExc_NotImplementedError, "__setitem__ function not implemented");
             throw py::error_already_set();
         }, py::arg("indices"), py::arg("v"));
+
+    return dense_matrix_like_base_py;
 }

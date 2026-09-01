@@ -3,11 +3,12 @@
 
 #include "../like.h"
 #include <ranges>
+#include "pybind11/numpy.h"
 
 #include "mathpp/implementation/matrix/dense/operators/compare.h"
 
 template<typename T>
-bool py_dense_matrix_like_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::sequence& sequence) {
+bool matrix_dense_operators_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::sequence& sequence) {
     auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> DenseMatrixLikePyWrapper<T> {
         return DenseMatrixLikePyWrapper<T>(sequence[i]);
     });
@@ -16,12 +17,14 @@ bool py_dense_matrix_like_compare(const std::size_t size, const Precision<underl
 }
 
 template<typename T>
-bool py_dense_matrix_like_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::array& array) {
+bool matrix_dense_operators_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::array& array) {
     auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> DenseMatrixLikePyWrapper<T> {
         return DenseMatrixLikePyWrapper<T>(array[py::cast(i)]);
     });
 
     return compare(precision, wrapper);
 }
+
+void matrix_dense_operators_compare_bindings(py::module_& m, py::class_<DenseMatrixLikeBase, MatrixLikeBase> dense_matrix_like_base_py);
 
 #endif // MATHPY_MATRIX_DENSE_OPERATORS_COMPARE_H

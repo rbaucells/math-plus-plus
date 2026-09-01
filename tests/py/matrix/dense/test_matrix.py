@@ -157,6 +157,7 @@ def test_DenseMatrix_copy_constructor_from_same_type():
 def test_DenseMatrix_copy_constructor_from_diff_type():
     # arrange
     a = DenseMatrix(numpy.dtypes.Int32DType(), [[1, 2, 6, 7], [2, 6, -5, 1], [6, -65, 12, 99]])
+    expected = DenseMatrix([[1, 2, 6, 7], [2, 6, -5, 1], [6, -65, 12, 99]])
     # act
     telemetry_tests.start()
     b = DenseMatrix.copy(numpy.dtypes.Int64DType(), a)
@@ -167,18 +168,7 @@ def test_DenseMatrix_copy_constructor_from_diff_type():
     assert b.dtype() == numpy.dtypes.Int64DType()
     assert not b.is_complex()
     # TODO: Replace with compare
-    assert b[0, 0] == 1
-    assert b[0, 1] == 2
-    assert b[0, 2] == 6
-    assert b[0, 3] == 7
-    assert b[1, 0] == 2
-    assert b[1, 1] == 6
-    assert b[1, 2] == -5
-    assert b[1, 3] == 1
-    assert b[2, 0] == 6
-    assert b[2, 1] == -65
-    assert b[2, 2] == 12
-    assert b[2, 3] == 99
+    assert a == expected
     telemetry_tests.asserts(TelemetryStats(copy_constructs=1, move_constructs=1, allocations=1))
 
 def test_DenseMatrix_copy_constructor_from_like_of_same_type():

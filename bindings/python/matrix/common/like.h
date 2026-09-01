@@ -1,6 +1,10 @@
 #ifndef MATHPY_COMMON_LIKE_H
 #define MATHPY_COMMON_LIKE_H
+
+#include "pybind11/pybind11.h"
 #include "mathpp/implementation/common/traits.h"
+
+namespace py = pybind11;
 
 struct MatrixLikeBase {
     virtual ~MatrixLikeBase() = default;
@@ -13,7 +17,7 @@ struct MatrixLikePyWrapper {
 
     py::handle handle;
 
-    MatrixLikePyWrapper(py::handle obj) : handle(obj) {}
+    MatrixLikePyWrapper(const py::handle obj) : handle(obj) {}
 
     [[nodiscard]] std::size_t rows() const {
         return py::cast<std::size_t>(handle.attr("rows")());

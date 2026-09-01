@@ -11,7 +11,7 @@
 #include "../matrix/dense/operators/compare.h"
 
 template<typename T>
-static bool py_scalar_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::sequence& sequence) {
+static bool common_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::sequence& sequence) {
     auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
         return py::cast<T>(sequence[i]);
     });
@@ -20,7 +20,7 @@ static bool py_scalar_compare(const std::size_t size, const Precision<underlying
 }
 
 template<typename T>
-static bool py_scalar_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::array& array) {
+static bool common_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::array& array) {
     const py::detail::unchecked_reference<T, 1> unchecked = array.unchecked<T, 1>();
 
     auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
@@ -42,10 +42,10 @@ void common_compare_bindings(pybind11::module_& m) {
                     const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
 
                     if (et == EType::scalar) {
-                        return py_scalar_compare<T>(size, casted_precision, sequence);
+                        return common_compare<T>(size, casted_precision, sequence);
                     }
                     else if (et == EType::dense_matrix_like) {
-                        return py_dense_matrix_like_compare<T>(size, casted_precision, sequence);
+                        return matrix_dense_operators_compare<T>(size, casted_precision, sequence);
                     }
 
                     throw py::type_error("Unknown et");
@@ -68,10 +68,10 @@ void common_compare_bindings(pybind11::module_& m) {
                     const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
 
                     if (et == EType::scalar) {
-                        return py_scalar_compare<T>(size, casted_precision, array);
+                        return common_compare<T>(size, casted_precision, array);
                     }
                     else if (et == EType::dense_matrix_like) {
-                        return py_dense_matrix_like_compare<T>(size, casted_precision, array);
+                        return matrix_dense_operators_compare<T>(size, casted_precision, array);
                     }
 
                     throw py::type_error("Unknown et");
@@ -90,10 +90,10 @@ void common_compare_bindings(pybind11::module_& m) {
             const Precision<underlying_type_t<T>> precision = Precision<underlying_type_t<T>>(epsilon<T>());
 
             if (et == EType::scalar) {
-                return py_scalar_compare<T>(size, precision, sequence);
+                return common_compare<T>(size, precision, sequence);
             }
             else if (et == EType::dense_matrix_like) {
-                return py_dense_matrix_like_compare<T>(size, precision, sequence);
+                return matrix_dense_operators_compare<T>(size, precision, sequence);
             }
 
             throw py::type_error("Unknown et");
@@ -107,10 +107,10 @@ void common_compare_bindings(pybind11::module_& m) {
             const Precision<underlying_type_t<T>> precision = Precision<underlying_type_t<T>>(epsilon<T>());
 
             if (et == EType::scalar) {
-                return py_scalar_compare<T>(size, precision, array);
+                return common_compare<T>(size, precision, array);
             }
             else if (et == EType::dense_matrix_like) {
-                return py_dense_matrix_like_compare<T>(size, precision, array);
+                return matrix_dense_operators_compare<T>(size, precision, array);
             }
 
             throw py::type_error("Unknown et");
@@ -130,10 +130,10 @@ void common_compare_bindings(pybind11::module_& m) {
                     py::print("et = ", et);
 
                     if (et == EType::scalar) {
-                        return py_scalar_compare<T>(size, casted_precision, py::sequence(args));
+                        return common_compare<T>(size, casted_precision, py::sequence(args));
                     }
                     else if (et == EType::dense_matrix_like) {
-                        return py_dense_matrix_like_compare<T>(size, casted_precision, py::sequence(args));
+                        return matrix_dense_operators_compare<T>(size, casted_precision, py::sequence(args));
                     }
 
                     throw py::type_error("Unknown et");
@@ -152,10 +152,10 @@ void common_compare_bindings(pybind11::module_& m) {
             const Precision<underlying_type_t<T>> precision = Precision<underlying_type_t<T>>(epsilon<T>());
 
             if (et == EType::scalar) {
-                return py_scalar_compare<T>(size, precision, py::sequence(args));
+                return common_compare<T>(size, precision, py::sequence(args));
             }
             else if (et == EType::dense_matrix_like) {
-                return py_dense_matrix_like_compare<T>(size, precision, py::sequence(args));
+                return matrix_dense_operators_compare<T>(size, precision, py::sequence(args));
             }
 
             throw py::type_error("Unknown et");
