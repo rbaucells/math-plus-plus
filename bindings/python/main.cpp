@@ -165,6 +165,10 @@ EType get_etype(const py::handle& obj) {
     return EType::none;
 }
 
+bool is_actually_sequence(const py::object& sequence) {
+    return py::isinstance<py::sequence>(sequence) && !py::isinstance<MatrixLikeBase>(sequence);
+}
+
 std::tuple<py::dtype, EType, std::size_t> get_sequence_info(const py::sequence& sequence) {
     EType et = EType::none;
     const std::size_t size = sequence.size();
@@ -173,7 +177,7 @@ std::tuple<py::dtype, EType, std::size_t> get_sequence_info(const py::sequence& 
 
     std::size_t i = 0;
     for (auto element : sequence) {
-        if (py::isinstance<py::sequence>(element)) {
+        if (is_actually_sequence(element)) {
             throw py::type_error("Cannot get 1d sequence info on non-1d sequence");
         }
 
@@ -198,7 +202,7 @@ std::tuple<py::dtype, EType, std::size_t, std::size_t>  get_sequence_info_2d(con
 
     std::size_t i = 0;
     for (auto inner : sequence) {
-        if (!py::isinstance<py::sequence>(inner)) {
+        if (!is_actually_sequence(inner)) {
             throw py::type_error("Cannot get 2d sequence info on non-2d sequence");
         }
 

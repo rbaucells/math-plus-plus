@@ -7,8 +7,9 @@
 #include "mathpp/implementation/matrix/common/traits.h"
 
 void matrix_common_matrix_like_bindings(py::module_& m) {
-    py::class_<MatrixLikeBase>(m, "MatrixLike")
-        .def(py::init<>())
+    py::class_<MatrixLikeBase> matrix_like_base(m, "MatrixLike");
+
+    matrix_like_base.def(py::init<>())
         .def("dtype", [](MatrixLikeBase&) -> py::dtype {
             PyErr_SetString(PyExc_NotImplementedError, "dtype function not implemented");
             throw py::error_already_set();
@@ -33,4 +34,6 @@ void matrix_common_matrix_like_bindings(py::module_& m) {
             PyErr_SetString(PyExc_NotImplementedError, "set function not implemented");
             throw py::error_already_set();
         }, py::arg("r"), py::arg("c"), py::arg("v"));
+
+    matrix_like_base.attr("__iter__") = py::none();
 }
