@@ -1,7 +1,9 @@
-#include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
-#include "../main.h"
+#include <cstddef>
+
 #include "mathpp/implementation/common/telemetry.h"
+
+namespace py = pybind11;
 
 void common_telemetry_bindings(pybind11::module_& m) {
     py::class_<TelemetryStats>(m, "TelemetryStats")

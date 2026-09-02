@@ -1,14 +1,18 @@
 #include <pybind11/pybind11.h>
-#include <pybind11/complex.h>
 #include <pybind11/numpy.h>
-#include <complex>
-#include "../main.h"
-#include "mathpp/implementation/common/compare.h"
-#include "precision.h"
 
+#include <cstddef>
 #include <ranges>
 
+#include "../main.h"
+#include "precision.h"
 #include "../matrix/dense/operators/compare.h"
+
+#include "mathpp/implementation/common/traits.h"
+#include "mathpp/implementation/common/precision.h"
+#include "mathpp/implementation/common/compare.h"
+
+namespace py = pybind11;
 
 template<typename T>
 static bool common_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::sequence& sequence) {
@@ -21,7 +25,7 @@ static bool common_compare(const std::size_t size, const Precision<underlying_ty
 
 template<typename T>
 static bool common_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::array& array) {
-    const py::detail::unchecked_reference<T, 1> unchecked = array.unchecked<T, 1>();
+    const pybind11::detail::unchecked_reference<T, 1> unchecked = array.unchecked<T, 1>();
 
     auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
         return unchecked(i);
@@ -31,13 +35,11 @@ static bool common_compare(const std::size_t size, const Precision<underlying_ty
 }
 
 void common_compare_bindings(pybind11::module_& m) {
-    m.def("compare", [](const Py_Precision& precision, const py::sequence& sequence) -> bool {
+    m.def("compare", [](const Py_Precision& precision, const py::sequence sequence) -> bool {
         const auto [dt, et, size] = get_sequence_info(sequence);
 
         return dispatch_dt(dt, [&]<typename T>() -> bool {
-            return std::visit([&](const auto& p) -> bool {
-                using U = std::decay_t<decltype(p)>::ValueType;
-
+            return std::visit([&]<typename U>(const Precision<U>& p) -> bool {
                 if constexpr (lossless_convertible<U, underlying_type_t<T>>) {
                     const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
 
@@ -57,13 +59,11 @@ void common_compare_bindings(pybind11::module_& m) {
         });
     });
 
-    m.def("compare", [](const Py_Precision& precision, const py::array& array) -> bool {
+    m.def("compare", [](const Py_Precision& precision, const py::array array) -> bool {
         const auto [dt, et, size] = get_array_info(array);
 
         return dispatch_dt(dt, [&]<typename T>() -> bool {
-            return std::visit([&](const auto& p) -> bool {
-                using U = std::decay_t<decltype(p)>::ValueType;
-
+            return std::visit([&]<typename U>(const Precision<U>& p) -> bool {
                 if constexpr (lossless_convertible<U, underlying_type_t<T>>) {
                     const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
 
@@ -83,7 +83,7 @@ void common_compare_bindings(pybind11::module_& m) {
         });
     });
 
-    m.def("compare", [](const py::sequence& sequence) -> bool {
+    m.def("compare", [](const py::sequence sequence) -> bool {
         const auto [dt, et, size] = get_sequence_info(sequence);
 
         return dispatch_dt(dt, [&]<typename T>() -> bool {
@@ -100,7 +100,7 @@ void common_compare_bindings(pybind11::module_& m) {
         });
     });
 
-    m.def("compare", [](const py::array& array) -> bool {
+    m.def("compare", [](const py::array array) -> bool {
         const auto [dt, et, size] = get_array_info(array);
 
         return dispatch_dt(dt, [&]<typename T>() -> bool {
@@ -117,13 +117,11 @@ void common_compare_bindings(pybind11::module_& m) {
         });
     });
 
-    m.def("compare", [](const Py_Precision& precision, const py::args& args) -> bool {
+    m.def("compare", [](const Py_Precision& precision, const py::args args) -> bool {
         const auto [dt, et, size] = get_sequence_info(args);
 
         return dispatch_dt(dt, [&]<typename T>() -> bool {
-            return std::visit([&](const auto& p) -> bool {
-                using U = std::decay_t<decltype(p)>::ValueType;
-
+            return std::visit([&]<typename U>(const Precision<U>& p) -> bool {
                 if constexpr (lossless_convertible<U, underlying_type_t<T>>) {
                     const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
 
@@ -145,7 +143,7 @@ void common_compare_bindings(pybind11::module_& m) {
         });
     });
 
-    m.def("compare", [](const py::args& args) -> bool {
+    m.def("compare", [](const py::args args) -> bool {
         const auto [dt, et, size] = get_sequence_info(args);
 
         return dispatch_dt(dt, [&]<typename T>() -> bool {

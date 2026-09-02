@@ -1,13 +1,13 @@
-#include "../like.h"
-#include <ranges>
-
-#include "mathpp/implementation/matrix/dense/operators/compare.h"
-#include "compare.h"
-#include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
+#include <pybind11/numpy.h>
 
 #include "../../../main.h"
+#include "../../common/like.h"
+#include "../like.h"
+#include "compare.h"
+
+#include "mathpp/implementation/common/traits.h"
+#include "mathpp/implementation/matrix/dense/operators/compare.h"
 
 namespace py = pybind11;
 

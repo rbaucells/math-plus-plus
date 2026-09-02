@@ -1,18 +1,18 @@
-#include <iostream>
-#include <optional>
-#include <pybind11/complex.h>
-#include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
-#include <complex>
+#include <pybind11/numpy.h>
+#include <cstdint>
+#include <cstddef>
+#include <tuple>
 
+#include "main.h"
 #include "common/main.h"
 #include "matrix/main.h"
 #include "vector/main.h"
-#include "main.h"
 
+#include "matrix/common/like.h"
 #include "matrix/dense/like.h"
 
-#include <tuple>
+namespace py = pybind11;
 
 PYBIND11_MODULE(mathpy, m) {
     // for debug only stuff
@@ -44,48 +44,73 @@ PYBIND11_MODULE(mathpy, m) {
     vector_bindings(m);
 }
 
-py::dtype get_py_int_dtype(const py::int_& pyInt) {
+EType& operator|=(EType& lhs, const EType rhs) {
+    if (lhs == EType::invalid || rhs == EType::invalid) {
+        lhs = EType::invalid;
+        return lhs;
+    }
+
+    const std::uint32_t combined = static_cast<std::uint32_t>(lhs) | static_cast<std::uint32_t>(rhs);
+
+    const bool has_matrix = (combined & static_cast<std::uint32_t>(EType::matrix_like)) != 0;
+    const bool has_vector = (combined & static_cast<std::uint32_t>(EType::vector_like)) != 0;
+    const bool has_scalar = (combined & static_cast<std::uint32_t>(EType::scalar)) != 0;
+
+    if ((has_matrix + has_vector + has_scalar) > 1) {
+        lhs = EType::invalid;
+        return lhs;
+    }
+
+    lhs = static_cast<EType>(combined);
+    return lhs;
+}
+
+bool is_actually_sequence(const py::handle sequence) {
+    return py::isinstance<py::sequence>(sequence) && !py::isinstance<MatrixLikeBase>(sequence);
+}
+
+py::dtype get_py_int_dtype(const py::int_ pyInt) {
     const bool negative = pyInt < py::int_(0);
 
     if (negative) { // signed
-        if (pyInt >= py::int_(std::numeric_limits<int8_t>::min())) {
-            return py::dtype::of<int8_t>();
+        if (pyInt >= py::int_(std::numeric_limits<std::int8_t>::min())) {
+            return py::dtype::of<std::int8_t>();
         }
 
-        if (pyInt >= py::int_(std::numeric_limits<int16_t>::min())) {
-            return py::dtype::of<int16_t>();
+        if (pyInt >= py::int_(std::numeric_limits<std::int16_t>::min())) {
+            return py::dtype::of<std::int16_t>();
         }
 
-        if (pyInt >= py::int_(std::numeric_limits<int32_t>::min())) {
-            return py::dtype::of<int32_t>();
+        if (pyInt >= py::int_(std::numeric_limits<std::int32_t>::min())) {
+            return py::dtype::of<std::int32_t>();
         }
 
-        if (pyInt >= py::int_(std::numeric_limits<int64_t>::min())) {
-            return py::dtype::of<int64_t>();
+        if (pyInt >= py::int_(std::numeric_limits<std::int64_t>::min())) {
+            return py::dtype::of<std::int64_t>();
         }
     }
     else { // unsigned
-        if (pyInt <= py::int_(std::numeric_limits<uint8_t>::max())) {
-            return py::dtype::of<uint8_t>();
+        if (pyInt <= py::int_(std::numeric_limits<std::uint8_t>::max())) {
+            return py::dtype::of<std::uint8_t>();
         }
 
-        if (pyInt <= py::int_(std::numeric_limits<uint16_t>::max())) {
-            return py::dtype::of<uint16_t>();
+        if (pyInt <= py::int_(std::numeric_limits<std::uint16_t>::max())) {
+            return py::dtype::of<std::uint16_t>();
         }
 
-        if (pyInt <= py::int_(std::numeric_limits<uint32_t>::max())) {
-            return py::dtype::of<uint32_t>();
+        if (pyInt <= py::int_(std::numeric_limits<std::uint32_t>::max())) {
+            return py::dtype::of<std::uint32_t>();
         }
 
-        if (pyInt <= py::int_(std::numeric_limits<uint64_t>::max())) {
-            return py::dtype::of<uint64_t>();
+        if (pyInt <= py::int_(std::numeric_limits<std::uint64_t>::max())) {
+            return py::dtype::of<std::uint64_t>();
         }
     }
 
-    return py::dtype::of<int64_t>();
+    return py::dtype::of<std::int64_t>();
 }
 
-py::dtype get_dtype(const py::handle& obj) {
+py::dtype get_dtype(const py::handle obj) {
     // numpy scalar or could be one of my types
     if (py::hasattr(obj, "dtype")) {
         const auto attr = obj.attr("dtype");
@@ -110,7 +135,7 @@ py::dtype get_dtype(const py::handle& obj) {
     throw py::type_error("Unsupported object type");
 }
 
-EType get_etype(const py::handle& obj) {
+EType get_etype(const py::handle obj) {
     if (py::isinstance<DenseMatrixLikeBase>(obj)) {
         return EType::dense_matrix_like;
     }
@@ -151,25 +176,18 @@ EType get_etype(const py::handle& obj) {
     //     return EType::vector_like;
     // }
 
-    if (py::isinstance(obj, py::module_::import("numpy").attr("number")) ||
-        py::isinstance<py::int_>(obj) ||
-        py::isinstance<py::float_>(obj) ||
-        py::isinstance(obj, py::module_::import("builtins").attr("complex"))) {
+    if (py::isinstance(obj, py::module_::import("numpy").attr("number")) || py::isinstance<py::int_>(obj) || py::isinstance<py::float_>(obj) || py::isinstance(obj, py::module_::import("builtins").attr("complex"))) {
 
         py::print("returning scalar yo, obj = ", obj, " and type yo is ", py::type::of(obj));
         return EType::scalar;
-        }
+    }
 
     py::print("returning none yo, obj = ", obj, " and type yo is ", py::type::of(obj));
 
     return EType::none;
 }
 
-bool is_actually_sequence(const py::object& sequence) {
-    return py::isinstance<py::sequence>(sequence) && !py::isinstance<MatrixLikeBase>(sequence);
-}
-
-std::tuple<py::dtype, EType, std::size_t> get_sequence_info(const py::sequence& sequence) {
+std::tuple<py::dtype, EType, std::size_t> get_sequence_info(const py::sequence sequence) {
     EType et = EType::none;
     const std::size_t size = sequence.size();
 
@@ -193,7 +211,7 @@ std::tuple<py::dtype, EType, std::size_t> get_sequence_info(const py::sequence& 
     return {dt, et, size};
 }
 
-std::tuple<py::dtype, EType, std::size_t, std::size_t>  get_sequence_info_2d(const py::sequence& sequence) {
+std::tuple<py::dtype, EType, std::size_t, std::size_t>  get_sequence_info_2d(const py::sequence sequence) {
     EType et = EType::none;
     const std::size_t size = sequence.size();
     std::optional<std::size_t> nestedSize;
@@ -231,7 +249,7 @@ std::tuple<py::dtype, EType, std::size_t, std::size_t>  get_sequence_info_2d(con
     return {dt, et, size, *nestedSize};
 }
 
-std::tuple<py::dtype, EType, std::size_t> get_array_info(const py::array& array) {
+std::tuple<py::dtype, EType, std::size_t> get_array_info(const py::array array) {
     if (array.ndim() != 1) {
         throw py::type_error("Cannot get 1d array info on non-1d array");
     }
@@ -269,7 +287,7 @@ std::tuple<py::dtype, EType, std::size_t> get_array_info(const py::array& array)
     return {dt, et, size};
 }
 
-std::tuple<py::dtype, EType, std::size_t, std::size_t> get_array_info_2d(const py::array& array) {
+std::tuple<py::dtype, EType, std::size_t, std::size_t> get_array_info_2d(const py::array array) {
     py::print("up up here");
     if (array.ndim() != 2) {
         throw py::type_error("Cannot get 2d array info on non-2d array");

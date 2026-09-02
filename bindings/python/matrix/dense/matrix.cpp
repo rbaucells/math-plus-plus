@@ -1,15 +1,15 @@
 #include <pybind11/pybind11.h>
-#include <pybind11/complex.h>
 #include <pybind11/numpy.h>
-#include <pybind11/stl.h>
-#include "mathpp/implementation/matrix/dense/matrix.h"
-#include "mathpp/implementation/common/traits.h"
-#include "../../main.h"
-#include "matrix.h"
+#include <pybind11/complex.h>
+#include <ranges>
+#include <cstddef>
+#include <ranges>
 
 #include "like.h"
+#include "matrix.h"
+#include "../../main.h"
 
-#include <ranges>
+namespace py = pybind11;
 
 void dense_matrix_bindings(py::module_& m) {
     py::class_<Py_DenseMatrix, DenseMatrixLikeBase>(m, "DenseMatrix")
@@ -23,7 +23,7 @@ void dense_matrix_bindings(py::module_& m) {
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, rows, columns, fill);
             });
         }), py::arg("dt"), py::arg("rows"), py::arg("columns"), py::arg("fill") = true)
-        .def(py::init([](const py::sequence& sequence) -> Py_DenseMatrix {
+        .def(py::init([](const py::sequence sequence) -> Py_DenseMatrix {
             const auto [dt, et, size, nestedSize] = get_sequence_info_2d(sequence);
 
             if (et != EType::scalar) {
@@ -48,7 +48,7 @@ void dense_matrix_bindings(py::module_& m) {
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
             });
         }), py::arg("rows"))
-        .def(py::init([](const py::array& array) -> Py_DenseMatrix {
+        .def(py::init([](const py::array array) -> Py_DenseMatrix {
             const auto [dt, et, size, nestedSize] = get_array_info_2d(array);
 
             if (et != EType::scalar) {
@@ -67,7 +67,7 @@ void dense_matrix_bindings(py::module_& m) {
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
             });
         }), py::arg("rows"))
-        .def(py::init([](const py::dtype& dt, const py::sequence& sequence) -> Py_DenseMatrix {
+        .def(py::init([](const py::dtype dt, const py::sequence sequence) -> Py_DenseMatrix {
             const auto [sequenceDt, sequenceEt, size, nestedSize] = get_sequence_info_2d(sequence);
 
             if (sequenceEt != EType::scalar) {
@@ -99,7 +99,7 @@ void dense_matrix_bindings(py::module_& m) {
                 });
             });
         }), py::arg("dt"), py::arg("rows"))
-        .def(py::init([](const py::dtype& dt, const py::array& array) -> Py_DenseMatrix {
+        .def(py::init([](const py::dtype dt, const py::array array) -> Py_DenseMatrix {
             const auto [arrayDt, arrayEt, size, nestedSize] = get_array_info_2d(array);
 
             if (arrayEt != EType::scalar) {
@@ -126,18 +126,15 @@ void dense_matrix_bindings(py::module_& m) {
             });
         }), py::arg("dt"), py::arg("rows"))
         .def_static("copy", [](const Py_DenseMatrix& other) -> Py_DenseMatrix {
-            return std::visit([](const auto& otherMat) -> Py_DenseMatrix {
-                using U = std::decay_t<decltype(otherMat)>::ValueType;
-                return Py_DenseMatrix(std::in_place_type<DenseMatrix<U>>, otherMat);
+            return std::visit([]<typename T>(const DenseMatrix<T>& otherMat) -> Py_DenseMatrix {
+                return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, otherMat);
             }, other);
         }, py::arg("other"))
-        .def_static("copy", [](const py::dtype& dt, const Py_DenseMatrix& other) -> Py_DenseMatrix {
-            return std::visit([&](const auto& otherMat) -> Py_DenseMatrix {
-                using U = std::decay_t<decltype(otherMat)>::ValueType;
-
-                return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
-                    if constexpr (lossless_convertible<U, T>) {
-                        return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, otherMat);
+        .def_static("copy", [](const py::dtype dt, const Py_DenseMatrix& other) -> Py_DenseMatrix {
+            return std::visit([&]<typename T>(const DenseMatrix<T>& otherMat) -> Py_DenseMatrix {
+                return dispatch_dt(dt, [&]<typename U>() -> Py_DenseMatrix {
+                    if constexpr (lossless_convertible<T, U>) {
+                        return Py_DenseMatrix(std::in_place_type<DenseMatrix<U>>, otherMat);
                     }
                     else {
                         throw py::type_error("Cannot copy construct a Dense Matrix from another with non convertible type");
@@ -145,7 +142,7 @@ void dense_matrix_bindings(py::module_& m) {
                 });
             }, other);
         }, py::arg("dt"), py::arg("other"))
-        .def_static("copy", [](const py::object& other) -> Py_DenseMatrix {
+        .def_static("copy", [](const py::object other) -> Py_DenseMatrix {
             if (!py::isinstance<DenseMatrixLikeBase>(other)) {
                 throw py::type_error("Cannot copy construct from object that doesn't derive from DenseMatrixLike");
             }
@@ -157,7 +154,7 @@ void dense_matrix_bindings(py::module_& m) {
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
             });
         }, py::arg("other"))
-        .def_static("copy", [](const py::dtype& dt, const py::object& other) -> Py_DenseMatrix {
+        .def_static("copy", [](const py::dtype dt, const py::object other) -> Py_DenseMatrix {
             if (!py::isinstance<DenseMatrixLikeBase>(other)) {
                 throw py::type_error("Cannot copy construct from object that doesn't derive from DenseMatrixLike");
             }
@@ -177,54 +174,48 @@ void dense_matrix_bindings(py::module_& m) {
             });
         }, py::arg("dt"), py::arg("other"))
         .def_static("move", [](Py_DenseMatrix& other) -> Py_DenseMatrix {
-            return std::visit([](auto& otherMat) -> Py_DenseMatrix {
-                using U = std::decay_t<decltype(otherMat)>::ValueType;
-                return Py_DenseMatrix(std::in_place_type<DenseMatrix<U>>, std::move(otherMat));
+            return std::visit([]<typename T>(DenseMatrix<T>& otherMat) -> Py_DenseMatrix {
+                return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, std::move(otherMat));
             }, other);
         }, py::arg("other"))
         .def("dtype", [](Py_DenseMatrix& self) -> py::dtype {
-            return std::visit([](const auto& mat) -> py::dtype {
-                using T = std::decay_t<decltype(mat)>::ValueType;
+            return std::visit([]<typename T>(const DenseMatrix<T>&) -> py::dtype {
                 return py::dtype::of<T>();
             }, self);
         })
-        .def("as_type", [](Py_DenseMatrix& self, const py::dtype& dt) -> Py_DenseMatrix {
-            return std::visit([&](const auto& mat) -> Py_DenseMatrix {
-                return dispatch_dt(dt, [&]<scalar T>() -> Py_DenseMatrix {
-                    // TODO: This likely moves the constructed rvalue into the variant
-                    return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, mat.template as_type<T>());
+        .def("as_type", [](Py_DenseMatrix& self, const py::dtype dt) -> Py_DenseMatrix {
+            return std::visit([&]<typename T>(const DenseMatrix<T>& mat) -> Py_DenseMatrix {
+                return dispatch_dt(dt, [&]<scalar U>() -> Py_DenseMatrix {
+                    return Py_DenseMatrix(std::in_place_type<DenseMatrix<U>>, mat.template as_type<U>());
                 });
             }, self);
         }, py::arg("dt"))
         .def("columns", [](Py_DenseMatrix& self) -> std::size_t {
-            return std::visit([&](const auto& mat) -> std::size_t {
+            return std::visit([&]<typename T>(const DenseMatrix<T>& mat) -> std::size_t {
                 return mat.columns();
             }, self);
         })
         .def("rows", [](Py_DenseMatrix& self) -> std::size_t {
-            return std::visit([&](const auto& mat) -> std::size_t {
+            return std::visit([&]<typename T>(const DenseMatrix<T>& mat) -> std::size_t {
                 return mat.rows();
             }, self);
         })
         .def("is_complex", [](Py_DenseMatrix& self) -> bool {
-            return std::visit([&](const auto& mat) -> bool {
-                using U = std::decay_t<decltype(mat)>;
-                return U::isComplex;
+            return std::visit([&]<typename T>(const DenseMatrix<T>& mat) -> bool {
+                return DenseMatrix<T>::isComplex;
             }, self);
         })
         .def("get", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c) -> py::object {
-            return std::visit([&](const auto& mat) -> py::object {
+            return std::visit([&]<typename T>(const DenseMatrix<T>& mat) -> py::object {
                  return py::cast(mat.get(r, c));
              }, self);
         }, py::arg("c"), py::arg("r"))
-        .def("set", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c, const py::object& v) -> void {
+        .def("set", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c, const py::object v) -> void {
             const py::dtype dt = get_dtype(v);
 
             dispatch_dt(dt, [&]<typename T>() -> void {
-                return std::visit([&](auto& mat) -> void {
-                    using U = std::decay_t<decltype(mat)>::ValueType;
-
-                    if (std::is_convertible_v<T, U>) {
+                return std::visit([&]<typename U>(DenseMatrix<U>& mat) -> void {
+                    if constexpr (std::is_convertible_v<T, U>) {
                         mat.set(r, c, py::cast<U>(v));
                     }
                     else {
@@ -237,22 +228,20 @@ void dense_matrix_bindings(py::module_& m) {
             const std::size_t r = indices.first;
             const std::size_t c = indices.second;
 
-            return std::visit([&](const auto& mat) -> py::object {
+            return std::visit([&]<typename T>(const DenseMatrix<T>& mat) -> py::object {
                  return py::cast(mat[r, c]);
              }, self);
         }, py::arg("indices"))
-        .def("__setitem__", [](Py_DenseMatrix& self, const std::pair<std::size_t, std::size_t>& indices, const py::object& v) -> void {
+        .def("__setitem__", [](Py_DenseMatrix& self, const std::pair<std::size_t, std::size_t>& indices, const py::object v) -> void {
             const std::size_t r = indices.first;
             const std::size_t c = indices.second;
 
             const py::dtype dt = get_dtype(v);
 
             dispatch_dt(dt, [&]<typename T>() -> void {
-                std::visit([&](auto& mat) -> void {
-                    using U = std::decay_t<decltype(mat)>::ValueType;
-
+                std::visit([&]<typename U>(DenseMatrix<U>& mat) -> void {
                     if constexpr (std::is_convertible_v<T, U>) {
-                        mat[r, c] = py::cast<T>(v);
+                        mat[r, c] = py::cast<U>(v);
                     }
                     else {
                         throw py::type_error("Cannot assign to matrix element with non convertible dt");
@@ -261,17 +250,15 @@ void dense_matrix_bindings(py::module_& m) {
             });
         }, py::arg("indices"), py::arg("v"))
         .def("reshape", [](Py_DenseMatrix& self, const std::size_t newRows, const std::size_t newColumns, const bool preserve) {
-            return std::visit([&](auto& mat) {
+            return std::visit([&]<typename T>(DenseMatrix<T>& mat) {
                 mat.reshape(newRows, newColumns, preserve);
             }, self);
         }, py::arg("newRows"), py::arg("newColumns"), py::arg("preserve"))
-        .def("reshape", [](Py_DenseMatrix& self, const std::size_t newRows, const std::size_t newColumns, const bool preserve, const py::object& value) {
+        .def("reshape", [](Py_DenseMatrix& self, const std::size_t newRows, const std::size_t newColumns, const bool preserve, const py::object value) {
             const py::dtype dt = get_dtype(value);
 
             return dispatch_dt(dt, [&]<typename T>() {
-                return std::visit([&](auto& mat) {
-                    using U = std::decay_t<decltype(mat)>::ValueType;
-
+                return std::visit([&]<typename U>(DenseMatrix<U>& mat) {
                     if constexpr (lossless_convertible<T, U>) {
                         mat.reshape(newRows, newColumns, preserve, py::cast<U>(value));
                     }

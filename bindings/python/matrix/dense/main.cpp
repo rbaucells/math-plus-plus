@@ -1,7 +1,10 @@
+#include <pybind11/pybind11.h>
 #include "main.h"
 
 #include "../common/like.h"
 #include "like.h"
+
+namespace py = pybind11;
 
 void dense_matrix_bindings(py::module_& m);
 py::class_<DenseMatrixLikeBase, MatrixLikeBase> dense_matrix_like_bindings(py::module_& m);

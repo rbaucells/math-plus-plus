@@ -2,7 +2,12 @@
 #define MATHPY_PYTHON_BINDINGS_MAIN_H
 
 #include <pybind11/pybind11.h>
+#include <pybind11/complex.h>
 #include <pybind11/numpy.h>
+#include <cstdint>
+#include <cstddef>
+#include <tuple>
+#include <complex>
 
 namespace py = pybind11;
 
@@ -123,33 +128,17 @@ enum class EType : uint32_t {
 };
 
 
-inline EType& operator|=(EType& lhs, const EType rhs) {
-    if (lhs == EType::invalid || rhs == EType::invalid) {
-        lhs = EType::invalid;
-        return lhs;
-    }
+EType& operator|=(EType& lhs, EType rhs);
 
-    const uint32_t combined = static_cast<uint32_t>(lhs) | static_cast<uint32_t>(rhs);
+bool is_actually_sequence(py::handle sequence);
 
-    const bool has_matrix = (combined & static_cast<uint32_t>(EType::matrix_like)) != 0;
-    const bool has_vector = (combined & static_cast<uint32_t>(EType::vector_like)) != 0;
-    const bool has_scalar = (combined & static_cast<uint32_t>(EType::scalar)) != 0;
+py::dtype get_py_int_dtype(py::int_ pyInt);
+py::dtype get_dtype(py::handle obj);
+EType get_etype(py::handle obj);
 
-    if ((has_matrix + has_vector + has_scalar) > 1) {
-        lhs = EType::invalid;
-        return lhs;
-    }
-
-    lhs = static_cast<EType>(combined);
-    return lhs;
-}
-
-py::dtype get_py_int_dtype(const py::int_& pyInt);
-py::dtype get_dtype(const py::handle& obj);
-
-std::tuple<py::dtype, EType, std::size_t> get_sequence_info(const py::sequence& sequence);
-std::tuple<py::dtype, EType, std::size_t, std::size_t>  get_sequence_info_2d(const py::sequence& sequence);
-std::tuple<py::dtype, EType, std::size_t> get_array_info(const py::array& array);
-std::tuple<py::dtype, EType, std::size_t, std::size_t> get_array_info_2d(const py::array& array);
+std::tuple<py::dtype, EType, std::size_t> get_sequence_info(py::sequence sequence);
+std::tuple<py::dtype, EType, std::size_t, std::size_t>  get_sequence_info_2d(py::sequence sequence);
+std::tuple<py::dtype, EType, std::size_t> get_array_info(py::array array);
+std::tuple<py::dtype, EType, std::size_t, std::size_t> get_array_info_2d(py::array array);
 
 #endif //MATHPY_PYTHON_BINDINGS_MAIN_H

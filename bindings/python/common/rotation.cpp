@@ -1,14 +1,19 @@
-#include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
+#include <pybind11/complex.h>
+
 #include "../main.h"
+
 #include "mathpp/implementation/common/rotations.h"
 
-void common_rotation_bindings(pybind11::module_& m) {
+namespace py = pybind11;
+
+void common_rotation_bindings(py::module_& m) {
     py::enum_<RotationType>(m, "RotationType")
         .value("degrees", RotationType::degrees)
         .value("radians", RotationType::radians);
 
-    m.def("radians_to_degrees", [](const py::object& rad) {
+    m.def("radians_to_degrees", [](const py::handle rad) {
         const py::dtype dt = get_dtype(rad);
 
         return dispatch_dt(dt, [&]<typename T>() {
@@ -16,7 +21,7 @@ void common_rotation_bindings(pybind11::module_& m) {
         });
     }, py::arg("rad"));
 
-    m.def("degrees_to_radians", [](const py::object& deg) {
+    m.def("degrees_to_radians", [](const py::handle deg) {
         const py::dtype dt = get_dtype(deg);
 
         return dispatch_dt(dt, [&]<typename T>() {
@@ -24,7 +29,7 @@ void common_rotation_bindings(pybind11::module_& m) {
         });
     }, py::arg("deg"));
 
-    m.def("convert", [](const RotationType from, const RotationType to, const py::object& value) {
+    m.def("convert", [](const RotationType from, const RotationType to, const py::handle value) {
         const py::dtype dt = get_dtype(value);
 
         return dispatch_dt(dt, [&]<typename T>() {

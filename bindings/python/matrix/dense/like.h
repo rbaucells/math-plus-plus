@@ -1,9 +1,12 @@
 #ifndef MATHPY_MATRIX_DENSE_LIKE_H
 #define MATHPY_MATRIX_DENSE_LIKE_H
-#include <utility>
+
+#include <pybind11/pybind11.h>
+#include <cstddef>
 
 #include "../common/like.h"
-#include "mathpp/implementation/common/traits.h"
+
+namespace py = pybind11;
 
 struct DenseMatrixLikeBase : MatrixLikeBase {
     virtual ~DenseMatrixLikeBase() = default;
@@ -12,8 +15,8 @@ struct DenseMatrixLikeBase : MatrixLikeBase {
 template<scalar T>
 struct DenseMatrixLikeElementPyWrapper {
     py::handle handle;
-    std::size_t r;
-    std::size_t c;
+    const std::size_t r;
+    const std::size_t c;
 
     DenseMatrixLikeElementPyWrapper& operator=(const T& v) {
         handle.attr("__setitem__")(std::pair(r, c), v);
@@ -30,11 +33,11 @@ struct DenseMatrixLikePyWrapper : MatrixLikePyWrapper<T> {
     using MatrixLikePyWrapper<T>::MatrixLikePyWrapper;
 
     [[nodiscard]] T operator[](const std::size_t r, const std::size_t c) const {
-        return py::cast<T>(this->handle.attr("__getitem__")(std::pair(r, c)));
+        return py::cast<T>(this->object.attr("__getitem__")(std::pair(r, c)));
     }
 
     [[nodiscard]] DenseMatrixLikeElementPyWrapper<T> operator[](const std::size_t r, const std::size_t c) {
-        return DenseMatrixLikeElementPyWrapper<T>(this->handle, r, c);
+        return DenseMatrixLikeElementPyWrapper<T>(this->object, r, c);
     }
 };
 
