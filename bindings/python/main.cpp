@@ -15,8 +15,9 @@
 namespace py = pybind11;
 
 PYBIND11_MODULE(mathpy, m) {
-    // for debug only stuff
-    py::enum_<EType>(m, "EType", py::arithmetic())
+    py::module_ detail = m.def_submodule("detail");
+
+    py::enum_<EType>(detail, "EType", py::arithmetic())
         .value("none", EType::none)
         .value("scalar", EType::scalar)
         .value("csc_sparse_matrix_like", EType::csc_sparse_matrix_like)
@@ -29,15 +30,17 @@ PYBIND11_MODULE(mathpy, m) {
         .value("sparse_matrix_like", EType::sparse_matrix_like)
         .value("matrix_like", EType::matrix_like)
         .value("vector_like", EType::vector_like)
-        .value("invalid", EType::invalid);
+        .value("invalid", EType::invalid)
+        .def("__ior__", py::overload_cast<EType&, const EType>(operator|=));
 
-    m.def("get_py_int_dtype", &get_py_int_dtype, py::arg("pyInt"), "Given a py builtin int type calculates the numpy dtype that can fit the int");
-    m.def("get_dtype", &get_dtype, py::arg("obj"));
-    m.def("get_etype", &get_dtype, py::arg("obj"));
-    m.def("get_sequence_info", &get_sequence_info, py::arg("sequence"));
-    m.def("get_sequence_info_2d", &get_sequence_info_2d, py::arg("sequence"));
-    m.def("get_array_info", &get_array_info, py::arg("array"));
-    m.def("get_array_info_2d", &get_array_info_2d, py::arg("array"));
+    detail.def("is_actually_sequence", &is_actually_sequence, py::arg("sequence"));
+    detail.def("get_py_int_dtype", &get_py_int_dtype, py::arg("number"));
+    detail.def("get_dtype", &get_dtype, py::arg("obj"));
+    detail.def("get_etype", &get_etype, py::arg("obj"));
+    detail.def("get_sequence_info", &get_sequence_info, py::arg("sequence"));
+    detail.def("get_sequence_info_2d", &get_sequence_info_2d, py::arg("sequence"));
+    detail.def("get_array_info", &get_array_info, py::arg("array"));
+    detail.def("get_array_info_2d", &get_array_info_2d, py::arg("array"));
 
     common_bindings(m);
     matrix_bindings(m);
@@ -65,44 +68,77 @@ EType& operator|=(EType& lhs, const EType rhs) {
     return lhs;
 }
 
+std::string to_string(const EType& etype) {
+    switch (etype) {
+        case EType::none:
+            return "none";
+        case EType::scalar:
+            return "scalar";
+        case EType::csc_sparse_matrix_like:
+            return "csc_sparse_matrix_like";
+        case EType::csr_sparse_matrix_like:
+            return "csr_sparse_matrix_like";
+        case EType::coo_sparse_vector_like:
+            return "coo_sparse_vector_like";
+        case EType::dok_sparse_vector_like:
+            return "dok_sparse_vector_like";
+        case EType::dense_matrix_like:
+            return "dense_matrix_like";
+        case EType::dense_vector_like:
+            return "dense_vector_like";
+        case EType::sparse_vector_like:
+            return "sparse_vector_like";
+        case EType::sparse_matrix_like:
+            return "sparse_matrix_like";
+        case EType::matrix_like:
+            return "matrix_like";
+        case EType::vector_like:
+            return "vector_like";
+        case EType::invalid:
+            return "invalid";
+    }
+
+    return "Unkown et";
+}
+
 bool is_actually_sequence(const py::handle sequence) {
     return py::isinstance<py::sequence>(sequence) && !py::isinstance<MatrixLikeBase>(sequence);
 }
 
-py::dtype get_py_int_dtype(const py::int_ pyInt) {
-    const bool negative = pyInt < py::int_(0);
+py::dtype get_py_int_dtype(const py::int_ number) {
+    const bool negative = number < py::int_(0);
 
     if (negative) { // signed
-        if (pyInt >= py::int_(std::numeric_limits<std::int8_t>::min())) {
+        if (number >= py::int_(std::numeric_limits<std::int8_t>::min())) {
             return py::dtype::of<std::int8_t>();
         }
 
-        if (pyInt >= py::int_(std::numeric_limits<std::int16_t>::min())) {
+        if (number >= py::int_(std::numeric_limits<std::int16_t>::min())) {
             return py::dtype::of<std::int16_t>();
         }
 
-        if (pyInt >= py::int_(std::numeric_limits<std::int32_t>::min())) {
+        if (number >= py::int_(std::numeric_limits<std::int32_t>::min())) {
             return py::dtype::of<std::int32_t>();
         }
 
-        if (pyInt >= py::int_(std::numeric_limits<std::int64_t>::min())) {
+        if (number >= py::int_(std::numeric_limits<std::int64_t>::min())) {
             return py::dtype::of<std::int64_t>();
         }
     }
     else { // unsigned
-        if (pyInt <= py::int_(std::numeric_limits<std::uint8_t>::max())) {
+        if (number <= py::int_(std::numeric_limits<std::uint8_t>::max())) {
             return py::dtype::of<std::uint8_t>();
         }
 
-        if (pyInt <= py::int_(std::numeric_limits<std::uint16_t>::max())) {
+        if (number <= py::int_(std::numeric_limits<std::uint16_t>::max())) {
             return py::dtype::of<std::uint16_t>();
         }
 
-        if (pyInt <= py::int_(std::numeric_limits<std::uint32_t>::max())) {
+        if (number <= py::int_(std::numeric_limits<std::uint32_t>::max())) {
             return py::dtype::of<std::uint32_t>();
         }
 
-        if (pyInt <= py::int_(std::numeric_limits<std::uint64_t>::max())) {
+        if (number <= py::int_(std::numeric_limits<std::uint64_t>::max())) {
             return py::dtype::of<std::uint64_t>();
         }
     }
@@ -132,7 +168,7 @@ py::dtype get_dtype(const py::handle obj) {
         return py::dtype::of<std::complex<double>>();
     }
 
-    throw py::type_error("Unsupported object type");
+    throw py::type_error("Unsupported object type passed to get_dtype of type: " + py::cast<std::string>(py::str(py::type::of(obj))));
 }
 
 EType get_etype(const py::handle obj) {
@@ -177,12 +213,9 @@ EType get_etype(const py::handle obj) {
     // }
 
     if (py::isinstance(obj, py::module_::import("numpy").attr("number")) || py::isinstance<py::int_>(obj) || py::isinstance<py::float_>(obj) || py::isinstance(obj, py::module_::import("builtins").attr("complex"))) {
-
-        py::print("returning scalar yo, obj = ", obj, " and type yo is ", py::type::of(obj));
         return EType::scalar;
     }
 
-    py::print("returning none yo, obj = ", obj, " and type yo is ", py::type::of(obj));
 
     return EType::none;
 }
@@ -288,24 +321,17 @@ std::tuple<py::dtype, EType, std::size_t> get_array_info(const py::array array) 
 }
 
 std::tuple<py::dtype, EType, std::size_t, std::size_t> get_array_info_2d(const py::array array) {
-    py::print("up up here");
     if (array.ndim() != 2) {
         throw py::type_error("Cannot get 2d array info on non-2d array");
     }
-
-    py::print("up here");
 
     EType et = EType::none;
     const std::size_t size = array.shape(0);
     const std::size_t nestedSize = array.shape(1);
 
-    py::print("size = ", size);
-    py::print("nestedSize = ", nestedSize);
-
     py::dtype dt;
 
     if (!array.dtype().is(py::dtype::of<py::object>())) {
-        py::print("getting through dt and stuff");
         dt = array.dtype();
 
         et |= EType::scalar;
@@ -316,8 +342,6 @@ std::tuple<py::dtype, EType, std::size_t, std::size_t> get_array_info_2d(const p
         std::size_t i = 0;
         for (auto inner : array) {
             py::array asArray = py::cast<py::array>(inner);
-
-            py::print("getting through recurse into get_array_info", nestedSize);
 
             const auto [innerDt, innerEt, _] = get_array_info(asArray);
 
@@ -331,6 +355,5 @@ std::tuple<py::dtype, EType, std::size_t, std::size_t> get_array_info_2d(const p
         dt = py::cast<py::dtype>(np.attr("result_type")(*dtypes));
     }
 
-    py::print("we out");
     return {dt, et, size, nestedSize};
 }

@@ -14,7 +14,7 @@ namespace py = pybind11;
 void matrix_dense_operators_compare_bindings(py::module_& m, py::class_<DenseMatrixLikeBase, MatrixLikeBase> dense_matrix_like_base_py) {
     dense_matrix_like_base_py.def("__eq__", [](const py::object& self, const py::object& other) -> bool {
         if (!py::isinstance<DenseMatrixLikeBase>(other)) {
-            throw py::type_error();
+            throw py::type_error("Cannot compare with object that does not derive from DenseMatrixLike");
         }
 
         const py::dtype selfDt = self.attr("dtype")();

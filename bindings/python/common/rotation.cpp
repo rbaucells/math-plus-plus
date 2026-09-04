@@ -19,7 +19,7 @@ void common_rotation_bindings(py::module_& m) {
         return dispatch_dt(dt, [&]<typename T>() {
             return py::cast(radians_to_degrees(py::cast<T>(rad)));
         });
-    }, py::arg("rad"));
+    }, py::arg("radians"));
 
     m.def("degrees_to_radians", [](const py::handle deg) {
         const py::dtype dt = get_dtype(deg);
@@ -27,7 +27,7 @@ void common_rotation_bindings(py::module_& m) {
         return dispatch_dt(dt, [&]<typename T>() {
             return py::cast(degrees_to_radians(py::cast<T>(deg)));
         });
-    }, py::arg("deg"));
+    }, py::arg("degrees"));
 
     m.def("convert", [](const RotationType from, const RotationType to, const py::handle value) {
         const py::dtype dt = get_dtype(value);
@@ -35,5 +35,5 @@ void common_rotation_bindings(py::module_& m) {
         return dispatch_dt(dt, [&]<typename T>() {
             return py::cast(convert(from, to, py::cast<T>(value)));
         });
-    });
+    }, py::arg("from"), py::arg("to"), py::arg("value"));
 }

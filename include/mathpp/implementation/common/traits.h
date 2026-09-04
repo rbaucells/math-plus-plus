@@ -58,10 +58,13 @@ concept has_common_type = requires { typename std::common_type_t<T...>; };
 
 template <typename From, typename To>
 struct is_lossless_convertible {
-    static constexpr bool int_to_int_narrowing = std::is_integral_v<underlying_type_t<From>> && std::is_integral_v<underlying_type_t<To>> && std::numeric_limits<underlying_type_t<To>>::digits < std::numeric_limits<underlying_type_t<From>>::digits;
-    static constexpr bool float_to_int_narrowing = std::is_floating_point_v<underlying_type_t<From>> && std::is_integral_v<underlying_type_t<To>>;
-    static constexpr bool int_to_float_narrowing = std::is_integral_v<underlying_type_t<From>> && std::is_floating_point_v<underlying_type_t<To>> && std::numeric_limits<underlying_type_t<To>>::digits < std::numeric_limits<underlying_type_t<From>>::digits;
-    static constexpr bool float_to_float_narrowing = std::is_floating_point_v<underlying_type_t<From>> && std::is_floating_point_v<underlying_type_t<To>> && (sizeof(underlying_type_t<To>) < sizeof(underlying_type_t<From>));
+    using F = underlying_type_t<From>;
+    using T = underlying_type_t<To>;
+
+    static constexpr bool int_to_int_narrowing = std::is_integral_v<F> && std::is_integral_v<T> && (std::numeric_limits<T>::lowest() > std::numeric_limits<F>::lowest() || std::numeric_limits<T>::max() < std::numeric_limits<F>::max());
+    static constexpr bool float_to_int_narrowing = std::is_floating_point_v<F> && std::is_integral_v<T>;
+    static constexpr bool int_to_float_narrowing = std::is_integral_v<F> && std::is_floating_point_v<T> && std::numeric_limits<T>::digits < std::numeric_limits<F>::digits;
+    static constexpr bool float_to_float_narrowing = std::is_floating_point_v<F> && std::is_floating_point_v<T> && sizeof(T) < sizeof(F);
     static constexpr bool complex_to_real_narrowing = complex<From> && real<To>;
 
     static constexpr bool value = !(int_to_int_narrowing || float_to_int_narrowing || int_to_float_narrowing || float_to_float_narrowing || complex_to_real_narrowing);

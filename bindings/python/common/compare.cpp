@@ -15,7 +15,7 @@
 namespace py = pybind11;
 
 template<typename T>
-static bool common_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::sequence& sequence) {
+static bool common_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::sequence sequence) {
     auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
         return py::cast<T>(sequence[i]);
     });
@@ -24,7 +24,7 @@ static bool common_compare(const std::size_t size, const Precision<underlying_ty
 }
 
 template<typename T>
-static bool common_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::array& array) {
+static bool common_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::array array) {
     const pybind11::detail::unchecked_reference<T, 1> unchecked = array.unchecked<T, 1>();
 
     auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
@@ -50,14 +50,14 @@ void common_compare_bindings(pybind11::module_& m) {
                         return matrix_dense_operators_compare<T>(size, casted_precision, sequence);
                     }
 
-                    throw py::type_error("Unknown et");
+                    throw py::type_error("compare function not implemented for sequence etype: " + to_string(et));
                 }
                 else {
-                    throw py::type_error("Cannot convert");
+                    throw py::type_error("Cannot convert precision to dtype of sequence in compare");
                 }
             }, precision);
         });
-    });
+    }, py::arg("precision"), py::arg("sequence"));
 
     m.def("compare", [](const Py_Precision& precision, const py::array array) -> bool {
         const auto [dt, et, size] = get_array_info(array);
@@ -74,14 +74,14 @@ void common_compare_bindings(pybind11::module_& m) {
                         return matrix_dense_operators_compare<T>(size, casted_precision, array);
                     }
 
-                    throw py::type_error("Unknown et");
+                    throw py::type_error("compare function not implemented for array etype: " + to_string(et));
                 }
                 else {
-                    throw py::type_error("Cannot convert");
+                    throw py::type_error("Cannot convert precision to dtype of array in compare");
                 }
             }, precision);
         });
-    });
+    }, py::arg("precision"), py::arg("array"));
 
     m.def("compare", [](const py::sequence sequence) -> bool {
         const auto [dt, et, size] = get_sequence_info(sequence);
@@ -96,9 +96,9 @@ void common_compare_bindings(pybind11::module_& m) {
                 return matrix_dense_operators_compare<T>(size, precision, sequence);
             }
 
-            throw py::type_error("Unknown et");
+            throw py::type_error("compare function not implemented for sequence etype: " + to_string(et));
         });
-    });
+    }, py::arg("sequence"));
 
     m.def("compare", [](const py::array array) -> bool {
         const auto [dt, et, size] = get_array_info(array);
@@ -113,9 +113,9 @@ void common_compare_bindings(pybind11::module_& m) {
                 return matrix_dense_operators_compare<T>(size, precision, array);
             }
 
-            throw py::type_error("Unknown et");
+            throw py::type_error("compare function not implemented for array etype: " + to_string(et));
         });
-    });
+    }, py::arg("array"));
 
     m.def("compare", [](const Py_Precision& precision, const py::args args) -> bool {
         const auto [dt, et, size] = get_sequence_info(args);
@@ -125,8 +125,6 @@ void common_compare_bindings(pybind11::module_& m) {
                 if constexpr (lossless_convertible<U, underlying_type_t<T>>) {
                     const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
 
-                    py::print("et = ", et);
-
                     if (et == EType::scalar) {
                         return common_compare<T>(size, casted_precision, py::sequence(args));
                     }
@@ -134,14 +132,14 @@ void common_compare_bindings(pybind11::module_& m) {
                         return matrix_dense_operators_compare<T>(size, casted_precision, py::sequence(args));
                     }
 
-                    throw py::type_error("Unknown et");
+                    throw py::type_error("compare function not implemented for args etype: " + to_string(et));
                 }
                 else {
-                    throw py::type_error("Cannot convert");
+                    throw py::type_error("Cannot convert precision to dtype of args in compare");
                 }
             }, precision);
         });
-    });
+    }, py::arg("precision"));
 
     m.def("compare", [](const py::args args) -> bool {
         const auto [dt, et, size] = get_sequence_info(args);
@@ -156,7 +154,7 @@ void common_compare_bindings(pybind11::module_& m) {
                 return matrix_dense_operators_compare<T>(size, precision, py::sequence(args));
             }
 
-            throw py::type_error("Unknown et");
+            throw py::type_error("compare function not implemented for args etype: " + to_string(et));
         });
     });
 }

@@ -50,12 +50,12 @@ def test_Precision_value_write():
     # arrange
     b = mathpy.Precision(6)
     # act / assert
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         b.value = -1
     # arrange
     c = mathpy.Precision(6)
     # act / assert
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         c.value = 256
 
 def test_Precision_as_type():

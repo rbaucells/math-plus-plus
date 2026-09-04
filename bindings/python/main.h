@@ -61,7 +61,7 @@ decltype(auto) dispatch_dt(const py::dtype& dt, F func) {
         return func.template operator()<std::complex<double>>();
     }
 
-    throw py::type_error("Invalid type");
+    throw py::type_error("Cannot dispatch_dt on invalid dt");
 }
 
 template<typename F>
@@ -106,7 +106,7 @@ decltype(auto) dispatch_dt_no_complex(const py::dtype& dt, F func) {
         return func.template operator()<double>();
     }
 
-    throw py::type_error("Invalid type");
+    throw py::type_error("Cannot dispatch_dt_no_complex on invalid dt");
 }
 
 enum class EType : uint32_t {
@@ -129,10 +129,11 @@ enum class EType : uint32_t {
 
 
 EType& operator|=(EType& lhs, EType rhs);
+std::string to_string(const EType& etype);
 
 bool is_actually_sequence(py::handle sequence);
 
-py::dtype get_py_int_dtype(py::int_ pyInt);
+py::dtype get_py_int_dtype(py::int_ number);
 py::dtype get_dtype(py::handle obj);
 EType get_etype(py::handle obj);
 

@@ -13,12 +13,12 @@ namespace py = pybind11;
 
 void dense_matrix_bindings(py::module_& m) {
     py::class_<Py_DenseMatrix, DenseMatrixLikeBase>(m, "DenseMatrix")
-        .def(py::init([](const py::dtype& dt) -> Py_DenseMatrix {
+        .def(py::init([](const py::dtype dt) -> Py_DenseMatrix {
             return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>);
             });
         }), py::arg("dt"))
-        .def(py::init([](const py::dtype& dt, const std::size_t rows, const std::size_t columns, const bool fill) -> Py_DenseMatrix {
+        .def(py::init([](const py::dtype dt, const std::size_t rows, const std::size_t columns, const bool fill) -> Py_DenseMatrix {
             return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, rows, columns, fill);
             });
@@ -27,32 +27,26 @@ void dense_matrix_bindings(py::module_& m) {
             const auto [dt, et, size, nestedSize] = get_sequence_info_2d(sequence);
 
             if (et != EType::scalar) {
-                throw py::type_error();
+                throw py::type_error("Cannot construct dense matrix from 2d sequence of etype: " + to_string(et) + " (should be scalar)");
             }
 
             return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
                 auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t r) {
-                    const py::object inner = sequence[r];
+                    const py::sequence inner = sequence[r];
 
-                    if (!py::isinstance<py::sequence>(inner)) {
-                        throw py::type_error("nested sequence to initialize matrix must be nested sequences");
-                    }
-
-                    const py::sequence innerSequence = inner;
-
-                    return std::views::iota(0u, nestedSize) | std::views::transform([innerSequence](const std::size_t c) -> T {
-                        return py::cast<T>(innerSequence[c]);
+                    return std::views::iota(0u, nestedSize) | std::views::transform([inner](const std::size_t c) -> T {
+                        return py::cast<T>(inner[c]);
                     });
                 });
 
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
             });
-        }), py::arg("rows"))
+        }), py::arg("sequence"))
         .def(py::init([](const py::array array) -> Py_DenseMatrix {
             const auto [dt, et, size, nestedSize] = get_array_info_2d(array);
 
             if (et != EType::scalar) {
-                throw py::type_error();
+                throw py::type_error("Cannot construct dense matrix from 2d array of etype: " + to_string(et) + " (should be scalar)");
             }
 
             return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
@@ -66,39 +60,33 @@ void dense_matrix_bindings(py::module_& m) {
 
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
             });
-        }), py::arg("rows"))
+        }), py::arg("array"))
         .def(py::init([](const py::dtype dt, const py::sequence sequence) -> Py_DenseMatrix {
             const auto [sequenceDt, sequenceEt, size, nestedSize] = get_sequence_info_2d(sequence);
 
             if (sequenceEt != EType::scalar) {
-                throw py::type_error();
+                throw py::type_error("Cannot construct dense matrix from 2d sequence of etype: " + to_string(sequenceEt) + " (should be scalar)");
             }
 
             return dispatch_dt(dt, [&]<typename T>() -> Py_DenseMatrix {
                 return dispatch_dt(sequenceDt, [&]<typename U>() -> Py_DenseMatrix {
                     if constexpr (lossless_convertible<U, T>) {
                         auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t r) {
-                            const py::object inner = sequence[r];
+                            const py::sequence inner = sequence[r];
 
-                            if (!py::isinstance<py::sequence>(inner)) {
-                                throw py::type_error("nested sequence to initialize matrix must be nested sequences");
-                            }
-
-                            const py::sequence innerSequence = inner;
-
-                            return std::views::iota(0u, nestedSize) | std::views::transform([innerSequence](const std::size_t c) -> T {
-                                return py::cast<T>(innerSequence[c]);
+                            return std::views::iota(0u, nestedSize) | std::views::transform([inner](const std::size_t c) -> T {
+                                return py::cast<T>(inner[c]);
                             });
                         });
 
                         return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
                     }
                     else {
-                        throw py::type_error();
+                        throw py::type_error("Cannot convert sequence dt to specified dt while constructing dense matrix from 2d sequence");
                     }
                 });
             });
-        }), py::arg("dt"), py::arg("rows"))
+        }), py::arg("dt"), py::arg("sequence"))
         .def(py::init([](const py::dtype dt, const py::array array) -> Py_DenseMatrix {
             const auto [arrayDt, arrayEt, size, nestedSize] = get_array_info_2d(array);
 
@@ -120,11 +108,11 @@ void dense_matrix_bindings(py::module_& m) {
                         return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
                     }
                     else {
-                        throw py::type_error();
+                        throw py::type_error("Cannot convert array dt to specified dt while constructing dense matrix from 2d array");
                     }
                 });
             });
-        }), py::arg("dt"), py::arg("rows"))
+        }), py::arg("dt"), py::arg("array"))
         .def_static("copy", [](const Py_DenseMatrix& other) -> Py_DenseMatrix {
             return std::visit([]<typename T>(const DenseMatrix<T>& otherMat) -> Py_DenseMatrix {
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, otherMat);
@@ -137,14 +125,14 @@ void dense_matrix_bindings(py::module_& m) {
                         return Py_DenseMatrix(std::in_place_type<DenseMatrix<U>>, otherMat);
                     }
                     else {
-                        throw py::type_error("Cannot copy construct a Dense Matrix from another with non convertible type");
+                        throw py::type_error("Cannot copy construct a dense matrix from another with non convertible type");
                     }
                 });
             }, other);
         }, py::arg("dt"), py::arg("other"))
         .def_static("copy", [](const py::object other) -> Py_DenseMatrix {
             if (!py::isinstance<DenseMatrixLikeBase>(other)) {
-                throw py::type_error("Cannot copy construct from object that doesn't derive from DenseMatrixLike");
+                throw py::type_error("Cannot copy construct dense matrix from object that doesn't derive from DenseMatrixLike");
             }
 
             const py::dtype dt = getattr(other, "dtype")();
@@ -156,7 +144,7 @@ void dense_matrix_bindings(py::module_& m) {
         }, py::arg("other"))
         .def_static("copy", [](const py::dtype dt, const py::object other) -> Py_DenseMatrix {
             if (!py::isinstance<DenseMatrixLikeBase>(other)) {
-                throw py::type_error("Cannot copy construct from object that doesn't derive from DenseMatrixLike");
+                throw py::type_error("Cannot copy construct dense matrix from object that doesn't derive from DenseMatrixLike");
             }
 
             const py::dtype otherDt = getattr(other, "dtype")();
@@ -168,7 +156,7 @@ void dense_matrix_bindings(py::module_& m) {
                         return Py_DenseMatrix(std::in_place_type<DenseMatrix<T>>, wrapper);
                     }
                     else {
-                        throw py::type_error("Cannot copy construct a Dense Matrix from dense matrix like with non convertible type");
+                        throw py::type_error("Cannot copy construct a dense matrix from dense matrix like with non convertible type");
                     }
                 });
             });
@@ -209,7 +197,7 @@ void dense_matrix_bindings(py::module_& m) {
             return std::visit([&]<typename T>(const DenseMatrix<T>& mat) -> py::object {
                  return py::cast(mat.get(r, c));
              }, self);
-        }, py::arg("c"), py::arg("r"))
+        }, py::arg("r"), py::arg("c"))
         .def("set", [](Py_DenseMatrix& self, const std::size_t r, const std::size_t c, const py::object v) -> void {
             const py::dtype dt = get_dtype(v);
 
@@ -223,7 +211,7 @@ void dense_matrix_bindings(py::module_& m) {
                     }
                 }, self);
             });
-        }, py::arg("c"), py::arg("r"), py::arg("v"))
+        }, py::arg("r"), py::arg("c"), py::arg("v"))
         .def("__getitem__", [](Py_DenseMatrix& self, const std::pair<std::size_t, std::size_t>& indices) -> py::object {
             const std::size_t r = indices.first;
             const std::size_t c = indices.second;
