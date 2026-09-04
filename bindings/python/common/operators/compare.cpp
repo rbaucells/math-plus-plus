@@ -4,9 +4,9 @@
 #include <cstddef>
 #include <ranges>
 
-#include "../main.h"
-#include "precision.h"
-#include "../matrix/dense/operators/compare.h"
+#include "../../main.h"
+#include "../precision.h"
+#include "../../matrix/dense/operators/compare.h"
 
 #include "mathpp/implementation/common/traits.h"
 #include "mathpp/implementation/common/precision.h"
@@ -15,7 +15,7 @@
 namespace py = pybind11;
 
 template<typename T>
-static bool common_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::sequence sequence) {
+static bool common_operators_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::sequence sequence) {
     auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
         return py::cast<T>(sequence[i]);
     });
@@ -24,7 +24,7 @@ static bool common_compare(const std::size_t size, const Precision<underlying_ty
 }
 
 template<typename T>
-static bool common_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::array array) {
+static bool common_operators_compare(const std::size_t size, const Precision<underlying_type_t<T>> precision, const py::array array) {
     const pybind11::detail::unchecked_reference<T, 1> unchecked = array.unchecked<T, 1>();
 
     auto wrapper = std::views::iota(0u, size) | std::views::transform([&](const std::size_t i) -> T {
@@ -34,7 +34,7 @@ static bool common_compare(const std::size_t size, const Precision<underlying_ty
     return compare(precision, wrapper);
 }
 
-void common_compare_bindings(pybind11::module_& m) {
+void common_operators_compare_bindings(pybind11::module_& m) {
     m.def("compare", [](const Py_Precision& precision, const py::sequence sequence) -> bool {
         const auto [dt, et, size] = get_sequence_info(sequence);
 
@@ -44,7 +44,7 @@ void common_compare_bindings(pybind11::module_& m) {
                     const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
 
                     if (et == EType::scalar) {
-                        return common_compare<T>(size, casted_precision, sequence);
+                        return common_operators_compare<T>(size, casted_precision, sequence);
                     }
                     else if (et == EType::dense_matrix_like) {
                         return matrix_dense_operators_compare<T>(size, casted_precision, sequence);
@@ -68,7 +68,7 @@ void common_compare_bindings(pybind11::module_& m) {
                     const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
 
                     if (et == EType::scalar) {
-                        return common_compare<T>(size, casted_precision, array);
+                        return common_operators_compare<T>(size, casted_precision, array);
                     }
                     else if (et == EType::dense_matrix_like) {
                         return matrix_dense_operators_compare<T>(size, casted_precision, array);
@@ -90,7 +90,7 @@ void common_compare_bindings(pybind11::module_& m) {
             const Precision<underlying_type_t<T>> precision = Precision<underlying_type_t<T>>(epsilon<T>());
 
             if (et == EType::scalar) {
-                return common_compare<T>(size, precision, sequence);
+                return common_operators_compare<T>(size, precision, sequence);
             }
             else if (et == EType::dense_matrix_like) {
                 return matrix_dense_operators_compare<T>(size, precision, sequence);
@@ -107,7 +107,7 @@ void common_compare_bindings(pybind11::module_& m) {
             const Precision<underlying_type_t<T>> precision = Precision<underlying_type_t<T>>(epsilon<T>());
 
             if (et == EType::scalar) {
-                return common_compare<T>(size, precision, array);
+                return common_operators_compare<T>(size, precision, array);
             }
             else if (et == EType::dense_matrix_like) {
                 return matrix_dense_operators_compare<T>(size, precision, array);
@@ -126,7 +126,7 @@ void common_compare_bindings(pybind11::module_& m) {
                     const Precision<underlying_type_t<T>> casted_precision = Precision<underlying_type_t<T>>(p.value);
 
                     if (et == EType::scalar) {
-                        return common_compare<T>(size, casted_precision, py::sequence(args));
+                        return common_operators_compare<T>(size, casted_precision, py::sequence(args));
                     }
                     else if (et == EType::dense_matrix_like) {
                         return matrix_dense_operators_compare<T>(size, casted_precision, py::sequence(args));
@@ -148,7 +148,7 @@ void common_compare_bindings(pybind11::module_& m) {
             const Precision<underlying_type_t<T>> precision = Precision<underlying_type_t<T>>(epsilon<T>());
 
             if (et == EType::scalar) {
-                return common_compare<T>(size, precision, py::sequence(args));
+                return common_operators_compare<T>(size, precision, py::sequence(args));
             }
             else if (et == EType::dense_matrix_like) {
                 return matrix_dense_operators_compare<T>(size, precision, py::sequence(args));

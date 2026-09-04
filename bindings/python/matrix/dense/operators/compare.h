@@ -32,6 +32,4 @@ bool matrix_dense_operators_compare(const std::size_t size, const Precision<unde
     return compare(precision, wrapper);
 }
 
-void matrix_dense_operators_compare_bindings(py::module_& m, py::class_<DenseMatrixLikeBase, MatrixLikeBase> dense_matrix_like_base_py);
-
 #endif // MATHPY_MATRIX_DENSE_OPERATORS_COMPARE_H
