@@ -16,6 +16,7 @@ struct MatrixLikeBase {
 template<scalar T>
 struct MatrixLikePyWrapper {
     using ValueType = T;
+    static constexpr bool isExpr = true;
     static constexpr bool isComplex = is_complex_v<T>;
 
     py::object object;

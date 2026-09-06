@@ -226,3 +226,13 @@ def test_DenseMatrix_move_constructor():
     assert b[0, 1] == 2
     assert b[1, 0] == 3
     assert b[1, 1] == 4
+
+def test_expr_operator():
+    # arrange
+    a = DenseMatrix([[1, 2], [3, 4]])
+    b = DenseMatrix([[1, 2], [3, 4]])
+    c = DenseMatrix([[1, 2], [3, 4]])
+    # act
+    expr = (a == b) == c
+    # assert
+    assert expr | bool

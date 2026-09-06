@@ -11,6 +11,7 @@
 #include "mathpp/implementation/common/compare.h"
 
 #include "../traits.h"
+#include "mathpp/implementation/common/expressions.h"
 
 /**
  * @brief Compares elements of dense matrix like objects up to the specified precision.
@@ -148,11 +149,11 @@ template<std::ranges::random_access_range R, dense_matrix_like T = std::ranges::
  */
 template<dense_matrix_like... ARGS> requires has_common_type<typename ARGS::ValueType...>
 struct DenseMatrixCompareExpr {
-    std::tuple<const ARGS&...> args;
+    std::tuple<ExprStorage<ARGS>...> args;
 
     Precision<underlying_type_t<std::common_type_t<typename ARGS::ValueType...>>> precision = Precision(epsilon<std::common_type_t<typename ARGS::ValueType...>>());
 
-    explicit DenseMatrixCompareExpr(const ARGS&... args) : args(args...) {}
+    explicit DenseMatrixCompareExpr(ExprStorage<ARGS>... args) : args(args...) {}
 
     [[nodiscard]] bool evaluate() const {
         return std::apply([&](const auto&... m) {

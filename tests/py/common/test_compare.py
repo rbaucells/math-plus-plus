@@ -1,6 +1,8 @@
 import mathpy
 import numpy
 import pytest
+from mathpy.mathpy import DenseMatrix
+
 
 def test_precision_and_args_compare():
     # arrange

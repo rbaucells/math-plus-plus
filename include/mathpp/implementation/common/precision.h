@@ -43,6 +43,12 @@ template<real T>
 struct Precision {
     using ValueType = T;
     T value;
+
+    constexpr Precision() = default;
+    constexpr explicit Precision(const T value) : value(value) {}
+
+    template<real U> requires lossless_convertible<U, T>
+    constexpr explicit Precision(const Precision<U>& other) : value(static_cast<T>(other.value)) {}
 };
 
 #endif // MATHPP_IMPLEMENTATION_COMMON_PRECISION_H
