@@ -178,6 +178,36 @@ struct DenseMatrixCompareExpr {
     }
 };
 
+template<dense_matrix_like T>
+struct DynamicDenseMatrixCompareExpr {
+    std::vector<VectorExprStorage<T>> vector;
+
+    Precision<underlying_type_t<typename T::ValueType>> precision = Precision(epsilon<underlying_type_t<typename T::ValueType>>());
+
+    explicit DynamicDenseMatrixCompareExpr(std::vector<VectorExprStorage<T>> v) : vector(std::move(v)) {}
+
+    template<typename... Args> requires (std::same_as<std::remove_cvref_t<Args>, VectorExprStorage<T>> && ...)
+    explicit DynamicDenseMatrixCompareExpr(Args&&... args) : vector{std::forward<Args>(args)...} {}
+
+    [[nodiscard]] bool evaluate() const {
+        return compare(precision, vector);
+    }
+
+    operator bool() const {
+        return evaluate();
+    }
+
+    DynamicDenseMatrixCompareExpr<T>& operator==(VectorExprStorage<T> other) {
+        vector.push_back(other);
+        return *this;
+    }
+
+    DynamicDenseMatrixCompareExpr<T>& operator+(const Precision<underlying_type_t<typename T::ValueType>>& newPrecision) {
+        precision.value = newPrecision.value;
+        return *this;
+    }
+};
+
 /**
  * @brief Compares 2 dense matrix like objects up to machine epsilon precision.
  *

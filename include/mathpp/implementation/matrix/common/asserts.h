@@ -4,12 +4,27 @@
 #include "mathpp/implementation/common/exceptions.h"
 #include "mathpp/implementation/common/telemetry.h"
 #include "traits.h"
+#include <ranges>
 
 template<matrix_like T, matrix_like U, matrix_like... ARGS>
 void assert_same_dimensions(const T& a, const U& b, const ARGS&... args) {
     Telemetry::emit_dimension_check();
     if (!(a.columns() == b.columns() && a.rows() == b.rows() && ((a.columns() == args.columns() && a.rows() == args.rows()) && ...))) {
         throw InvalidSizeException("Provided matrices must all have same dimensions");
+    }
+}
+
+template<std::ranges::range R, dense_matrix_like T = std::ranges::range_value_t<R>> requires (dense_matrix_like<std::ranges::range_value_t<R>>)
+void assert_same_dimensions(const R& args) {
+    Telemetry::emit_dimension_check();
+
+    const std::size_t rows = (*args.begin()).rows();
+    const std::size_t columns = (*args.begin()).columns();
+
+    for (const T& m: args) {
+        if (m.rows() != rows || m.columns() != columns) {
+            throw InvalidSizeException("Provided matrices must all have same dimensions");
+        }
     }
 }
 
