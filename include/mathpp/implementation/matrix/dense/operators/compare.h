@@ -197,12 +197,12 @@ struct DynamicDenseMatrixCompareExpr {
         return evaluate();
     }
 
-    DynamicDenseMatrixCompareExpr<T>& operator==(VectorExprStorage<T> other) {
+    DynamicDenseMatrixCompareExpr<T>& add(VectorExprStorage<T> other) {
         vector.push_back(other);
         return *this;
     }
 
-    DynamicDenseMatrixCompareExpr<T>& operator+(const Precision<underlying_type_t<typename T::ValueType>>& newPrecision) {
+    DynamicDenseMatrixCompareExpr<T>& add(const Precision<underlying_type_t<typename T::ValueType>>& newPrecision) {
         precision.value = newPrecision.value;
         return *this;
     }

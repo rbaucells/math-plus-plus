@@ -236,3 +236,9 @@ def test_expr_operator():
     expr = (a == b) == c
     # assert
     assert expr | bool
+
+    # act
+    expr1 = a + b + c
+    # assert
+    result = expr1 | DenseMatrix
+    assert (result == DenseMatrix([[3, 6], [9, 12]])) | bool

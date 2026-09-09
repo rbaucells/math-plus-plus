@@ -42,7 +42,7 @@ void matrix_dense_operators_compare_bindings(py::module_& m, py::class_<DenseMat
             }
 
             std::visit([&]<typename T>(DynamicDenseMatrixCompareExpr<T>& expr) -> void {
-                expr.operator==(DenseMatrixLikePyWrapper<typename T::ValueType>(other));
+                expr.add(DenseMatrixLikePyWrapper<typename T::ValueType>(other));
             }, self);
 
             return self;
@@ -51,7 +51,7 @@ void matrix_dense_operators_compare_bindings(py::module_& m, py::class_<DenseMat
             std::visit([&]<typename T>(DynamicDenseMatrixCompareExpr<T>& expr) -> void {
                 std::visit([&]<typename U>(const Precision<U>& p) -> void {
                     if constexpr (lossless_convertible<U, underlying_type_t<typename T::ValueType>>) {
-                        expr.operator+(p);
+                        expr.add(p);
                     }
                     else {
                         throw py::type_error("Cannot set precision on DenseMatrixCompareExpr of non convertible type");
