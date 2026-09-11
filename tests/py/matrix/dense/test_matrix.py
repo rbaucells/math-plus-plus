@@ -347,3 +347,49 @@ def test_DenseMatrix_is_complex():
     aComplex = a.is_complex()
     # assert
     assert not aComplex
+
+def test_DenseMatrix_reshape():
+    # arrange
+    a = DenseMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    expectedA = DenseMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    # act
+    telemetry_tests.start()
+    a.reshape(3, 3, False)
+    telemetry_tests.end()
+    # assert
+    assert compare(a, expectedA)
+    telemetry_tests.asserts(TelemetryStats())
+    # arrange
+    b = DenseMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    expectedB = DenseMatrix([[1, 2, 3], [4, 5, 6]])
+    # act
+    telemetry_tests.start()
+    b.reshape(2, 3, True)
+    telemetry_tests.end()
+    # assert
+    assert b.rows() == 2
+    assert b.columns() == 3
+    assert compare(b, expectedB)
+    telemetry_tests.asserts(TelemetryStats(allocations=1, deallocations=1))
+    # arrange
+    c = DenseMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    expectedC = DenseMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    # act
+    telemetry_tests.start()
+    c.reshape(3, 3, False, 67)
+    telemetry_tests.end()
+    # assert
+    assert compare(c, expectedC)
+    telemetry_tests.asserts(TelemetryStats())
+    # arrange
+    d = DenseMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    expectedD = DenseMatrix([[1, 2, 3, 67], [4, 5, 6, 67]])
+    # act
+    telemetry_tests.start()
+    d.reshape(2, 4, True, 67)
+    telemetry_tests.end()
+    # assert
+    assert d.rows() == 2
+    assert d.columns() == 4
+    assert compare(d, expectedD)
+    telemetry_tests.asserts(TelemetryStats(allocations=1, deallocations=1))
