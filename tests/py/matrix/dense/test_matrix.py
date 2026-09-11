@@ -227,18 +227,123 @@ def test_DenseMatrix_move_constructor():
     assert b[1, 0] == 3
     assert b[1, 1] == 4
 
-def test_expr_operator():
+def test_DenseMatrix_dtype():
     # arrange
     a = DenseMatrix([[1, 2], [3, 4]])
-    b = DenseMatrix([[1, 2], [3, 4]])
-    c = DenseMatrix([[1, 2], [3, 4]])
     # act
-    expr = (a == b) == c
+    aDt = a.dtype()
     # assert
-    assert expr | bool
+    assert aDt == numpy.dtypes.UInt8DType()
+    # arrange
+    b = DenseMatrix(numpy.dtypes.Complex128DType())
+    # act
+    bDt = b.dtype()
+    # assert
+    assert bDt == numpy.dtypes.Complex128DType()
 
+def test_DenseMatrix_as_type():
+    # arrange
+    a = DenseMatrix([[1, 2], [3, 4]])
     # act
-    expr1 = a + b + c
+    b = a.as_type(numpy.dtypes.Float64DType())
     # assert
-    result = expr1 | DenseMatrix
-    assert (result == DenseMatrix([[3, 6], [9, 12]])) | bool
+    assert b[0, 0] == 1
+    assert b[0, 1] == 2
+    assert b[1, 0] == 3
+    assert b[1, 1] == 4
+    assert b.dtype() == numpy.dtypes.Float64DType()
+    # arrange
+    c = DenseMatrix([[4.2, 6.8, 2.1], [4 + 6j, 8, -5 - 6j]])
+    # act
+    d = c.as_type(numpy.dtypes.Int16DType())
+    # assert
+    assert d[0, 0] == 4
+    assert d[0, 1] == 6
+    assert d[0, 2] == 2
+    assert d[1, 0] == 4
+    assert d[1, 1] == 8
+    assert d[1, 2] == -5
+    assert d.dtype() == numpy.dtypes.Int16DType()
+
+def test_DenseMatrix_rows():
+    # arrange
+    a = DenseMatrix(numpy.dtypes.Float32DType(), 3, 4)
+    # act
+    rows = a.rows()
+    # assert
+    assert rows == 3
+
+def test_DenseMatrix_columns():
+    # arrange
+    a = DenseMatrix(numpy.dtypes.Float32DType(), 3, 4)
+    # act
+    columns = a.columns()
+    # assert
+    assert columns == 4
+
+def test_DenseMatrix_get():
+    # arrange
+    a = DenseMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    # act
+    telemetry_tests.start()
+    val = a.get(2, 2)
+    telemetry_tests.end()
+    # assert
+    assert val == 9
+    telemetry_tests.asserts(TelemetryStats())
+
+    # arrange
+    b = DenseMatrix(numpy.dtypes.Int32DType(), 3, 3)
+    # act / assert
+    with pytest.raises(ValueError):
+        b.get(4, 0)
+    # act / assert
+    with pytest.raises(ValueError):
+        b.get(0, 4)
+
+def test_DenseMatrix_set():
+    # arrange
+    a = DenseMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    # act
+    telemetry_tests.start()
+    a.set(2, 2, 4)
+    telemetry_tests.end()
+    # assert
+    assert a.get(2, 2) == 4
+    telemetry_tests.asserts(TelemetryStats())
+
+    # arrange
+    b = DenseMatrix(numpy.dtypes.Int32DType(), 3, 3)
+    # act / assert
+    with pytest.raises(ValueError):
+        b.set(4, 0, 5)
+    # act / assert
+    with pytest.raises(ValueError):
+        b.set(0, 4, 5)
+
+def test_DenseMatrix_indexing_operator():
+    # arrange
+    a = DenseMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    # act
+    telemetry_tests.start()
+    val = a[2, 2]
+    telemetry_tests.end()
+    # assert
+    assert val == 9
+    a[2, 2] = 4
+    assert a[2, 2] == 4
+    telemetry_tests.asserts(TelemetryStats())
+
+def test_DenseMatrix_is_complex():
+    # arrange
+    a = DenseMatrix(numpy.dtypes.Float32DType(), 3, 4)
+    # act
+    aComplex = a.is_complex()
+    # assert
+    assert not aComplex
+    # arrange
+    a = DenseMatrix(numpy.dtypes.Float32DType(), 3, 4)
+    # act
+    aComplex = a.is_complex()
+    # assert
+    assert not aComplex

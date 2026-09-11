@@ -74,6 +74,14 @@ struct DynamicDenseMatrixAddExpr {
 
     explicit DynamicDenseMatrixAddExpr(std::vector<VectorExprStorage<T>> v) : vector(std::move(v)) {}
 
+    template<std::ranges::sized_range R>
+    explicit DynamicDenseMatrixAddExpr(const R& range) : vector(range.size()) {
+        std::size_t i = 0;
+        for (const auto& m : range) {
+            vector[i] = m;
+        }
+    }
+
     template<typename... Args> requires (std::same_as<std::remove_cvref_t<Args>, VectorExprStorage<T>> && ...)
     explicit DynamicDenseMatrixAddExpr(Args&&... args) : vector{std::forward<Args>(args)...} {}
 
@@ -124,13 +132,7 @@ struct DynamicDenseMatrixAddExpr {
 template<std::ranges::random_access_range R, dense_matrix_like T = std::ranges::range_value_t<R>> requires dense_matrix_like<std::ranges::range_value_t<R>>
 DynamicDenseMatrixAddExpr<T> add(const R& args) {
     assert_same_dimensions(args);
-
-    std::vector<VectorExprStorage<T>> vec;
-    for (const auto& m : args) {
-        vec.push_back(m);
-    }
-
-    return DynamicDenseMatrixAddExpr<T>(std::move(vec));
+    return DynamicDenseMatrixAddExpr<T>(args);
 }
 
 #endif // MATHPP_IMPLEMENTATION_MATRIX_DENSE_OPERATORS_ADD_H
