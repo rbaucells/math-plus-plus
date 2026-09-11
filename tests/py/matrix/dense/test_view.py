@@ -105,19 +105,13 @@ def test_DenseMatrixView_get():
         view.get(0, 2)
 
 
-def test_DenseMatrixView_set_illegal():
+def test_DenseMatrixView_set():
     # arrange
     owner = DenseMatrix([[1, 2], [3, 4]])
     view = DenseMatrixView(owner, 2, 2, 0, 0)
-
     # act / assert
     with pytest.raises(TypeError):
         view.set(0, 0, 10)
-
-    # act / assert
-    with pytest.raises(TypeError):
-        view[0, 0] = 10
-
 
 def test_DenseMatrixView_indexing_operator():
     # arrange
@@ -130,6 +124,9 @@ def test_DenseMatrixView_indexing_operator():
     # assert
     assert val == 12
     telemetry_tests.asserts(TelemetryStats())
+    # act / assert
+    with pytest.raises(TypeError):
+        view[0, 0] = 10
 
 
 def test_DenseMatrixView_is_complex():
