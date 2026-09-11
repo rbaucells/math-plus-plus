@@ -8,10 +8,12 @@
 namespace py = pybind11;
 
 void dense_matrix_bindings(py::module_& m);
+void dense_matrix_view_bindings(py::module_& m);
 py::class_<DenseMatrixLikeBase, MatrixLikeBase> dense_matrix_like_bindings(py::module_& m);
 
 void matrix_dense_bindings(py::module_& m) {
     py::class_<DenseMatrixLikeBase, MatrixLikeBase> dense_matrix_like_base_py = dense_matrix_like_bindings(m);
     dense_matrix_bindings(m);
+    dense_matrix_view_bindings(m);
     matrix_dense_operators_bindings(m, dense_matrix_like_base_py);
 }
