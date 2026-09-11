@@ -393,3 +393,23 @@ def test_DenseMatrix_reshape():
     assert d.columns() == 4
     assert compare(d, expectedD)
     telemetry_tests.asserts(TelemetryStats(allocations=1, deallocations=1))
+
+def test_DenseMatrix_data():
+    # arrange
+    a = DenseMatrix([[1, 2], [3, 4]])
+    # act
+    aData = a.data()
+    # assert
+    assert aData[0] == 1
+    assert aData[1] == 3
+    assert aData[2] == 2
+    assert aData[3] == 4
+    # arrange
+    b = DenseMatrix([[1 + 0.4j, 2 - 2j], [3j, 4]])
+    # act
+    bData = b.data()
+    # assert
+    assert bData[0] == 1 + 0.4j
+    assert bData[1] == 3j
+    assert bData[2] == 2 - 2j
+    assert bData[3] == 4

@@ -255,5 +255,17 @@ void dense_matrix_bindings(py::module_& m) {
                     }
                 }, self);
             });
-        }, py::arg("newRows"), py::arg("newColumns"), py::arg("preserve"), py::arg("value"));
+        }, py::arg("newRows"), py::arg("newColumns"), py::arg("preserve"), py::arg("value"))
+        .def("data", [](Py_DenseMatrix& self) -> py::object {
+            return std::visit([]<typename T>(DenseMatrix<T>& m) -> py::object {
+                size_t total_elements = m.rows() * m.columns();
+
+                py::capsule base(m.data(), [](void* /* p */) {});
+
+                std::vector<size_t> shape = { total_elements };
+                std::vector<size_t> strides = { sizeof(T) };
+
+                return py::array_t<T>(shape, strides, m.data(), base);
+            }, self);
+        });
 }
