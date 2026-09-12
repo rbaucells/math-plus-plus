@@ -1,6 +1,5 @@
 #include <pybind11/pybind11.h>
 
-#include "main.h"
 #include "common/main.h"
 #include "dense/main.h"
 #include "sparse/main.h"

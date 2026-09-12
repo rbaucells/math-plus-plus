@@ -25,6 +25,9 @@ class SimpleDenseMatrixLike(DenseMatrixLike):
         return self.dtype_
 
     def get(self, r: typing.SupportsInt | typing.SupportsIndex, c: typing.SupportsInt | typing.SupportsIndex) -> typing.Any:
+        if c > self.columns_ or r > self.rows_:
+            raise IndexError()
+
         return self.data[r][c]
 
     def is_complex(self) -> bool:
@@ -34,4 +37,7 @@ class SimpleDenseMatrixLike(DenseMatrixLike):
         return self.rows_
 
     def set(self, r: typing.SupportsInt | typing.SupportsIndex, c: typing.SupportsInt | typing.SupportsIndex, v: typing.Any) -> None:
+        if c > self.columns_ or r > self.rows_:
+            raise IndexError()
+
         self.data[r][c] = v

@@ -70,9 +70,9 @@ def test_DenseMatrixView_row_offset():
     owner = DenseMatrix(numpy.dtypes.Float32DType(), 5, 5)
     view = DenseMatrixView(owner, 2, 2, 3, 1)
     # act
-    row_off = view.row_offset()
+    row_offset = view.row_offset()
     # assert
-    assert row_off == 3
+    assert row_offset == 3
 
 
 def test_DenseMatrixView_col_offset():
@@ -80,9 +80,9 @@ def test_DenseMatrixView_col_offset():
     owner = DenseMatrix(numpy.dtypes.Float32DType(), 5, 5)
     view = DenseMatrixView(owner, 2, 2, 1, 4)
     # act
-    col_off = view.col_offset()
+    col_offset = view.col_offset()
     # assert
-    assert col_off == 4
+    assert col_offset == 4
 
 
 def test_DenseMatrixView_get():

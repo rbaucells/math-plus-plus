@@ -11,6 +11,8 @@
 
 #include "matrix/common/like.h"
 #include "matrix/dense/like.h"
+#include "vector/common/like.h"
+#include "vector/dense/like.h"
 
 namespace py = pybind11;
 
@@ -102,7 +104,7 @@ std::string to_string(const EType& etype) {
 }
 
 bool is_actually_sequence(const py::handle sequence) {
-    return py::isinstance<py::sequence>(sequence) && !py::isinstance<MatrixLikeBase>(sequence);
+    return py::isinstance<py::sequence>(sequence) && !py::isinstance<MatrixLikeBase>(sequence) && !py::isinstance<VectorLikeBase>(sequence);
 }
 
 py::dtype get_py_int_dtype(const py::int_ number) {
@@ -176,9 +178,9 @@ EType get_etype(const py::handle obj) {
         return EType::dense_matrix_like;
     }
 
-    // if (py::isinstance<DenseVectorLikeBase>(obj)) {
-    //     return EType::dense_vector_like;
-    // }
+    if (py::isinstance<DenseVectorLikeBase>(obj)) {
+        return EType::dense_vector_like;
+    }
 
     // if (py::isinstance<CSCSparseMatrixLikeBase>(obj)) {
     //     return EType::csc_sparse_matrix_like;
@@ -208,9 +210,9 @@ EType get_etype(const py::handle obj) {
     //     return EType::sparse_vector_like;
     // }
 
-    // if (py::isinstance<VectorLikeBase>(obj)) {
-    //     return EType::vector_like;
-    // }
+    if (py::isinstance<VectorLikeBase>(obj)) {
+        return EType::vector_like;
+    }
 
     if (py::isinstance(obj, py::module_::import("numpy").attr("number")) || py::isinstance<py::int_>(obj) || py::isinstance<py::float_>(obj) || py::isinstance(obj, py::module_::import("builtins").attr("complex"))) {
         return EType::scalar;

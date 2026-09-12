@@ -7,6 +7,7 @@
 #include "../../main.h"
 #include "../precision.h"
 #include "../../matrix/dense/operators/compare.h"
+#include "../../vector/dense/operators/compare.h"
 
 #include "mathpp/implementation/common/traits.h"
 #include "mathpp/implementation/common/precision.h"
@@ -49,6 +50,9 @@ void common_operators_compare_bindings(pybind11::module_& m) {
                     else if (et == EType::dense_matrix_like) {
                         return matrix_dense_operators_compare<T>(size, casted_precision, sequence);
                     }
+                    else if (et == EType::dense_vector_like) {
+                        return vector_dense_operators_compare<T>(size, casted_precision, sequence);
+                    }
 
                     throw py::type_error("compare function not implemented for sequence etype: " + to_string(et));
                 }
@@ -73,6 +77,9 @@ void common_operators_compare_bindings(pybind11::module_& m) {
                     else if (et == EType::dense_matrix_like) {
                         return matrix_dense_operators_compare<T>(size, casted_precision, array);
                     }
+                    else if (et == EType::dense_vector_like) {
+                        return vector_dense_operators_compare<T>(size, casted_precision, array);
+                    }
 
                     throw py::type_error("compare function not implemented for array etype: " + to_string(et));
                 }
@@ -95,6 +102,9 @@ void common_operators_compare_bindings(pybind11::module_& m) {
             else if (et == EType::dense_matrix_like) {
                 return matrix_dense_operators_compare<T>(size, precision, sequence);
             }
+            else if (et == EType::dense_vector_like) {
+                return vector_dense_operators_compare<T>(size, precision, sequence);
+            }
 
             throw py::type_error("compare function not implemented for sequence etype: " + to_string(et));
         });
@@ -111,6 +121,9 @@ void common_operators_compare_bindings(pybind11::module_& m) {
             }
             else if (et == EType::dense_matrix_like) {
                 return matrix_dense_operators_compare<T>(size, precision, array);
+            }
+            else if (et == EType::dense_vector_like) {
+                return vector_dense_operators_compare<T>(size, precision, array);
             }
 
             throw py::type_error("compare function not implemented for array etype: " + to_string(et));
@@ -130,6 +143,9 @@ void common_operators_compare_bindings(pybind11::module_& m) {
                     }
                     else if (et == EType::dense_matrix_like) {
                         return matrix_dense_operators_compare<T>(size, casted_precision, py::sequence(args));
+                    }
+                    else if (et == EType::dense_vector_like) {
+                        return vector_dense_operators_compare<T>(size, casted_precision, py::sequence(args));
                     }
 
                     throw py::type_error("compare function not implemented for args etype: " + to_string(et));
@@ -152,6 +168,9 @@ void common_operators_compare_bindings(pybind11::module_& m) {
             }
             else if (et == EType::dense_matrix_like) {
                 return matrix_dense_operators_compare<T>(size, precision, py::sequence(args));
+            }
+            else if (et == EType::dense_vector_like) {
+                return vector_dense_operators_compare<T>(size, precision, py::sequence(args));
             }
 
             throw py::type_error("compare function not implemented for args etype: " + to_string(et));
