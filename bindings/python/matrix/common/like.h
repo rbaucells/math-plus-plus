@@ -1,5 +1,5 @@
-#ifndef MATHPY_COMMON_LIKE_H
-#define MATHPY_COMMON_LIKE_H
+#ifndef MATHPY_MATRIX_COMMON_LIKE_H
+#define MATHPY_MATRIX_COMMON_LIKE_H
 
 #include <pybind11/pybind11.h>
 
@@ -40,4 +40,4 @@ struct MatrixLikePyWrapper {
     }
 };
 
-#endif // MATHPY_COMMON_LIKE_H
+#endif // MATHPY_MATRIX_COMMON_LIKE_H

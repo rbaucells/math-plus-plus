@@ -69,6 +69,17 @@ struct DenseVector {
         Telemetry::emit_allocation();
     }
 
+    template<std::ranges::sized_range R> requires lossless_convertible<std::ranges::range_value_t<R>, T>
+    DenseVector(const R& elements) : n_(elements.size()), data_(new T[n_]) {
+        std::size_t i = 0;
+        for (const auto& element: elements) {
+            (*this)[i] = element;
+            i++;
+        }
+
+        Telemetry::emit_allocation();
+    }
+
     /**
      * @brief Copy constructor from same type DenseVector.
      *
