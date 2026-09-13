@@ -346,7 +346,12 @@ struct DenseVector {
             DenseVector<U> result = DenseVector<U>(n(), false);
 
             for (std::size_t i = 0; i < n(); i++) {
-                result[i] = static_cast<U>(std::real(data_[i]));
+                if constexpr (isComplex && real<U>) {
+                    result[i] = static_cast<U>(std::real(data_[i]));
+                }
+                else {
+                    result[i] = static_cast<U>(data_[i]);
+                }
             }
 
             return result;

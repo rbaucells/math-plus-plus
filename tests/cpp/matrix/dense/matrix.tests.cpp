@@ -578,11 +578,26 @@ TEST(dense_matrix_as_type, given_int_should_truncate_to_short) {
 
 TEST(dense_matrix_as_type, given_complex_double_should_truncate_to_float) {
     // arrange
-    const DenseMatrix<std::complex<double>> a = {{1.5, 2.5}, {3.5, 4.5}};
-    const DenseMatrix<float> expected = {{1.5f, 2.5f}, {3.5f, 4.5f}};
+    const DenseMatrix<std::complex<double>> a = {{{1.5, -4}, {0, 2.5}}, {{3.5, 2}, {-4.5, 7}}};
+    const DenseMatrix<float> expected = {{1.5f, 0}, {3.5f, -4.5f}};
     // act
     TelemetryTests::start();
     const DenseMatrix<float> result = a.as_type<float>();
+    TelemetryTests::end();
+    // assert
+    ASSERT_TRUE(compare(result.rows(), 2));
+    ASSERT_TRUE(compare(result.columns(), 2));
+    ASSERT_TRUE(compare(Precision(0.001f), result, expected));
+    TelemetryTests::asserts({.allocations = 1});
+}
+
+TEST(dense_matrix_as_type, given_complex_double_should_truncate_to_complex_float) {
+    // arrange
+    const DenseMatrix<std::complex<double>> a = {{{1.5, -4}, {0, 2.5}}, {{3.5, 2}, {-4.5, 7}}};
+    const DenseMatrix<std::complex<float>> expected = {{{1.5f, -4}, {0, 2.5f}}, {{3.5f, 2}, {-4.5f, 7}}};
+    // act
+    TelemetryTests::start();
+    const DenseMatrix<std::complex<float>> result = a.as_type<std::complex<float>>();
     TelemetryTests::end();
     // assert
     ASSERT_TRUE(compare(result.rows(), 2));

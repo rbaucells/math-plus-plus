@@ -385,7 +385,12 @@ struct DenseMatrix {
 
             for (std::size_t r = 0; r < rows(); r++) {
                 for (std::size_t c = 0; c < columns(); c++) {
-                    result[r, c] = static_cast<U>(std::real((*this)[r, c]));
+                    if constexpr (isComplex && real<U>) {
+                        result[r, c] = static_cast<U>(std::real((*this)[r, c]));
+                    }
+                    else {
+                        result[r, c] = static_cast<U>((*this)[r, c]);
+                    }
                 }
             }
 

@@ -512,4 +512,18 @@ TEST(dense_vector_as_type, given_complex_double_should_truncate_to_float) {
     ASSERT_TRUE(compare(Precision(0.001f), result, expected));
     TelemetryTests::asserts({.allocations = 1});
 }
+
+TEST(dense_vector_as_type, given_complex_double_should_truncate_to_complex_float) {
+    // arrange
+    const DenseVector<std::complex<double>> a = {{1.5, -4}, {0, 2.5}, {3.5, 2}, {-4.5, 7}};
+    const DenseVector<std::complex<float>> expected = {{1.5f, -4}, {0, 2.5f}, {3.5f, 2}, {-4.5f, 7}};
+    // act
+    TelemetryTests::start();
+    const DenseVector<std::complex<float>> result = a.as_type<std::complex<float>>();
+    TelemetryTests::end();
+    // assert
+    ASSERT_TRUE(compare(result.n(), 4));
+    ASSERT_TRUE(compare(Precision(0.001f), result, expected));
+    TelemetryTests::asserts({.allocations = 1});
+}
 #pragma endregion
