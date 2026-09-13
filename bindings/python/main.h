@@ -2,6 +2,7 @@
 #define MATHPY_PYTHON_BINDINGS_MAIN_H
 
 #include <pybind11/pybind11.h>
+#include <pybind11/typing.h>
 #include <pybind11/complex.h>
 #include <pybind11/numpy.h>
 #include <cstdint>
@@ -141,5 +142,34 @@ std::tuple<py::dtype, EType, std::size_t> get_sequence_info(py::sequence sequenc
 std::tuple<py::dtype, EType, std::size_t, std::size_t>  get_sequence_info_2d(py::sequence sequence);
 std::tuple<py::dtype, EType, std::size_t> get_array_info(py::array array);
 std::tuple<py::dtype, EType, std::size_t, std::size_t> get_array_info_2d(py::array array);
+
+#define DEFINE_CLEAN_CASTER(Type, Name) \
+namespace pybind11 { \
+    namespace detail { \
+        template <> struct type_caster<Type> { \
+        public: \
+            PYBIND11_TYPE_CASTER(Type, const_name(Name)); \
+            bool load(handle src, bool) { \
+                value.obj = py::reinterpret_borrow<py::object>(src); \
+                return true; \
+            } \
+            static handle cast(Type src, return_value_policy, handle) { \
+                return src.obj.release(); \
+            } \
+        }; \
+    } \
+}
+
+struct PyInt { py::object obj; };
+struct PyFloat { py::object obj; };
+struct PyComplex { py::object obj; };
+struct PyNumpyNumber { py::object obj; };
+
+DEFINE_CLEAN_CASTER(PyInt, "int")
+DEFINE_CLEAN_CASTER(PyFloat, "float")
+DEFINE_CLEAN_CASTER(PyComplex, "complex")
+DEFINE_CLEAN_CASTER(PyNumpyNumber, "numpy.number")
+
+using AnyNumber = py::typing::Union<PyInt, PyFloat, PyComplex, PyNumpyNumber>;
 
 #endif //MATHPY_PYTHON_BINDINGS_MAIN_H
