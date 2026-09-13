@@ -14,7 +14,7 @@ void assert_same_dimensions(const T& a, const U& b, const ARGS&... args) {
     }
 }
 
-template<std::ranges::range R, dense_matrix_like T = std::ranges::range_value_t<R>> requires (dense_matrix_like<std::ranges::range_value_t<R>>)
+template<std::ranges::range R, matrix_like T = std::ranges::range_value_t<R>> requires (matrix_like<std::ranges::range_value_t<R>>)
 void assert_same_dimensions(const R& args) {
     Telemetry::emit_dimension_check();
 

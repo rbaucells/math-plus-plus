@@ -14,7 +14,7 @@ inline void assert_same_size(const T& a, const U& b, const ARGS&... args) {
     }
 }
 
-template<std::ranges::range R, dense_vector_like T = std::ranges::range_value_t<R>> requires (dense_vector_like<std::ranges::range_value_t<R>>)
+template<std::ranges::range R, vector_like T = std::ranges::range_value_t<R>> requires (vector_like<std::ranges::range_value_t<R>>)
 void assert_same_size(const R& args) {
     Telemetry::emit_dimension_check();
 
