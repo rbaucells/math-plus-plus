@@ -2,6 +2,7 @@
 #include <pybind11/numpy.h>
 
 #include <cstddef>
+#include <variant>
 #include <ranges>
 
 #include "../../main.h"

@@ -4,6 +4,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <cstddef>
+#include <ranges>
 
 #include "../../common/like.h"
 #include "../like.h"

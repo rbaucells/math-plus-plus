@@ -13,27 +13,27 @@ void common_rotation_bindings(py::module_& m) {
         .value("degrees", RotationType::degrees)
         .value("radians", RotationType::radians);
 
-    m.def("radians_to_degrees", [](const py::handle rad) {
+    m.def("radians_to_degrees", [](const AnyNumber rad) -> AnyNumber {
         const py::dtype dt = get_dtype(rad);
 
-        return dispatch_dt(dt, [&]<typename T>() {
+        return dispatch_dt(dt, [&]<typename T>() -> AnyNumber {
             return py::cast(radians_to_degrees(py::cast<T>(rad)));
         });
-    }, py::arg("radians"));
+    }, py::arg("radians"), "Converts input radians to output degrees");
 
-    m.def("degrees_to_radians", [](const py::handle deg) {
+    m.def("degrees_to_radians", [](const AnyNumber deg) -> AnyNumber {
         const py::dtype dt = get_dtype(deg);
 
-        return dispatch_dt(dt, [&]<typename T>() {
+        return dispatch_dt(dt, [&]<typename T>() -> AnyNumber {
             return py::cast(degrees_to_radians(py::cast<T>(deg)));
         });
-    }, py::arg("degrees"));
+    }, py::arg("degrees"), "Converts input degrees to output radians");
 
-    m.def("convert", [](const RotationType from, const RotationType to, const py::handle value) {
+    m.def("convert", [](const RotationType from, const RotationType to, const AnyNumber value) -> AnyNumber {
         const py::dtype dt = get_dtype(value);
 
         return dispatch_dt(dt, [&]<typename T>() {
             return py::cast(convert(from, to, py::cast<T>(value)));
         });
-    }, py::arg("from"), py::arg("to"), py::arg("value"));
+    }, py::arg("from_rotation_type"), py::arg("to_rotation_type"), py::arg("value"), "Converts input rotation (of type 'from_rotation_type') to output rotation (of type 'to_rotation_type')");
 }

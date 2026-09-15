@@ -12,6 +12,8 @@
 
 namespace py = pybind11;
 
+// Calls a templated function with the T that matches the dt.
+// Throws if the type isn't supported
 template<typename F>
 decltype(auto) dispatch_dt(const py::dtype& dt, F func) {
     if (dt.is(py::dtype::of<std::int8_t>())) {
@@ -65,6 +67,8 @@ decltype(auto) dispatch_dt(const py::dtype& dt, F func) {
     throw py::type_error("Cannot dispatch_dt on invalid dt");
 }
 
+// Calls a templated function with the T that matches the dt. Doesn't support complex.
+// Throws if the type isn't supported
 template<typename F>
 decltype(auto) dispatch_dt_no_complex(const py::dtype& dt, F func) {
     if (dt.is(py::dtype::of<std::int8_t>())) {
@@ -110,36 +114,40 @@ decltype(auto) dispatch_dt_no_complex(const py::dtype& dt, F func) {
     throw py::type_error("Cannot dispatch_dt_no_complex on invalid dt");
 }
 
+// categorize python objects
+// invalid combinations = matrix_like and vector_like or matrix_like/vector_like with scalar or anything with invalid
 enum class EType : uint32_t {
-    none                   = 0,
-    scalar                 = 1 << 0,
+    none = 0,
+    scalar = 1 << 0,
     csc_sparse_matrix_like = 1 << 1,
     csr_sparse_matrix_like = 1 << 2,
     coo_sparse_vector_like = 1 << 3,
     dok_sparse_vector_like = 1 << 4,
-    dense_matrix_like      = 1 << 5,
-    dense_vector_like      = 1 << 6,
+    dense_matrix_like = 1 << 5,
+    dense_vector_like = 1 << 6,
 
     sparse_vector_like = coo_sparse_vector_like | dok_sparse_vector_like,
     sparse_matrix_like = csc_sparse_matrix_like | csr_sparse_matrix_like,
-    matrix_like        = dense_matrix_like | sparse_matrix_like,
-    vector_like        = dense_vector_like | sparse_vector_like,
+    matrix_like = dense_matrix_like | sparse_matrix_like,
+    vector_like = dense_vector_like | sparse_vector_like,
 
-    invalid            = 0xFFFFFFFF
+    invalid = 0xFFFFFFFF
 };
 
-
+// or equals operator but does checks for invalid
 EType& operator|=(EType& lhs, EType rhs);
 std::string to_string(const EType& etype);
 
+// py sequence but not one of my types like matrix_like or vector_like
 bool is_actually_sequence(py::handle sequence);
 
+// numpy int dtype that can fit the number's value
 py::dtype get_py_int_dtype(py::int_ number);
 py::dtype get_dtype(py::handle obj);
 EType get_etype(py::handle obj);
 
 std::tuple<py::dtype, EType, std::size_t> get_sequence_info(py::sequence sequence);
-std::tuple<py::dtype, EType, std::size_t, std::size_t>  get_sequence_info_2d(py::sequence sequence);
+std::tuple<py::dtype, EType, std::size_t, std::size_t> get_sequence_info_2d(py::sequence sequence);
 std::tuple<py::dtype, EType, std::size_t> get_array_info(py::array array);
 std::tuple<py::dtype, EType, std::size_t, std::size_t> get_array_info_2d(py::array array);
 
@@ -149,7 +157,7 @@ namespace pybind11 { \
         template <> struct type_caster<Type> { \
         public: \
             PYBIND11_TYPE_CASTER(Type, const_name(Name)); \
-            bool load(handle src, bool) { \
+            bool load(const handle& src, bool) { \
                 value.obj = py::reinterpret_borrow<py::object>(src); \
                 return true; \
             } \
@@ -160,10 +168,42 @@ namespace pybind11 { \
     } \
 }
 
-struct PyInt { py::object obj; };
-struct PyFloat { py::object obj; };
-struct PyComplex { py::object obj; };
-struct PyNumpyNumber { py::object obj; };
+#define DEFINE_CLEAN_OBJECT_CASTER(Type, Name) \
+struct Type : public py::object { \
+    using py::object::object; \
+    Type(py::handle h) : py::object(py::reinterpret_borrow<py::object>(h)) {} \
+}; \
+namespace pybind11 { \
+    namespace detail { \
+        template <> struct type_caster<Type> { \
+        public: \
+            PYBIND11_TYPE_CASTER(Type, const_name(Name)); \
+            bool load(const handle& src, bool) { \
+                value = Type(src); \
+                return true; \
+            } \
+            static handle cast(const Type& src, return_value_policy, handle) { \
+                return src.inc_ref().ptr(); \
+            } \
+        }; \
+    } \
+}
+
+struct PyInt {
+    py::object obj;
+};
+
+struct PyFloat {
+    py::object obj;
+};
+
+struct PyComplex {
+    py::object obj;
+};
+
+struct PyNumpyNumber {
+    py::object obj;
+};
 
 DEFINE_CLEAN_CASTER(PyInt, "int")
 DEFINE_CLEAN_CASTER(PyFloat, "float")
@@ -171,5 +211,11 @@ DEFINE_CLEAN_CASTER(PyComplex, "complex")
 DEFINE_CLEAN_CASTER(PyNumpyNumber, "numpy.number")
 
 using AnyNumber = py::typing::Union<PyInt, PyFloat, PyComplex, PyNumpyNumber>;
+
+DEFINE_CLEAN_OBJECT_CASTER(PyMatrixLike, "MatrixLike")
+DEFINE_CLEAN_OBJECT_CASTER(PyDenseMatrixLike, "DenseMatrixLike")
+
+DEFINE_CLEAN_OBJECT_CASTER(PyVectorLike, "VectorLike")
+DEFINE_CLEAN_OBJECT_CASTER(PyDenseVectorLike, "DenseVectorLike")
 
 #endif //MATHPY_PYTHON_BINDINGS_MAIN_H

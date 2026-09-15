@@ -5,6 +5,9 @@
 #include <pybind11/numpy.h>
 #include <cstddef>
 #include <ranges>
+#include <variant>
+#include <string>
+#include <type_traits>
 
 #include "../../common/like.h"
 #include "../like.h"

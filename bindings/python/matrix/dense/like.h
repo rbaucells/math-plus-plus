@@ -3,6 +3,7 @@
 
 #include <pybind11/pybind11.h>
 #include <cstddef>
+#include <utility>
 
 #include "../common/like.h"
 
@@ -12,6 +13,7 @@ struct DenseMatrixLikeBase : MatrixLikeBase {
     virtual ~DenseMatrixLikeBase() = default;
 };
 
+// proxy object for __getitem__ and __setitem__ so DenseMatrixLikePyWrapper can return it with operator[]
 template<scalar T>
 struct DenseMatrixLikeElementPyWrapper {
     py::handle handle;
@@ -28,6 +30,7 @@ struct DenseMatrixLikeElementPyWrapper {
     }
 };
 
+// C++ dense_matrix_like that wraps a DenseMatrixLike py::object
 template<scalar T>
 struct DenseMatrixLikePyWrapper : MatrixLikePyWrapper<T> {
     using MatrixLikePyWrapper<T>::MatrixLikePyWrapper;

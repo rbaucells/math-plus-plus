@@ -13,6 +13,7 @@ struct MatrixLikeBase {
     virtual ~MatrixLikeBase() = default;
 };
 
+// C++ matrix_like that wraps a MatrixLike py::object
 template<scalar T>
 struct MatrixLikePyWrapper {
     using ValueType = T;
