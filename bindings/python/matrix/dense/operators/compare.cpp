@@ -31,7 +31,7 @@ void matrix_dense_operators_compare_bindings(py::module_& m, py::class_<DenseMat
                 return expr.evaluate();
             }, self);
         }, "Evaluates the compare expression to be true or false")
-        .def("__or__", [](Py_DenseMatrixCompareExpr& self, const py::handle type) -> bool {
+        .def("__or__", [](Py_DenseMatrixCompareExpr& self, const py::type type) -> bool {
             if (!type.is(py::module_::import("builtins").attr("bool"))) {
                 throw py::type_error(std::format("DenseMatrixCompareExpr cannot evaluate as a '{}', must evaluate to bool", py::cast<std::string>(py::str(type))));
             }

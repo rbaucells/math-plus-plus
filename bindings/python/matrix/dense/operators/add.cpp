@@ -31,7 +31,7 @@ void matrix_dense_operators_add_bindings(py::module_& m, py::class_<DenseMatrixL
                 return Py_DenseMatrix(std::in_place_type<DenseMatrix<typename T::ValueType>>, expr);
             }, self);
         }, "Constructs a DenseMatrix whose elements are made up of the sum of matrices in expression")
-        .def("__or__", [](Py_DenseMatrixAddExpr& self, const py::handle type) -> Py_DenseMatrix {
+        .def("__or__", [](Py_DenseMatrixAddExpr& self, const py::type type) -> Py_DenseMatrix {
             if (!type.is(py::type::of<Py_DenseMatrix>())) {
                 throw py::type_error(std::format("DenseMatrixAddExpr cannot evaluate as a '{}', must evaluate to DenseMatrix", py::cast<std::string>(py::str(type))));
             }

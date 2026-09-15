@@ -31,7 +31,7 @@ void vector_dense_operators_add_bindings(py::module_& m, py::class_<DenseVectorL
                 return Py_DenseVector(std::in_place_type<DenseVector<typename T::ValueType>>, expr);
             }, self);
         }, "Constructs a DenseVector whose elements are made up of the sum of vectors in expression")
-        .def("__or__", [](Py_DenseVectorAddExpr& self, const py::handle type) -> Py_DenseVector {
+        .def("__or__", [](Py_DenseVectorAddExpr& self, const py::type type) -> Py_DenseVector {
             if (!type.is(py::type::of<Py_DenseVector>())) {
                 throw py::type_error(std::format("DenseVectorAddExpr cannot evaluate as a '{}', must evaluate to DenseVector", py::cast<std::string>(py::str(type))));
             }
