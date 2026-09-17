@@ -37,17 +37,16 @@
     - How much memory is allocated in bytes.
     - For more complex algorithms do:
         - Provide a link to a paper or article for more info.
-        - Show how and when to use for common use cases like solving Ax = b.
         - Say the time complexity in Big O notation.
 - For data types that are primarily public, use structs, else use classes
 - Avoid overusing 'using' and 'typedef' statements.
 
 # Structure
- - src/common = things that use both matrices and vectors.
- - src/matrix/common = things that use both sparse and dense matrices.
- - src/matrix/sparse/common = things that use both storage types of sparse matrices. 
- - src/vector/common = things that use both sparse and dense vectors.
- - src/vector/sparse/common = things that use both storage types of sparse vectors.
+ - common = things that use both matrices and vectors.
+ - matrix/common = things that use both sparse and dense matrices.
+ - matrix/sparse/common = things that use both storage types of sparse matrices. 
+ - vector/common = things that use both sparse and dense vectors.
+ - vector/sparse/common = things that use both storage types of sparse vectors.
 
 # Include Guards
  - Since gcc is stupid, you cant use #pragma once because it freaks out when files are called the same thing so use normal macro include guards.
@@ -60,3 +59,8 @@
      ...
   
     #endif // MATHPP_TESTS_TELEMETRY_TESTS
+   
+# Includes
+ - Always include everything you use, even if an included header incldues what you need.
+ - If you are using matrix_like and dense_matrix_like in one file, separately include matrix_like and dense_matrix_like, even if dense_matrix_like includes matrix_like. Same thing with things in standard library like std::size_t and std::vector.
+ - Prefer including directly through mathpp/implementation unless the header is in the same directory or somehwat close (1 directory/subdirectory away).

@@ -9,7 +9,7 @@ Extensive testing of all functions and operators at both runtime and compile tim
  - Google Test Suites should be separated into pragma regions.
  - Names should be the functionality being tested.
  - Google Test names should follow: 'given_\<input_or_condition\>\_should\_\<expected_result\>'
- - There should be one test file for each header file in src of the same name.
+ - There should be one test file for each header file in include/implementation of the same name.
  - Tests for things that fail or may return false must have multiple tests for false/failure.
      - For example, a set of vectors can be non-orthonormal because they aren't all normalized
        or because they aren't all orthogonal, you must test this
@@ -21,6 +21,8 @@ Extensive testing of all functions and operators at both runtime and compile tim
  - Must be named "{type_name}_{function_name}", "given\_{condition/input}\_should\_(return/throw/do\_nothing)".
  - All comparisons must be done through the 'compare' function
    - Floating point types must use precisions instead of epsilon (e.g. 0.001f)
+ - All tests must include tests for telemetry as well using TelemetryTests::start(), TelemetryTests::end(), and TelemetryTests::asserts().
+ - telemetry.tests.h included through relative paths, library files included directly through mathpp/implementation.
  - For vectors, name variables either 'v' or 'a', 'b', 'c', etc. 
  - For matrices, name variables either 'm' or 'a', 'b', 'c', etc.
     ``` c++
@@ -28,7 +30,7 @@ Extensive testing of all functions and operators at both runtime and compile tim
     const DenseVector<float> a = {1, 2, 3};
     constexpr float expected = 3.74166f;
     // act
-    const float euclidianNorm = euclidianNorm(a);
+    const float euclidianNorm = euclidian_norm(a);
     // assert
     ASSERT_TRUE(compare(Precision(0.001f), euclidianNorm, expected))
     ```

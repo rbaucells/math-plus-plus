@@ -37,7 +37,7 @@ C++ templated linear algebra math library that aims to be simple and performant.
   - mathpy-tests are ran through pytest in the tests/py/ directory. Mathpy must either be installed to the .venv or PYTHONPATH must be set correctly so it detects mathpy.
 
 ## Contributing
- - See src/readme.md
+ - See include/mathppy/implementation/readme.md
 
 ## Unit Tests
- - See tests/readme.md
+ - See tests/(cpp/py)/readme.md
