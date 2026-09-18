@@ -43,7 +43,7 @@ struct CooSparseVector {
      *
      * @param n Size of constructed vector.
      */
-    explicit CooSparseVector(const std::size_t n) : nnz_(0), n_(n), values_(new T[0]), indices_(new std::size_t[0]) {
+    explicit CooSparseVector(const std::size_t n) : n_(n), nnz_(0), values_(new T[0]), indices_(new std::size_t[0]) {
     }
 
     /**
@@ -57,7 +57,7 @@ struct CooSparseVector {
      *
      * @note 'initializerList' must be sorted in increasing indices.
      */
-    CooSparseVector(const std::size_t n, std::initializer_list<std::tuple<T, std::size_t>> initializerList) : nnz_(initializerList.size()), n_(n), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
+    CooSparseVector(const std::size_t n, std::initializer_list<std::tuple<T, std::size_t>> initializerList) : n_(n), nnz_(initializerList.size()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         std::size_t i = 0;
         for (const auto& nonZeroElement: initializerList) {
             values_[i] = std::get<0>(nonZeroElement);
@@ -80,7 +80,7 @@ struct CooSparseVector {
      * @note 'range' must be sorted in increasing indices.
      */
     template<std::ranges::sized_range R> requires (is_tuple_v<std::ranges::range_value_t<R>> && lossless_convertible<std::tuple_element_t<0, std::ranges::range_value_t<R>>, T> && std::is_same_v<std::tuple_element_t<1, std::ranges::range_value_t<R>>, std::size_t>)
-    CooSparseVector(const std::size_t n, R range) : nnz_(range.size()), n_(n), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
+    CooSparseVector(const std::size_t n, R range) : n_(n), nnz_(range.size()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         std::size_t i = 0;
         for (const auto& nonZeroElement: range) {
             values_[i] = std::get<0>(nonZeroElement);
@@ -135,7 +135,7 @@ struct CooSparseVector {
      * @param other Dense vector like object to copy from.
      */
     template<coo_sparse_vector_like U>
-    CooSparseVector(const U& other) : nnz_(other.nnz()), n_(other.n()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
+    CooSparseVector(const U& other) : n_(other.n()), nnz_(other.nnz()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         for (std::size_t i = 0; i < this->nnz_; i++) {
             values_[i] = other.values()[i];
             indices_[i] = other.values()[i];
@@ -154,7 +154,7 @@ struct CooSparseVector {
      * @param other SparseVector to move from.
      * @note Invalidates 'other' vector and leaves in an empty state.
      */
-    CooSparseVector(CooSparseVector<T>&& other) noexcept : nnz_(other.nnz_), n_(other.n_), values_(other.values_), indices_(other.indices_) {
+    CooSparseVector(CooSparseVector<T>&& other) noexcept : n_(other.n_), nnz_(other.nnz_), values_(other.values_), indices_(other.indices_) {
         other.values_ = nullptr;
         other.indices_ = nullptr;
         other.n_ = 0;
