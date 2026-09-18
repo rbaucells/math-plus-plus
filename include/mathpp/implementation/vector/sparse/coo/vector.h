@@ -1,6 +1,21 @@
 #ifndef MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_VECTOR_H
 #define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_VECTOR_H
 
+#include "mathpp/implementation/common/traits.h"
+#include "mathpp/implementation/common/exceptions.h"
+#include "mathpp/implementation/common/compare.h"
+#include "mathpp/implementation/common/telemetry.h"
+
+#include "traits.h"
+
+#include <cstddef>
+#include <initializer_list>
+#include <ranges>
+#include <tuple>
+#include <cstring>
+#include <algorithm>
+#include <span>
+
 /**
  * @brief Owning sparse vector in COO storage format.
  * @tparam T Scalar type of vector elements.
@@ -480,6 +495,38 @@ struct CooSparseVector {
      */
     [[nodiscard]] const std::size_t* rawIndices() const {
         return indices_;
+    }
+
+    /**
+     * @return Span containing all vector non zero values.
+     * @note Span of size nnz.
+     */
+    [[nodiscard]] std::span<T> values() {
+        return std::span<T>(values_, nnz_);
+    }
+
+    /**
+     * @return Span of const elements containing all vector non zero values.
+     * @note Span of size nnz.
+     */
+    [[nodiscard]] std::span<const T> values() const {
+        return std::span<const T>(values_, nnz_);
+    }
+
+    /**
+     * @return Span containing all indices of vector non zero values.
+     * @note Span of size nnz.
+     */
+    [[nodiscard]] std::span<std::size_t> indices() {
+        return std::span<std::size_t>(indices_, nnz_);
+    }
+
+    /**
+     * @return Span of const elements containing all indices of vector non zero values.
+     * @note Span of size nnz.
+     */
+    [[nodiscard]] std::span<const std::size_t> indices() const {
+        return std::span<const std::size_t>(indices_, nnz_);
     }
 
     /**
