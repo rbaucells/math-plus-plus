@@ -11,6 +11,7 @@ struct CooSparseVector;
 template<scalar T>
 struct CooSparseVectorView;
 
+// coo_sparse_vector_like
 template<typename T>
 concept coo_sparse_vector_like = requires (const T constV, T v) {
     requires sparse_vector_like<T>;
@@ -23,6 +24,15 @@ concept coo_sparse_vector_like = requires (const T constV, T v) {
     requires lossless_convertible<std::remove_cvref_t<std::ranges::range_value_t<decltype(constV.values())>>, typename T::ValueType>;
     requires std::assignable_from<std::add_lvalue_reference_t<std::ranges::range_value_t<decltype(v.values())>>, typename T::ValueType>;
 };
+
+template<typename T>
+inline constexpr bool is_coo_sparse_vector_like_v = coo_sparse_vector_like<T>;
+
+template<typename>
+struct is_coo_sparse_vector_like : std::false_type {};
+
+template<coo_sparse_vector_like T>
+struct is_coo_sparse_vector_like<T> : std::true_type {};
 
 // coo_sparse_vector
 template<typename>
