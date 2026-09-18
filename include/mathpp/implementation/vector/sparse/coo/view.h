@@ -69,7 +69,7 @@ struct CooSparseVectorView {
         for (std::size_t i = 0; i < owner_.nnz(); i++) {
             const std::size_t curIndex = owner_.rawIndices()[i];
 
-            if (curIndex >= offset_ && curIndex < offset_ + this->n_) {
+            if (curIndex >= offset_ && curIndex < offset_ + n_) {
                 nnz++;
             }
         }
@@ -78,8 +78,68 @@ struct CooSparseVectorView {
     }
 
     /**
-    * @return Number of elements in CooSparseVectorView.
-    */
+     * @brief What the view 'sees' of the owners indices array.
+     *
+     * O(owner.nnz) time complexity.
+     * Implemented by accessing the owners indices at a starting offset + i and subtracting offset from that.
+     *
+     * @return Lazy evaluated container that constructs what the view 'sees' of the owners indices array.
+     * @info Coo Sparse Vector owner must not change indices array while this indices 'view' is alive.
+     */
+    [[nodiscard]] auto indices() const {
+        std::size_t nnz = 0;
+        std::size_t whereStart = 0;
+
+        for (std::size_t i = 0; i < owner_.nnz(); i++) {
+            const std::size_t curIndex = owner_.rawIndices()[i];
+
+            if (curIndex >= offset_ && curIndex < offset_ + n_) {
+                if (nnz == 0) {
+                    whereStart = i;
+                }
+
+                nnz++;
+            }
+        }
+
+        return std::views::iota(0ul, nnz) | std::views::transform([whereStart, this](const std::size_t i) -> std::size_t {
+            return owner().indices()[i + whereStart] - offset_;
+        });
+    }
+
+    /**
+     * @brief What the view 'sees' of the owners values array.
+     *
+     * O(owner.nnz) time complexity.
+     * Implemented by accessing the owners values at a starting offset + i.
+     *
+     * @return Lazy evaluated container that constructs what the view 'sees' of the owners values array.
+     * @info Coo Sparse Vector owner must not change values or indices array while this values 'view' is alive.
+     */
+    [[nodiscard]] auto values() const {
+        std::size_t nnz = 0;
+        std::size_t whereStart = 0;
+
+        for (std::size_t i = 0; i < owner_.nnz(); i++) {
+            const std::size_t curIndex = owner_.rawIndices()[i];
+
+            if (curIndex >= offset_ && curIndex < offset_ + n_) {
+                if (nnz == 0) {
+                    whereStart = i;
+                }
+
+                nnz++;
+            }
+        }
+
+        return std::views::iota(0ul, nnz) | std::views::transform([whereStart, this](const std::size_t i) -> T {
+            return owner().values()[i + whereStart];
+        });
+    }
+
+    /**
+     * @return Number of elements in CooSparseVectorView.
+     */
     [[nodiscard]] std::size_t n() const {
         return n_;
     }
