@@ -1,6 +1,14 @@
 #ifndef MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_VIEW_H
 #define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_VIEW_H
 
+#include "mathpp/implementation/common/traits.h"
+#include "mathpp/implementation/common/exceptions.h"
+
+#include "vector.h"
+
+#include <cstddef>
+#include <ranges>
+
 template<scalar T>
 struct CooSparseVectorView {
     using ValueType = T;
