@@ -76,4 +76,13 @@ inline constexpr bool is_lossless_convertible_v = is_lossless_convertible<From, 
 template <typename From, typename To>
 concept lossless_convertible = is_lossless_convertible_v<From, To>;
 
+template <typename T>
+struct is_tuple : std::false_type {};
+
+template <typename... Args>
+struct is_tuple<std::tuple<Args...>> : std::true_type {};
+
+template <typename T>
+inline constexpr bool is_tuple_v = is_tuple<T>::value;
+
 #endif // MATHPP_IMPLEMENTATION_COMMON_TRAITS_H

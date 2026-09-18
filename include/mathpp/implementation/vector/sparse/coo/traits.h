@@ -11,6 +11,11 @@ struct CooSparseVector;
 template<scalar T>
 struct CooSparseVectorView;
 
+template<typename T>
+concept coo_sparse_vector_like = requires {
+    requires sparse_vector_like<T>;
+};
+
 // coo_sparse_vector
 template<typename>
 struct is_coo_sparse_vector : std::false_type {};
