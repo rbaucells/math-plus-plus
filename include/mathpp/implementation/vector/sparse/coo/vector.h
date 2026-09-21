@@ -138,7 +138,7 @@ struct CooSparseVector {
     CooSparseVector(const U& other) : n_(other.n()), nnz_(other.nnz()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
         for (std::size_t i = 0; i < nnz_; i++) {
             values_[i] = other.values()[i];
-            indices_[i] = other.values()[i];
+            indices_[i] = other.indices()[i];
         }
 
         Telemetry::emit_allocation();
@@ -265,9 +265,11 @@ struct CooSparseVector {
             Telemetry::emit_allocation();
         }
 
+        n_ = other.n();
+
         for (std::size_t i = 0; i < nnz_; i++) {
             values_[i] = other.values()[i];
-            indices_[i] = other.values()[i];
+            indices_[i] = other.indices()[i];
         }
 
         Telemetry::emit_copy_assign();
