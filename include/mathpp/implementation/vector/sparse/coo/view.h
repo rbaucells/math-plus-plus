@@ -57,7 +57,7 @@ struct CooSparseVectorView {
      *
      * @throws InvalidIndexException If index is not withing view OR i + offset is not within owner vector.
      * @note Index must be within size of view AND i + offset must be within size of owner vector.
-     * @return Element at (r, c).
+     * @return Element at (i).
      */
     [[nodiscard]] T get(const std::size_t i) const  {
         if (i >= n_) {
