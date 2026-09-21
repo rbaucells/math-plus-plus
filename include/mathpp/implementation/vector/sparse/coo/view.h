@@ -116,6 +116,14 @@ struct CooSparseVectorView {
     }
 
     /**
+     * @note Return type is span just to trick the concept.
+     * @warning Modifying owner through view is illegal.
+     */
+    std::span<std::size_t> indices() {
+        static_assert(false, "Cannot edit owner indices through view");
+    }
+
+    /**
      * @brief What the view 'sees' of the owners values array.
      *
      * O(owner.nnz) time complexity.
@@ -143,6 +151,14 @@ struct CooSparseVectorView {
         return std::views::iota(0ul, nnz) | std::views::transform([whereStart, this](const std::size_t i) -> T {
             return owner().values()[i + whereStart];
         });
+    }
+
+    /**
+     * @note Return type is span just to trick the concept.
+     * @warning Modifying owner through view is illegal.
+     */
+    std::span<T> values() {
+        static_assert(false, "Cannot edit owner values through view");
     }
 
     /**
