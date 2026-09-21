@@ -11,6 +11,27 @@ struct DokSparseVector;
 template<scalar T>
 struct DokSparseVectorView;
 
+// dok_sparse_vector_like
+template<typename T>
+concept dok_sparse_vector_like = requires (const T constV, T v, std::size_t i, typename T::ValueType val) {
+    requires sparse_vector_like<T>;
+
+    requires std::same_as<std::remove_cvref_t<decltype(constV.map().at(i))>, typename T::ValueType>;
+    { constV.map().contains(i) } -> std::same_as<bool>;
+    { v.map()[i] = val };
+    { v.map().at(i) = val };
+    { v.map().contains(i) };
+};
+
+template<typename T>
+inline constexpr bool is_dok_sparse_vector_like_v = dok_sparse_vector_like<T>;
+
+template<typename>
+struct is_dok_sparse_vector_like : std::false_type {};
+
+template<dok_sparse_vector_like T>
+struct is_dok_sparse_vector_like<T> : std::true_type {};
+
 // dok_sparse_vector
 template<typename>
 struct is_dok_sparse_vector : std::false_type {};
