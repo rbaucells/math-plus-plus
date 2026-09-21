@@ -3,6 +3,7 @@
 
 #include <type_traits>
 #include "mathpp/implementation/common/traits.h"
+#include "mathpp/implementation/vector/sparse/common/traits.h"
 
 // forward declare
 template<scalar T>
