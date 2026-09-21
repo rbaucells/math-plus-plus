@@ -2,6 +2,9 @@
 #define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_TRAITS_H
 
 #include <type_traits>
+#include <ranges>
+#include <concepts>
+#include <cstddef>
 #include "mathpp/implementation/common/traits.h"
 #include "mathpp/implementation/vector/sparse/common/traits.h"
 

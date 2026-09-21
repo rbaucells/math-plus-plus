@@ -5,7 +5,6 @@
 #include <type_traits>
 #include <cstddef>
 
-#include "mathpp/implementation/common/traits.h"
 #include "mathpp/implementation/vector/common/traits.h"
 
 // sparse_vector_like

@@ -2,7 +2,11 @@
 #define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_DOK_TRAITS_H
 
 #include <type_traits>
+#include <concepts>
+#include <cstddef>
+
 #include "mathpp/implementation/common/traits.h"
+#include "mathpp/implementation/vector/sparse/common/traits.h"
 
 // forward declare
 template<scalar T>
