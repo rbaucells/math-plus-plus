@@ -16,13 +16,12 @@ struct DenseVectorView;
 
 // dense_vector_like
 template<typename T>
-concept dense_vector_like = requires(const T constV, T v, std::size_t i) {
+concept dense_vector_like = requires(T v, const T constV, std::size_t i, typename T::ValueType val) {
     requires vector_like<T>;
 
     // accessing
     requires std::same_as<std::remove_cvref_t<decltype(constV[i])>, typename T::ValueType>;
-    { v[i] } -> std::convertible_to<typename T::ValueType>;
-    requires std::assignable_from<std::add_lvalue_reference_t<decltype(v[i])>, typename T::ValueType>;
+    { v[i] = val };
 };
 
 template<typename T>

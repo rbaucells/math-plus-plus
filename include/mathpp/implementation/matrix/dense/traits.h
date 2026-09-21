@@ -16,13 +16,12 @@ struct DenseMatrixView;
 
 // dense_matrix_like
 template<typename T>
-concept dense_matrix_like = requires(T m, const T constM, std::size_t r, std::size_t c, std::size_t i, typename T::ValueType v) {
+concept dense_matrix_like = requires(T m, const T constM, std::size_t r, std::size_t c, std::size_t i, typename T::ValueType val) {
     requires matrix_like<T>;
 
     // accessing
     requires std::same_as<std::remove_cvref_t<decltype(constM[r, c])>, typename T::ValueType>;
-    { m[r, c] } -> std::convertible_to<typename T::ValueType>;
-    requires std::assignable_from<std::add_lvalue_reference_t<decltype(m[r, c])>, typename T::ValueType>;
+    { m[r, c] = val };
 };
 
 template<typename T>

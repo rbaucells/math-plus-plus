@@ -13,16 +13,16 @@ struct CooSparseVectorView;
 
 // coo_sparse_vector_like
 template<typename T>
-concept coo_sparse_vector_like = requires (const T constV, T v) {
+concept coo_sparse_vector_like = requires (T v, const T constV, std::size_t i, typename T::ValueType val) {
     requires sparse_vector_like<T>;
 
     { constV.indices() } -> std::ranges::random_access_range;
-    requires std::same_as<std::remove_cvref_t<std::ranges::range_value_t<decltype(constV.indices())>>, std::size_t>;
-    requires std::assignable_from<std::add_lvalue_reference_t<std::ranges::range_value_t<decltype(v.indices())>>, std::size_t>;
+    requires std::same_as<std::remove_cvref_t<decltype(constV.indices()[i])>, std::size_t>;
+    { v.indices()[i] = i };
 
     { constV.values() } -> std::ranges::random_access_range;
-    requires lossless_convertible<std::remove_cvref_t<std::ranges::range_value_t<decltype(constV.values())>>, typename T::ValueType>;
-    requires std::assignable_from<std::add_lvalue_reference_t<std::ranges::range_value_t<decltype(v.values())>>, typename T::ValueType>;
+    requires std::same_as<std::remove_cvref_t<decltype(constV.values()[i])>, typename T::ValueType>;
+    { v.values()[i] = val };
 };
 
 template<typename T>
