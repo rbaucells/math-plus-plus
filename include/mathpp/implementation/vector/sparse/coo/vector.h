@@ -136,7 +136,7 @@ struct CooSparseVector {
      */
     template<coo_sparse_vector_like U>
     CooSparseVector(const U& other) : n_(other.n()), nnz_(other.nnz()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
-        for (std::size_t i = 0; i < this->nnz_; i++) {
+        for (std::size_t i = 0; i < nnz_; i++) {
             values_[i] = other.values()[i];
             indices_[i] = other.values()[i];
         }
@@ -228,7 +228,7 @@ struct CooSparseVector {
             Telemetry::emit_allocation();
         }
 
-        this->n_ = other.n();
+        n_ = other.n();
 
         std::copy(other.rawValues(), other.rawValues() + nnz_, values_);
         std::memcpy(indices_, other.indices(), nnz_ * sizeof(std::size_t));
@@ -265,7 +265,7 @@ struct CooSparseVector {
             Telemetry::emit_allocation();
         }
 
-        for (std::size_t i = 0; i < this->nnz_; i++) {
+        for (std::size_t i = 0; i < nnz_; i++) {
             values_[i] = other.values()[i];
             indices_[i] = other.values()[i];
         }
@@ -300,7 +300,7 @@ struct CooSparseVector {
             nnz_ = other.nnz_;
             other.nnz_ = 0;
 
-            this->n_ = other.n_;
+            n_ = other.n_;
             other.n_ = 0;
 
             Telemetry::emit_move_assign();
