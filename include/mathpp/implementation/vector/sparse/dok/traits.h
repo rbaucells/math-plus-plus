@@ -23,6 +23,7 @@ concept dok_sparse_vector_like = requires (const T constV, T v, std::size_t i, t
     requires std::same_as<std::remove_cvref_t<decltype(constV.map().at(i))>, typename T::ValueType>;
     { constV.map().contains(i) } -> std::same_as<bool>;
     { v.map()[i] = val };
+    requires std::convertible_to<std::remove_cvref_t<decltype(v.map()[i])>, typename T::ValueType>;
     { v.map().at(i) = val };
     { v.map().contains(i) };
 };

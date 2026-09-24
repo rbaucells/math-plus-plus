@@ -5,20 +5,6 @@
 #include "mathpp/implementation/vector/sparse/coo/traits.h"
 #include "mathpp/implementation/vector/sparse/coo/view.h"
 
-template<typename T>
-struct ElementProxy {
-    T element;
-
-    operator T&() const {
-        return element;
-    }
-
-    ElementProxy& operator=(const T& v) {
-        element = v;
-        return *this;
-    }
-};
-
 template<typename TValueType, bool TisComplex, typename GetterReturnType>
 struct should_be_coo_sparse_vector_like {
     using ValueType = TValueType;
@@ -28,16 +14,14 @@ struct should_be_coo_sparse_vector_like {
     [[nodiscard]] std::size_t nnz() const;
 
 
-     decltype(std::views::iota(0, 5) | std::views::transform([](std::size_t) -> std::size_t {})) indices() const;
-     decltype(std::views::iota(0, 5) | std::views::transform([](std::size_t) -> std::size_t& {})) indices();
+     [[nodiscard]] std::span<const std::size_t> indices() const;
+     [[nodiscard]] std::span<std::size_t> indices();
 
-    decltype(std::views::iota(0, 5) | std::views::transform([](std::size_t) -> TValueType {})) values() const;
-    std::span<TValueType> values();
+    [[nodiscard]] std::span<const TValueType> values() const;
+    [[nodiscard]] std::span<TValueType> values();
 
     [[nodiscard]] GetterReturnType get(std::size_t) const;
     void set(std::size_t, TValueType);
-
-
 };
 
 template<typename TValueType, bool TisComplex>
@@ -48,11 +32,11 @@ struct should_be_coo_sparse_vector_like_with_proxy {
     [[nodiscard]] std::size_t n() const;
     [[nodiscard]] std::size_t nnz() const;
 
-    decltype(std::views::iota(0, 5) | std::views::transform([](std::size_t) -> std::size_t {})) indices() const;
-    decltype(std::views::iota(0, 5) | std::views::transform([](std::size_t) -> std::size_t& {})) indices();
+    [[nodiscard]] decltype(std::views::iota(0, 5) | std::views::transform([](std::size_t) -> std::size_t {})) indices() const;
+    [[nodiscard]] decltype(std::views::iota(0, 5) | std::views::transform([](std::size_t) -> std::size_t& {})) indices();
 
-    decltype(std::views::iota(0, 5) | std::views::transform([](std::size_t) -> TValueType {})) values() const;
-    std::span<TValueType> values();
+    [[nodiscard]] decltype(std::views::iota(0, 5) | std::views::transform([](std::size_t) -> TValueType {})) values() const;
+    [[nodiscard]] decltype(std::views::iota(0, 5) | std::views::transform([](std::size_t) -> TValueType& {})) values();
 
     [[nodiscard]] ValueType get(std::size_t) const;
     void set(std::size_t, TValueType);
