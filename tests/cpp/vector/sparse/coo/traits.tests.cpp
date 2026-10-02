@@ -82,47 +82,47 @@ TEST(is_coo_sparse_vector_like, given_should_not_be_coo_sparse_vector_like_shoul
     static_assert(!is_coo_sparse_vector_like<should_be_coo_sparse_vector_like<float, true, double>>::value);
 }
 
-TEST(is_sparse_vector, given_sparse_vector_should_return_true) {
+TEST(is_coo_sparse_vector, given_coo_sparse_vector_should_return_true) {
     static_assert(is_coo_sparse_vector<CooSparseVector<float>>::value);
 }
 
-TEST(is_sparse_vector, given_sparse_vector_view_should_return_false) {
+TEST(is_coo_sparse_vector, given_coo_sparse_vector_view_should_return_false) {
     static_assert(!is_coo_sparse_vector<CooSparseVectorView<float>>::value);
 }
 
-TEST(is_sparse_vector, given_coo_sparse_vector_like_should_return_false) {
+TEST(is_coo_sparse_vector, given_coo_sparse_vector_like_should_return_false) {
     static_assert(!is_coo_sparse_vector<should_be_coo_sparse_vector_like<float, false, float&>>::value);
 }
 
-TEST(is_sparse_vector_v, given_sparse_vector_should_return_true) {
+TEST(is_coo_sparse_vector_v, given_coo_sparse_vector_should_return_true) {
     static_assert(is_coo_sparse_vector_v<CooSparseVector<float>>);
 }
 
-TEST(is_sparse_vector_v, given_sparse_vector_view_should_return_false) {
+TEST(is_coo_sparse_vector_v, given_coo_sparse_vector_view_should_return_false) {
     static_assert(!is_coo_sparse_vector_v<CooSparseVectorView<float>>);
 }
 
-TEST(is_sparse_vector_v, given_coo_sparse_vector_like_should_return_false) {
+TEST(is_coo_sparse_vector_v, given_coo_sparse_vector_like_should_return_false) {
     static_assert(!is_coo_sparse_vector_v<should_be_coo_sparse_vector_like<float, false, float&>>);
 }
 
-TEST(sparse_vector, given_sparse_vector_should_return_true) {
+TEST(coo_sparse_vector, given_coo_sparse_vector_should_return_true) {
     static_assert(coo_sparse_vector<CooSparseVector<float>>);
 }
 
-TEST(sparse_vector, given_sparse_vector_view_should_return_false) {
+TEST(coo_sparse_vector, given_coo_sparse_vector_view_should_return_false) {
     static_assert(!coo_sparse_vector<CooSparseVectorView<float>>);
 }
 
-TEST(sparse_vector, given_coo_sparse_vector_like_should_return_false) {
+TEST(coo_sparse_vector, given_coo_sparse_vector_like_should_return_false) {
     static_assert(!coo_sparse_vector<should_be_coo_sparse_vector_like<float, false, float&>>);
 }
 
-TEST(is_coo_sparse_vector_view, given_sparse_vector_view_should_return_true) {
+TEST(is_coo_sparse_vector_view, given_coo_sparse_vector_view_should_return_true) {
     static_assert(is_coo_sparse_vector_view<CooSparseVectorView<float>>::value);
 }
 
-TEST(is_coo_sparse_vector_view, given_sparse_vector_should_return_false) {
+TEST(is_coo_sparse_vector_view, given_coo_sparse_vector_should_return_false) {
     static_assert(!is_coo_sparse_vector_view<CooSparseVector<float>>::value);
 }
 
@@ -130,11 +130,11 @@ TEST(is_coo_sparse_vector_view, given_coo_sparse_vector_like_should_return_false
     static_assert(!is_coo_sparse_vector_view<should_be_coo_sparse_vector_like<float, false, float&>>::value);
 }
 
-TEST(is_coo_sparse_vector_view_v, given_sparse_vector_view_should_return_true) {
+TEST(is_coo_sparse_vector_view_v, given_coo_sparse_vector_view_should_return_true) {
     static_assert(is_coo_sparse_vector_view_v<CooSparseVectorView<float>>);
 }
 
-TEST(is_coo_sparse_vector_view_v, given_sparse_vector_should_return_false) {
+TEST(is_coo_sparse_vector_view_v, given_coo_sparse_vector_should_return_false) {
     static_assert(!is_coo_sparse_vector_view_v<CooSparseVector<float>>);
 }
 
@@ -142,14 +142,14 @@ TEST(is_coo_sparse_vector_view_v, given_coo_sparse_vector_like_should_return_fal
     static_assert(!is_coo_sparse_vector_view_v<should_be_coo_sparse_vector_like<float, false, float&>>);
 }
 
-TEST(sparse_vector_view, given_sparse_vector_view_should_return_true) {
+TEST(coo_sparse_vector_view, given_coo_sparse_vector_view_should_return_true) {
     static_assert(coo_sparse_vector_view<CooSparseVectorView<float>>);
 }
 
-TEST(sparse_vector_view, given_sparse_vector_should_return_false) {
+TEST(coo_sparse_vector_view, given_coo_sparse_vector_should_return_false) {
     static_assert(!coo_sparse_vector_view<CooSparseVector<float>>);
 }
 
-TEST(sparse_vector_view, given_coo_sparse_vector_like_should_return_false) {
+TEST(coo_sparse_vector_view, given_coo_sparse_vector_like_should_return_false) {
     static_assert(!coo_sparse_vector_view<should_be_coo_sparse_vector_like<float, false, float&>>);
 }

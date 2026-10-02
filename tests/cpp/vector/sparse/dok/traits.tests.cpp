@@ -16,7 +16,6 @@ struct should_be_dok_sparse_vector_like {
     [[nodiscard]] std::size_t n() const;
     [[nodiscard]] std::size_t nnz() const;
 
-
      [[nodiscard]] const std::flat_map<std::size_t, TValueType>& map() const;
      [[nodiscard]] std::map<std::size_t, TValueType>& map();
 
@@ -45,6 +44,13 @@ struct DokMapProxy {
 
     ElementProxy<T> operator[](std::size_t);
     T& at(std::size_t);
+
+    std::size_t size() const;
+
+    std::vector<std::pair<std::size_t, T>>::iterator begin();
+    std::vector<std::pair<std::size_t, T>>::iterator end();
+    std::vector<std::pair<std::size_t, T>>::const_iterator cbegin() const;
+    std::vector<std::pair<std::size_t, T>>::const_iterator cend() const;
 };
 
 template<typename TValueType, bool TisComplex>
@@ -55,7 +61,7 @@ struct should_be_dok_sparse_vector_like_with_proxy {
     [[nodiscard]] std::size_t n() const;
     [[nodiscard]] std::size_t nnz() const;
 
-    [[nodiscard]] DokMapProxy<TValueType> map() const;
+    [[nodiscard]] const DokMapProxy<TValueType> map() const;
     [[nodiscard]] DokMapProxy<TValueType> map();
 
     [[nodiscard]] ValueType get(std::size_t) const;
@@ -162,14 +168,14 @@ TEST(is_dok_sparse_vector_view_v, given_dok_sparse_vector_like_should_return_fal
     static_assert(!is_dok_sparse_vector_view_v<should_be_dok_sparse_vector_like<float, false, float&>>);
 }
 
-TEST(sparse_vector_view, given_sparse_vector_view_should_return_true) {
+TEST(dok_sparse_vector_view, given_dok_sparse_vector_view_should_return_true) {
     static_assert(dok_sparse_vector_view<DokSparseVectorView<float>>);
 }
 
-TEST(sparse_vector_view, given_sparse_vector_should_return_false) {
+TEST(dok_sparse_vector_view, given_dok_sparse_vector_should_return_false) {
     static_assert(!dok_sparse_vector_view<DokSparseVector<float>>);
 }
 
-TEST(sparse_vector_view, given_dok_sparse_vector_like_should_return_false) {
+TEST(dok_sparse_vector_view, given_dok_sparse_vector_like_should_return_false) {
     static_assert(!dok_sparse_vector_view<should_be_dok_sparse_vector_like<float, false, float&>>);
 }

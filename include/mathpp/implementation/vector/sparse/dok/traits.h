@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <concepts>
 #include <cstddef>
+#include <ranges>
 
 #include "mathpp/implementation/common/traits.h"
 #include "mathpp/implementation/vector/sparse/common/traits.h"
@@ -20,12 +21,23 @@ template<typename T>
 concept dok_sparse_vector_like = requires (const T constV, T v, std::size_t i, typename T::ValueType val) {
     requires sparse_vector_like<T>;
 
+    { constV.map().size() } -> std::same_as<std::size_t>;
     requires std::same_as<std::remove_cvref_t<decltype(constV.map().at(i))>, typename T::ValueType>;
     { constV.map().contains(i) } -> std::same_as<bool>;
-    { v.map()[i] = val };
     requires std::convertible_to<std::remove_cvref_t<decltype(v.map()[i])>, typename T::ValueType>;
+    { v.map()[i] = val };
     { v.map().at(i) = val };
-    { v.map().contains(i) };
+
+    requires requires(std::ranges::range_value_t<std::remove_cvref_t<decltype(constV.map())>> pair) {
+        requires std::same_as<std::remove_cvref_t<decltype(pair.first)>, std::size_t>;
+        requires lossless_convertible<std::remove_cvref_t<decltype(pair.second)>, typename T::ValueType>;
+    };
+
+    requires requires(std::ranges::range_value_t<std::remove_cvref_t<decltype(v.map())>> pair) {
+        requires std::same_as<std::remove_cvref_t<decltype(pair.first)>, std::size_t>;
+        requires lossless_convertible<std::remove_cvref_t<decltype(pair.second)>, typename T::ValueType>;
+        { pair.second = typename T::ValueType{} };
+    };
 };
 
 template<typename T>
