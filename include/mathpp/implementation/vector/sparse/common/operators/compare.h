@@ -15,9 +15,11 @@ template<sparse_vector_like T, sparse_vector_like U, sparse_vector_like... ARGS>
 
 template<sparse_vector_like T, sparse_vector_like U, sparse_vector_like... ARGS> requires has_common_type<typename T::ValueType, typename U::ValueType, typename ARGS::ValueType...>
 [[nodiscard]] bool compare(const Precision<underlying_type_t<std::common_type_t<typename T::ValueType, typename ARGS::ValueType...>>> precision, const T& a, const U& b, const ARGS&... args) {
-    assert_same_size(a, b, args...);
+    if (!(a.n() == b.n() && ((b.n() == args.n()) && ...))) {
+        return false;
+    }
 
-    if (!compare(a.nnz(), b.nnz(), args.nnz()...)) {
+    if (!(a.nnz() == b.nnz() && ((b.nnz() == args.nnz()) && ...))) {
         return false;
     }
 

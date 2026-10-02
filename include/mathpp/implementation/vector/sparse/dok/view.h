@@ -102,7 +102,7 @@ struct DokSparseVectorView {
             static_assert(false, "Cannot edit owner map through view");
         }
 
-        [[nodiscard]] T& at(std::size_t i) {
+        [[nodiscard]] T& at(std::size_t) {
             static_assert(false, "Cannot edit owner map through view");
         }
     };

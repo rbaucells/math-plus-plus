@@ -16,7 +16,7 @@ struct SimpleDokSparseVectorLike {
     std::size_t n_;
     std::flat_map<std::size_t, T> map_;
 
-    SimpleDokSparseVectorLike(std::size_t n, std::initializer_list<std::tuple<T, std::size_t>> data) : n_(n), map_(data.size()) {
+    SimpleDokSparseVectorLike(std::size_t n, std::initializer_list<std::tuple<T, std::size_t>> data) : n_(n) {
         for (const auto& [value, index] : data) {
             map_[index] = value;
         }

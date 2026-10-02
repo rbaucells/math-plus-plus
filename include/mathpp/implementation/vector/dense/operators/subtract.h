@@ -41,7 +41,7 @@ struct DenseVectorSubtractExpr {
         }, tuple);
     }
 
-    void set(const std::size_t i, const ValueType) {
+    void set(const std::size_t, const ValueType) {
         // ReSharper disable once CppStaticAssertFailure
         static_assert(false, "Cannot set on DenseVectorSubtractExpr");
     }

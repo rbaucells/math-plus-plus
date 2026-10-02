@@ -57,7 +57,7 @@ struct DokSparseVector {
      */
     DokSparseVector(const std::size_t n, std::initializer_list<std::tuple<T, std::size_t>> initializerList) : n_(n), map_(initializerList.size()) {
         for (const auto& nonZeroElement: initializerList) {
-            map_[std::get<0>(nonZeroElement)] = std::get<1>(nonZeroElement);
+            map_[std::get<1>(nonZeroElement)] = std::get<0>(nonZeroElement);
         }
 
         Telemetry::emit_allocation();
@@ -75,7 +75,7 @@ struct DokSparseVector {
     template<std::ranges::sized_range R> requires (is_tuple_v<std::ranges::range_value_t<R>> && lossless_convertible<std::tuple_element_t<0, std::ranges::range_value_t<R>>, T> && std::is_same_v<std::tuple_element_t<1, std::ranges::range_value_t<R>>, std::size_t>)
     DokSparseVector(const std::size_t n, R range) : n_(n), map_(range.size()) {
         for (const auto& nonZeroElement: range) {
-            map_[std::get<0>(nonZeroElement)] = std::get<1>(nonZeroElement);
+            map_[std::get<1>(nonZeroElement)] = std::get<0>(nonZeroElement);
         }
 
         Telemetry::emit_allocation();
@@ -104,8 +104,8 @@ struct DokSparseVector {
     * @param other DokSparseVector to copy from.
     */
     template<scalar U> requires lossless_convertible<U, T>
-    DokSparseVector(const DokSparseVector<U>& other) : n_(other.n()), map_(other.rawMap().size()) {
-        for (auto [key, value] : other.rawMap()) {
+    DokSparseVector(const DokSparseVector<U>& other) : n_(other.n()), map_(other.map().size()) {
+        for (auto [key, value] : other.map()) {
             map_[key] = value;
         }
 
@@ -122,10 +122,10 @@ struct DokSparseVector {
      * @tparam U Type that fulfills 'dok_sparse_vector_like' concept.
      * @param other Dense vector like object to copy from.
      */
-    template<dok_sparse_vector_like U>
-    DokSparseVector(const U& other) : n_(other.n()), map_(other.nnz()) {
-        for (std::size_t i = 0; i < map_.size(); i++) {
-            map_[i] = other.map()[i];
+    template<dok_sparse_vector_like U> requires lossless_convertible<typename U::ValueType, T>
+    DokSparseVector(const U& other) : n_(other.n()), map_(other.map().size()) {
+        for (auto [key, value] : other.map()) {
+            map_[key] = value;
         }
 
         Telemetry::emit_allocation();
@@ -151,7 +151,7 @@ struct DokSparseVector {
      * @brief Copy assignment operator from same type DokSparseVector.
      *
      * If this vector's nnz is the same as 'other's, emits a copy_assign.
-     * If this vector's nnz is different, emits a deallocations, allocations, and a copy_assign.
+     * If this vector's nnz is different, emits a deallocation, allocation, and a copy_assign.
      * If this vector's nnz is different, allocates 'nnz * sizeof(void*) + nnz * (24 + sizeof(T))' bytes of memory.
      * If this vector's nnz is same, allocates 'nnz * (24 + sizeof(T))' bytes of memory.
      *
@@ -161,7 +161,10 @@ struct DokSparseVector {
     DokSparseVector<T>& operator=(const DokSparseVector<T>& other) {
         if (this != &other) {
             map_ = other.map_;
+            n_ = other.n_;
 
+            Telemetry::emit_deallocation();
+            Telemetry::emit_allocation();
             Telemetry::emit_copy_assign();
         }
 
@@ -182,13 +185,18 @@ struct DokSparseVector {
      */
     template<scalar U> requires lossless_convertible<U, T>
     DokSparseVector<T>& operator=(const DokSparseVector<U>& other) {
-        map_.reserve(other.rawMap().size());
+        map_.clear();
+        Telemetry::emit_deallocation();
 
-        for (auto [key, value] : other.rawMap()) {
-            map_[key] = value;
+        map_.reserve(other.map().size());
+        Telemetry::emit_allocation();
+
+        for (auto [index, value] : other.map()) {
+            map_[index] = value;
         }
 
-        Telemetry::emit_allocation();
+        n_ = other.n();
+
         Telemetry::emit_copy_assign();
 
         return *this;
@@ -198,7 +206,7 @@ struct DokSparseVector {
      * @brief Copy assignment operator from any dok sparse vector like object.
      *
      * If this vector's nnz is the same as 'other's, emits a copy_assign.
-     * If this vector's nnz is different, emits 2 deallocations, 2 allocations, and a copy_assign.
+     * If this vector's nnz is different, emits deallocation, allocation, and a copy_assign.
      * If this vector's nnz is different, allocates 'nnz * sizeof(void*) + nnz * (24 + sizeof(T))' bytes of memory.
      * If this vector's nnz is same, allocates 'nnz * (24 + sizeof(T))' bytes of memory.
      *
@@ -206,17 +214,19 @@ struct DokSparseVector {
      * @param other Dok sparse vector like object to copy from.
      * @return Reference to this vector.
      */
-    template<dok_sparse_vector_like U>
+    template<dok_sparse_vector_like U> requires lossless_convertible<typename U::ValueType, T>
     DokSparseVector<T>& operator=(const U& other) {
+        map_.clear();
+        Telemetry::emit_deallocation();
+
+        map_.reserve(other.map().size());
+        Telemetry::emit_allocation();
+
+        for (auto [index, value] : other.map()) {
+            map_[index] = value;
+        }
         n_ = other.n();
 
-        map_.reserve(other.rawMap().size());
-
-        for (std::size_t i = 0; i < other.rawMap().size(); i++) {
-            map_[i] = other.map()[i];
-        }
-
-        Telemetry::emit_allocation();
         Telemetry::emit_copy_assign();
 
         return *this;
@@ -265,7 +275,7 @@ struct DokSparseVector {
         }
 
         if (auto it = map_.find(i); it != map_.end()) {
-            return *it;
+            return it->second;
         }
 
         return 0;
