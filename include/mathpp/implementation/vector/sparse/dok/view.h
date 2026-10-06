@@ -71,9 +71,9 @@ struct DokSparseVectorView {
      * @return Number of non-zero elements visible to view.
      */
     [[nodiscard]] std::size_t nnz() const  {
-        int nnz = 0;
+        std::size_t nnz = 0;
 
-        for (const auto& [key, value] : owner().map()) {
+        for (const auto& [key, value] : owner_.map()) {
             if (key >= offset_ && key <= offset_ + n_) {
                 nnz++;
             }
@@ -83,36 +83,91 @@ struct DokSparseVectorView {
     }
 
     // Type to wrap map of owner of view.
-    struct OwnerMapView {
-        const DokSparseVectorView<T>& view;
+    template<std::ranges::view V>
+    struct OwnerMapView : std::ranges::view_interface<OwnerMapView<V>> {
+        OwnerMapView() = default;
+        explicit OwnerMapView(const DokSparseVectorView<T>& view, V transformView) : view_(view), transformView_(std::move(transformView)) {}
 
-        [[nodiscard]] T at(std::size_t i) const {
-            return view.owner().map().at(view.offset() + i);
+        auto begin() const {
+            return std::ranges::begin(transformView_);
         }
 
+        auto end() const {
+            return std::ranges::end(transformView_);
+        }
+
+        [[nodiscard]] size_t size() const {
+            return std::ranges::size(transformView_);
+        }
+
+        /**
+         * @brief Checks if the map view has a nnz element at index 'i'.
+         *
+         * If it's not in the map, the element at index 'i' is zero.
+         * Implemented by checking if the owner map has the element at 'i + offset'.
+         * O(1) (O(n) worst case) time complexity.
+         *
+         * @param i Index of element to check.
+         * @return Whether the element at index 'i' is in the map view.
+         */
         [[nodiscard]] bool contains(std::size_t i) const {
-            if (i >= view.offset() + view.offset()) {
+            if (i >= view_.n()) {
                 return false;
             }
 
-            return view.owner().map().contains(i);
+            return view_.owner().map().contains(i + view_.offset());
         }
 
-        T& operator[](std::size_t) {
-            static_assert(false, "Cannot edit owner map through view");
+        [[nodiscard]] T at(const std::size_t i) const {
+            if (i >= view_.n()) {
+                throw InvalidIndexException("Cannot access MapView at invalid index");
+            }
+
+            return transformView_[i];
         }
 
         [[nodiscard]] T& at(std::size_t) {
             static_assert(false, "Cannot edit owner map through view");
         }
+
+        [[nodiscard]] T operator[](const std::size_t i) const {
+            return transformView_[i];
+        }
+
+        [[nodiscard]] T& operator[](std::size_t) {
+            static_assert(false, "Cannot edit owner map through view");
+        }
+
+    private:
+        const DokSparseVectorView<T>& view_;
+        V transformView_;
     };
 
-    OwnerMapView map() const {
-        return OwnerMapView(*this);
+    OwnerMapView<std::ranges::transform_view<std::ranges::iota_view<std::size_t>, std::function<std::pair<std::size_t, T>(std::size_t)>>> map() const {
+        std::size_t start = -1;
+        std::size_t end = 0;
+
+        for (const auto& [index, _] : owner_.map()) {
+            if (index >= offset_ && index <= offset_ + n_) {
+                if (start == std::size_t(-1)) {
+                    start = index;
+                }
+
+                end = index;
+            }
+        }
+
+        return OwnerMapView(*this, std::views::iota(0ul, nnz()) | std::views::transform([start, end, this](const std::size_t i) -> std::pair<std::size_t, T> {
+            if (end + i >= owner().nnz()) {
+                throw InvalidIndexException("");
+            }
+
+             return {i, owner().map().at(start + i)};
+        }));
     }
 
-    OwnerMapView map() {
-        return OwnerMapView(*this);
+    OwnerMapView<std::ranges::transform_view<std::ranges::iota_view<std::size_t>, std::function<std::pair<std::size_t, T>(std::size_t)>>> map() {
+        static_assert(false, "Cannot edit owner map through view");
     }
 
     /**
