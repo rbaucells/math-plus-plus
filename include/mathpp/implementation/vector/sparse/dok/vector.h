@@ -32,7 +32,7 @@ struct DokSparseVector {
      *
      * Creates a vector of size 0.
      * Does not allocate memory on heap.
-     * n and nnz are set to 0, values and indices are set to nullptr.
+     * n and nnz are set to 0, the map is empty.
      */
     DokSparseVector() : n_(0), map_() {}
 
@@ -49,7 +49,7 @@ struct DokSparseVector {
     /**
      * @brief Initializer list constructor.
      *
-     * Allocates around 'initializerList.size() * sizeof(void*) + initializerList.size() * (24 + sizeof(T))' bytes of memory on the heap.
+     * Allocates around 'initializerList.size() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
      * Emits an allocation.
      *
      * @param n Size of vector.
@@ -57,7 +57,8 @@ struct DokSparseVector {
      */
     DokSparseVector(const std::size_t n, std::initializer_list<std::tuple<T, std::size_t>> initializerList) : n_(n), map_() {
         for (const auto& nonZeroElement: initializerList) {
-            map_[std::get<1>(nonZeroElement)] = std::get<0>(nonZeroElement);
+            const auto index = std::get<1>(nonZeroElement);
+            map_[index] = std::get<0>(nonZeroElement);
         }
 
         Telemetry::emit_allocation();
@@ -66,7 +67,7 @@ struct DokSparseVector {
     /**
      * @brief Range constructor.
      *
-     * Allocates 'range.size() * sizeof(void*) + range.size() * (24 + sizeof(T))' bytes of memory on the heap.
+     * Allocates around 'range.size() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
      * Emits an allocation.
      *
      * @param n Size of vector.
@@ -75,7 +76,8 @@ struct DokSparseVector {
     template<std::ranges::sized_range R> requires (is_tuple_v<std::ranges::range_value_t<R>> && lossless_convertible<std::tuple_element_t<0, std::ranges::range_value_t<R>>, T> && std::is_same_v<std::tuple_element_t<1, std::ranges::range_value_t<R>>, std::size_t>)
     DokSparseVector(const std::size_t n, R range) : n_(n), map_() {
         for (const auto& nonZeroElement: range) {
-            map_[std::get<1>(nonZeroElement)] = std::get<0>(nonZeroElement);
+            const auto index = std::get<1>(nonZeroElement);
+            map_[index] = std::get<0>(nonZeroElement);
         }
 
         Telemetry::emit_allocation();
@@ -84,8 +86,8 @@ struct DokSparseVector {
     /**
      * @brief Copy constructor from same type DokSparseVector.
      *
-     * Allocates 'nnz * sizeof(void*) + nnz * (24 + sizeof(T))' bytes on heap.
-     * Emits an allocation and copy_construct.
+     * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits an allocation and a copy_construct.
      *
      * @param other Same type DokSparseVector to copy from.
      */
@@ -97,8 +99,8 @@ struct DokSparseVector {
     /**
     * @brief Copy constructor from different type DokSparseVector.
     *
-    * Allocates 'nnz * sizeof(void*) + nnz * (24 + sizeof(T))' bytes on heap.
-    * Emits an allocation and copy_construct.
+    * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+    * Emits an allocation and a copy_construct.
     *
     * @tparam U Scalar type of other DokSparseVector.
     * @param other DokSparseVector to copy from.
@@ -116,8 +118,8 @@ struct DokSparseVector {
     /**
      * @brief Copy constructor from any dok sparse vector like object.
      *
-     * Allocates 'nnz * sizeof(void*) + nnz * (24 + sizeof(T))' bytes on heap.
-     * Emits an allocation and copy_construct.
+     * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits an allocation and a copy_construct.
      *
      * @tparam U Type that fulfills 'dok_sparse_vector_like' concept.
      * @param other Dense vector like object to copy from.
@@ -150,10 +152,9 @@ struct DokSparseVector {
     /**
      * @brief Copy assignment operator from same type DokSparseVector.
      *
-     * If this vector's nnz is the same as 'other's, emits a copy_assign.
-     * If this vector's nnz is different, emits a deallocation, allocation, and a copy_assign.
-     * If this vector's nnz is different, allocates 'nnz * sizeof(void*) + nnz * (24 + sizeof(T))' bytes of memory.
-     * If this vector's nnz is same, allocates 'nnz * (24 + sizeof(T))' bytes of memory.
+     * Deallocates around 'nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes.
+     * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits a deallocation, an allocation, and a copy_assign.
      *
      * @param other DokSparseVector to copy from.
      * @return Reference to this vector.
@@ -174,10 +175,9 @@ struct DokSparseVector {
     /**
      * @brief Copy assignment operator from different type DokSparseVector.
      *
-     * If this vector's nnz is the same as 'other's, emits a copy_assign.
-     * If this vector's nnz is different, emits a deallocations, allocations, and a copy_assign.
-     * If this vector's nnz is different, allocates 'nnz * sizeof(void*) + nnz * (24 + sizeof(T))' bytes of memory.
-     * If this vector's nnz is same, allocates 'nnz * (24 + sizeof(T))' bytes of memory.
+     * Deallocates around 'nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes.
+     * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits a deallocation, an allocation, and a copy_assign.
      *
      * @tparam U Scalar type of other DokSparseVector.
      * @param other DokSparseVector to copy from.
@@ -203,10 +203,9 @@ struct DokSparseVector {
     /**
      * @brief Copy assignment operator from any dok sparse vector like object.
      *
-     * If this vector's nnz is the same as 'other's, emits a copy_assign.
-     * If this vector's nnz is different, emits deallocation, allocation, and a copy_assign.
-     * If this vector's nnz is different, allocates 'nnz * sizeof(void*) + nnz * (24 + sizeof(T))' bytes of memory.
-     * If this vector's nnz is same, allocates 'nnz * (24 + sizeof(T))' bytes of memory.
+     * Deallocates around 'nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes.
+     * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits a deallocation, an allocation, and a copy_assign.
      *
      * @tparam U Type that fulfills 'dok_sparse_vector_like' concept.
      * @param other Dok sparse vector like object to copy from.
@@ -216,7 +215,6 @@ struct DokSparseVector {
     DokSparseVector<T>& operator=(const U& other) {
         map_.clear();
         Telemetry::emit_deallocation();
-
 
         for (auto [index, value] : other.map()) {
             map_[index] = value;
@@ -233,8 +231,8 @@ struct DokSparseVector {
     /**
      * @brief Move assignment operator from same type DokSparseVector.
      *
-     * Does not allocate memory on heap.
-     * Emits a move_assign.
+     * Does not allocate memory on the heap.
+     * Emits a deallocation and a move_assign.
      *
      * @param other DokSparseVector to move from.
      * @return Reference to this vector.
@@ -243,6 +241,7 @@ struct DokSparseVector {
     DokSparseVector<T>& operator=(DokSparseVector<T>&& other) noexcept {
         if (this != &other) {
             map_ = std::move(other.map_);
+            Telemetry::emit_deallocation();
 
             n_ = other.n_;
             other.n_ = 0;
@@ -259,7 +258,7 @@ struct DokSparseVector {
      * Retrieves the element at (i).
      * Checks bounds of provided i index.
      * Does not allocate memory on the heap.
-     * O(nnz) time complexity.
+     * O(log(nnz)) time complexity.
      *
      * @param i Zero-based index of element.
      *
@@ -283,11 +282,11 @@ struct DokSparseVector {
      * @brief Sets the element at a provided index to a provided value.
      *
      * Checks bounds of provided i index.
-     * O(nnz) time complexity.
+     * O(log(nnz)) time complexity.
      *
-     * If setting 0 on non-zero element, alocates '(nnz - 1) * sizeof(T) + (nnz - 1) * sizeof(std::size_t)' bytes on heap and emits 2x allocations and 2x deallocations.
+     * If setting 0 on non-zero element, deallocates around 'sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*)' bytes and emits a deallocation.
      * If setting 0 on zero element, does nothing.
-     * If setting non-zero on 0 element, alocates '(nnz + 1) * sizeof(T) + (nnz + 1) * sizeof(std::size_t)' bytes on heap and emits 2x allocations and 2x deallocations.
+     * If setting non-zero on 0 element, allocates around 'sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*)' bytes and emits an allocation.
      * If setting non-zero on non-zero element, simply sets value.
      *
      * @param i Zero-based index of element.
@@ -302,10 +301,13 @@ struct DokSparseVector {
         }
 
         if (compare(v, 0)) {
-            map_.erase(i);
+            if (map_.erase(i) != 0) {
+                Telemetry::emit_deallocation();
+            }
         }
         else {
             map_[i] = v;
+            Telemetry::emit_allocation();
         }
     }
 

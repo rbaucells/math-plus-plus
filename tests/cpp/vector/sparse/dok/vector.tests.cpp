@@ -243,7 +243,7 @@ TEST(dok_sparse_vector_move_assignment_operator, given_dok_sparse_vector_should_
     ASSERT_TRUE(compare(a.n(), 0));
     ASSERT_TRUE(compare(a.nnz(), 0));
     ASSERT_TRUE(compare(Precision(0.001f), b, expected));
-    TelemetryTests::asserts({.move_assigns = 1});
+    TelemetryTests::asserts({.move_assigns = 1, .deallocations = 1});
 }
 
 TEST(dok_sparse_vector_move_assignment_operator, given_self_should_do_nothing) {
@@ -312,7 +312,7 @@ TEST(dok_sparse_vector_set, given_index_to_zero_should_set_value) {
     ASSERT_TRUE(compare(map.at(0), 1));
     ASSERT_TRUE(compare(map.at(2), 2));
     ASSERT_TRUE(compare(map.at(3), 67));
-    TelemetryTests::asserts({});
+    TelemetryTests::asserts({.allocations = 1});
 }
 
 TEST(dok_sparse_vector_set, given_index_to_nonzero_should_insert_value) {
@@ -329,7 +329,7 @@ TEST(dok_sparse_vector_set, given_index_to_nonzero_should_insert_value) {
     ASSERT_TRUE(compare(map.at(1), 2));
     ASSERT_TRUE(compare(map.at(2), 67));
     ASSERT_TRUE(compare(map.at(3), 4));
-    TelemetryTests::asserts({});
+    TelemetryTests::asserts({.allocations = 1});
 }
 
 TEST(dok_sparse_vector_set, given_index_to_nonzero_and_zero_value_should_remove_value) {
@@ -345,7 +345,7 @@ TEST(dok_sparse_vector_set, given_index_to_nonzero_and_zero_value_should_remove_
     const auto& map = a.map();
     ASSERT_TRUE(compare(map.at(0), 1));
     ASSERT_TRUE(compare(map.at(3), 4));
-    TelemetryTests::asserts({});
+    TelemetryTests::asserts({.deallocations = 1});
 }
 
 TEST(dok_sparse_vector_set, given_index_to_zero_and_zero_value_should_do_nothing) {
