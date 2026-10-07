@@ -15,7 +15,7 @@
 #include <cstring>
 #include <algorithm>
 #include <span>
-#include <unordered_map>
+#include <map>
 
 /**
  * @brief Owning sparse vector in DOK storage format.
@@ -55,7 +55,7 @@ struct DokSparseVector {
      * @param n Size of vector.
      * @param initializerList Initializer list of T, std::size_t tuples. Representing value and index.
      */
-    DokSparseVector(const std::size_t n, std::initializer_list<std::tuple<T, std::size_t>> initializerList) : n_(n), map_(initializerList.size()) {
+    DokSparseVector(const std::size_t n, std::initializer_list<std::tuple<T, std::size_t>> initializerList) : n_(n), map_() {
         for (const auto& nonZeroElement: initializerList) {
             map_[std::get<1>(nonZeroElement)] = std::get<0>(nonZeroElement);
         }
@@ -73,7 +73,7 @@ struct DokSparseVector {
      * @param range Any sized range type of T, std::size_t tuples. Representing value and index.
      */
     template<std::ranges::sized_range R> requires (is_tuple_v<std::ranges::range_value_t<R>> && lossless_convertible<std::tuple_element_t<0, std::ranges::range_value_t<R>>, T> && std::is_same_v<std::tuple_element_t<1, std::ranges::range_value_t<R>>, std::size_t>)
-    DokSparseVector(const std::size_t n, R range) : n_(n), map_(range.size()) {
+    DokSparseVector(const std::size_t n, R range) : n_(n), map_() {
         for (const auto& nonZeroElement: range) {
             map_[std::get<1>(nonZeroElement)] = std::get<0>(nonZeroElement);
         }
@@ -104,7 +104,7 @@ struct DokSparseVector {
     * @param other DokSparseVector to copy from.
     */
     template<scalar U> requires lossless_convertible<U, T>
-    DokSparseVector(const DokSparseVector<U>& other) : n_(other.n()), map_(other.map().size()) {
+    DokSparseVector(const DokSparseVector<U>& other) : n_(other.n()), map_() {
         for (auto [key, value] : other.map()) {
             map_[key] = value;
         }
@@ -123,7 +123,7 @@ struct DokSparseVector {
      * @param other Dense vector like object to copy from.
      */
     template<dok_sparse_vector_like U> requires lossless_convertible<typename U::ValueType, T>
-    DokSparseVector(const U& other) : n_(other.n()), map_(other.map().size()) {
+    DokSparseVector(const U& other) : n_(other.n()), map_() {
         for (auto [key, value] : other.map()) {
             map_[key] = value;
         }
@@ -188,12 +188,10 @@ struct DokSparseVector {
         map_.clear();
         Telemetry::emit_deallocation();
 
-        map_.reserve(other.map().size());
-        Telemetry::emit_allocation();
-
         for (auto [index, value] : other.map()) {
             map_[index] = value;
         }
+        Telemetry::emit_allocation();
 
         n_ = other.n();
 
@@ -219,12 +217,12 @@ struct DokSparseVector {
         map_.clear();
         Telemetry::emit_deallocation();
 
-        map_.reserve(other.map().size());
-        Telemetry::emit_allocation();
 
         for (auto [index, value] : other.map()) {
             map_[index] = value;
         }
+        Telemetry::emit_allocation();
+
         n_ = other.n();
 
         Telemetry::emit_copy_assign();
@@ -328,14 +326,14 @@ struct DokSparseVector {
     /**
      * @return Const-reference to map of index, value pairs of non zero elements.
      */
-    [[nodiscard]] const std::unordered_map<std::size_t, T>& map() const {
+    [[nodiscard]] const std::map<std::size_t, T>& map() const {
         return map_;
     }
 
     /**
      * @return Reference to map of index, value pairs of non zero elements.
      */
-    [[nodiscard]] std::unordered_map<std::size_t, T>& map() {
+    [[nodiscard]] std::map<std::size_t, T>& map() {
         return map_;
     }
 
@@ -345,7 +343,7 @@ private:
     // size of vector
     std::size_t n_;
     // key-value pair of index-element
-    std::unordered_map<std::size_t, T> map_;
+    std::map<std::size_t, T> map_;
 };
 
 #endif // MATHPP_IMPLEMENTATION_VECTOR_SPARSE_DOK_VECTOR_H

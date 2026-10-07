@@ -144,15 +144,15 @@ struct DokSparseVectorView {
     };
 
     auto map() const {
-        auto start = owner_.map().begin();
+        auto start = owner_.map().end();
         std::size_t nnnz = 0;
         auto end = owner_.map().end();
 
         for (auto it = owner_.map().begin(); it != owner_.map().end(); ++it) {
-            const std::size_t key = it->second;
+            const std::size_t key = it->first;
 
             if (key >= offset()) {
-                if (start == owner().map().begin()) {
+                if (start == owner().map().end()) {
                     start = it;
                 }
 
