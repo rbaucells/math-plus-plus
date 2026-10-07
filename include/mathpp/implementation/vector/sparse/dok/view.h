@@ -51,6 +51,7 @@ struct DokSparseVectorView {
      * Implemented by accessing owner at i + offset.
      * Checks bounds of provided index relative to view AND to owner.
      * Does not allocate memory on the heap.
+     * O(log(owner.nnz)) time complexity.
      *
      * @param i Zero-based index of element.
      *
@@ -95,10 +96,6 @@ struct DokSparseVectorView {
         auto end() const {
             return std::ranges::end(transformView_);
         }
-
-        // [[nodiscard]] size_t size() const {
-            // return std::ranges::size(transformView_);
-        // }
 
         /**
          * @brief Checks if the map view has a nnz element at index 'i'.
