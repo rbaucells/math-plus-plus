@@ -1,82 +1,83 @@
 #ifndef MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_VIEW_H
 #define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_VIEW_H
 
-#include <cstddef>
+#include "mathpp/implementation/common/traits.h"
+#include "mathpp/implementation/common/exceptions.h"
 
 #include "vector.h"
-#include "mathpp/implementation/common/exceptions.h"
-#include "mathpp/implementation/common/traits.h"
 
-template<scalar T = float>
+#include <cstddef>
+#include <ranges>
+
+template<scalar T>
 struct CooSparseVectorView {
     using ValueType = T;
-    using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
     CooSparseVectorView() = delete;
-
+    CooSparseVectorView(const CooSparseVectorView<T>& other) = delete;
     CooSparseVectorView(CooSparseVectorView<T>&& other) noexcept = delete;
-
     CooSparseVectorView<T>& operator=(const CooSparseVectorView<T>& other) = delete;
-
     CooSparseVectorView<T>& operator=(CooSparseVectorView<T>&& other) noexcept = delete;
 
     /**
-     * @brief Constructs a SparseVectorView into an existing SparseVector.
+     * @brief Owner constructor.
      *
-     * Creates a view of size `n` into the `owner` vector,
-     * starting at 'offset'.
-     * Does not allocate new memory.
-     * The view holds a reference to the 'owner'.
+     * Creates a view of the owner vector of size 'n'.
+     * View starts at offset.
+     * Does not allocate memory on heap.
      *
-     * @param owner SparseVector to create a view from.
-     * @param n Number of elements in the view.
-     * @param offset Starting element offset into the 'owner' vector.
+     * @param owner CooSparseVector owner containing real data.
+     * @param n Number of elements in constructed view.
+     * @param offset Zero-based index at which the view starts relative to owner.
+     *
+     * @note CooSparseVector owner must outlive view.
      */
-    CooSparseVectorView(const CooSparseVector<T>& owner, const std::size_t n, const std::size_t offset) : offset_(offset), n_(n), owner_(owner) {
-    }
-
+    CooSparseVectorView(const CooSparseVector<T>& owner, const std::size_t n, const std::size_t offset) : n_(n), offset_(offset), owner_(owner) {}
 
     /**
-     * @brief Copy constructor for SparseVectorView.
-     *
-     * Constructs a view with the same 'owner' as 'other'.
-     * Does not allocate new memory.
-     *
-     * @param other SparseVectorView to copy from.
+     * @warning Modifying owner through view is illegal.
      */
-    CooSparseVectorView(const CooSparseVectorView<T>& other) : offset_(other.offset_), n_(other.n_), owner_(other.owner_) {
+    void set(const std::size_t, const T)  {
+        // ReSharper disable once CppStaticAssertFailure
+        static_assert(false, "Cannot modify owner through view");
     }
 
     /**
-     * @brief Trying to modify a SparseVector through a view is invalid.
-     * @throws InvalidOperationException You cannot modify owner through a view.
-     * @throws InvalidIndexException If 'i' is negative or greater than 'n - 1'
+     * @brief Accesses the element at a provided index.
+     *
+     * Retrieves the element at (i) relative to where the view starts.
+     * Implemented by accessing owner at i + offset.
+     * Checks bounds of provided index relative to view AND to owner.
+     * Does not allocate memory on the heap.
+     * O(owner.nnz) time complexity.
+     *
+     * @param i Zero-based index of element.
+     *
+     * @throws InvalidIndexException If index is not withing view OR i + offset is not within owner vector.
+     * @note Index must be within size of view AND i + offset must be within size of owner vector.
+     * @return Element at (i).
      */
-    void set(const std::size_t i, const T)  {
-        if (i > this->n_ - 1) {
-            throw InvalidIndexException("Cannot set on view with invalid index");
-        }
-
-        throw InvalidOperationException("Cannot modify owner through view");
-    }
-
     [[nodiscard]] T get(const std::size_t i) const  {
-        if (i > this->n_ - 1) {
-            throw InvalidIndexException("Cannot get from SparseVectorView with invalid index");
+        if (i >= n_) {
+            throw InvalidIndexException("Cannot access view at invalid index");
         }
 
         return owner_.get(i + offset_);
     }
 
+    /**
+     * O(owner.nnz) time complexity.
+     * @return Number of non-zero elements visible to view.
+     */
     [[nodiscard]] std::size_t nnz() const  {
         std::size_t nnz = 0;
 
         for (std::size_t i = 0; i < owner_.nnz(); i++) {
-            const std::size_t curIndex = owner_.indices()[i];
+            const std::size_t curIndex = owner_.rawIndices()[i];
 
-            if (curIndex >= offset_ && curIndex < offset_ + this->n_) {
+            if (curIndex >= offset_ && curIndex < offset_ + n_) {
                 nnz++;
             }
         }
@@ -84,22 +85,99 @@ struct CooSparseVectorView {
         return nnz;
     }
 
+    /**
+     * @brief What the view 'sees' of the owners indices array.
+     *
+     * O(owner.nnz) time complexity.
+     * Implemented by accessing the owners indices at a starting offset + i and subtracting offset from that.
+     *
+     * @return Lazy evaluated container that constructs what the view 'sees' of the owners indices array.
+     * @info Coo Sparse Vector owner must not change indices array while this indices 'view' is alive.
+     */
+    [[nodiscard]] auto indices() const {
+        std::size_t nnz = 0;
+        std::size_t whereStart = 0;
+
+        for (std::size_t i = 0; i < owner_.nnz(); i++) {
+            const std::size_t curIndex = owner_.rawIndices()[i];
+
+            if (curIndex >= offset_ && curIndex < offset_ + n_) {
+                if (nnz == 0) {
+                    whereStart = i;
+                }
+
+                nnz++;
+            }
+        }
+
+        return std::views::iota(0ul, nnz) | std::views::transform([whereStart, this](const std::size_t i) -> std::size_t {
+            return owner().indices()[i + whereStart] - offset_;
+        });
+    }
+
+    /**
+     * @note Return type is span just to trick the concept.
+     * @warning Modifying owner through view is illegal.
+     */
+    std::span<std::size_t> indices() {
+        static_assert(false, "Cannot edit owner indices through view");
+    }
+
+    /**
+     * @brief What the view 'sees' of the owners values array.
+     *
+     * O(owner.nnz) time complexity.
+     * Implemented by accessing the owners values at a starting offset + i.
+     *
+     * @return Lazy evaluated container that constructs what the view 'sees' of the owners values array.
+     * @info Coo Sparse Vector owner must not change values or indices array while this values 'view' is alive.
+     */
+    [[nodiscard]] auto values() const {
+        std::size_t nnz = 0;
+        std::size_t whereStart = 0;
+
+        for (std::size_t i = 0; i < owner_.nnz(); i++) {
+            const std::size_t curIndex = owner_.rawIndices()[i];
+
+            if (curIndex >= offset_ && curIndex < offset_ + n_) {
+                if (nnz == 0) {
+                    whereStart = i;
+                }
+
+                nnz++;
+            }
+        }
+
+        return std::views::iota(0ul, nnz) | std::views::transform([whereStart, this](const std::size_t i) -> T {
+            return owner().values()[i + whereStart];
+        });
+    }
+
+    /**
+     * @note Return type is span just to trick the concept.
+     * @warning Modifying owner through view is illegal.
+     */
+    std::span<T> values() {
+        static_assert(false, "Cannot edit owner values through view");
+    }
+
+    /**
+     * @return Number of elements in CooSparseVectorView.
+     */
     [[nodiscard]] std::size_t n() const {
         return n_;
     }
 
     /**
-     * @brief Gets the offset relative to the 'owner'.
-     * @return The offset.
+     * @return Number of elements to offset view by relative to owner vector.
      */
     [[nodiscard]] std::size_t offset() const {
         return offset_;
     }
 
     /**
-    * @brief Gets the const reference to the SparseVector owner.
-    * @return Const reference to SparseVector owner.
-    */
+     * @return CooSparseVector view is viewing.
+     */
     [[nodiscard]] const CooSparseVector<T>& owner() const {
         return owner_;
     }
@@ -107,9 +185,12 @@ struct CooSparseVectorView {
     ~CooSparseVectorView()  = default;
 
 private:
-    const std::size_t offset_;
+    // number of elements
     std::size_t n_;
+    // offset relative to owner
+    const std::size_t offset_;
 
+    // owner coo sparse vector
     const CooSparseVector<T>& owner_;
 };
 

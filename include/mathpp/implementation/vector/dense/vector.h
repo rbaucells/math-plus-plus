@@ -384,12 +384,11 @@ struct DenseVector {
     /**
      * @brief Sets the element at a provided index to a provided value.
      *
-     * Retrieves a const reference to the element at (i).
      * Checks bounds of provided i index.
      * Does not allocate memory on the heap.
      *
      * @param i Zero-based index of element.
-     * @param v Value to set in a element.
+     * @param v Value to set in element.
      *
      * @see DenseVector::operator[](const std::size_t i).
      *

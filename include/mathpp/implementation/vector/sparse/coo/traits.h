@@ -2,7 +2,11 @@
 #define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_COO_TRAITS_H
 
 #include <type_traits>
+#include <ranges>
+#include <concepts>
+#include <cstddef>
 #include "mathpp/implementation/common/traits.h"
+#include "mathpp/implementation/vector/sparse/common/traits.h"
 
 // forward declare
 template<scalar T>
@@ -10,6 +14,29 @@ struct CooSparseVector;
 
 template<scalar T>
 struct CooSparseVectorView;
+
+// coo_sparse_vector_like
+template<typename T>
+concept coo_sparse_vector_like = requires (T v, const T constV, std::size_t i, typename T::ValueType val) {
+    requires sparse_vector_like<T>;
+
+    { constV.indices() } -> std::ranges::random_access_range;
+    requires std::same_as<std::remove_cvref_t<decltype(constV.indices()[i])>, std::size_t>;
+    { v.indices()[i] = i };
+
+    { constV.values() } -> std::ranges::random_access_range;
+    requires std::same_as<std::remove_cvref_t<decltype(constV.values()[i])>, typename T::ValueType>;
+    { v.values()[i] = val };
+};
+
+template<typename T>
+inline constexpr bool is_coo_sparse_vector_like_v = coo_sparse_vector_like<T>;
+
+template<typename>
+struct is_coo_sparse_vector_like : std::false_type {};
+
+template<coo_sparse_vector_like T>
+struct is_coo_sparse_vector_like<T> : std::true_type {};
 
 // coo_sparse_vector
 template<typename>

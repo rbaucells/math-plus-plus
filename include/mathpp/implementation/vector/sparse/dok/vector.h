@@ -1,368 +1,351 @@
 #ifndef MATHPP_IMPLEMENTATION_VECTOR_SPARSE_DOK_VECTOR_H
 #define MATHPP_IMPLEMENTATION_VECTOR_SPARSE_DOK_VECTOR_H
 
-#include <cstddef>
-#include <cstring>
-#include <initializer_list>
-#include <tuple>
-
 #include "mathpp/implementation/common/traits.h"
-#include "../common/traits.h"
 #include "mathpp/implementation/common/exceptions.h"
+#include "mathpp/implementation/common/compare.h"
+#include "mathpp/implementation/common/telemetry.h"
 
-template<scalar T = float>
+#include "traits.h"
+
+#include <cstddef>
+#include <initializer_list>
+#include <ranges>
+#include <tuple>
+#include <cstring>
+#include <algorithm>
+#include <span>
+#include <map>
+
+/**
+ * @brief Owning sparse vector in DOK storage format.
+ * @tparam T Scalar type of vector elements.
+ */
+template<scalar T>
 struct DokSparseVector {
     using ValueType = T;
-    using UnderlyingType = underlying_type_t<T>;
 
     static constexpr bool isComplex = is_complex_v<T>;
 
-    DokSparseVector() = delete;
-
     /**
-     * @brief Constructs a SparseVector of size 'n'.
+     * @brief Default constructor.
      *
-     * Does not allocate memory yet.
-     *
-     * @param n Size of vector.
+     * Creates a vector of size 0.
+     * Does not allocate memory on heap.
+     * n and nnz are set to 0, the map is empty.
      */
-    explicit DokSparseVector(const std::size_t n) : nnz_(0), n_(n), values_(new T[0]), indices_(new std::size_t[0]) {
-    }
+    DokSparseVector() : n_(0), map_() {}
 
     /**
-     * @brief Constructs a SparseVector of size 'n' with elements 'initializerList'.
-     * Allocates 'initializerList.size() x sizeof(T) + initializerList.size() x sizeof(std::size_t)' bytes of memory on the heap.
+     * @brief Sized constructor.
+     *
+     * Creates a vector of size n with 0 nnz elements.
+     * Does not allocate memory on heap.
+     *
+     * @param n Size of constructed vector.
+     */
+    explicit DokSparseVector(const std::size_t n) : n_(n), map_() {}
+
+    /**
+     * @brief Initializer list constructor.
+     *
+     * Allocates around 'initializerList.size() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits an allocation.
+     *
      * @param n Size of vector.
      * @param initializerList Initializer list of T, std::size_t tuples. Representing value and index.
-     *
-     * @note 'initializerList' must be sorted in increasing indices.
      */
-    DokSparseVector(const std::size_t n, std::initializer_list<std::tuple<T, int>> initializerList) : nnz_(initializerList.size()), n_(n), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
-        if (n < 0) {
-            throw InvalidIndexException("Cannot construct SparseVector of negative size");
-        }
-
-        std::size_t i = 0;
+    DokSparseVector(const std::size_t n, std::initializer_list<std::tuple<T, std::size_t>> initializerList) : n_(n), map_() {
         for (const auto& nonZeroElement: initializerList) {
-            values_[i] = std::get<0>(nonZeroElement);
-            indices_[i] = std::get<1>(nonZeroElement);
-            ++i;
+            const auto index = std::get<1>(nonZeroElement);
+            map_[index] = std::get<0>(nonZeroElement);
         }
+
+        Telemetry::emit_allocation();
     }
 
     /**
-     * @brief Copy constructor for SparseVector from same type SparseVector.
+     * @brief Range constructor.
      *
-     * Constructs a vector of size 'n' and performs a deep copy of 'other'.
-     * Allocated 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes of memory on the heap.
+     * Allocates around 'range.size() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits an allocation.
      *
-     * @param other SparseVector to copy from.
+     * @param n Size of vector.
+     * @param range Any sized range type of T, std::size_t tuples. Representing value and index.
      */
-    DokSparseVector(const DokSparseVector<T>& other) : n_(other.n_), nnz_(other.nnz_), values_(other.values_), indices_(other.indices_) {
-        std::memcpy(values_, other.values_, nnz_ * sizeof(T));
-        std::memcpy(indices_, other.indices_, nnz_ * sizeof(std::size_t));
+    template<std::ranges::sized_range R> requires (is_tuple_v<std::ranges::range_value_t<R>> && lossless_convertible<std::tuple_element_t<0, std::ranges::range_value_t<R>>, T> && std::is_same_v<std::tuple_element_t<1, std::ranges::range_value_t<R>>, std::size_t>)
+    DokSparseVector(const std::size_t n, R range) : n_(n), map_() {
+        for (const auto& nonZeroElement: range) {
+            const auto index = std::get<1>(nonZeroElement);
+            map_[index] = std::get<0>(nonZeroElement);
+        }
+
+        Telemetry::emit_allocation();
     }
 
     /**
-    * @brief Copy constructor for SparseVector from different type SparseVector.
-    *
-    * Constructs a vector of size 'n' and performs a deep copy of 'other'.
-    * Allocates 'nnz * sizeof(T) + nnz * sizeof(std::size_t)' bytes on the heap.
-    *
-    * @param other SparseVector to copy from.
-    * @note 'OTHER_T' must be able to implicitly convert to 'T'.
-    * @tparam OTHER_T Scalar type of the 'other' SparseVector.
-    */
-    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    DokSparseVector(const DokSparseVector<OTHER_T>& other) : n_(other.n()), nnz_(other.nnz()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
-        const OTHER_T* otherValues = other.values();
-
-        for (std::size_t i = 0; i < nnz_; i++) {
-            values_[i] = otherValues[i];
-        }
-
-        std::memcpy(indices_, other.indices(), nnz_ * sizeof(std::size_t));
-    }
-
-    template<sparse_vector_like U>
-    DokSparseVector(const U& other) : nnz_(0), n_(other.n()), values_(new T[nnz_]), indices_(new std::size_t[nnz_]) {
-        for (std::size_t i = 0; i < this->n_; i++) {
-            DokSparseVector<T>::set(i, other.get(i));
-        }
-    }
-
-    /**
-     * @brief Move constructor for SparseVector.
+     * @brief Copy constructor from same type DokSparseVector.
      *
-     * Constructs a vector of size 'other.n' and performs a move from 'other'.
-     * Does not allocate any memory on the heap.
+     * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits an allocation and a copy_construct.
+     *
+     * @param other Same type DokSparseVector to copy from.
+     */
+    DokSparseVector(const DokSparseVector<T>& other) : n_(other.n_), map_(other.map_) {
+        Telemetry::emit_allocation();
+        Telemetry::emit_copy_construct();
+    }
+
+    /**
+    * @brief Copy constructor from different type DokSparseVector.
+    *
+    * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+    * Emits an allocation and a copy_construct.
+    *
+    * @tparam U Scalar type of other DokSparseVector.
+    * @param other DokSparseVector to copy from.
+    */
+    template<scalar U> requires lossless_convertible<U, T>
+    DokSparseVector(const DokSparseVector<U>& other) : n_(other.n()), map_() {
+        for (auto [key, value] : other.map()) {
+            map_[key] = value;
+        }
+
+        Telemetry::emit_allocation();
+        Telemetry::emit_copy_construct();
+    }
+
+    /**
+     * @brief Copy constructor from any dok sparse vector like object.
+     *
+     * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits an allocation and a copy_construct.
+     *
+     * @tparam U Type that fulfills 'dok_sparse_vector_like' concept.
+     * @param other Dense vector like object to copy from.
+     */
+    template<dok_sparse_vector_like U> requires lossless_convertible<typename U::ValueType, T>
+    DokSparseVector(const U& other) : n_(other.n()), map_() {
+        for (auto [key, value] : other.map()) {
+            map_[key] = value;
+        }
+
+        Telemetry::emit_allocation();
+        Telemetry::emit_copy_construct();
+    }
+
+    /**
+     * @brief Move constructor from same type DokSparseVector.
+     *
+     * Does not allocate memory on the heap.
+     * Emits a move_construct.
      *
      * @param other SparseVector to move from.
+     * @note Invalidates 'other' vector and leaves in an empty state.
      */
-    DokSparseVector(DokSparseVector<T>&& other) noexcept : nnz_(other.nnz_), n_(other.n_), values_(other.values_), indices_(other.indices_) {
-        other.values_ = nullptr;
-        other.indices_ = nullptr;
+    DokSparseVector(DokSparseVector<T>&& other) noexcept : n_(other.n_), map_(std::move(other.map_)) {
         other.n_ = 0;
-        other.nnz_ = 0;
+
+        Telemetry::emit_move_construct();
     }
 
     /**
-     * @brief Copy assignment operator for SparseVector from same type SparseVector.
-     * Replaces all elements with elements of 'other'.
-     * May allocate 'other.nnz * sizeof(T) + other.nnz * sizeof(std::size_t)' bytes of memory on the heap if number of non-zero elements here doesn't match number of non-zero elements in 'other'.
-     * @param other SparseVector to copy from.
-     * @return Reference to this.
-     * @throws InvalidSizeException If 'other' does not have same size as this.
-     * @note 'other' must be of same size as this.
+     * @brief Copy assignment operator from same type DokSparseVector.
+     *
+     * Deallocates around 'nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes.
+     * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits a deallocation, an allocation, and a copy_assign.
+     *
+     * @param other DokSparseVector to copy from.
+     * @return Reference to this vector.
      */
     DokSparseVector<T>& operator=(const DokSparseVector<T>& other) {
         if (this != &other) {
-            if (nnz_ != other.nnz_) {
-                nnz_ = other.nnz_;
+            map_ = other.map_;
+            n_ = other.n_;
 
-                delete[] values_;
-                values_ = new T[nnz_];
-
-                delete[] indices_;
-                indices_ = new std::size_t[nnz_];
-            }
-
-            this->n_ = other.n_;
-
-            std::memcpy(values_, other.values_, nnz_ * sizeof(T));
-            std::memcpy(indices_, other.indices_, nnz_ * sizeof(std::size_t));
+            Telemetry::emit_deallocation();
+            Telemetry::emit_allocation();
+            Telemetry::emit_copy_assign();
         }
 
         return *this;
     }
 
     /**
-     * @brief Copy assignment operator for SparseVector from different type SparseVector.
-     * Replaces all elements with elements of 'other'.
-     * May allocate 'other.nnz * sizeof(T) + other.nnz * sizeof(std::size_t)' bytes of memory on the heap if number of non-zero elements here doesn't match number of non-zero elements in 'other'.
-     * @param other SparseVector to copy from.
-     * @return Reference to this.
-     * @throws InvalidSizeException If 'other' does not have same size as this.
-     * @note 'other' must be of same size as this.
-     * @note 'OTHER_T' must be able to implicitly convert to 'T'.
-     * @tparam OTHER_T Scalar type of the 'other' DenseVector.
+     * @brief Copy assignment operator from different type DokSparseVector.
+     *
+     * Deallocates around 'nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes.
+     * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits a deallocation, an allocation, and a copy_assign.
+     *
+     * @tparam U Scalar type of other DokSparseVector.
+     * @param other DokSparseVector to copy from.
+     * @return Reference to this vector.
      */
-    template<scalar OTHER_T> requires std::is_convertible_v<OTHER_T, T>
-    DokSparseVector<T>& operator=(const DokSparseVector<OTHER_T>& other) {
-        if (nnz_ != other.nnz()) {
-            nnz_ = other.nnz();
+    template<scalar U> requires lossless_convertible<U, T>
+    DokSparseVector<T>& operator=(const DokSparseVector<U>& other) {
+        map_.clear();
+        Telemetry::emit_deallocation();
 
-            delete[] values_;
-            values_ = new T[nnz_];
-
-            delete[] indices_;
-            indices_ = new std::size_t[nnz_];
+        for (auto [index, value] : other.map()) {
+            map_[index] = value;
         }
+        Telemetry::emit_allocation();
 
-        this->n_ = other.n();
+        n_ = other.n();
 
-        const OTHER_T* otherValues = other.values();
-
-        for (std::size_t i = 0; i < nnz_; i++) {
-            values_[i] = otherValues[i];
-        }
-
-        std::memcpy(indices(), other.indices(), nnz_ * sizeof(std::size_t));
-
-        return *this;
-    }
-
-    template<sparse_vector_like U>
-    DokSparseVector<T>& operator=(const U& other) {
-        this->nnz_ = 0;
-        this->n_ = other.n();
-
-        for (std::size_t i = 0; i < this->n_; i++) {
-            DokSparseVector<T>::set(i, other.get(i));
-        }
+        Telemetry::emit_copy_assign();
 
         return *this;
     }
 
     /**
-    * @brief Move assignment operator for SparseVector from same type SparseVector.
-    * Takes ownership of 'other' data.
-    * Does not allocate memory on the heap.
-    * @param other SparseVector to move from.
-    * @return Reference to this.
-    * @throws InvalidSizeException If 'other' does not have same size as this.
-    * @note 'other' must be of same size as this.
-    */
+     * @brief Copy assignment operator from any dok sparse vector like object.
+     *
+     * Deallocates around 'nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes.
+     * Allocates around 'other.nnz() * (sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*))' bytes on the heap.
+     * Emits a deallocation, an allocation, and a copy_assign.
+     *
+     * @tparam U Type that fulfills 'dok_sparse_vector_like' concept.
+     * @param other Dok sparse vector like object to copy from.
+     * @return Reference to this vector.
+     */
+    template<dok_sparse_vector_like U> requires lossless_convertible<typename U::ValueType, T>
+    DokSparseVector<T>& operator=(const U& other) {
+        map_.clear();
+        Telemetry::emit_deallocation();
+
+        for (auto [index, value] : other.map()) {
+            map_[index] = value;
+        }
+        Telemetry::emit_allocation();
+
+        n_ = other.n();
+
+        Telemetry::emit_copy_assign();
+
+        return *this;
+    }
+
+    /**
+     * @brief Move assignment operator from same type DokSparseVector.
+     *
+     * Does not allocate memory on the heap.
+     * Emits a deallocation and a move_assign.
+     *
+     * @param other DokSparseVector to move from.
+     * @return Reference to this vector.
+     * @note Invalidates other vector and leaves in a empty state.
+     */
     DokSparseVector<T>& operator=(DokSparseVector<T>&& other) noexcept {
         if (this != &other) {
-            delete[] values_;
-            values_ = other.values_;
-            other.values_ = nullptr;
+            map_ = std::move(other.map_);
+            Telemetry::emit_deallocation();
 
-            delete[] indices_;
-            indices_ = other.indices_;
-            other.indices_ = nullptr;
-
-            nnz_ = other.nnz_;
-            other.nnz_ = 0;
-
-            this->n_ = other.n_;
+            n_ = other.n_;
             other.n_ = 0;
+
+            Telemetry::emit_move_assign();
         }
 
         return *this;
     }
 
-    void set(const std::size_t i, const T value) {
-        if (i > this->n_ - 1) {
-            throw InvalidIndexException("Cannot set on SparseVector with invalid index");
-        }
-        std::size_t j;
-
-        for (j = 0; j < nnz_; j++) {
-            const std::size_t curIndex = indices_[j];
-
-            if (curIndex == i) {
-                // there is currently a non-zero element there, and we are placing a zero so we remove a non-zero element;
-                if (compare(value, 0)) {
-                    T* newValues = new T[nnz_ - 1];
-
-                    // copy everything before us
-                    std::memcpy(newValues, values_, j * sizeof(T));
-
-                    // copy everything after us but 1 back
-                    std::memcpy(&newValues[j], &values_[j + 1], (nnz_ - j - 1) * sizeof(T));
-
-                    // delete old array
-                    delete[] values_;
-
-                    // and set the new array
-                    values_ = newValues;
-
-                    std::size_t* newIndices = new std::size_t[nnz_ - 1];
-
-                    std::memcpy(newIndices, indices_, j * sizeof(std::size_t));
-
-                    std::memcpy(&newIndices[j], &indices_[j + 1], (nnz_ - j - 1) * sizeof(std::size_t));
-
-                    delete[] indices_;
-
-                    indices_ = newIndices;
-
-                    nnz_--;
-
-                    return;
-                }
-
-                // there is a non-zero element, and we are setting another non-zero element, indices do not need to change
-                values_[j] = value;
-
-                return;
-            }
-
-            // arrays are sorted, no reason to keep iterating
-            if (curIndex > i) {
-                break;
-            }
-        }
-
-        // there is currently a zero element, and we are setting another zero element
-        if (compare(value, 0)) {
-            return;
-        }
-
-        T* newValues = new T[nnz_ + 1];
-
-        // copy everything up to j
-        std::memcpy(newValues, values_, j * sizeof(T));
-
-        // set the new value
-        newValues[j] = value;
-
-        // copy everything after j
-        std::memcpy(&newValues[j + 1], &values_[j], (nnz_ - j) * sizeof(T));
-
-        delete[] values_;
-
-        values_ = newValues;
-
-        std::size_t* newIndices = new std::size_t[nnz_ + 1];
-
-        std::memcpy(newIndices, indices_, j * sizeof(std::size_t));
-
-        newIndices[j] = i;
-
-        std::memcpy(&newIndices[j + 1], &indices_[j], (nnz_ - j) * sizeof(std::size_t));
-
-        delete[] indices_;
-
-        indices_ = newIndices;
-
-        nnz_++;
-    }
-
+    /**
+     * @brief Accesses the element at a provided index.
+     *
+     * Retrieves the element at (i).
+     * Checks bounds of provided i index.
+     * Does not allocate memory on the heap.
+     * O(log(nnz)) time complexity.
+     *
+     * @param i Zero-based index of element.
+     *
+     * @return The element at (i).
+     * @note Index must be withing vector bounds.
+     * @throws InvalidIndexException If index 'i' is out of bounds (i.e. bigger than n).
+     */
     [[nodiscard]] T get(const std::size_t i) const {
-        if (i > this->n_ - 1) {
-            throw InvalidIndexException("Cannot get from SparseVector with invalid index");
+        if (i >= n_) {
+            throw InvalidIndexException("Cannot access vector at invalid index");
         }
 
-        for (std::size_t j = 0; j < nnz_; j++) {
-            if (indices_[j] == i) {
-                return values_[j];
-            }
+        if (auto it = map_.find(i); it != map_.end()) {
+            return it->second;
         }
 
         return 0;
     }
 
-    [[nodiscard]] std::size_t nnz() const {
-        return nnz_;
+    /**
+     * @brief Sets the element at a provided index to a provided value.
+     *
+     * Checks bounds of provided i index.
+     * O(log(nnz)) time complexity.
+     *
+     * If setting 0 on non-zero element, deallocates around 'sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*)' bytes and emits a deallocation.
+     * If setting 0 on zero element, does nothing.
+     * If setting non-zero on 0 element, allocates around 'sizeof(std::size_t) + sizeof(T) + 3 * sizeof(void*)' bytes and emits an allocation.
+     * If setting non-zero on non-zero element, simply sets value.
+     *
+     * @param i Zero-based index of element.
+     * @param v Value to set in element.
+     *
+     * @note Index must be withing vector bounds.
+     * @throws InvalidIndexException If index 'i' is out of bounds (i.e. bigger than n).
+     */
+    void set(const std::size_t i, const T v) {
+        if (i >= n_) {
+            throw InvalidIndexException("Cannot access vector at invalid index");
+        }
+
+        if (compare(v, 0)) {
+            if (map_.erase(i) != 0) {
+                Telemetry::emit_deallocation();
+            }
+        }
+        else {
+            map_[i] = v;
+            Telemetry::emit_allocation();
+        }
     }
 
+    /**
+     * @return Number of non-zero elements in DokSparseVector.
+     */
+    [[nodiscard]] std::size_t nnz() const {
+        return map_.size();
+    }
+
+    /**
+     * @return Size of DokSparseVector.
+     */
     [[nodiscard]] std::size_t n() const {
         return n_;
     }
 
     /**
-     * @brief Gets the data pointer storing the vectors non-zero elements.
-     * @return Pointer to array of non-zero elements.
+     * @return Const-reference to map of index, value pairs of non zero elements.
      */
-    [[nodiscard]] T* values() {
-        return values_;
+    [[nodiscard]] const std::map<std::size_t, T>& map() const {
+        return map_;
     }
 
     /**
-     * @brief Gets the const data pointer storing the vectors non-zero elements.
-     * @return Const pointer to array of non-zero elements.
+     * @return Reference to map of index, value pairs of non zero elements.
      */
-    [[nodiscard]] const T* values() const {
-        return values_;
-    }
-
-    /**
-     * @brief Gets the indices pointer storing the indices for the vectors non-zero elements.
-     * @return Pointer to array of indices of non-zero elements.
-     */
-    [[nodiscard]] std::size_t* indices() {
-        return indices_;
-    }
-
-    /**
-     * @brief Gets the const indices pointer storing the indices for the vectors non-zero elements.
-     * @return Const pointer to array of indices of non-zero elements.
-     */
-    [[nodiscard]] const std::size_t* indices() const {
-        return indices_;
+    [[nodiscard]] std::map<std::size_t, T>& map() {
+        return map_;
     }
 
     ~DokSparseVector() = default;
 
 private:
-    std::size_t nnz_;
+    // size of vector
     std::size_t n_;
-
-    T* values_;
-    std::size_t* indices_;
+    // key-value pair of index-element
+    std::map<std::size_t, T> map_;
 };
 
 #endif // MATHPP_IMPLEMENTATION_VECTOR_SPARSE_DOK_VECTOR_H

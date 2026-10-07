@@ -69,7 +69,7 @@ struct DenseVectorView {
     /**
      * @brief Accesses the element at a provided index.
      *
-     * Retrieves a const reference to the element at (i) relative to where the view starts.
+     * Retrieves the element at (i) relative to where the view starts.
      * Implemented by accessing owner at i + offset.
      * Checks bounds of provided index relative to view AND to owner.
      * Does not allocate memory on the heap.
@@ -80,7 +80,7 @@ struct DenseVectorView {
      *
      * @throws InvalidIndexException If index is not withing view OR i + offset is not within owner vector.
      * @note Index must be within size of view AND i + offset must be within size of owner vector.
-     * @return Const-reference to element at (r, c).
+     * @return Element at (r, c).
      */
     [[nodiscard]] T get(const std::size_t i) const {
         if (i >= n_) {
@@ -106,12 +106,15 @@ struct DenseVectorView {
     }
 
     /**
-    * @return Number of elements in DenseVector.
+    * @return Number of elements in DenseVectorView.
     */
     [[nodiscard]] std::size_t n() const {
         return n_;
     }
 
+    /**
+     * @return DenseMatrix view is viewing.
+     */
     [[nodiscard]] const DenseVector<T>& owner() const {
         return owner_;
     }
