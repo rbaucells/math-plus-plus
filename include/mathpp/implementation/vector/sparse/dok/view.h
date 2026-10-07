@@ -123,15 +123,15 @@ struct DokSparseVectorView {
                 throw InvalidIndexException("Cannot access MapView at invalid index");
             }
 
-            return transformView_[i];
+            return view_.owner().map().at(i + view_.offset());
         }
 
         [[nodiscard]] T& at(std::size_t) {
             static_assert(false, "Cannot edit owner map through view");
         }
 
-        [[nodiscard]] T operator[](const std::size_t i) const {
-            return transformView_[i];
+        [[nodiscard]] T operator[](std::size_t) const {
+            static_assert(false, "Cannot edit owner map through view");
         }
 
         [[nodiscard]] T& operator[](std::size_t) {
@@ -143,30 +143,37 @@ struct DokSparseVectorView {
         V transformView_;
     };
 
-    OwnerMapView<std::ranges::transform_view<std::ranges::iota_view<std::size_t>, std::function<std::pair<std::size_t, T>(std::size_t)>>> map() const {
-        std::size_t start = -1;
-        std::size_t end = 0;
+    auto map() const {
+        auto start = owner_.map().begin();
+        std::size_t nnnz = 0;
+        auto end = owner_.map().end();
 
-        for (const auto& [index, _] : owner_.map()) {
-            if (index >= offset_ && index <= offset_ + n_) {
-                if (start == std::size_t(-1)) {
-                    start = index;
+        for (auto it = owner_.map().begin(); it != owner_.map().end(); ++it) {
+            const std::size_t key = it->second;
+
+            if (key >= offset()) {
+                if (start == owner().map().begin()) {
+                    start = it;
                 }
 
-                end = index;
+                if (key < offset() + n()) {
+                    nnnz++;
+                }
+
+                if (key >= offset() + n()) {
+                    end = it;
+                    break;
+                }
             }
         }
 
-        return OwnerMapView(*this, std::views::iota(0ul, nnz()) | std::views::transform([start, end, this](const std::size_t i) -> std::pair<std::size_t, T> {
-            if (end + i >= owner().nnz()) {
-                throw InvalidIndexException("");
-            }
-
-             return {i, owner().map().at(start + i)};
+        // lambda returns i-th nnz in view
+        return OwnerMapView(*this, std::ranges::subrange(start, end, nnnz) | std::views::transform([this](const std::pair<std::size_t, T>& i) -> std::pair<std::size_t, T> {
+            return {i.first - offset_, i.second};
         }));
     }
 
-    OwnerMapView<std::ranges::transform_view<std::ranges::iota_view<std::size_t>, std::function<std::pair<std::size_t, T>(std::size_t)>>> map() {
+    OwnerMapView<std::ranges::transform_view<std::ranges::subrange<typename std::unordered_map<std::size_t, T>::iterator, typename std::unordered_map<std::size_t, T>::iterator, std::ranges::subrange_kind::sized>, std::function<std::pair<std::size_t, T>(const std::pair<std::size_t, T>&)>>> map() {
         static_assert(false, "Cannot edit owner map through view");
     }
 

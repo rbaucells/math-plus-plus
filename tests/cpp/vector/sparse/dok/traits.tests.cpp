@@ -169,7 +169,7 @@ TEST(is_dok_sparse_vector_view_v, given_dok_sparse_vector_like_should_return_fal
 }
 
 TEST(dok_sparse_vector_view, given_dok_sparse_vector_view_should_return_true) {
-    static_assert(dok_sparse_vector_view<DokSparseVectorView<float>>);
+    static_assert(dok_sparse_vector_like<DokSparseVectorView<float>>);
 }
 
 TEST(dok_sparse_vector_view, given_dok_sparse_vector_should_return_false) {
