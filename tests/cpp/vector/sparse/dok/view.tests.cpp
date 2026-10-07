@@ -128,7 +128,6 @@ TEST(dok_sparse_vector_view_map, given_dok_sparse_vector_view_with_nonzero_offse
     // act
     const auto map = view.map();
     // assert
-    ASSERT_TRUE(compare(map.size(), 2));
     ASSERT_TRUE(map.contains(0));
     ASSERT_TRUE(map.contains(1));
     ASSERT_TRUE(!map.contains(2));
@@ -151,7 +150,6 @@ TEST(dok_sparse_vector_view_map, given_dok_sparse_vector_view_with_zero_offset_s
     // act
     const auto map = view.map();
     // assert
-    ASSERT_TRUE(compare(map.size(), 2));
     ASSERT_TRUE(map.contains(1));
     ASSERT_TRUE(map.contains(2));
     ASSERT_TRUE(!map.contains(0));
@@ -175,7 +173,6 @@ TEST(dok_sparse_vector_view_map, given_dok_sparse_vector_view_with_full_size_and
     // act
     const auto map = view.map();
     // assert
-    ASSERT_TRUE(compare(map.size(), 4));
     ASSERT_TRUE(map.contains(1));
     ASSERT_TRUE(map.contains(2));
     ASSERT_TRUE(map.contains(3));

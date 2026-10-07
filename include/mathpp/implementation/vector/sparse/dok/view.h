@@ -96,9 +96,9 @@ struct DokSparseVectorView {
             return std::ranges::end(transformView_);
         }
 
-        [[nodiscard]] size_t size() const {
-            return std::ranges::size(transformView_);
-        }
+        // [[nodiscard]] size_t size() const {
+            // return std::ranges::size(transformView_);
+        // }
 
         /**
          * @brief Checks if the map view has a nnz element at index 'i'.
@@ -144,31 +144,11 @@ struct DokSparseVectorView {
     };
 
     auto map() const {
-        auto start = owner_.map().end();
-        std::size_t nnnz = 0;
-        auto end = owner_.map().end();
-
-        for (auto it = owner_.map().begin(); it != owner_.map().end(); ++it) {
-            const std::size_t key = it->first;
-
-            if (key >= offset()) {
-                if (start == owner().map().end()) {
-                    start = it;
-                }
-
-                if (key < offset() + n()) {
-                    nnnz++;
-                }
-
-                if (key >= offset() + n()) {
-                    end = it;
-                    break;
-                }
-            }
-        }
+        auto start = owner().map().lower_bound(offset());
+        auto end = owner().map().upper_bound(offset() + n());
 
         // lambda returns i-th nnz in view
-        return OwnerMapView(*this, std::ranges::subrange(start, end, nnnz) | std::views::transform([this](const std::pair<std::size_t, T>& i) -> std::pair<std::size_t, T> {
+        return OwnerMapView(*this, std::ranges::subrange(start, std::prev(end)) | std::views::transform([this](const std::pair<std::size_t, T>& i) -> std::pair<std::size_t, T> {
             return {i.first - offset_, i.second};
         }));
     }
